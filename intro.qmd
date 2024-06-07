@@ -1,6 +1,43 @@
 # Introduction {.unnumbered #intro}
 
-The journey of learning statistics must start with the first general principle - uncertainty or rather quantifying uncertainty.  To fully grasp the concept of uncertainty, we offer you a simple exercise.  Suppose you were to guess the weight of any adult family member.  Your best guess would likely be off.  Empirical evidence, however, suggests that the best guess is the arithmetic mean.  Why?  
+The journey to master statistics starts with a simple concept - **uncertainty**.  Many books begin with the mundane details such as data types or programming language basics.  We offer those details here; we also offer structure to better understand what statistics do for us.  To begin, the structural core of statistics is uncertainty.  We know not what we don't know but we can quantify it with (false) precision.  Quantifying uncertainty is the singular aim of all statistical methods.  Methods include estimation, summary, prediction, and testing.  Ultimately, we either serve or serve as scientists.  We learn early on in school a falsehood of epic proportions.  Science is not a lock-step path of hypothesis generation, stringent testing, and careful reporting.  Quite the contrary!  There are scoundrels amongst us.  Some fabricate data.  Some fabricate studies.  Most of us do our best to conduct research consistent with our scientific mission - to describe, predict, and control the world around us.  That sounds so sinister but those are the aims of science.  Instead of the lock-step scientific method, we often come up with questions that are routinely rejected ($p > 0.05$) by data we scarcely know much about regarding the reliability or, gasp, the validity of our measures.  That house of cards leads to many researchers hunting for new, potential findings worthy of further inquiry.  Failed tests lead to fishing expeditions to find something worthy of publication.  Why?  We must publish to keep our jobs.  So, we find stuff to publish.  Failed initial tests?  Don't despair.  You will find something to report in every dataset.  Sir Ronald Fisher, interpreted the results of significant hypothesis tests worthy of further study - nothing more.  He too opined that such tests were mere reason for optimism and not the ultimate arbiter of scientific relevance.  Thus, all findings are findings worthy of further study.  Sometimes, that further study stops with greater care and attention to the data; other times, we must conduct further empirical investigations to rule out alternative explanations.  Here and further along in your journey, you will come back to this first paragraph and (hopefully) reflect on your own uncertainty.
+
+## Ice Crean Preference
+
+Imagine a boring world where everyone liked chocolate ice cream.  We would have no need for statistics or science predicting what ice cream a person would order would be trivial; there is both perfect prediction and certainty. If just one person liked vanilla instead of chocolate, we would have uncertainty - not much uncertainty because it would still be prudent to guess that everyone liked chocolate ice cream.  One error that occurs 1/N times can be quite trivial with a large sample.  We introduced many concepts in this first example.  Concepts such as variables (and constants), prediction, and sample size.  We also introduced the concept of error.  Error is the difference between the observed (aka true) value and the predicted value.  In this case, the true value is the ice cream flavor the person would order.  The predicted value is the most likely flavor the person would order.  The error is the difference between the true value and the predicted value.  In this case, the error is the difference between the flavor the person would order and the flavor we predicted the person would order.
+
+```{r}
+# create a vector of ice cream flavors
+flavors <- c("chocolate", "vanilla", "strawberry", "mint chip", "rocky road")
+# create a sample of 1000 people who all like chocolate ice cream
+chocolate <- rep("chocolate", 1000)
+
+# create a boxplot of the chocolate sample using ice cream cones with the color of the flavor as the fill
+#boxplot(chocolate, col = "brown", main = "Chocolate Ice Cream Preference", ylab = "Ice Cream Flavor", xlab = "Ice Cream Preference")
+
+
+# create a sample of 1000 people who like chocolate ice cream 90% of the time
+sample <- sample(flavors, 1000, replace = TRUE, prob = c(0.95, 0.01, 0.01, 0.01, 0.01))
+# create a table of the sample
+table(sample)
+
+# create a sample of 1000 people who like chocolate ice cream 50% of the time
+sample <- sample(flavors, 1000, replace = TRUE, prob = c(0.5, 0.1, 0.1, 0.1, 0.2))
+# create a table of the sample
+table(sample)
+
+```
+
+
+
+
+Who might be such a person to go against the social norms?  
+
+one of the early contributors to frequentists statistics, once said, "To consult the statistician after an experiment is finished is often merely to ask him to conduct a post mortem examination. He can perhaps say what the experiment died of."  Such a post mortem were apropos.
+
+
+
+Each require some must start with the first general principle - uncertainty or rather quantifying uncertainty.  To fully grasp the concept of uncertainty, we offer you a simple exercise.  Suppose you were to guess the weight of any adult family member.  Your best guess would likely be off.  Empirical evidence, however, suggests that the best guess is the arithmetic mean.  Why?  
 
 ```{r, echo=FALSE, message=FALSE}
 Wts <- c(125,189,220,175,145,147,256,127,155,184)
