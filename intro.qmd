@@ -1,22 +1,35 @@
+```{r load-libraries, echo=FALSE}
+library(ggplot2)
+```
+
+
 # Introduction {#intro .unnumbered}
 
-The journey to master statistics starts with a simple concept - **uncertainty**. We all know what it feels like to be uncertain. Some think of it as a gut feeling. Uncertainty Many books begin with the mundane details such as data types or programming language basics; we offer those details here. We also offer structure to better understand what statistics do for us. **Statistics is a tool designed by humans to serve humans**. If you are a human and vote either with your wallet and/or at the ballot box, you might find this book helpful. Voting is a decision that ought to be guided by your uncertainty. Putting numbers to your uncertainty is the aim of statistics. We will guide you through the process of quantifying these gut feelings.
+The journey to master statistics starts with a simple concept - **uncertainty**. We all know what it feels like to be uncertain. Some think of it as a gut feeling. Uncertainty Many books begin with the mundane details such as data types or programming language basics; we offer those details here. We also offer structure to better understand what statistics do for us. **Statistics is a tool designed by humans to serve humans**. If you are a human and vote either with your wallet and/or at the ballot box, you might find this book helpful. Voting is a decision that ought to be guided by your uncertainty. Putting numbers to your uncertainty is the aim of statistics. We will guide you through the learning process.
 
 ## Should I read this book?
 
-We have no clue if you should read the book. Let's take a quick self-quiz.
+We have no clue if you should read the book; only you can answer that question. Check these hints for yourself: 
 
-1.  Are you a student?  
-2.  Do you love learning?
-3.  Do you have a job that requires you to make decisions based upon data?
-4.  Do you vote?
-5.  Can you read English?
-6.  Do you have a computer you can run computer code (e.g., R, python, etc.)?
-7.  Do you have a desire to learn how to quantify your uncertainty?
+* [ ] I am a (graduate, undergraduate, lifelong, or curious) student.
+* [ ] I love to learn.
+* [ ] I have a job that requires me to make decisions based upon data.
+* [ ] I typically vote in elections.
+* [ ] I can read English (essential until translated; sorry).
+* [ ] I have a computer I can run computer code (e.g., R, python, etc.).
+* [ ] I have a desire to learn how to quantify my uncertainty.
 
 If you answered yes to any of these questions, you might find this book useful.  We hope you read on.
 
-Not a graduate student? We do not care. Read the book. Arm yourself with knowledge of how uncertainty gets communicated. Statistics is a tool to do one thing - quantify our uncertainty. Approach the topic with that frame of reference and you will master statistics. How quickly? Depends upon your willingness to devote time to read and apply what you learn. We offer you a path towards understanding, quantifying and mastering your uncertainty.  Good luck and welcome to the show.
+Not a graduate student? We do not care. Read the book. Arm yourself with knowledge of how uncertainty gets communicated. You - the reader - can make more informed decisions when you quantify your uncertainty.  We wrote this book with graduate students in mind since most had a previous undergraduate course in statistics that, no doubt, was taught a very standard way.  That way does not bode well for long-term retention.  Most students forget the details and only a small minority retain the essentials.  We assume only a passing familiarity.  **Most people have the background we assume in this book.** 
+
+## What We Expect from You
+
+As implied in our self-check above, you need to read English, be motivated and have some resources to both read this book and run the code we provide.  You must be willing to read and apply what you learn.  
+
+
+
+Statistics is a tool to do one thing: quantify uncertainty. Approach the topic with that frame of reference and you will master statistics. How quickly? Depends upon your willingness to devote time to read and apply what you learn. We offer you a path towards understanding, quantifying and mastering your uncertainty.  Good luck and welcome to the show.
 
 ## What To Expect
 
@@ -25,12 +38,42 @@ You should expect:
 1. Structure:  A framework to understand and master statistics
 2. Brevity: short, concise descriptions of key statistical concepts
 3. Examples:  real-world examples to illustrate the concepts
-3. Code:  statistical software code to demonstrate the concepts
-4. Challenges:  exercises to test your understanding of the concepts
+4. Code:  statistical software code to demonstrate the concepts
+5. Challenges:  exercises to test your understanding of the concepts
+6. References:  a list of references to deepen your understanding of the concepts
 
 ## How To Read This Book
 
 Pace yourself.  Expect familiarity after your first read, some facility after your second read, and moderate mastery after your third read.  So, expect to read the book 3 times.  Why?  We know that repetition is key to mastery.  Lather, rinse, repeat.  If it is good enough for your hair, it surely is good enough for your brain.
+
+
+# Mastery of Statistics {#mastery .unnumbered}
+
+My (PEM) graduate advisor Lee Sechrest often likened learning to a helix.  Every student enters the helix at the same level (bottom) and spirals upward.  Some students spiral faster than others.  Some students spiral slower than others.  The goal is to spiral upward - a motion towards mastery.
+
+## The Helix Model of Learning
+
+```{r}
+
+n_turns <- 5  # number of turns in the helix
+radius <- 1  # radius of the helix
+
+# from Gemini v
+theta <- seq(from = 0, to = 2*pi*n_turns, length.out = 1000)
+z <- theta # for the vertical axis (along the helix)
+x <- radius * cos(theta) # x position based on radius and cosine of theta
+y <- radius * sin(theta) # y position based on radius and sine of theta
+
+#ggplot(data.frame(theta, x, y, z), aes(x = x * scale, y = z * scale)) +
+#  geom_line(color = "blue") +  # draw the spiral line
+#  geom_point(aes(z = z * scale), color = "red") + # add dots along the helix (optional)
+#  labs(title = "Single Helix", x = "", y = "Height") +  # adjust labels
+#  theme_bw()  # adjust theme (optional)
+
+
+```
+
+
 
 # A 30,000 ft View of Statistics {#view .unnumbered}
 
