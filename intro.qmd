@@ -1,5 +1,6 @@
 ```{r load-libraries, echo=FALSE}
 library(ggplot2)
+library(rgl)
 ```
 
 
@@ -23,13 +24,11 @@ If you answered yes to any of these questions, you might find this book useful. 
 
 Not a graduate student? We do not care. Read the book. Arm yourself with knowledge of how uncertainty gets communicated. You - the reader - can make more informed decisions when you quantify your uncertainty.  We wrote this book with graduate students in mind since most had a previous undergraduate course in statistics that, no doubt, was taught a very standard way.  That way does not bode well for long-term retention.  Most students forget the details and only a small minority retain the essentials.  We assume only a passing familiarity.  **Most people have the background we assume in this book.** 
 
+Statistics is a tool to do one thing: quantify uncertainty. Approach the topic with that frame of reference and you will master statistics. How quickly? Depends upon your willingness to devote time to read and apply what you learn. We offer you a path towards understanding, quantifying and mastering your uncertainty.  Good luck and welcome to the show.
+
 ## What We Expect from You
 
 As implied in our self-check above, you need to read English, be motivated and have some resources to both read this book and run the code we provide.  You must be willing to read and apply what you learn.  
-
-
-
-Statistics is a tool to do one thing: quantify uncertainty. Approach the topic with that frame of reference and you will master statistics. How quickly? Depends upon your willingness to devote time to read and apply what you learn. We offer you a path towards understanding, quantifying and mastering your uncertainty.  Good luck and welcome to the show.
 
 ## What To Expect
 
@@ -54,21 +53,30 @@ My (PEM) graduate advisor Lee Sechrest often likened learning to a helix.  Every
 ## The Helix Model of Learning
 
 ```{r}
+library(rgl)
 
-n_turns <- 5  # number of turns in the helix
-radius <- 1  # radius of the helix
+n_turns <- 5  # number of turns
+radius <- 1  # radius
+height <- 2  # height
 
-# from Gemini v
-theta <- seq(from = 0, to = 2*pi*n_turns, length.out = 1000)
-z <- theta # for the vertical axis (along the helix)
-x <- radius * cos(theta) # x position based on radius and cosine of theta
-y <- radius * sin(theta) # y position based on radius and sine of theta
+# Define cylinder for the helix body
+helix <- cylinder3d(r = radius, h = height, sides = 30)
 
-#ggplot(data.frame(theta, x, y, z), aes(x = x * scale, y = z * scale)) +
-#  geom_line(color = "blue") +  # draw the spiral line
-#  geom_point(aes(z = z * scale), color = "red") + # add dots along the helix (optional)
-#  labs(title = "Single Helix", x = "", y = "Height") +  # adjust labels
-#  theme_bw()  # adjust theme (optional)
+# Define rotation for the helix spiral
+theta <- seq(from = 0, to = 2*pi*n_turns, length.out = 100)
+rot.mat <- matrix(c(cos(theta), -sin(theta), 0, 
+                    sin(theta),  cos(theta), 0,
+                    0,             0,           1), nrow = 3, ncol = 3)
+
+# Apply rotation to each point in the cylinder
+helix$v <- t(rot.mat) %*% t(helix$v)
+
+plot3d(helix, shade = FALSE, col = "blue")  # adjust color and shading
+
+# Add labels and title (optional)
+text3d(x = 0, y = 0, z = height + 0.5, "Height", size = 8)
+text3d(x = radius + 0.5, y = 0, z = 0, "Radius", size = 8)
+title3d("Single Helix")
 
 
 ```
