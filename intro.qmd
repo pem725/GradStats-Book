@@ -1,9 +1,3 @@
-```{r load-libraries, echo=FALSE}
-library(ggplot2)
-library(rgl)
-```
-
-
 # Introduction {#intro .unnumbered}
 
 The journey to master statistics starts with a simple concept - **uncertainty**. We all know what it feels like to be uncertain. Some think of it as a gut feeling. Uncertainty Many books begin with the mundane details such as data types or programming language basics; we offer those details here. We also offer structure to better understand what statistics do for us. **Statistics is a tool designed by humans to serve humans**. If you are a human and vote either with your wallet and/or at the ballot box, you might find this book helpful. Voting is a decision that ought to be guided by your uncertainty. Putting numbers to your uncertainty is the aim of statistics. We will guide you through the learning process.
@@ -53,35 +47,42 @@ My (PEM) graduate advisor Lee Sechrest often likened learning to a helix.  Every
 ## The Helix Model of Learning
 
 ```{r}
-library(rgl)
+# Load the necessary library
+library(plotly)
 
-n_turns <- 5  # number of turns
-radius <- 1  # radius
-height <- 2  # height
+# Create data for the helix
+theta <- seq(0, 6*pi, length.out = 500)
+x <- cos(theta)
+y <- sin(theta)
+z <- theta
 
-# Define cylinder for the helix body
-#helix <- cylinder3d(r = radius, h = height, sides = 30)
+# Create a data frame
+helix_df <- data.frame(x = x, y = y, z = z)
 
-# Define rotation for the helix spiral
-theta <- seq(from = 0, to = 2*pi*n_turns, length.out = 100)
-rot.mat <- matrix(c(cos(theta), -sin(theta), 0, 
-                    sin(theta),  cos(theta), 0,
-                    0,             0,           1), nrow = 3, ncol = 3)
-
-# Apply rotation to each point in the cylinder
-#helix$v <- t(rot.mat) %*% t(helix$v)
-
-#plot3d(helix, shade = FALSE, col = "blue")  # adjust color and shading
-
-# Add labels and title (optional)
-#text3d(x = 0, y = 0, z = height + 0.5, "Height", size = 8)
-#text3d(x = radius + 0.5, y = 0, z = 0, "Radius", size = 8)
-#title3d("Single Helix")
-
-
+# Create a 3D plot
+plot_ly(helix_df, x = ~x, y = ~y, z = ~z, type = 'scatter3d', mode = 'lines') %>%
+  layout(
+    scene = list(
+      xaxis = list(title = '', showgrid = FALSE, zeroline = FALSE, showline = FALSE, showticklabels = FALSE),
+      yaxis = list(title = '', showgrid = FALSE, zeroline = FALSE, showline = FALSE, showticklabels = FALSE),
+      zaxis = list(title = '', showgrid = FALSE, zeroline = T, showline = TRUE, showticklabels = FALSE),
+      title = "3D Helix Plot"
+    ), 
+    annotations = list(
+      x = 1, y = 0, z = 0,
+      text = 'Start Learning!',
+      showarrow = TRUE,
+    arrowhead = 2)) %>%
+  add_annotations(
+    x = 1, y = 0, z = 19,
+    text = "End",
+    showarrow = TRUE,
+    arrowhead = 2,
+    ax = 0,
+    ay = 0,
+    az = 0
+  )
 ```
-
-
 
 # A 30,000 ft View of Statistics {#view .unnumbered}
 
