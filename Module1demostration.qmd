@@ -20,5 +20,17 @@ mpg.z <- scale(mtcars$mpg)
 hist(mpg.z)
 hist(mtcars$mpg)
 
+# create a histogram and density plot of mpg using ggplot
+library(ggplot2)
+ggplot(mtcars, aes(x=mpg)) + geom_histogram(binwidth=5, fill="blue", color="black") + geom_density(alpha=.2, fill="red")
+
+# please overlay a density plot on the histogram
+ggplot(mtcars, aes(x=mpg)) + geom_histogram(binwidth=5, fill="blue", color="black") + geom_density(alpha=.2, fill="red")
+
+# fix the axes so that the density and histogram agree on the y axis
+ggplot(mtcars, aes(x=mpg)) + geom_histogram(binwidth=5, fill="blue", color="black", aes(y=..density..)) + geom_density(alpha=.2, fill="red")
+
+
+
 ```
 
