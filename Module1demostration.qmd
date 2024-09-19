@@ -2,22 +2,68 @@
 title: "Module 1: Getting Started"
 ---
 
+# Setup the environment
 
 
 ```{r setup}
+#| echo: true
+#| messages: false
+#| warning: false
+#| error: false
 library(psych)
+library(tidyverse)
+library(kableExtra)
+library(plotly)
+library(GGally)
+
+
+```
+
+# Some data
+
+```{r}
+#| messages: false
+#| echo: true
+#| warning: false
+#| error: false
+
+# load the mtcars data
 data(mtcars)
 describe(mtcars)
+
+```
+
+# Some plots
+
+```{r}
+#| messages: false
+#| echo: true
+#| warning: false
+#| error: false
+
+# create a histogram of mpg
 hist(mtcars$mpg)
+
+# create a histogram of hp
 hist(mtcars$hp)
 
 ```
 
+# Data transformation
 
 ```{r}
+#| messages: false
+#| echo: true
+#| warning: false
+#| error: false
+
+# standardize the mpg variable
 mpg.z <- scale(mtcars$mpg)
 
+
+# create a histogram of the standardized mpg variable
 hist(mpg.z)
+
 hist(mtcars$mpg)
 
 # create a histogram and density plot of mpg using ggplot
@@ -34,3 +80,55 @@ ggplot(mtcars, aes(x=mpg)) + geom_histogram(binwidth=5, fill="blue", color="blac
 
 ```
 
+```{r}
+#| messages: false
+#| echo: true
+#| warning: false
+#| error: false
+
+# create a scatterplot of mpg vs. hp
+ggplot(mtcars, aes(x=hp, y=mpg)) + geom_point()
+
+# create a scatterplot of mpg vs. hp with a regression line
+ggplot(mtcars, aes(x=hp, y=mpg)) + geom_point() + geom_smooth(method="lm")
+
+# create a scatterplot of mpg vs. hp with a regression line and a loess line
+ggplot(mtcars, aes(x=hp, y=mpg)) + geom_point() + geom_smooth(method="lm") + geom_smooth(method="loess")
+
+```
+
+```{r}
+#| messages: false
+#| echo: true
+#| warning: false
+#| error: false
+
+# read a google sheet into R
+library(googlesheets4)
+
+# read the data from the google sheet
+dat1 <- read_sheet('https://docs.google.com/spreadsheets/d/1bWP0sNJnXOhquYA52CVDQOYVDtNrkaGYIped2ALuYk4/edit?gid=19106208#gid=19106208')
+
+# print the data
+kable(head(dat1))
+
+describe(dat1)
+
+```
+
+# Describe the Data
+
+```{r}
+#| messages: false
+#| echo: true
+#| warning: false
+#| error: false
+
+
+
+p <- dat1[,c(1:3,11:12)] %>%
+  ggpairs(aes(colour=sex))
+
+ggplotly(p)
+
+```
