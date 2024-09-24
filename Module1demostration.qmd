@@ -132,3 +132,48 @@ p <- dat1[,c(1:3,11:12)] %>%
 ggplotly(p)
 
 ```
+
+# What to make of data
+
+```{r}
+#| echo: true
+#| messages: false
+#| warning: false
+#| error: false
+
+data(mtcars)
+
+plot(mtcars$mpg)
+
+mtcars$mpg2 <- mtcars$mpg
+mtcars$mpg2[5] <- 300
+
+mtcars$mpg2[30] <- .0000001
+plot(mtcars$mpg2)
+
+plot(mtcars$mpg2[-c(5,30)])
+
+hist(mtcars$mpg)
+hist(mtcars$mpg2)
+
+mtcars$mpg.z <- scale(mtcars$mpg)
+mtcars$mpg.log <- log(mtcars$mpg)
+mtcars$mpg.sqrt <- sqrt(mtcars$mpg)
+
+plot(mtcars$mpg.z)
+plot(mtcars$mpg.log)
+plot(mtcars$mpg.sqrt)
+
+# ggplot for mpg
+ggplot(mtcars, aes(x=mpg)) + geom_histogram(binwidth=5, fill="blue", color="black") + geom_density(alpha=.2, fill="red")
+
+# annotate the ggplot with a normal curve and put them both on a density y axis
+ggplot(mtcars, aes(x=mpg)) + geom_histogram(binwidth=5, fill="blue", color="black", aes(y=..density..)) + geom_density(alpha=.2, fill="red") + stat_function(fun=dnorm, args=list(mean=mean(mtcars$mpg), sd=sd(mtcars$mpg)), color="blue")
+
+
+
+
+
+```
+
+
