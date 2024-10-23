@@ -1,0 +1,123 @@
+---
+title: "Module2demonstration"
+author: "Patrick McKnight"
+---
+
+# Load all the requisite libraries
+
+```{r}
+library(ggplot2)
+```
+
+# Read in the data
+
+```{r}
+# Load the data
+data(mtcars)
+```
+
+
+# Summarize the data
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+#| error: false
+
+# Summarize the data
+summary(mtcars)
+```
+
+# Create a scatterplot
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+#| error: false
+
+# Create a scatterplot in ggplot of the data
+
+ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point() +
+  labs(title = "Scatterplot of Weight and MPG",
+       x = "Weight",
+       y = "Miles per Gallon")
+
+# Add a linear trendline
+ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(title = "Scatterplot of Weight and MPG",
+       x = "Weight",
+       y = "Miles per Gallon")
+
+
+
+```
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+#| error: false
+
+# recode cyl as a factor
+mtcars$cyl.f <- as.factor(mtcars$cyl)
+
+# Create a boxplot of mpg by cyl
+ggplot(mtcars, aes(x = cyl.f, y = mpg)) +
+  geom_boxplot() +
+  labs(title = "Boxplot of MPG by Cylinders",
+       x = "Cylinders",
+       y = "Miles per Gallon") +
+  ylim(0, 45)
+```
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+#| error: false
+
+# Create a histogram of mpg
+ggplot(mtcars, aes(x = mpg)) +
+  geom_histogram(binwidth = 5) +
+  labs(title = "Histogram of MPG",
+       x = "Miles per Gallon",
+       y = "Frequency") +
+  ylim(0, 100)
+```
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+#| error: false
+
+# create a density plot by cyl.f
+ggplot(mtcars, aes(x = mpg, fill = cyl.f)) +
+  geom_density(alpha = 0.5) +
+  labs(title = "Density Plot of MPG by Cylinders",
+       x = "Miles per Gallon",
+       y = "Density") +
+  ylim(0, 1)
+```
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+#| error: false
+
+summary(mtcars)
+```
+
+```{r}
+
+aov1 <- aov(mpg ~ cyl.f, data = mtcars)
+summary(aov1)
+
+```
+
