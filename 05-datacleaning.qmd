@@ -1,2 +1,92 @@
 # Cleaning House
 
+Nobody puts this chapter on a highlight reel, and yet you will spend more of your career here than anywhere else in this book. Real data arrive dirty: typos, impossible values, blanks, dates stored as text, "999" standing in for "don't know." Before a single fancy model, you must clean house. Do it carelessly and every beautiful analysis downstream is built on sand.
+
+## Learning Objectives
+
+1.  Treat your measures as *sensors* that produce data, not as the truth itself.
+2.  Recognize the common ways data arrive dirty and how to check for them.
+3.  Understand missingness and why *why* the data are missing matters.
+4.  Handle outliers and recoding deliberately, not reflexively.
+
+## Measures Are Sensors, Not Truth
+
+Start with a mindset. A measure is a **sensor** - a thermometer, a questionnaire, a reaction-time key. The number it emits is *data about* the construct, not the construct itself. Sensors drift, mis-fire, and get bumped. A survey respondent mis-clicks; a scale is off by a pound; a coder's attention wanders. The data are a noisy readout of reality, and cleaning is the work of separating "the sensor hiccupped" from "the world is genuinely like this." Keep that distinction and you will make better calls at every fork.
+
+## First, Actually Look
+
+The cheapest, most-skipped step is to *look at your data* before touching it. `str()`, `summary()`, and a few plots catch an astonishing share of problems:
+
+```{r}
+set.seed(3)
+dat <- data.frame(
+  age    = c(34, 29, 41, 220, 38, NA, 45),   # 220 is impossible
+  income = c(52, 61, 48, 55, -3, 60, 999),    # -3 impossible; 999 a code?
+  group  = c("A", "A", "b", "B", "A", "B", "A")  # "b" should be "B"
+)
+str(dat)
+summary(dat)
+```
+
+Three problems already leap out: an age of 220, a negative income (and a suspicious 999), and a stray lowercase "b". None of these needed a model - just a look.
+
+## Impossible Values and Sanity Checks
+
+Define what is *possible* and flag what is not. This is domain knowledge, not statistics:
+
+```{r}
+dat$age[dat$age > 120]  <- NA            # no one is 220
+dat$income[dat$income < 0] <- NA         # negative income is impossible here
+dat$income[dat$income == 999] <- NA      # 999 was a "missing" code, not a value
+dat$group <- toupper(trimws(as.character(dat$group)))  # fix "b" and stray spaces
+table(dat$group, useNA = "ifany")
+```
+
+Note the sneaky one: **999 was never a real income** - it was a placeholder for "declined to answer." Software cannot know that. If you had left it in, the mean income would have been science fiction. Always hunt for these coded-missing sentinels (999, -1, "N/A", empty strings) and convert them to honest `NA`.
+
+## Missing Data: The *Why* Matters
+
+Once the sentinels are cleaned, you are left with genuine gaps. How you should handle them depends entirely on **why** they are missing - a point important enough that one of us (PEM) co-wrote a whole book on it. The three flavors:
+
+- **MCAR** (Missing Completely At Random): the gap is unrelated to anything - a dropped test tube. Dropping these cases loses power but does not bias you.
+- **MAR** (Missing At Random): missingness depends on things you *observed* (older people skip the income item, and you recorded age). Recoverable with the right methods.
+- **MNAR** (Missing Not At Random): missingness depends on the *unobserved value itself* (high earners hide their income). The dangerous one - no amount of cleverness fully fixes it, and it can silently bias every result.
+
+```{r}
+colSums(is.na(dat))     # how much is missing, and where?
+```
+
+The default in most software is **listwise deletion** - throw out any row with a gap - which is fine under MCAR and quietly biasing otherwise. Modern practice prefers **multiple imputation**, but the first, non-negotiable step is simply to *report* how much is missing and think hard about which flavor you are facing.
+
+## Outliers: Investigate, Don't Reflexively Delete
+
+An outlier is not automatically an error. It might be your most important data point (the one patient who responded, the fraud you were hired to find). The rule: **investigate before you act.** A value can be (1) an impossible error - fix or remove it; (2) a real but extreme observation - keep it, and consider a robust method or a transformation; or (3) genuinely interesting - study it. Deleting outliers just because they are inconvenient is how honest data becomes a lie.
+
+```{r}
+z <- scale(c(52, 61, 48, 55, 60, 58, 300))    # 300 stands out
+round(as.vector(z), 2)                          # z-scores flag the extreme point
+```
+
+A common screen is "more than 3 standard deviations from the mean," but treat it as a flag for *inspection*, not a delete key.
+
+::: {.callout-important}
+## Cleaning Is a Documented Decision, Not a Secret
+
+Every value you change, drop, or recode is a decision that shapes your results - so **write it down**. Do your cleaning in a script (never by hand-editing the raw file), keep the raw data untouched, and comment *why* each change was made. Reproducibility starts here, in the least glamorous chapter, long before the p-values.
+:::
+
+## Challenge
+
+::: {.callout-tip}
+## Do One Yourself
+
+Take a messy vector of your own making - mix in an impossible value, a "-99" missing-code, and a genuine extreme.
+
+1.  Write a short cleaning script that converts the impossible value and the -99 code to `NA`, and report how many `NA`s you created and why.
+2.  Compute the mean *before* and *after* cleaning. How much did the fake 999/-99 code distort it?
+3.  For your genuine extreme value, argue in two sentences whether you would keep it, transform, or remove it - and what that choice does to your conclusion.
+:::
+
+## Where We Go Next
+
+With clean, honest data in hand, we can finally start making **inferences**. The bridge from describing a sample to reasoning about a population runs through one beautifully standardized distribution - the [z-distribution](06-zdistribution.qmd).

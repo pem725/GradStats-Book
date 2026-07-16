@@ -1,3 +1,76 @@
 # Introducing the General Linear Model (GLM)
 
-The General Linear Model (GLM) is a statistical model that is used to model the relationship between a single dependent variable and one or more independent variables. Multiple regression and ANOVA are specific applications of the GLM.
+The General Linear Model (GLM) is a statistical model that is used to model the relationship between a single dependent variable and one or more independent variables. Multiple regression and ANOVA are specific applications of the GLM. In fact - and this is the punchline we will spend the rest of the book earning - the t-test, correlation, regression, ANOVA, and ANCOVA are **not five techniques. They are one technique wearing five costumes.** Learn the one, and the five come free.
+
+## Learning Objectives
+
+1.  State the General Linear Model in one equation.
+2.  See that covariance is the engine turning inside it.
+3.  Watch a t-test, an ANOVA, and a regression return the *same* answer.
+4.  Understand what "general" does and does not mean.
+
+## One Equation to Rule Them All
+
+Strip away the vocabulary and every model in this section is:
+
+$$Y = b_0 + b_1 X_1 + b_2 X_2 + \cdots + b_k X_k + e$$
+
+An outcome $Y$ is modeled as a weighted sum of predictors plus error $e$. That is it. Whether the $X$'s are continuous (regression), categorical (ANOVA), or a mix (ANCOVA) changes only how we *code* them - never the underlying machine. And, as we saw in the [covariance chapter](07-covariance.qmd), the weights themselves are built from covariances and variances. Covariance is the fuel; the GLM is the engine.
+
+## The Same Answer, Three Ways
+
+Talk is cheap. Let's take one simple question - do two groups differ on an outcome? - and answer it with three "different" methods. Watch the p-value:
+
+```{r}
+set.seed(12)
+group <- factor(rep(c("control", "treatment"), each = 40))
+y <- rnorm(80) + ifelse(group == "treatment", 0.6, 0)
+
+p_ttest <- t.test(y ~ group, var.equal = TRUE)$p.value
+p_anova <- summary(aov(y ~ group))[[1]][["Pr(>F)"]][1]
+p_regr  <- summary(lm(y ~ group))$coefficients[2, "Pr(>|t|)"]
+
+round(c(t_test = p_ttest, ANOVA = p_anova, regression = p_regr), 6)
+```
+
+Three identical p-values. The t-test, the ANOVA, and the regression are literally the same model here - the t-test is a two-group ANOVA, the two-group ANOVA is a regression with one dummy-coded predictor, and (as a bonus) $F = t^2$:
+
+```{r}
+t_stat <- t.test(y ~ group, var.equal = TRUE)$statistic
+F_stat <- summary(aov(y ~ group))[[1]][["F value"]][1]
+round(c(t_squared = t_stat^2, F = F_stat), 4)   # F = t^2
+```
+
+Once you see this, a huge amount of statistics stops being a pile of disconnected recipes and becomes a single, learnable idea.
+
+## What "General" Means (and What It Doesn't)
+
+The GLM is **general** because it swallows so many named procedures. But it does carry assumptions - chiefly that the errors are roughly normal and that the relationship is *linear in the parameters*. When the outcome is not continuous-and-normal (a yes/no, a count), we need the **generalized** linear model (note the extra syllable) - logistic and Poisson regression - which we met briefly at the end of the [ANOVA & GLM chapter](16-ANOVAandGLM.qmd). Do not confuse the two: the *general* linear model is the unifying frame for this whole section; the *generalized* linear model extends it to other kinds of outcomes.
+
+::: {.callout-important}
+## The Roadmap From Here
+
+Everything remaining in this book is a special case of the equation above:
+
+- **[Point-biserial correlation](13-pointbiserialcorrelation.qmd)** - the bridge: one continuous, one dichotomous variable.
+- **[Bivariate regression](14-bivariateregression.qmd)** - one continuous predictor.
+- **[Multiple regression](15-MRC.qmd)** - many continuous predictors.
+- **[ANOVA and the GLM](16-ANOVAandGLM.qmd)** - categorical predictors via coding.
+- **[Basic ANOVA](17-basicANOVA.qmd)** - partitioning variance, the classical view.
+
+Same engine, different fuel. Keep the one equation in your head and you will never be lost.
+:::
+
+## Challenge
+
+::: {.callout-tip}
+## Do One Yourself
+
+1.  Generate your own two-group data. Confirm that `t.test(..., var.equal = TRUE)`, `aov()`, and `lm()` give the identical p-value, and that $F = t^2$.
+2.  Add a *continuous* covariate to the outcome and fit `lm(y ~ group + covariate)`. You have just run an ANCOVA without learning a new technique - explain to a friend why that is not cheating.
+3.  In one sentence, state the difference between the *general* linear model and the *generalized* linear model.
+:::
+
+## Where We Go Next
+
+Let's build the bridge that makes the "categorical predictors are just regression" claim concrete, using the simplest possible categorical predictor - a single yes/no. That is the [point-biserial correlation](13-pointbiserialcorrelation.qmd).

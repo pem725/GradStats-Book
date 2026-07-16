@@ -1,3 +1,106 @@
 # Reliability (not Validity) of Data
 
-I would love to introduce the idea of sensors here.  Let me play around.  Measures are just sensors.  They are not the data.  
+Let's introduce an idea that reframes the whole enterprise: your **measures are sensors**. A questionnaire, a stopwatch, a bathroom scale - each is a device that reads out a number *about* something, and like any sensor it is imperfect. The number is not the truth; it is the truth plus some noise. Before we trust a measurement to carry an argument, we must ask two separate questions: is it **consistent** (reliability, this chapter), and is it **on target** (validity, the next)? These are not the same question, and confusing them wrecks research.
+
+## Learning Objectives
+
+1.  Understand the classical test theory model: observed = true + error.
+2.  Define reliability as a ratio of variances.
+3.  Know the main ways to estimate reliability and when each applies.
+4.  See how unreliability *attenuates* the relationships you care about.
+
+## Observed = True + Error
+
+Classical test theory rests on one deceptively simple equation:
+
+$$O = T + E$$
+
+Every **observed** score ($O$) is a person's **true** score ($T$) - what we actually want - plus **error** ($E$), the sensor's noise. Because true score and random error are independent, the same decomposition holds for their *variances*:
+
+$$\text{var}(O) = \text{var}(T) + \text{var}(E)$$
+
+Observed-score variance is always larger than true-score variance, because error only ever *adds* spread. Our whole goal in measurement is to make the error term small.
+
+## Reliability Is a Ratio of Variances
+
+**Reliability** ($\rho$) is the fraction of the observed variance that is *real* - the signal share:
+
+$$\rho = \frac{\text{var}(T)}{\text{var}(O)} = \frac{\text{var}(T)}{\text{var}(T) + \text{var}(E)}$$
+
+It runs from 0 (all noise) to 1 (all signal). Let's build a world where we *know* the true scores and confirm the definition:
+
+```{r}
+set.seed(8)
+truth <- rnorm(1000, 100, 15)      # the true scores we wish we could see
+error <- rnorm(1000, 0, 8)          # sensor noise
+observed <- truth + error           # what we actually record
+
+reliability <- var(truth) / var(observed)
+c(reliability = round(reliability, 3))
+```
+
+About 0.78 of the variance in our observed scores is real signal; the rest is the sensor hiccupping. In practice we can never see `truth`, so we *estimate* reliability from clever comparisons.
+
+## Four Ways to Estimate Reliability
+
+1.  **Test–retest** - measure the same people twice and correlate. High correlation means the sensor gives a stable reading over time. (Careful: real change looks like unreliability.)
+2.  **Internal consistency** - do the items of a scale agree with each other? Summarized by **Cronbach's alpha**.
+3.  **Split-half** - split the items in two, score each half, correlate. A quick internal-consistency check.
+4.  **Inter-rater** - do two human coders agree? Essential whenever judgment is the sensor.
+
+### Cronbach's Alpha, By Hand
+
+Alpha asks: relative to the total score's variance, how small are the individual item variances? If items measure the same thing, the whole is much more than the sum of its jittery parts.
+
+$$\alpha = \frac{k}{k-1}\left(1 - \frac{\sum \text{var(item)}}{\text{var(total)}}\right)$$
+
+```{r}
+set.seed(9)
+# simulate 6 items that share a common "true" factor plus item-specific noise
+common <- rnorm(500)
+items  <- sapply(1:6, function(i) common + rnorm(500))   # 500 people x 6 items
+items  <- as.data.frame(items)
+
+k         <- ncol(items)
+var_items <- sum(apply(items, 2, var))
+var_total <- var(rowSums(items))
+alpha <- (k / (k - 1)) * (1 - var_items / var_total)
+c(cronbach_alpha = round(alpha, 3))
+```
+
+An alpha around 0.85 says the six items hang together well - they are largely reading the same underlying construct. By rough convention, 0.70 is "acceptable," 0.80+ "good," but do not worship the threshold: alpha climbs with more items whether or not they are any good, so a high alpha is necessary, not sufficient.
+
+## Why You Should Care: Attenuation
+
+Here is the practical sting. Unreliable measures **attenuate** - shrink - the correlations you are trying to detect. A real relationship between two constructs looks weaker than it is, purely because your sensors are noisy:
+
+```{r}
+set.seed(10)
+Tx <- rnorm(1000); Ty <- 0.6 * Tx + rnorm(1000, 0, 0.8)  # true correlation ~ .6
+# now observe each through a noisy sensor:
+Ox <- Tx + rnorm(1000, 0, 1)
+Oy <- Ty + rnorm(1000, 0, 1)
+c(true_r = round(cor(Tx, Ty), 2), observed_r = round(cor(Ox, Oy), 2))
+```
+
+The observed correlation is noticeably smaller than the true one. A real effect can hide behind a bad ruler - which means a null result might be a measurement failure, not the absence of an effect. Reliability is not bookkeeping; it is the difference between finding your effect and missing it.
+
+::: {.callout-important}
+## The Dartboard: Consistency ≠ Accuracy
+
+Picture throwing darts. **Reliability** is how *tightly grouped* your throws are - consistency. A tight cluster is reliable *even if it is nowhere near the bullseye*. That "near the bullseye" part - accuracy, being on target - is **validity**, and it is a completely separate question. A bathroom scale that always reads five pounds heavy is perfectly reliable and perfectly wrong. Reliability is *necessary* for validity (you cannot hit the bullseye if your throws scatter randomly) but nowhere near *sufficient*. That is the whole reason the next chapter exists.
+:::
+
+## Challenge
+
+::: {.callout-tip}
+## Do One Yourself
+
+1.  Simulate true scores and add three different amounts of error (small, medium, large). Compute reliability each time. Plot reliability against error variance - what is the shape?
+2.  Build an 8-item scale where four items share a common factor and four are pure noise. Compute Cronbach's alpha for all 8 items, then for just the good 4. What happens, and what does it warn you about trusting alpha alone?
+3.  Re-run the attenuation demo with *more* reliable sensors (smaller measurement error). Confirm the observed correlation creeps back toward the true value.
+:::
+
+## Where We Go Next
+
+A reliable sensor is consistent, but consistency is worthless if it is consistently measuring the *wrong thing*. That is the bullseye question - are we measuring what we intend? - and it is the subject of [validity](11-validity.qmd).

@@ -52,23 +52,32 @@ Legend: 🟥 stub/empty · 🟨 partial · 🟩 drafted · ⬜ not started synth
 
 | # | Chapter | Now | Primary source(s) to pull from | Synth |
 |---|---------|-----|-------------------------------|:-----:|
-| — | intro | 🟨 helix works | — | — |
-| 02 | Variables & Distributions | 🟨 4.9 KB | R/Basics.R, intro-stats lectures | ⬜ |
-| 03 | Central Tendency | 🟥 | intro-stats lectures | ⬜ |
-| 04 | Dispersion | 🟥 | intro-stats lectures | ⬜ |
-| 05 | Data Cleaning | 🟥 empty | R/ data-wrangling scripts | ⬜ |
-| 06 | z-Distribution | 🟨 | PSYC 611 | ⬜ |
-| 07 | Covariance | 🟥 | PSYC 611/642 | ⬜ |
-| 08 | Hypothesis Testing | 🟩 **drafted** | PSYC 611 Lec 6 (done), Methods.bib (Meehl) | ✅ |
-| 09 | Statistical Power | 🟩 **drafted** | PSYC 611 Lec 6 (done); fixed the α→power error | ✅ |
-| 10 | Reliability | 🟥 | Rasch/, measurement courses | ⬜ |
-| 11 | Validity | 🟥 | Rasch/, measurement courses | ⬜ |
-| 12 | GLM & Covariance | 🟥 | R/Regression1–2.R, PSYC 642 | ⬜ |
-| 13 | Point-Biserial Correlation | 🟥 | PSYC 642/643 | ⬜ |
-| 14 | Bivariate Regression | 🟩 **drafted** | **R/Regression1.R** (done) + 2–4.R, PSYC 612/642 | ✅ |
-| 15 | Multiple Regression (MRC) | 🟩 **drafted** | **R/Regression4.R** (done); fixed df & F errors | ✅ |
-| 16 | ANOVA & GLM | 🟩 **drafted** | **R/Regression7.R** (done) + 8–9.R | ✅ |
-| 17 | Basic ANOVA | 🟥 empty | PSYC 644 | ⬜ |
+| — | intro | 🟨 helix works; concept callouts filled | — | — |
+| 02 | Variables & Distributions | 🟩 **drafted** | extended existing; distributions/PDFs | ✅ |
+| 03 | Central Tendency | 🟩 **drafted** | mean=least-squares framing | ✅ |
+| 04 | Dispersion | 🟩 **drafted** | variance/SD/df, the "VARIANCE" spine | ✅ |
+| 05 | Data Cleaning | 🟩 **drafted** | sensors, missingness (MCAR/MAR/MNAR) | ✅ |
+| 06 | z-Distribution | 🟩 **drafted** | extended existing; pnorm/qnorm | ✅ |
+| 07 | Covariance | 🟩 **drafted** | covariance→correlation→slope engine | ✅ |
+| 08 | Hypothesis Testing | 🟩 **drafted** | PSYC 611 Lec 6, Methods.bib (Meehl) | ✅ |
+| 09 | Statistical Power | 🟩 **drafted** | PSYC 611 Lec 6; fixed the α→power error | ✅ |
+| 10 | Reliability | 🟩 **drafted** | CTT (O=T+E), Cronbach α, dartboard | ✅ |
+| 11 | Validity | 🟩 **drafted** | measure + inference validity, dartboard | ✅ |
+| 12 | GLM & Covariance | 🟩 **drafted** | GLM overture; t=ANOVA=regression | ✅ |
+| 13 | Point-Biserial Correlation | 🟩 **drafted** | continuous↔dichotomous bridge | ✅ |
+| 14 | Bivariate Regression | 🟩 **drafted** | **R/Regression1.R** | ✅ |
+| 15 | Multiple Regression (MRC) | 🟩 **drafted** | **R/Regression4.R**; fixed df & F errors | ✅ |
+| 16 | ANOVA & GLM | 🟩 **drafted** | **R/Regression7.R** + 8–9.R | ✅ |
+| 17 | Basic ANOVA | 🟩 **drafted** | SS partition; ANOVA=regression | ✅ |
+
+**All 16 body chapters now drafted and rendering.** The whole book builds end-to-end
+(`quarto render`, exit 0). Chapters 12/13/17 equivalence claims (t=ANOVA=regression,
+point-biserial=t-test, SS partition, `lm` F = `aov` F) verified numerically.
+
+Chapters 02–07, 10–13, 17 are drafted from the book's established voice/framework plus
+the digested 611 lectures and CTT material — solid, correct, self-contained (base R +
+ggplot2). They can be *enriched* later with specific lecture examples/data from the
+Drive archive (measurement chapters especially could pull from Rasch/754).
 
 ---
 

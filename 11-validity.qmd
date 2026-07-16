@@ -1,18 +1,77 @@
 # Validity (not Reliability)
 
-We need to talk about the varying features of validity including:
+Reliability asked whether our sensor is *consistent*. **Validity** asks the harder, more important question: is it measuring *what we think it is measuring?* A scale that reliably reads five pounds heavy is useless; a reaction-time task that "measures attention" but actually measures how fast someone can move a finger will send a whole literature down the wrong road. Validity is where measurement meets meaning, and it is never a single number - it is an argument you build.
 
-1.  Content Validity
-2.  Criterion Validity
-3.  Construct Validity
-4.  Face Validity
-5.  Convergent Validity
-6.  Discriminant Validity
+## Learning Objectives
 
-More importantly, these forms of validity often focus solely on the variables or measures.  We have other forms of validity worth discussing including:
+1.  Distinguish validity (on target) from reliability (consistent).
+2.  Know the forms of validity that concern a *measure*.
+3.  Know the forms of validity that concern an *inference* or *study*.
+4.  Understand why validity is an accumulating argument, not a one-time test.
 
-1.  Internal Validity
-2.  External Validity
-3.  Statistical Conclusion Validity
+## Validity of the Measure
 
-These forms need their own attention since they involve the process of learning and understanding the quality of our inferences.
+The first family of validity questions is about the measure itself - does this instrument capture the construct it claims to?
+
+1.  **Face validity** - does it *look* right on the surface? The weakest form (appearances deceive), but not nothing: a measure that looks absurd will not be trusted or used.
+2.  **Content validity** - do the items cover the *whole* construct, not just a convenient slice? A math test that only asks about addition has poor content validity for "math ability."
+3.  **Criterion validity** - does the measure correlate with an external benchmark (a *criterion*) it should? Two timings:
+    - **Concurrent** - agrees with a criterion measured *now* (a new depression scale tracks a clinician's diagnosis today).
+    - **Predictive** - forecasts a criterion in the *future* (the SAT predicting college GPA).
+4.  **Construct validity** - the big one, the umbrella over all the others: does the measure behave the way the *theory* of the construct says it should? This is assembled from two complementary pieces:
+    - **Convergent validity** - it correlates with things it *should* (a new anxiety scale agrees with established anxiety scales).
+    - **Discriminant validity** - it does *not* correlate with things it should not (that anxiety scale is not just re-measuring general negative mood or verbal ability).
+
+```{r}
+# A cartoon of convergent vs discriminant validity as a correlation matrix
+set.seed(4)
+anxiety_true <- rnorm(300)
+new_scale <- anxiety_true + rnorm(300, 0, 0.5)          # our new measure
+old_scale <- anxiety_true + rnorm(300, 0, 0.5)          # established anxiety measure
+verbal    <- rnorm(300)                                  # unrelated construct
+round(cor(data.frame(new_scale, old_scale, verbal)), 2)
+```
+
+We *want* the top-left block (new vs. old anxiety) to be high - **convergent** - and the correlations with `verbal` to be near zero - **discriminant**. A measure earns construct validity by passing both tests at once.
+
+## Validity of the Inference
+
+The second family is broader and, for a working scientist, even more consequential. These validities are not about a single instrument but about whether the **conclusions of a whole study** hold up. (This framework comes from the Campbell–Shadish–Cook tradition of research design.)
+
+1.  **Statistical conclusion validity** - is there really a relationship, and did we estimate it correctly? Threatened by low power, violated assumptions, and the fishing expeditions we warned about in the [hypothesis-testing chapter](08-hypothesistesting.qmd).
+2.  **Internal validity** - can we claim X actually *caused* Y, rather than some lurking third variable? This is what randomized experiments buy you, and what correlational studies cannot.
+3.  **External validity** - do the results *generalize* - to other people, settings, times, and versions of the treatment? A finding true only of sophomores in one lab in one year is real but narrow.
+4.  **Construct validity (of the study)** - are the *operations* we ran (this manipulation, this measure) faithful stand-ins for the *constructs* we theorize about? It is the same construct-validity idea, now aimed at the whole design rather than one scale.
+
+These four often trade off. Tightening internal validity (a controlled lab experiment) frequently costs external validity (the lab is not the world). Recognizing which validity you are buying - and which you are sacrificing - is the mark of a mature researcher.
+
+::: {.callout-important}
+## Reliability and Validity, Side by Side
+
+Return to the dartboard. **Reliability** is a tight cluster (consistent). **Validity** is a cluster *on the bullseye* (accurate). You can be:
+
+- **Reliable but not valid** - tight cluster in the wrong corner (the scale that always reads five pounds heavy). Dangerous, because the consistency *feels* like trustworthiness.
+- **Valid but not reliable** - centered on the bullseye but scattered wide. Rare in practice, since heavy noise usually drags accuracy down too.
+- **Neither** - scattered and off-target. At least it is obviously bad.
+- **Both** - tight and centered. The goal.
+
+Reliability is *necessary* but not *sufficient* for validity. A consistent measure of the wrong thing is still a measure of the wrong thing.
+:::
+
+## Validity Is an Argument, Not a Verdict
+
+There is no single test, no magic coefficient, that stamps a measure "VALID." Validity is a case you build over time, from many studies and many kinds of evidence - convergent here, predictive there, a failed discriminant test forcing a revision. It is provisional and cumulative, exactly like science itself. Treat any claim of validity as an ongoing argument that new evidence can strengthen or overturn.
+
+## Challenge
+
+::: {.callout-tip}
+## Do One Yourself
+
+1.  Pick a construct you care about (grit, burnout, reading ability). Sketch one concrete piece of evidence you would collect for its *content*, *convergent*, *discriminant*, and *predictive* validity.
+2.  Extend the correlation-matrix demo: add a *second* unrelated construct and confirm your new scale shows discriminant validity against both. What correlation pattern would make you *doubt* the scale?
+3.  Describe a study that is high in internal validity but low in external validity, and one that is the reverse. What did each buy, and what did each give up?
+:::
+
+## Where We Go Next
+
+We now have trustworthy sensors - reliable *and* valid - feeding us clean data. At last we can build the machines that turn that data into inference. The unifying framework for all of them is the [General Linear Model](12-GLMcovariance.qmd).

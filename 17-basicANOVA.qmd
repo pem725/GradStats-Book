@@ -1,0 +1,118 @@
+# Basic ANOVA
+
+We closed the last chapter with a slogan: **ANOVA is regression with categorical predictors.** That is true, and it is the deep view. But ANOVA also has a classical view - one built entirely out of the variance ideas from early in the book - and seeing that view makes the machinery click. Analysis of variance earns its name honestly: it works by *partitioning variance* into the part explained by group membership and the part left over. Let's take it apart.
+
+## Learning Objectives
+
+1.  Partition the total sum of squares into between-group and within-group pieces.
+2.  Build the ANOVA $F$ ratio from those pieces and understand what it compares.
+3.  Confirm that the classical ANOVA and the regression GLM give the identical test.
+4.  Follow a significant omnibus test with appropriate post-hoc comparisons.
+
+## The Question and the Data
+
+One-way ANOVA asks: **do three or more groups differ on a continuous outcome?** Say we test a plant fertilizer at three doses:
+
+```{r}
+set.seed(17)
+dose  <- factor(rep(c("none", "low", "high"), each = 30),
+                levels = c("none", "low", "high"))
+growth <- rnorm(90, mean = rep(c(10, 12, 15), each = 30), sd = 3)
+tapply(growth, dose, mean)
+```
+
+The group means differ in our sample - but is that real, or just sampling noise? ANOVA answers by comparing two kinds of variation.
+
+## Partitioning the Variance
+
+Here is the whole idea in one line: the **total** spread of every observation around the grand mean can be split cleanly into spread *between* groups and spread *within* groups.
+
+$$SS_{total} = SS_{between} + SS_{within}$$
+
+- $SS_{total}$: how far each observation is from the overall (grand) mean.
+- $SS_{between}$: how far each *group mean* is from the grand mean - the variation our grouping *explains* (the signal).
+- $SS_{within}$: how far each observation is from *its own group's* mean - the leftover variation (the noise).
+
+Let's build all three by hand and confirm they add up:
+
+```{r}
+grand <- mean(growth)
+group_means <- tapply(growth, dose, mean)
+
+SS_total   <- sum((growth - grand)^2)
+SS_between <- sum(table(dose) * (group_means - grand)^2)
+SS_within  <- sum((growth - group_means[dose])^2)
+
+c(SS_total = SS_total,
+  between_plus_within = SS_between + SS_within)   # they match
+```
+
+The total variance really does split exactly into "explained by group" plus "unexplained." That partition *is* analysis of variance.
+
+## The F Ratio
+
+We cannot compare sums of squares directly - they depend on how many things went into each. We convert each to a **mean square** by dividing by its degrees of freedom, then take their ratio:
+
+$$F = \frac{MS_{between}}{MS_{within}} = \frac{SS_{between}/(k-1)}{SS_{within}/(N-k)}$$
+
+with $k$ groups and $N$ observations. $F$ asks a beautifully simple question: **is the variation between groups bigger than the variation within them?** If groups matter, between-group spread dwarfs the within-group noise and $F$ climbs well above 1.
+
+```{r}
+k <- 3; N <- 90
+MS_between <- SS_between / (k - 1)
+MS_within  <- SS_within  / (N - k)
+F_stat <- MS_between / MS_within
+p_val  <- pf(F_stat, df1 = k - 1, df2 = N - k, lower.tail = FALSE)
+round(c(F = F_stat, p = p_val), 5)
+```
+
+And of course, R will do the bookkeeping for us with `aov()` - confirm it matches our by-hand work:
+
+```{r}
+summary(aov(growth ~ dose))
+```
+
+Same $F$, same p. Nothing up our sleeve.
+
+## It Really Is the Same as Regression
+
+To honor the slogan from the last chapter, let's prove the classical ANOVA and the regression GLM are one and the same by pulling the identical $F$ out of `lm()`:
+
+```{r}
+fit <- lm(growth ~ dose)
+anova(fit)              # the regression's F test == the ANOVA
+c(regression_F = summary(fit)$fstatistic[1],
+  aov_F        = summary(aov(growth ~ dose))[[1]][["F value"]][1])
+```
+
+Identical. The "two techniques" were always one. ANOVA is just the variance-partitioning *story* told about a regression on categorical predictors.
+
+## After a Significant F: Post-Hoc Comparisons
+
+The omnibus $F$ only says "*somewhere* among these groups there is a difference." It does not say *which* groups differ. For that we run **post-hoc** comparisons - and because we are now making several comparisons at once, we must control the inflated false-alarm rate (recall Type I error from the [hypothesis-testing chapter](08-hypothesistesting.qmd)). Tukey's Honest Significant Difference does exactly that:
+
+```{r}
+TukeyHSD(aov(growth ~ dose))
+```
+
+Each row is a pairwise comparison with a confidence interval already adjusted for the fact that we peeked at all of them. Any interval that excludes zero is a real difference; any that includes zero is not.
+
+::: {.callout-important}
+## Do Not Skip Straight to the Pairwise Tests
+
+The two-step dance - omnibus $F$ first, post-hoc comparisons only if it is significant - is not bureaucratic ritual. Running every pairwise t-test without the omnibus gate (and without correction) is how you manufacture false positives, one comparison at a time. The $F$ is the gatekeeper; Tukey (or a similar correction) keeps the gate honest.
+:::
+
+## Challenge
+
+::: {.callout-tip}
+## Do One Yourself
+
+1.  Simulate four groups on a continuous outcome. Compute $SS_{total}$, $SS_{between}$, and $SS_{within}$ by hand, confirm they sum, and build $F$ from the mean squares. Check against `summary(aov(...))`.
+2.  Confirm the same $F$ falls out of `anova(lm(y ~ group))`.
+3.  Make the group means nearly equal, then very different, keeping the within-group SD fixed. Watch what happens to $F$ - and explain it in terms of the between-versus-within comparison.
+:::
+
+## Where We Go Next
+
+You have reached the end of our tour, and you now hold the thread that runs through all of it: **quantify your uncertainty, and remember that variance is the currency you quantify it in.** From the first histogram to this last $F$ ratio, it was one idea the whole way down. Turn back to any chapter, read it a second and a third time (we told you: lather, rinse, repeat), and watch the pieces knit together. Welcome to the show - you are now a statistician.

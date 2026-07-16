@@ -1,15 +1,98 @@
-# Expectation and Undertstanding: The Z-Distribution
+# Expectation and Understanding: The Z-Distribution
 
-Here we talk about the z-distribution and make sure we have plenty of funny pictures to make it WAY different than previous books on the topic.  Include here:
+Every distribution we have met so far has its own units - inches, dollars, IQ points, reaction times. That makes them impossible to compare directly. The **z-distribution** is our universal translator: a way to put *any* value, from *any* normal distribution, onto one common ruler. Master this one distribution and the entire inferential half of the book opens up, because every test we run is, underneath, a z-in-disguise.
 
-1.  The shape of the z-distribution
-2.  The concept of the z-score
-3.  The concept of the standard normal distribution
-4.  The concept of the z-table
-5.  The concept of the z-test
-6.  The concept of the z-interval
-7.  The concept of the z-proportion
-8.  The concept of the z-confidence interval
-9.  The concept of the z-hypothesis test
+## Learning Objectives
 
-All of these points lead us to our inferential section.  We just want a deep dive into this distribution.  At the end, let's tell the readers that these concepts are the foundation for the inferential statistics we will cover in the next section.
+1.  Understand the z-score as a value's distance from the mean, in standard-deviation units.
+2.  Understand the standard normal distribution and read probabilities as areas.
+3.  Use R (`pnorm`, `qnorm`) instead of a dusty z-table.
+4.  See why this distribution is the foundation for the inferential chapters ahead.
+
+## The Z-Score: One Ruler to Rule Them All
+
+A **z-score** answers a single question: *how many standard deviations is this value from its mean?*
+
+$$z = \frac{x - \bar{x}}{s}$$
+
+That is the whole formula. Subtract the mean (now centered at 0), divide by the standard deviation (now measured in SD-units), and every variable on Earth speaks the same language.
+
+```{r}
+sat  <- 1350;  sat_mean  <- 1050; sat_sd  <- 200
+act  <- 30;    act_mean  <- 21;   act_sd  <- 5
+
+z_sat <- (sat - sat_mean) / sat_sd
+z_act <- (act - act_mean) / act_sd
+c(z_SAT = z_sat, z_ACT = z_act)
+```
+
+Is a 1350 SAT better than a 30 ACT? On their own scales, who could say. In z-units the question is trivial: the ACT score is further above its mean, so it is the more impressive result. That is the magic of standardizing - **incomparable things become comparable.**
+
+## The Standard Normal Distribution
+
+Standardize a normal variable and you get *the* **standard normal distribution**: a bell curve with mean 0 and standard deviation 1. It never changes, which is exactly why it is useful - we can chart it once and reuse it forever.
+
+```{r}
+curve(dnorm(x), from = -4, to = 4, lwd = 2, col = "steelblue",
+      main = "The standard normal: mean 0, sd 1", xlab = "z", ylab = "density")
+abline(v = c(-2, -1, 0, 1, 2), lty = 3, col = "grey60")
+```
+
+The famous **68–95–99.7 rule** lives here: about 68% of values fall between $z=\pm1$, about 95% between $z=\pm2$, and about 99.7% between $z=\pm3$. Anything past $z = \pm2$ is already unusual; past $\pm3$, rare.
+
+## Probability Is Area (and R Is Your Z-Table)
+
+Older books make you hunt through a printed **z-table** to convert a z-score into a probability. We have R, so we will never do that. Recall from the [distributions chapter](02-distributions.qmd) that probability is *area under the density curve*. Two functions give it to you instantly:
+
+- `pnorm(z)` - the area to the **left** of `z` (the cumulative probability).
+- `qnorm(p)` - the inverse: the z-score with area `p` to its left (a **quantile**).
+
+```{r}
+pnorm(1)             # P(Z < 1): area to the left of z = 1
+1 - pnorm(2)         # P(Z > 2): the upper tail beyond z = 2
+pnorm(2) - pnorm(-2) # P(-2 < Z < 2): the middle ~95%
+qnorm(0.975)         # which z cuts off the top 2.5%? (the famous 1.96)
+```
+
+That last line is worth a star: `qnorm(0.975)` returns **1.96**, the number that shows up in every 95% confidence interval and two-tailed test you will ever run. It is not magic - it is just the z-score with 2.5% of the area beyond it in each tail.
+
+```{r}
+# picture the "unusual" tails beyond +/- 1.96
+z <- seq(-4, 4, length.out = 400)
+plot(z, dnorm(z), type = "l", lwd = 2, col = "steelblue",
+     main = "The middle 95% and the 5% that would surprise us",
+     xlab = "z", ylab = "density")
+abline(v = c(-1.96, 1.96), col = "red", lwd = 2, lty = 2)
+```
+
+## Percentiles: Where Do You Stand?
+
+Turn a z-score into a **percentile** with `pnorm()` and you can say exactly where an observation stands in its distribution:
+
+```{r}
+z_height <- (74 - 68) / 4              # a 74-inch person, mean 68, sd 4
+percentile <- pnorm(z_height) * 100
+c(z = z_height, percentile = percentile)
+```
+
+A z of 1.5 places this person around the 93rd percentile - taller than about 93% of the population. Percentile ranks, growth charts, standardized-test scores: all just `pnorm()` wearing a costume.
+
+::: {.callout-important}
+## Why This Chapter Is the Hinge of the Book
+
+Everything inferential rests on one move: **standardize, then read the area.** When we test a hypothesis, we convert our result to a z-like statistic and ask "how far into the tail is this, if nothing were going on?" When we build a confidence interval, we walk out $\pm 1.96$ standard errors. The z-distribution is not one more topic - it is the **shared machinery** of the entire inferential section that follows.
+:::
+
+## Challenge
+
+::: {.callout-tip}
+## Do One Yourself
+
+1.  IQ has mean 100 and sd 15. Using `pnorm`/`qnorm`, find (a) the percentile of an IQ of 130, (b) the probability of an IQ above 145, and (c) the IQ that marks the top 1%.
+2.  Standardize a variable of your own with `scale()` and confirm its mean is 0 and sd is 1 (to rounding).
+3.  Recreate the shaded-tails plot, but mark $\pm 1.65$ instead of $\pm 1.96$. What test decision does 1.65 correspond to (hint: revisit the one-tailed critical value)?
+:::
+
+## Where We Go Next
+
+We can now describe where a single value stands. Real science, though, asks how two variables move *together*. The tool that measures that shared movement - and the true engine under correlation and regression - is [covariance](07-covariance.qmd).

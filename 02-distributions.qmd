@@ -21,7 +21,7 @@ Let's examine this a bit more closely. Consider two variables height and weight.
 | **Singular Cause** | IDEAL (Height)     | Less IDEAL (Weight) |
 | **Multiple Cause** | Most Common (g)    | REALLY BAD (BMI)    |
 
-In the table above, we see that the ideal variable is one that contains data representing a singular characteristic of a person and is determined by a singular cause. Similarly, we see BMI labeled as "REALLY BAD."  These are abstractions right now but they become important as we delve into psychological science and the uncertainty around our constructs.  
+In the table above, we see that the ideal variable is one that contains data representing a singular characteristic of a person and is determined by a singular cause. Similarly, we see BMI labeled as "REALLY BAD."  These are abstractions right now but they become important as we delve into psychological science and the uncertainty around our constructs.
 
 ### Types of Variables
 
@@ -33,20 +33,96 @@ Continuous variables are those that can take on any value within a range. These 
 
 #### Discrete Variables
 
+Discrete variables are the countable cousins of continuous variables. They take on separated, distinct values - usually whole numbers - with nothing in between. The number of children in a family, the number of times you checked your phone today, the number of correct answers on a quiz: all discrete. You can have 2 children or 3 children, but never 2.4 of them. The gap matters. Much of the mischief in applied statistics comes from treating a discrete variable as if it were continuous (or the reverse), so always ask yourself: *can the thing between two values actually exist?*
+
 #### Categorical Variables
+
+Categorical variables sort observations into buckets that have **no inherent numerical order**: eye color, political party, ice-cream flavor, species of pet. We can *code* these with numbers (1 = chocolate, 2 = vanilla) for convenience, but those numbers are labels, not quantities - vanilla is not "twice" chocolate. A categorical variable with exactly two buckets (yes/no, treatment/control, alive/dead) is called **dichotomous** or **binary**, and it turns out to be one of the most useful variables in all of statistics, as we will see when point-biserial correlation and ANOVA arrive.
 
 #### Ordinal Variables
 
+Ordinal variables are categories with a **rank order** but without guaranteed equal spacing between ranks. Think of a race (1st, 2nd, 3rd) or a survey item (strongly disagree → strongly agree). We know 1st beat 2nd, but the ordering does not tell us *by how much* - the gap between 1st and 2nd may be a mile and the gap between 2nd and 3rd a whisker. Ordinal data live in the uneasy space between categorical and continuous, and reasonable people argue about how to analyze them. We will side-step the dogma: what you can do depends on the question, not on a label Stevens handed down.
+
 ### Representing Variables Numerically
+
+To compute anything, we must turn observations into numbers. For continuous and discrete variables that is natural - the number *is* the measurement. For categorical variables we assign codes, but we must remember that the software does not know those codes are arbitrary; it will happily average "flavor" and hand you 1.7 if you let it. In R, we protect ourselves by storing categories as **factors**, which keeps their labels attached and their order (if any) explicit:
+
+```{r}
+flavor <- factor(c("choc", "van", "choc", "straw", "van"),
+                 levels = c("choc", "van", "straw"))
+as.integer(flavor)   # the codes R uses under the hood
+table(flavor)        # what we actually care about: the counts
+```
 
 ### Plotting Variables
 
+Before you compute a single statistic, **look at your data**. A picture reveals shape, spread, gaps, and outliers that a lone number will hide from you. The workhorse for a single variable is the histogram.
+
 #### Histograms
+
+A histogram slices the range of a variable into bins and counts how many observations fall in each. The result is a picture of the variable's **distribution** - the pattern of how often each value shows up.
+
+```{r}
+#| message: false
+library(ggplot2)
+set.seed(20)
+heights <- rnorm(500, mean = 68, sd = 4)   # simulated adult heights (inches)
+ggplot(data.frame(heights), aes(x = heights)) +
+  geom_histogram(bins = 30, fill = "steelblue", colour = "white") +
+  labs(title = "The distribution of 500 simulated heights",
+       x = "height (inches)", y = "count") +
+  theme_minimal()
+```
+
+That mound-shaped pile is the thing we spend the rest of the book reasoning about.
 
 ## Shapes
 
+Distributions have shapes, and the shape tells a story. Three features do most of the work:
+
+- **Central tendency** - where the pile sits (the subject of the [next chapter](03-CTmeasures.qmd)).
+- **Spread** - how wide the pile is (the chapter after that).
+- **Symmetry** - whether the pile leans. A distribution with a long right tail is **right- (positively) skewed**; a long left tail is **left- (negatively) skewed**. Income is famously right-skewed: most people cluster low, a few soar high, and the mean gets dragged toward the millionaires.
+
+```{r}
+set.seed(21)
+skewed <- rexp(1000, rate = 1)   # a right-skewed variable
+ggplot(data.frame(skewed), aes(x = skewed)) +
+  geom_histogram(bins = 40, fill = "darkorange", colour = "white") +
+  labs(title = "A right-skewed distribution (long tail to the right)",
+       x = "value", y = "count") +
+  theme_minimal()
+```
+
 ## Distributions
+
+A **distribution** is the full accounting of how often each value (or range of values) occurs. Some distributions are so common - they arise from the same kinds of processes again and again - that we have given them names, formulas, and R functions. Knowing a handful of them is like knowing a handful of chords: most songs are built from them.
 
 ### Names for Shapes
 
+- **Normal (Gaussian)** - the bell curve. Arises whenever many small, independent influences add up (height, measurement error). `rnorm()`.
+- **Uniform** - every value in a range equally likely. `runif()`.
+- **Binomial** - the count of "successes" in a fixed number of yes/no trials (heads in 10 coin flips). `rbinom()`.
+- **Poisson** - the count of rare events in a fixed window (typos per page, emails per hour). `rpois()`.
+
+```{r}
+set.seed(22)
+op <- par(mfrow = c(2, 2), mar = c(4, 4, 2, 1))
+hist(rnorm(1000),         main = "Normal",   col = "grey85", border = "white", xlab = "")
+hist(runif(1000),         main = "Uniform",  col = "grey85", border = "white", xlab = "")
+hist(rbinom(1000, 10, .5),main = "Binomial", col = "grey85", border = "white", xlab = "")
+hist(rpois(1000, 3),      main = "Poisson",  col = "grey85", border = "white", xlab = "")
+par(op)
+```
+
 ### Probability Density Functions
+
+For a continuous variable, asking "what is the probability of *exactly* 68.0000 inches?" is a trap - the answer is zero, because there are infinitely many possible values. Instead we describe a continuous distribution with a **probability density function (PDF)**: a curve whose *area* between two points gives the probability of landing in that range. The whole area under the curve is exactly 1 (something must happen). The normal PDF is the famous bell:
+
+```{r}
+curve(dnorm(x), from = -4, to = 4, lwd = 2, col = "steelblue",
+      main = "The standard normal PDF", xlab = "z", ylab = "density")
+abline(v = 0, lty = 2)
+```
+
+The height of the curve is *density*, not probability; probability is the shaded area you sweep out between two z-values. That single idea - probability as area under a density - is the engine of everything inferential to come, starting with the [z-distribution](06-zdistribution.qmd). But first we need to pin down the two summaries every distribution demands: its center and its spread.

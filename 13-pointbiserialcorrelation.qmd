@@ -1,10 +1,89 @@
 # Bridging the Gap: The Point Biserial Correlation
 
-The point biserial correlation is a statistical measure that quantifies the relationship between a continuous variable and a dichotomous variable. It is a special case of the Pearson product moment correlation coefficient, which is used to measure the strength and direction of the linear relationship between two continuous variables.  Why is this so important?  Well, the point biserial correlation ($r_{pb}$) is the key to bridging the gap between continuous and dichotomous variables - a gap caused by the shift from one GLM model (MRC with continuous) to another (ANOVA with discrete or categorical predictors).  
+The point biserial correlation is a statistical measure that quantifies the relationship between a continuous variable and a dichotomous variable. It is a special case of the Pearson product moment correlation coefficient, which is used to measure the strength and direction of the linear relationship between two continuous variables.  Why is this so important?  Well, the point biserial correlation ($r_{pb}$) is the key to bridging the gap between continuous and dichotomous variables - a gap caused by the shift from one GLM model (MRC with continuous) to another (ANOVA with discrete or categorical predictors).
 
 ## Learning Objectives
 
-1. Understand the concept of the point biserial correlation.
-2. Learn how to calculate the point biserial correlation.
-3. Understand how to interpret the point biserial correlation.
-4. Learn how MRC and ANOVA are fundamentally the same model.
+1.  Understand the concept of the point biserial correlation.
+2.  Learn how to calculate the point biserial correlation.
+3.  Understand how to interpret the point biserial correlation.
+4.  Learn how MRC and ANOVA are fundamentally the same model.
+
+## The Trick: A Dichotomy Is Just 0 and 1
+
+Here is the sleight of hand that unlocks everything. A dichotomous variable - passed/failed, treatment/control, yes/no - looks categorical, but if we simply **code it 0 and 1**, we can drop it straight into a Pearson correlation as if it were a number. That is *all* the point-biserial correlation is: an ordinary Pearson $r$ where one of the two variables happens to be a 0/1 indicator.
+
+```{r}
+set.seed(14)
+studied <- rbinom(50, 1, 0.5)                 # 0 = didn't study, 1 = studied
+score   <- 70 + 8 * studied + rnorm(50, 0, 6) # studiers score higher
+
+r_pb        <- cor(score, studied)             # point-biserial: just Pearson r!
+r_pb_asfac  <- cor(score, as.numeric(factor(studied)) - 1)
+c(point_biserial = round(r_pb, 3), same_thing = round(r_pb_asfac, 3))
+```
+
+No new formula, no new function - `cor()` did not even notice one variable was a dichotomy. The point-biserial correlation is Pearson's $r$ that happened to meet a 0/1 variable.
+
+## The Same Thing, Wearing Three Hats
+
+Now the payoff. The relationship between a continuous outcome and a two-group predictor can be expressed as (a) a point-biserial correlation, (b) a two-sample t-test, or (c) a simple regression - and they are **the identical analysis**. Watch every road lead to the same t statistic and p-value:
+
+```{r}
+# (a) test the point-biserial correlation
+ct <- cor.test(score, studied)
+
+# (b) the classic two-sample t-test (pooled variance)
+tt <- t.test(score ~ studied, var.equal = TRUE)
+
+# (c) regression with the 0/1 predictor
+rg <- summary(lm(score ~ studied))
+
+round(c(cor_test_t = ct$statistic,
+        t_test_t   = abs(tt$statistic),
+        regression_t = abs(rg$coefficients[2, "t value"])), 4)
+```
+
+Three "different" techniques, one t statistic. The correlation, the group comparison, and the regression are the same GLM. And the regression coefficient tells you *exactly* what the correlation was hiding - the raw difference between the two group means:
+
+```{r}
+means <- tapply(score, studied, mean)
+c(regression_slope = coef(lm(score ~ studied))[["studied"]],
+  mean_difference  = as.numeric(means["1"] - means["0"]))
+```
+
+The slope on a 0/1 predictor **is** the difference in group means. (Sound familiar? It is exactly the dummy-coding logic from the [ANOVA chapter](16-ANOVAandGLM.qmd), previewed here with the simplest possible category.)
+
+## From $r$ to $t$ and Back
+
+Because they are the same analysis, the correlation and the t statistic are tied by a tidy formula - handy for converting between an effect *size* ($r_{pb}$) and a *significance* test ($t$):
+
+$$r_{pb} = \frac{t}{\sqrt{t^2 + df}}$$
+
+```{r}
+t_val <- abs(tt$statistic); df <- tt$parameter
+r_from_t <- t_val / sqrt(t_val^2 + df)
+c(r_pb = round(as.numeric(r_pb), 3), r_from_t = round(as.numeric(r_from_t), 3))
+```
+
+They match. This little equation is why you can always recover an effect size from a reported t (and its df), and vice versa - a trick worth its weight in gold when reading other people's papers.
+
+::: {.callout-important}
+## Why This Bridge Matters
+
+MRC (regression with continuous predictors) and ANOVA (with categorical predictors) are taught as if they live in different countries. The point-biserial correlation is the bridge between them: it shows that the moment you code a category as numbers, a "group difference" *becomes* a correlation, a t-test *becomes* a regression, and the whole artificial border dissolves. Every categorical predictor is just a set of 0/1 indicators waiting to be correlated. Hold that thought - it is the key to the entire General Linear Model.
+:::
+
+## Challenge
+
+::: {.callout-tip}
+## Do One Yourself
+
+1.  Simulate a continuous outcome and a 0/1 predictor. Compute the point-biserial correlation with `cor()`, then confirm the t from `cor.test()`, `t.test(var.equal = TRUE)`, and `lm()` are identical.
+2.  Show that the regression slope equals the difference in the two group means.
+3.  Recode the predictor as 1/2 instead of 0/1 and refit. What changes about the intercept, what stays the same about the slope and the p-value, and why?
+:::
+
+## Where We Go Next
+
+We have the bridge and the engine. Now we build the machine in earnest, starting with the simplest continuous-predictor case: [bivariate regression](14-bivariateregression.qmd).

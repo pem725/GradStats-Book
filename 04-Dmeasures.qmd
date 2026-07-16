@@ -1,2 +1,105 @@
 # Dispersion and Uncertainty
 
+If you remember one chapter from this book, make it this one. Back in the introduction we YELLED it: **VARIANCE**. Central tendency tells us where a distribution sits; **dispersion** tells us how much it spreads - and spread *is* uncertainty. Two groups can have identical means and tell completely opposite stories. The difference is dispersion, and dispersion is the raw material of everything we do.
+
+## Learning Objectives
+
+1.  Understand why spread, not center, is the quantity statistics is really about.
+2.  Learn the common measures of dispersion and what each is good for.
+3.  Understand variance and the standard deviation, and why we square.
+4.  Understand degrees of freedom and why we divide by $n-1$.
+
+## Same Center, Different Worlds
+
+```{r}
+#| message: false
+library(ggplot2)
+set.seed(7)
+tight <- rnorm(500, mean = 100, sd = 3)
+wide  <- rnorm(500, mean = 100, sd = 20)
+d <- data.frame(value = c(tight, wide),
+                group = rep(c("tight (sd=3)", "wide (sd=20)"), each = 500))
+ggplot(d, aes(value, fill = group)) +
+  geom_histogram(bins = 40, alpha = 0.6, position = "identity") +
+  labs(title = "Identical means (100), very different uncertainty",
+       x = "value", y = "count") +
+  theme_minimal()
+c(mean_tight = mean(tight), mean_wide = mean(wide))
+```
+
+Same mean, same "best guess" - but a guess of 100 is nearly certain for the tight group and nearly worthless for the wide one. **The spread is the story.**
+
+## The Simple Measures: Range and IQR
+
+The crudest measure is the **range** (max minus min), which uses only two numbers and is therefore hostage to outliers. A sturdier cousin is the **interquartile range (IQR)** - the width of the middle 50% of the data:
+
+```{r}
+x <- c(3, 5, 5, 7, 8, 9, 12, 40)
+c(range = diff(range(x)), IQR = IQR(x))
+```
+
+The IQR ignores the tails, so it is to spread what the median is to center: robust, honest, and unbothered by a lone extreme value.
+
+## Variance: Why We Square
+
+The measure that runs the whole show is **variance** - the average squared distance from the mean. Why squared? Because the plain distances from the mean *always sum to zero* (that is what the mean does), so we could never average them. Squaring solves that and, not coincidentally, hooks us straight into least squares.
+
+$$s^2 = \frac{\sum (x - \bar{x})^2}{n - 1}$$
+
+Let's build it by hand and check against R:
+
+```{r}
+deviations <- x - mean(x)
+sum(deviations)                       # ~0, which is exactly the problem
+SS <- sum(deviations^2)               # sum of squares - the numerator
+n  <- length(x)
+by_hand <- SS / (n - 1)
+c(by_hand = by_hand, r_var = var(x))  # match
+```
+
+The numerator, $\sum(x-\bar{x})^2$, is the **sum of squares** - a quantity you will meet on every page from here on (it is the same SS that regression and ANOVA minimize and partition). Variance is just the sum of squares, averaged.
+
+## Degrees of Freedom: Why $n-1$
+
+Notice we divided by $n - 1$, not $n$. Here is the honest reason. To compute the deviations we first had to estimate the mean *from the same data*. Once the mean is fixed, only $n-1$ of the deviations are free to vary - the last one is forced, because they must sum to zero. We "spent" one **degree of freedom** estimating the mean, so we divide by what is left. Dividing by $n$ would systematically *underestimate* the true spread; the $n-1$ correction fixes that bias.
+
+```{r}
+# demonstrate the bias: divide by n vs n-1, averaged over many samples
+set.seed(11)
+truth <- 25                                  # true variance (sd = 5)
+est_n   <- replicate(5000, { s <- rnorm(10, 0, 5); mean((s - mean(s))^2) })
+est_nm1 <- replicate(5000, var(rnorm(10, 0, 5)))
+c(divide_by_n = mean(est_n), divide_by_n_minus_1 = mean(est_nm1), truth = truth)
+```
+
+Dividing by $n$ lands low; dividing by $n-1$ lands right on the truth. That is degrees of freedom earning their keep.
+
+## Standard Deviation: Back to Human Units
+
+Variance is in *squared* units (squared inches, squared dollars) - useful for math, useless for talking. Take its square root and you get the **standard deviation**, back in the original units and interpretable as "the typical distance from the mean":
+
+```{r}
+c(sd_by_hand = sqrt(var(x)), r_sd = sd(x))
+```
+
+For a roughly normal variable, about 68% of values fall within one standard deviation of the mean, and about 95% within two - a rule of thumb we will lean on hard when we standardize in the [z-distribution](06-zdistribution.qmd) chapter.
+
+::: {.callout-important}
+## Variance Is Uncertainty
+
+Every inferential tool in this book is, at heart, a way of comparing variances: the variance we can *explain* against the variance we *cannot*. Regression's $R^2$? A ratio of variances. ANOVA's $F$? A ratio of variances. The standard error? Built from variance. Master this chapter and the rest is bookkeeping. More differences to study, more variance, more to learn.
+:::
+
+## Challenge
+
+::: {.callout-tip}
+## Do One Yourself
+
+1.  Create two samples with the same mean but different spreads. Compute the variance and SD of each by hand (sum of squares over $n-1$) and confirm against `var()` and `sd()`.
+2.  Re-run the $n$ vs. $n-1$ simulation with sample size 3 instead of 10. Is the bias from dividing by $n$ bigger or smaller? Why does the correction matter more for tiny samples?
+3.  For a right-skewed variable, report both the SD and the IQR. Which better conveys the "typical spread," and why?
+:::
+
+## Where We Go Next
+
+We now have distributions, centers, and spreads for a *single* variable. But science is about **relationships** - how one variable moves with another. To get there we need one more idea, and it is variance's social twin: [covariance](07-covariance.qmd). First, though, we take these tools inferential by standardizing everything onto one common ruler: the [z-distribution](06-zdistribution.qmd).

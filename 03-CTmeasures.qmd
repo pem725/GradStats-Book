@@ -4,8 +4,77 @@ Measures of central tendency are a way to summarize a distribution of values wit
 
 ## Learning Objectives
 
-1. Learn why a single value can be useful for summarizing a distribution.
-2. Understand the concept of a measure of central tendency.
-3. Learn about the most common measures of central tendency.
-4. Understand how to use measures of central tendency to make sense of your data.
+1.  Learn why a single value can be useful for summarizing a distribution.
+2.  Understand the concept of a measure of central tendency.
+3.  Learn about the most common measures of central tendency.
+4.  Understand how to use measures of central tendency to make sense of your data.
 
+## Three Ways to Say "Typical"
+
+Back in the introduction we asked you to guess a family member's weight, and claimed your best guess was the arithmetic mean. Here we make good on that claim. There are three classic summaries of "the middle," and each is the best guess under a *different* definition of "best."
+
+```{r}
+x <- c(3, 5, 5, 7, 20)        # note the outlier
+c(mean = mean(x), median = median(x))
+# R has no built-in mode; here is the quick one:
+mode_val <- as.numeric(names(which.max(table(x))))
+c(mode = mode_val)
+```
+
+- **Mean** - the arithmetic average, the balance point of the distribution.
+- **Median** - the middle value when the data are sorted; half fall below, half above.
+- **Mode** - the most frequent value.
+
+## Why the Mean Is "Best" (and When It Isn't)
+
+Here is the deep idea that ties this chapter to the entire rest of the book. Suppose you must pick a single number $c$ to guess every value, and you will be penalized by the **squared** error of each guess. Which $c$ minimizes your total penalty? Let's just try every candidate and see:
+
+```{r}
+guesses <- seq(0, 20, by = 0.1)
+sse <- sapply(guesses, function(c) sum((x - c)^2))   # sum of squared errors
+best <- guesses[which.min(sse)]
+plot(guesses, sse, type = "l", lwd = 2, col = "steelblue",
+     xlab = "guess (c)", ylab = "sum of squared errors",
+     main = "The mean minimizes squared error")
+abline(v = mean(x), col = "red", lwd = 2, lty = 2)
+c(best_guess = best, the_mean = mean(x))
+```
+
+The valley of that curve sits **exactly** at the mean. That is not a coincidence - it is *the reason the mean matters*. When we do regression later and "minimize the sum of squared residuals," we are doing this same thing in more dimensions. The mean is least-squares estimation with no predictors.
+
+The median has its own claim to fame: it minimizes the sum of **absolute** errors, $\sum |x - c|$. Different penalty, different winner. And the mode simply asks "what shows up most?" - the only one of the three that makes sense for a categorical variable like ice-cream flavor.
+
+## When the Mean Lies
+
+Look again at that outlier (20). Squaring errors makes the mean exquisitely sensitive to extreme values - one billionaire walks into the room and the "average" net worth becomes absurd. The median shrugs it off:
+
+```{r}
+income <- c(30, 35, 40, 42, 45, 48, 5000)   # thousands; one very rich person
+c(mean = mean(income), median = median(income))
+```
+
+The median (about 42) describes a typical person; the mean (about 749) describes nobody in the room. This is why you should reach for the **median** whenever a distribution is skewed or outlier-ridden, and the **mean** when it is roughly symmetric.
+
+::: {.callout-important}
+## Pick Your "Best Guess" On Purpose
+
+- **Mean** - symmetric, well-behaved data; and whenever you plan to do anything least-squares (which is most of this book).
+- **Median** - skewed data, outliers, incomes, reaction times, home prices.
+- **Mode** - categorical data, or when you literally care about the most common category.
+
+There is no universally "correct" measure of center. There is only the one that answers *your* question honestly.
+:::
+
+## Challenge
+
+::: {.callout-tip}
+## Do One Yourself
+
+1.  Generate a right-skewed variable, e.g. `y <- rexp(200)`. Compute its mean and median. Which is larger, and why?
+2.  Reproduce the "mean minimizes squared error" plot for `y`, then make a second plot of $\sum|y - c|$ and confirm *its* minimum sits at the median.
+3.  Add one wild outlier to `y` (say, `c(y, 500)`) and recompute both. Which summary barely moved? State the lesson in one sentence.
+:::
+
+## Where We Go Next
+
+A center is only half the story. Two distributions can share the same mean and be wildly different - one tightly packed, one spread all over. That spread *is* our uncertainty, and it is the single most important quantity in statistics. On to [dispersion](04-Dmeasures.qmd).
