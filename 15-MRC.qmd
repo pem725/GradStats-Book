@@ -176,7 +176,32 @@ round(summary(lm(y ~ composite))$coefficients, 3)
 One predictor, no collinearity, and often a cleaner story than two fighting over the same variance.
 :::
 
-## Challenge
+## A Real Example: Predicting College GPA
+
+Let's leave the simulated world and put all of this to work on the real GPA dataset from the [last chapter](14-bivariateregression.qmd). There we predicted college GPA from high-school GPA alone. Now we add the other things an admissions office actually has: SAT total and the quality of the applicant's letters of recommendation.
+
+```{r}
+gpa <- read.csv("data/gpa.csv")
+fit <- lm(CollegeGPA ~ HSGPA + SATtotal + QLOR, data = gpa)
+round(summary(fit)$coefficients, 4)
+c(R2 = summary(fit)$r.squared, adj_R2 = summary(fit)$adj.r.squared)
+```
+
+Every coefficient here is a **partial** effect - the pull of that predictor with the other two held constant. Notice HSGPA's slope *shrank* from its bivariate value: some of what looked like "high-school GPA" was really SAT and letter quality traveling alongside it. That is partialling doing its job.
+
+Now check for collinearity by hand, exactly as we defined it - each VIF is $1/(1-R^2_j)$ where $R^2_j$ regresses that predictor on the others:
+
+```{r}
+preds <- c("HSGPA", "SATtotal", "QLOR")
+vif <- sapply(preds, function(p) {
+  others <- setdiff(preds, p)
+  r2 <- summary(lm(as.formula(paste(p, "~", paste(others, collapse = "+"))), data = gpa))$r.squared
+  1 / (1 - r2)
+})
+round(vif, 2)
+```
+
+All three VIFs sit near 1 - our predictors carry mostly *distinct* information, so the model can pin down each slope cleanly. (Recall the HSGPA–QLOR correlation was the highest at 0.63; that is real but nowhere near the danger zone.) This is the whole workflow in miniature: fit, read the partial effects, and check that collinearity has not quietly wrecked your standard errors.
 
 ::: {.callout-tip}
 ## Do One Yourself
