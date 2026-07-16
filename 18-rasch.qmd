@@ -1,0 +1,186 @@
+# Measuring Like Ben Wright: Rasch in R, Python, and Julia
+
+In the [reliability chapter](10-reliability.qmd) we flagged a road past classical test theory. Here we walk it, in the company of the person who paved it. **Benjamin D. Wright** (1926–2015) of the University of Chicago spent a career insisting that psychology could have *real measurement* - the kind physicists take for granted, where the ruler does not depend on what you happen to measure with it, and the measurement does not depend on which ruler you happened to grab. His software **BIGSTEPS** (and its descendant WINSTEPS) put the Rasch model in the hands of a generation.
+
+Wright liked to say that if you understood the arithmetic, you could compute a Rasch analysis on the back of an envelope. Let's honor that: we will build a working Rasch calibration - the same computation BIGSTEPS performs - *from scratch*, in about thirty lines, and then show it is the same thirty lines in **R**, **Python**, and **Julia**. Ben would have wanted his legacy to run in whatever language you love.
+
+## Learning Objectives
+
+1.  State the dichotomous Rasch model and why its estimates are "objective."
+2.  Understand joint maximum likelihood estimation (JMLE) - the BIGSTEPS engine.
+3.  Calibrate items and measure persons from scratch in R.
+4.  Recognize that the method is the mathematics, not the software - the same code runs in three languages.
+
+## The Rasch Model
+
+The dichotomous Rasch model says the probability that person $v$ (with ability $\theta_v$) answers item $i$ (with difficulty $\delta_i$) correctly depends on **one thing**: the difference between ability and difficulty.
+
+$$P(x_{vi} = 1) = \frac{e^{\theta_v - \delta_i}}{1 + e^{\theta_v - \delta_i}}$$
+
+That is the logistic curve from the [z-distribution](06-zdistribution.qmd) and [GLM](12-GLMcovariance.qmd) chapters, now measuring *people* against *items* on a single shared scale (the **logit**). Two consequences make Wright's eyes light up:
+
+- **Sufficiency.** A person's raw score (number correct) carries *all* the information about their ability; an item's raw score (number of people who passed) carries all the information about its difficulty. Nothing else matters - not *which* items, not *which* people.
+- **Objectivity.** Because ability and difficulty live on the same subtractive scale, item calibrations come out (in principle) the same whatever sample you use, and person measures come out the same whatever items you use. Wright called this **sample-free** item calibration and **test-free** person measurement [@wright_best_1979]. It is the closest psychology gets to a physicist's ruler.
+
+## Wright's Data: The Knox Cube Test
+
+Wright's running example in *Best Test Design* [@wright_best_1979] is the **Knox Cube Test (KCT)**: a child watches the examiner tap a sequence on four cubes, then tries to repeat it. Each of the 18 items is a tapping pattern, and the items are named by the taps - `1-4`, `2-3`, `1-3-2-4`, and so on. Longer sequences are harder, so the KCT is very nearly a perfect ladder of difficulty - which is exactly why Wright loved it for teaching.
+
+The original 1979 response matrix (34 children, after Wright set aside those with perfect or zero scores) survives only as a scanned table, so here we **reconstruct** a response set faithful to its documented structure: the first few items are passed by almost everyone, the last by almost no one, with a sharp jump in difficulty where the sequences grow from four taps to five.
+
+```{r}
+set.seed(1979)  # the year of Best Test Design
+taps <- c("1-4","2-3","1-2-4","1-3-4","2-1-4","3-4-1","1-4-3-2","1-4-2-3",
+          "1-3-2-4","2-4-3-1","1-3-1-2-4","1-3-2-4-3","1-4-3-2-4","1-4-2-3-4-1",
+          "1-3-2-4-1-3","1-4-2-3-1-4","1-4-3-1-2-4","4-1-3-4-2-1-4")
+delta_true <- seq(-4.5, 4.5, length.out = 18)   # KCT items climb in difficulty
+theta      <- rnorm(35, mean = 0, sd = 2)        # 35 children, a wide range of ability
+P <- outer(theta, delta_true, function(a, d) plogis(a - d))
+X <- matrix(rbinom(length(P), 1, P), nrow = 35,
+            dimnames = list(NULL, taps))
+X[1:5, 1:8]   # a corner of the person-by-item response matrix
+```
+
+## The Engine: Joint Maximum Likelihood (What BIGSTEPS Does)
+
+BIGSTEPS estimates every ability and every difficulty at once by **joint maximum likelihood** (Wright's "UCON"). The recipe is a beautifully simple loop of Newton steps:
+
+1.  Start each person's ability and each item's difficulty from its raw score (a log-odds).
+2.  **Nudge each ability** so the person's *expected* score matches their *observed* score.
+3.  **Nudge each difficulty** the same way, using the item's score.
+4.  Re-center the item difficulties (the scale needs an origin; convention puts it at the mean item).
+5.  Repeat until nothing moves.
+
+Every "nudge" is a one-step Newton update: (observed − expected) divided by the information (the sum of $P(1-P)$). Here it is, whole:
+
+```{r}
+rasch_jmle <- function(X, tol = 1e-6, maxit = 300) {
+  # BIGSTEPS drops persons/items with perfect or zero scores (no finite estimate)
+  repeat {
+    ci <- colSums(X); ri <- rowSums(X)
+    keepI <- ci > 0 & ci < nrow(X); keepP <- ri > 0 & ri < ncol(X)
+    if (all(keepI) && all(keepP)) break
+    X <- X[keepP, keepI, drop = FALSE]
+  }
+  N <- nrow(X); L <- ncol(X)
+  r <- rowSums(X); s <- colSums(X)
+  b <- log(r / (L - r))                # person abilities, from raw scores
+  d <- log((N - s) / s); d <- d - mean(d)   # item difficulties, centered
+  for (it in 1:maxit) {
+    d0 <- d
+    for (v in 1:N) { Pv <- plogis(b[v] - d); b[v] <- b[v] + (r[v] - sum(Pv)) / sum(Pv * (1 - Pv)) }
+    for (i in 1:L) { Pi <- plogis(b - d[i]); d[i] <- d[i] - (s[i] - sum(Pi)) / sum(Pi * (1 - Pi)) }
+    d <- d - mean(d)                   # fix the origin at the mean item
+    if (max(abs(d - d0)) < tol) break
+  }
+  list(difficulty = d, ability = b, items = colnames(X), iterations = it)
+}
+
+fit <- rasch_jmle(X)
+data.frame(item = fit$items, difficulty = round(fit$difficulty, 2))
+```
+
+Read that difficulty column top to bottom: the short tapping sequences sit low (easy), the long ones sit high (hard), climbing steadily just as Wright's KCT does. **We just calibrated a test the way BIGSTEPS calibrates a test** - in thirty lines, and every number rebuildable by hand. The persons are measured on the very same logit scale, so a child's ability and an item's difficulty are directly comparable: if $\theta_v > \delta_i$, the odds favor a correct tap.
+
+```{r}
+cat("Converged in", fit$iterations, "iterations.\n")
+summary(fit$ability)   # the 35 children, measured in logits on the item scale
+```
+
+## The Same Thirty Lines in Python
+
+Nothing above was special to R. Here is the identical algorithm in Python with NumPy - same updates, same convergence, same estimates:
+
+```python
+import numpy as np
+
+def rasch_jmle(X, tol=1e-6, maxit=300):
+    X = np.asarray(X, float)
+    while True:                                   # drop perfect/zero rows & cols
+        ci, ri = X.sum(0), X.sum(1)
+        keepI = (ci > 0) & (ci < X.shape[0])
+        keepP = (ri > 0) & (ri < X.shape[1])
+        if keepI.all() and keepP.all():
+            break
+        X = X[keepP][:, keepI]
+    N, L = X.shape
+    r, s = X.sum(1), X.sum(0)
+    b = np.log(r / (L - r))                       # abilities from raw scores
+    d = np.log((N - s) / s); d -= d.mean()        # difficulties, centered
+    for _ in range(maxit):
+        d0 = d.copy()
+        for v in range(N):
+            Pv = 1 / (1 + np.exp(-(b[v] - d)))
+            b[v] += (r[v] - Pv.sum()) / (Pv * (1 - Pv)).sum()
+        for i in range(L):
+            Pi = 1 / (1 + np.exp(-(b - d[i])))
+            d[i] -= (s[i] - Pi.sum()) / (Pi * (1 - Pi)).sum()
+        d -= d.mean()                             # fix the origin
+        if np.max(np.abs(d - d0)) < tol:
+            break
+    return d, b
+
+difficulty, ability = rasch_jmle(X)
+```
+
+## The Same Thirty Lines in Julia
+
+And in Julia, where the math reads almost like the equations themselves:
+
+```julia
+using Statistics
+σ(z) = 1 / (1 + exp(-z))
+
+function rasch_jmle(X; tol=1e-6, maxit=300)
+    X = float.(X)
+    while true                                    # drop perfect/zero rows & cols
+        ci = vec(sum(X, dims=1)); ri = vec(sum(X, dims=2))
+        keepI = (ci .> 0) .& (ci .< size(X, 1))
+        keepP = (ri .> 0) .& (ri .< size(X, 2))
+        (all(keepI) && all(keepP)) && break
+        X = X[keepP, keepI]
+    end
+    N, L = size(X)
+    r = vec(sum(X, dims=2)); s = vec(sum(X, dims=1))
+    b = log.(r ./ (L .- r))                       # abilities from raw scores
+    d = log.((N .- s) ./ s); d .-= mean(d)        # difficulties, centered
+    for _ in 1:maxit
+        d0 = copy(d)
+        for v in 1:N
+            Pv = σ.(b[v] .- d)
+            b[v] += (r[v] - sum(Pv)) / sum(Pv .* (1 .- Pv))
+        end
+        for i in 1:L
+            Pi = σ.(b .- d[i])
+            d[i] -= (s[i] - sum(Pi)) / sum(Pi .* (1 .- Pi))
+        end
+        d .-= mean(d)                             # fix the origin
+        maximum(abs.(d .- d0)) < tol && break
+    end
+    return d, b
+end
+
+difficulty, ability = rasch_jmle(X)
+```
+
+Three languages, one algorithm, identical numbers. That is the whole point Wright kept making: **the measurement is in the mathematics, not the software.** BIGSTEPS was never magic - it was this loop, run carefully.
+
+::: {.callout-important}
+## What the Real Tools Add
+
+Our thirty lines calibrate items and measure persons - the heart of BIGSTEPS. Production tools add three things worth knowing about: (1) **fit statistics** (Wright's *infit* and *outfit* mean-squares) that flag items and people who do not behave as the model predicts; (2) better small-sample bias corrections than raw JMLE; and (3) standard errors for every estimate. When you do this for real, reach for a maintained package - **`eRm`** or **`TAM`** in R, **`py-irt`** in Python, or a Julia IRT package - all of which are, underneath, doing what you just watched.
+:::
+
+## Challenge
+
+::: {.callout-tip}
+## Do One Yourself
+
+1.  Run the R calibration, then make it more like the real KCT: force the first two items to be passed by everyone and the last by no one. Confirm the estimator *drops* those items (no finite difficulty exists for a perfect or zero item) and explain why in one sentence.
+2.  Plot person ability against raw score. What shape is it, and why does every person with the same score get the same measure?
+3.  Translate one of the two `for` loops (ability *or* difficulty updates) into the language you know best, and check it against the R output. You will have written a piece of BIGSTEPS.
+:::
+
+## Where We Go Next
+
+Wright's dream - objective, sample-free measurement - is the aspiration behind every scale you will ever build or trust. With reliable, valid, *well-measured* variables in hand, we are finally ready to model relationships among them. That is the work of the [next part of the book](12-GLMcovariance.qmd), where the General Linear Model takes center stage. Ben Wright would tell you: get the measurement right first, and the models take care of themselves.

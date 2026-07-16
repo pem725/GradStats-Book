@@ -70,9 +70,20 @@ Legend: 🟥 stub/empty · 🟨 partial · 🟩 drafted · ⬜ not started synth
 | 16 | ANOVA & GLM | 🟩 **drafted** | **R/Regression7.R** + 8–9.R | ✅ |
 | 17 | Basic ANOVA | 🟩 **drafted** | SS partition; ANOVA=regression | ✅ |
 
-**All 16 body chapters now drafted and rendering.** The whole book builds end-to-end
-(`quarto render`, exit 0). Chapters 12/13/17 equivalence claims (t=ANOVA=regression,
-point-biserial=t-test, SS partition, `lm` F = `aov` F) verified numerically.
+**All body chapters drafted and rendering** (16 + a new Rasch chapter, `18-rasch.qmd`,
+in the "Checking Our Data" part). The whole book builds end-to-end (`quarto render`,
+exit 0). Chapters 12/13/17 equivalence claims (t=ANOVA=regression, point-biserial=t-test,
+SS partition, `lm` F = `aov` F) verified numerically.
+
+**Ch. 18 — Rasch (honoring Ben Wright):** from-scratch JMLE (the BIGSTEPS/UCON engine)
+in R (executed, verified: converges in 23 iters, recovers item-difficulty ordering at
+r≈0.98), with faithful Python (NumPy) and Julia translations as static code blocks
+(the build server only runs R). Uses Wright's 18 Knox Cube Test items with a response
+matrix reconstructed to his documented structure (the 1979 raw table is a scan). Source
+PDFs (Best Test Design, Rating Scale Analysis, Making Measures) are gitignored — never
+committed (large + copyrighted). To make the Python/Julia blocks *executable*, add
+Python+Julia setup to the publish workflow; if you have the real KCT `.txt`, drop it in
+`data/` and swap the reconstruction for the exact matrix.
 
 Chapters 02–07, 10–13, 17 are drafted from the book's established voice/framework plus
 the digested 611 lectures and CTT material — solid, correct, self-contained (base R +
