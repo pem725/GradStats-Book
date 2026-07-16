@@ -1,7 +1,159 @@
-# Moving to ANOVA
+# ANOVA and the General Linear Model
 
-This chapter has the potential to be too large.  We need some material to precede this material.  What may that be?
+Here is a secret the way statistics is usually taught works hard to hide: **ANOVA is not a different technique from regression.** It is regression - the very same least-squares machinery from the last two chapters - applied to *categorical* predictors. Analysis of variance, t-tests, regression: they are all special cases of one thing, the **General Linear Model (GLM)**. Once you see the unification, half of your statistics education collapses into a single idea, and that is a mercy.
 
-1. Coding of categorical variables (ordered vs. unordered).  Should we address this point throughout?  I suggest we do.  Start with distributions.  Make the reader understand that all data can be used.
-2. Testing - specifically t-tests.  I think they have that material already by now.
-3. Regression - they have that material already.
+The only new skill you need is **coding**: how to turn a category ("cat," "dog") into numbers a regression can chew on. That is the whole chapter.
+
+## Learning Objectives
+
+1.  See that a categorical predictor is just a set of coded numbers in a regression.
+2.  Interpret **dummy-coded** coefficients as differences from a reference group.
+3.  Interpret **effects-coded** coefficients as differences from the grand mean.
+4.  Recognize the ANOVA $F$ as the same omnibus test regression already gave you.
+
+## A Categorical Predictor Is a Sliced-Up Continuous One
+
+Let us start with a continuous relationship. Suppose some trait $x$ makes people happy:
+
+```{r}
+set.seed(1925)  # Fisher's "Statistical Methods for Research Workers"
+x <- sort(rnorm(100))
+happy <- x + rnorm(100)
+```
+
+Now imagine $x$ measures something like "dogness" - higher values mean more dog-like. We rarely measure dogness on a continuum; instead we lump animals into categories. Let us chop the continuum into four pet types (cat lovers are welcome to write their own textbook):
+
+```{r}
+pet <- cut(x, 4, labels = c("cat", "fish", "pig", "dog"))
+table(pet)
+```
+
+Does pet type relate to happiness? A regression will happily tell us, even though `pet` is a *factor*:
+
+```{r}
+lm_pet <- lm(happy ~ pet)
+round(coef(lm_pet), 3)
+```
+
+R fit it without complaint. But look at those coefficient names - `petfish`, `petpig`, `petdog`. Where did they come from, and what do they *mean*? That is the coding question, and there is more than one answer.
+
+## Dummy Coding: Differences From a Reference
+
+By default, R uses **dummy coding** (`contr.treatment`): it picks the first level ("cat") as the **reference**, and each coefficient is the difference between that group's mean and the reference group's mean. Let us prove it by pulling the group means directly:
+
+```{r}
+means <- aggregate(happy, by = list(pet = pet), FUN = mean)
+means
+```
+
+Now rebuild every coefficient from those means:
+
+```{r}
+# intercept should be the reference (cat) mean:
+c(intercept = coef(lm_pet)[[1]], cat_mean = means$x[1])
+
+# petfish should be (fish mean - cat mean):
+c(petfish_coef = coef(lm_pet)[["petfish"]], fish_minus_cat = means$x[2] - means$x[1])
+
+# petdog should be (dog mean - cat mean):
+c(petdog_coef = coef(lm_pet)[["petdog"]], dog_minus_cat = means$x[4] - means$x[1])
+```
+
+There is no magic in the box. **A dummy-coded coefficient is a difference between two group means**, and the intercept is the reference group's mean. That is exactly what a t-test between two groups reports - which is your first hint that t-tests, too, are just this same model.
+
+## Effects Coding: Differences From the Grand Mean
+
+Dummy coding answers "how does each group differ from the reference?" Often we would rather ask "how does each group differ from the *overall average*?" For that we switch to **effects coding** (`contr.sum`):
+
+```{r}
+pet_e <- pet
+contrasts(pet_e) <- contr.sum(4)
+lm_pet_e <- lm(happy ~ pet_e)
+round(coef(lm_pet_e), 3)
+```
+
+The coefficients changed, because the *question* changed. Now the intercept is the **grand mean** - and here is a subtlety worth stopping for: the grand mean of effects coding is the **mean of the group means** (each group weighted equally), *not* the mean of the raw scores. With unequal group sizes those two differ, and confusing them is a classic error.
+
+```{r}
+GM <- mean(means$x)                       # mean of the group means (unweighted)
+c(intercept = coef(lm_pet_e)[[1]], grand_mean = GM)
+```
+
+Each effects coefficient is then that group's mean minus the grand mean:
+
+```{r}
+# first coefficient = cat mean - grand mean:
+c(coef1 = coef(lm_pet_e)[[2]], cat_minus_GM = means$x[1] - GM)
+```
+
+::: {.callout-important}
+## Where Did the Last Group Go?
+
+Count the coefficients: with four groups, effects coding gives you an intercept plus only **three** effects. The fourth group ("dog") seems to have vanished. It has not - it is *implied*. Because the effects are deviations from the grand mean, they must sum to zero, so the last group's effect is minus the sum of the others:
+
+```{r}
+dog_effect_implied <- -(coef(lm_pet_e)[[2]] + coef(lm_pet_e)[[3]] + coef(lm_pet_e)[[4]])
+c(implied_dog_effect = dog_effect_implied, dog_minus_GM = means$x[4] - GM)
+```
+
+They match. The "missing" group is never missing; it is the one the constraint solves for. (Work the algebra once and you will never be spooked by a reference level again.)
+:::
+
+## The Punchline: This *Is* ANOVA
+
+Whether you dummy-code or effects-code, the *overall* test - "do the group means differ at all?" - is identical, and it is identical to what analysis of variance calls the omnibus $F$. Watch the same number fall out three ways:
+
+```{r}
+# 1) the regression's own F test
+summary(lm_pet)$fstatistic[1]
+
+# 2) run it as an ANOVA on the regression object
+anova(lm_pet)["pet", "F value"]
+
+# 3) the classic aov() function
+summary(aov(happy ~ pet))[[1]]["pet", "F value"]
+```
+
+One model, one $F$, three names. **ANOVA is regression with categorical predictors** - the coding scheme only changes how we *slice up and label* the group differences, never the overall test. This is the General Linear Model: pick your predictors (continuous, categorical, or both), pick your coding, and it is all least squares underneath.
+
+## Two Categorical Predictors and Their Interaction
+
+Add a second factor and you get a factorial design - still just regression. Suppose messiness also matters:
+
+```{r}
+mess  <- factor(ifelse(rnorm(100) > 0, "messy", "tidy"))
+sad   <- -x + as.numeric(mess) + rnorm(100)
+lm_fac <- lm(sad ~ pet * mess)
+round(coef(lm_fac), 3)
+```
+
+The `pet:messmessy` terms are the **interaction** - and here the logic that saved us above saves us again. An interaction coefficient is a *difference of differences*: how the effect of pet **changes** across levels of mess. It is the cross-product of the two predictors' codes. When you meet a "significant interaction," resist the urge to panic; it is just the model telling you the group-mean pattern is not purely additive.
+
+## Beyond the Straight Line: The *Generalized* Linear Model
+
+Everything so far assumes a continuous outcome with roughly normal residuals. But plenty of outcomes are not like that - a yes/no, a count, a rare event. The **generalized** linear model extends the same framework by letting the outcome follow a different distribution through a *link function*. The most common case is a binary outcome via **logistic regression**:
+
+```{r}
+passed <- rbinom(100, size = 1, prob = plogis(x))   # 0/1 outcome driven by x
+glm_fit <- glm(passed ~ x, family = binomial)
+round(coef(glm_fit), 3)
+```
+
+Same formula syntax, same partialling logic, same "quantify the uncertainty" goal - we have just swapped `lm()` for `glm()` and told it the outcome is binomial. Linear model, general linear model, generalized linear model: it is turtles - the same turtle - all the way down.
+
+## Challenge
+
+::: {.callout-tip}
+## Do One Yourself
+
+Using the `pet` factor and `happy` from this chapter:
+
+1.  Fit the model with **dummy** coding and, *without reading the coefficients off the summary*, reproduce all four coefficients (intercept + three) from the group means.
+2.  Refit with **effects** coding and reproduce the intercept (grand mean) and all four group effects - including the implied "dog" effect - from the group means.
+3.  Confirm the omnibus $F$ is identical under both coding schemes, and identical to `summary(aov(happy ~ pet))`.
+4.  In one sentence each, state what the intercept means under dummy coding versus effects coding. If you can do that cleanly, you understand why "ANOVA vs. regression" was always a false choice.
+:::
+
+## Where We Go Next
+
+You now hold the unifying idea of the whole enterprise: the General Linear Model. Correlation, t-tests, regression, ANOVA, ANCOVA - all one model wearing different outfits. For the definitive treatment of categorical predictors and coding schemes, see Cohen, Cohen, West, and Aiken [@aiken_applied_2002] and the accessible comparison of dummy and effects coding in Alkharusi [@alkharusi_categorical_2012]; for analysis of variance specifically, Iversen and Norpoth [@iversen_analysis_1987] remains a compact classic. From here, the road leads into the specific ANOVA designs - one-way, factorial, repeated measures - each of which is, you will not be surprised to learn, just another coded regression.

@@ -60,14 +60,14 @@ Legend: 🟥 stub/empty · 🟨 partial · 🟩 drafted · ⬜ not started synth
 | 06 | z-Distribution | 🟨 | PSYC 611 | ⬜ |
 | 07 | Covariance | 🟥 | PSYC 611/642 | ⬜ |
 | 08 | Hypothesis Testing | 🟩 **drafted** | PSYC 611 Lec 6 (done), Methods.bib (Meehl) | ✅ |
-| 09 | Statistical Power | 🟨 | PSYC 611 | ⬜ |
+| 09 | Statistical Power | 🟩 **drafted** | PSYC 611 Lec 6 (done); fixed the α→power error | ✅ |
 | 10 | Reliability | 🟥 | Rasch/, measurement courses | ⬜ |
 | 11 | Validity | 🟥 | Rasch/, measurement courses | ⬜ |
 | 12 | GLM & Covariance | 🟥 | R/Regression1–2.R, PSYC 642 | ⬜ |
 | 13 | Point-Biserial Correlation | 🟥 | PSYC 642/643 | ⬜ |
 | 14 | Bivariate Regression | 🟩 **drafted** | **R/Regression1.R** (done) + 2–4.R, PSYC 612/642 | ✅ |
-| 15 | Multiple Regression (MRC) | 🟥 | **R/Regression5–8.R**, PSYC 643, PSYC643.bib | ⬜ |
-| 16 | ANOVA & GLM | 🟥 | **R/Regression9.R**, PSYC 643/644 | ⬜ |
+| 15 | Multiple Regression (MRC) | 🟩 **drafted** | **R/Regression4.R** (done); fixed df & F errors | ✅ |
+| 16 | ANOVA & GLM | 🟩 **drafted** | **R/Regression7.R** (done) + 8–9.R | ✅ |
 | 17 | Basic ANOVA | 🟥 empty | PSYC 644 | ⬜ |
 
 ---
@@ -88,7 +88,16 @@ Legend: 🟥 stub/empty · 🟨 partial · 🟩 drafted · ⬜ not started synth
 
 - [x] Commit infra changes (gitignore, workflow, CLAUDE.md, bibs). _(commit 430970f, held locally — not pushed)_
 - [x] Chapter 14 (Bivariate Regression) drafted to publication quality & renders clean.
-- [x] Draft a prose-heavy exemplar (Ch. 8 Hypothesis Testing) — built from 611 Lec 6 + Meehl; renders clean.
-- [ ] **You:** review the two exemplars (Ch. 14 code-heavy, Ch. 8 prose-heavy) for voice/structure/format; enable GitHub Pages.
-- [ ] On approval, roll the pattern out: Ch. 15 (MRC) & 16 (ANOVA/GLM) from Regression4–9.R, then the remaining chapters.
-- [ ] Note for Ch. 9 (Power): the 611 slides contain an error ("lower alpha → higher power" is backwards) — fix, don't copy.
+- [x] Ch. 8 (Hypothesis Testing), Ch. 14 (Bivariate Regression) — drafted, render clean.
+- [x] Ch. 15 (MRC) & Ch. 16 (ANOVA/GLM) — drafted from Regression4/7.R; by-hand values verified against `lm()`/`aov()`.
+- [x] Ch. 9 (Power) — drafted; **fixed the α→power error** from the 611 slides; removed the "AI shit" placeholder.
+- [x] Fixed intro placeholder callouts (foo/bar/baz) + removed a duplicated "Frequency" callout.
+- [ ] **You:** review the drafted chapters for voice/structure; enable GitHub Pages.
+- [ ] Remaining stubs to synthesize: 02–07, 10–13, 17 (measurement chapters need the Rasch/754 folders).
+
+### Corrections made (fix-the-mistakes pass)
+- MRC coefficient t-test df: `n-1` → **`n-k-1`** (Regression4.R).
+- Omnibus F: replaced garbled comment formula with `F = (R²/k)/((1-R²)/(n-k-1))`.
+- Separated *semipartial* vs *partial* correlation vs *standardized coefficient* (Regression4.R conflated them).
+- Power: **stricter α lowers power** (slides had it backwards); n only lever that raises power without raising Type I.
+- Dropped crash-causing typos from source (`summmary`, `Princpal`) and hardcoded local data paths.

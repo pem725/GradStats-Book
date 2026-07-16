@@ -1,6 +1,101 @@
-# Statistical Power:  How to Find Things That May Not Be There
+# Statistical Power: How to Find Things That May Not Be There
 
-Simply put, statistical power is the probability of success.
+Simply put, statistical power is the probability of success - where "success" means **detecting an effect that is really there**. In the language of the last chapter, power is the one cell of the error table you can actually *plan for* before you collect a single observation. Everything else about a study - your hypotheses, your $\alpha$, the vagaries of sampling - is set once the data arrive. Power is where you take back control.
 
-AI shit:  
-It is the probability that you will find a statistically significant result when there is a true effect.  In other words, it is the probability that you will find a difference when there is a difference to be found.  This is important because if you have low power, you may not find a difference even when one exists.  This is a big problem because it means that you may miss important effects.  On the other hand, if you have high power, you are more likely to find a difference when one exists.  This is important because it means that you are more likely to find important effects.  In this section, we will explore the concept of statistical power and how to calculate it.  We will also explore how to increase power and why it is important to do so.  Let's get started, shall we?
+## Learning Objectives
+
+1.  Define power as $1 - \beta$ and locate it in the error table.
+2.  Identify the four levers that raise or lower power.
+3.  Use R to compute power and to plan a sample size.
+4.  Understand the honest trade-off between power and Type I error.
+
+## Power Is One Cell of a Table You Already Know
+
+Recall the decision table from [Hypothesis Testing](08-hypothesistesting.qmd):
+
+|                          | $H_0$ is really **true** | $H_0$ is really **false** |
+|--------------------------|--------------------------|---------------------------|
+| **We reject $H_0$**      | Type I error ($\alpha$)  | **Correct ✓ (power, $1-\beta$)** |
+| **We fail to reject $H_0$** | Correct ✓ ($1-\alpha$) | Type II error ($\beta$)   |
+
+**Power** is the highlighted cell: the probability we correctly reject the null *given that the null is false* - that is, given there is a real effect to find. Its complement is $\beta$, the Type II error rate (the miss). By long convention we aim for power of **0.80**: an 80% chance of catching a true effect, and thus a 20% chance of missing it. That 20% should bother you; it is why underpowered research is such a quiet disaster. When power is low, you not only miss real effects - the significant results you *do* find are more likely to be flukes.
+
+## The Four Levers
+
+Power is a function of four things, and only four. Three you can influence; one you mostly cannot.
+
+1.  **Effect size** - how big the true effect is. Bigger effects are easier to detect. We usually express it in standardized units, e.g., Cohen's $d = \frac{\text{mean difference}}{\text{standard deviation}}$. You do not *control* the true effect, but you can sometimes measure it more cleanly to keep it from being buried in noise.
+2.  **Sample size ($n$)** - more data, more power. This is the lever you actually turn. Nearly every underpowered study is really a too-small study.
+3.  **Significance level ($\alpha$)** - a more *lenient* $\alpha$ (say .10) makes it easier to reject, so power goes **up**; a *stricter* $\alpha$ (say .01) makes it harder to reject, so power goes **down**. (More on this trade-off below - it is exactly backwards in a lot of lecture notes, including an old version of mine.)
+4.  **Directionality** - a one-tailed test concentrates all of $\alpha$ in the predicted direction, so it has more power *there* - at the cost of being blind to an effect in the other direction.
+
+::: {.callout-warning}
+## The $\alpha$-Power Trade-off (Getting It Right)
+
+It is tempting - and wrong - to say "lower $\alpha$ gives higher power." Lowering $\alpha$ shrinks the rejection region, which makes it *harder* to reject the null, which **lowers** power. You cannot buy fewer false alarms (small $\alpha$) and more hits (high power) for free by tightening $\alpha$ alone; those two pull in opposite directions. The only way to improve *both* at once is to change something outside this trade-off - almost always, **collect a larger sample**.
+:::
+
+## Seeing Power in R
+
+Base R ships with `power.t.test()`, which ties together effect size, $n$, $\alpha$, and power - give it any three and it solves for the fourth. First, the trade-offs, made concrete:
+
+```{r}
+# Hold the effect (d = 0.5) and n = 30 per group; vary alpha
+sapply(c(0.01, 0.05, 0.10), function(a)
+  power.t.test(n = 30, delta = 0.5, sd = 1, sig.level = a)$power)
+```
+
+Read left to right: as $\alpha$ goes from strict (.01) to lenient (.10), power **rises**. Stricter $\alpha$ costs you power - the trade-off, in numbers.
+
+Now the lever you actually control - sample size:
+
+```{r}
+# Hold effect (d = 0.5) and alpha (.05); vary n per group
+sapply(c(20, 50, 100), function(nn)
+  power.t.test(n = nn, delta = 0.5, sd = 1, sig.level = 0.05)$power)
+```
+
+More data, more power - and unlike the $\alpha$ trade-off, this buys power *without* raising your false-alarm rate.
+
+## Planning a Study: Solve for $n$
+
+The real payoff is planning. If you want 80% power to detect a medium effect ($d = 0.5$) at $\alpha = .05$, how many people do you need? Leave `n` out and let R solve for it:
+
+```{r}
+power.t.test(delta = 0.5, sd = 1, sig.level = 0.05, power = 0.80)
+```
+
+The answer (about 64 per group) is a number you want *before* you run the study, not after. Running first and computing power later - so-called "post-hoc power" - tells you almost nothing useful; power is a design tool, not a consolation prize.
+
+## Power Is Really Just Simulation
+
+If the formulas ever feel like a black box, remember they are only shortcuts for something you can *watch* directly. Simulate a world where the effect is real, run the test many times, and count how often you catch it - that fraction **is** the power:
+
+```{r}
+set.seed(1988)
+d <- 0.5; n <- 64
+hits <- replicate(2000, {
+  group1 <- rnorm(n, mean = 0,  sd = 1)
+  group2 <- rnorm(n, mean = d,  sd = 1)   # a real difference of d
+  t.test(group1, group2)$p.value < 0.05   # did we detect it?
+})
+mean(hits)   # simulated power ~ 0.80
+```
+
+The simulation lands right where `power.t.test()` said it would. No magic - just a claim about how often a true effect trips the wire.
+
+## Challenge
+
+::: {.callout-tip}
+## Do One Yourself
+
+1.  Use `power.t.test()` to find the sample size needed for 80% power to detect a *small* effect ($d = 0.2$) at $\alpha = .05$. Compare it to the $n$ for a *large* effect ($d = 0.8$). Why the enormous difference?
+2.  Fix $n = 40$ per group and $d = 0.4$. Compute power at $\alpha = .01$, $.05$, and $.10$. State in one sentence what you are giving up as you raise $\alpha$ to gain power.
+3.  Write the simulation from the last section yourself, but for a one-sample test against a null mean. Confirm your simulated power matches `power.t.test(..., type = "one.sample")`.
+
+If part 2 makes you a little uncomfortable, good - that discomfort *is* the trade-off, and pretending it away is how bad studies get funded.
+:::
+
+## Where We Go Next
+
+Power closes out our tour of inference: we now know how to test, how we can be wrong, and how to design a study that can actually find what it is looking for. Next we turn from *testing* our conclusions to *trusting our measurements* - the twin questions of [reliability](10-reliability.qmd) and [validity](11-validity.qmd). After all, the most powerful test in the world is worthless if the ruler is rubber.

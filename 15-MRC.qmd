@@ -1,12 +1,195 @@
-# Mulitple (Predictor) Regression Models
+# Multiple Regression
 
-We expand on the bivariate regression model to include multiple predictors.  This model is more complex but provides a more realistic view of the world.  We will discuss the following:
+One predictor is rarely enough. The world is multivariate: college GPA depends on high-school GPA *and* study time *and* sleep *and* a dozen other things. Multiple regression (often called **MRC**, for Multiple Regression/Correlation) is simply the line from the last chapter grown a dimension:
+
+$$y = b_1 x_1 + b_2 x_2 + \cdots + b_k x_k + a$$
+
+The logic does not change one bit. We still minimize the sum of squared residuals, and we still quantify our uncertainty about every coefficient. What *does* change - and what trips up almost everyone - is what a coefficient now **means** when the predictors are tangled up with each other. That tangle is the whole story of this chapter.
 
 ## Learning Objectives
 
-1. Understand the purpose of the model.
-2. Learn how to interpret the output of a multiple regression model.
-3. Understand how to use the model to make predictions.
-4. Learn how to evaluate the model's performance.
+1.  Understand what a regression coefficient means when other predictors are present (partialling).
+2.  Distinguish the semipartial correlation, the partial correlation, and the standardized coefficient.
+3.  Interpret $R$, $R^2$, and adjusted $R^2$ as ratios of variance.
+4.  Diagnose multicollinearity with the VIF and know your options for dealing with it.
 
+## Some Deliberately Tangled Data
 
+To see the interesting behavior, we need predictors that are correlated with each other. The cleanest way to *manufacture* that is to build them from a shared source, then add noise - so we know the truth going in.
+
+```{r}
+set.seed(1936)  # Fisher's "The Design of Experiments"
+base <- rnorm(100)
+y  <- base + rnorm(100)
+x1 <- base + rnorm(100)
+x2 <- base + rnorm(100)
+dat <- data.frame(y, x1, x2)
+
+# x1 and x2 are correlated because they share 'base'
+round(cor(dat), 2)
+```
+
+Now fit the two-predictor model:
+
+```{r}
+lm3 <- lm(y ~ x1 + x2, data = dat)
+coef(lm3)
+```
+
+Here is the puzzle that drives the chapter. If you regress `y` on `x1` *alone*, you get one slope. In the joint model above you get a **different** slope. Why? Because in the joint model, `b1` is the effect of `x1` *with `x2` held constant* - it has been **partialled**. R did not lie to you in either model; the two slopes answer two different questions.
+
+## Three Things People Confuse
+
+When predictors overlap, there are three distinct quantities, and sloppy language treats them as one. Picture the classic Venn diagram from Cohen, Cohen, West, and Aiken [@aiken_applied_2002]: circle $Y$ overlaps circles $X_1$ and $X_2$, and $X_1$ and $X_2$ overlap each other. Label the piece of $Y$ that *only* $X_1$ explains as area $a$, and the piece $Y$ has left over (unexplained) as area $e$.
+
+- **Semipartial correlation** $sr_1$: the unique slice, $sr_1^2 = a$. "How much of *all* of Y's variance does $x_1$ uniquely explain?"
+- **Partial correlation** $pr_1$: the unique slice relative to what is *left to explain*, $pr_1^2 = \frac{a}{a+e}$. "Of the Y variance not already explained by $x_2$, how much does $x_1$ explain?"
+- **Standardized regression coefficient** $\beta_1$: the slope R reports when everything is standardized. This is what `lm()` gives you.
+
+All three are built from the same three correlations, but they are **not** the same number. Here they are, by formula:
+
+```{r}
+r_y1 <- cor(x1, y); r_y2 <- cor(x2, y); r_12 <- cor(x1, x2)
+
+# semipartial correlation of x1 (unique slice = area a)
+sr1 <- (r_y1 - r_y2 * r_12) / sqrt(1 - r_12^2)
+
+# partial correlation of x1 (a / (a + e))
+pr1 <- (r_y1 - r_y2 * r_12) / sqrt((1 - r_y2^2) * (1 - r_12^2))
+
+# standardized regression coefficient (beta) for x1
+beta1 <- (r_y1 - r_y2 * r_12) / (1 - r_12^2)
+
+round(c(semipartial = sr1, partial = pr1, beta = beta1), 3)
+```
+
+Notice they share the same numerator and differ only in the denominator - which is exactly why they get muddled. Let us confirm that $\beta_1$ is really the standardized slope R reports:
+
+```{r}
+lm3z <- lm(scale(y) ~ scale(x1) + scale(x2), data = dat)
+round(coef(lm3z)[["scale(x1)"]], 3)   # compare to beta1 above
+```
+
+Same number. So **the coefficient `lm()` reports is a *partial* effect** - it controls for the other predictors. That is the single most important sentence in multiple regression. When someone says "controlling for X," this is the machinery they are invoking.
+
+::: {.callout-important}
+## $sr$ vs. $pr$ vs. $\beta$ - Say It Out Loud
+
+- The **semipartial** ($sr$) is $x_1$'s unique contribution measured against *all* of Y. Square it and you get the increase in $R^2$ from adding $x_1$ last. This is usually the one you want to report.
+- The **partial** ($pr$) measures the same unique contribution but against only the *unexplained* part of Y, so it is always at least as large in magnitude as the semipartial.
+- The **standardized coefficient** ($\beta$) is the slope, in standard-deviation units, and is what the model uses to predict.
+
+Three questions, three numbers. Do not let a textbook (or a reviewer) tell you they are interchangeable.
+:::
+
+## $R$, $R^2$, and the "Shrunken" $R^2$
+
+Statistics is about variance, and $R^2$ is the cleanest variance story we have. **$R$** is just the correlation between what we observed and what the model predicts; **$R^2$** is the ratio of predicted-to-total variance:
+
+```{r}
+R  <- cor(y, predict(lm3))
+R2 <- var(predict(lm3)) / var(y)
+round(c(R = R, R2 = R2, R2_from_summary = summary(lm3)$r.squared), 3)
+```
+
+That is it: $R^2 = \frac{\text{var}(\hat{y})}{\text{var}(y)}$ - the fraction of Y's variance the model reproduces. But $R^2$ is a **greedy optimist**: add any predictor, even pure noise, and it never goes down. So we penalize it for complexity to get the **adjusted (or "shrunken") $R^2$**:
+
+$$R^2_{adj} = 1 - (1 - R^2)\,\frac{n - 1}{n - k - 1}$$
+
+```{r}
+n <- length(y); k <- 2
+R2_adj <- 1 - (1 - R2) * (n - 1) / (n - k - 1)
+round(c(R2_adj = R2_adj, adj_from_summary = summary(lm3)$adj.r.squared), 3)
+```
+
+The adjustment is why you should *never* judge a model by raw $R^2$ alone. Throw in enough predictors and you can make $R^2$ beautiful and the model worthless.
+
+## Testing the Coefficients (Rebuilding the Table Again)
+
+As always, we do not trust the machine until we can reproduce it. The standard error of a coefficient is:
+
+$$SE_{b_1} = \frac{s_y}{s_{x_1}} \cdot \sqrt{\text{VIF}_1} \cdot \sqrt{\frac{1 - R^2}{n - k - 1}}$$
+
+where the **variance inflation factor** $\text{VIF}_1 = \frac{1}{1 - R^2_1}$, and $R^2_1$ comes from regressing $x_1$ on all the *other* predictors. Watch:
+
+```{r}
+R2_1  <- summary(lm(x1 ~ x2, data = dat))$r.squared   # x1 explained by x2
+VIF1  <- 1 / (1 - R2_1)
+
+SEb1 <- (sd(y) / sd(x1)) * sqrt(VIF1) * sqrt((1 - R2) / (n - k - 1))
+b1   <- coef(lm3)[["x1"]]
+t1   <- b1 / SEb1
+p1   <- 2 * pt(-abs(t1), df = n - k - 1)      # df = n - k - 1, NOT n - 1
+
+round(c(SE = SEb1, t = t1, p = p1), 4)
+summary(lm3)$coefficients["x1", ]              # compare
+```
+
+The by-hand values match R's table. Two things to burn in:
+
+1.  The degrees of freedom for a coefficient's $t$ test are $n - k - 1$ - we spend one df per predictor **and** one for the intercept. (An older version of this lecture used $n - 1$ here; that is wrong, and with several predictors it matters.)
+2.  The **VIF sits right inside the standard error**. When predictors are collinear, VIF climbs, the SE inflates, $t$ shrinks, and your once-significant predictor goes quiet - even though nothing about the *relationship* changed. Collinearity does not bias your slopes; it makes them **imprecise**.
+
+For the whole model, the omnibus test is an $F$ built from $R^2$:
+
+$$F = \frac{R^2 / k}{(1 - R^2)/(n - k - 1)} \quad \text{with } df_1 = k,\ df_2 = n - k - 1$$
+
+```{r}
+Fmodel <- (R2 / k) / ((1 - R2) / (n - k - 1))
+pF     <- pf(Fmodel, df1 = k, df2 = n - k - 1, lower.tail = FALSE)
+round(c(F = Fmodel, p = pF), 5)
+summary(lm3)$fstatistic          # compare F and its df
+```
+
+## Multicollinearity: Seeing the Damage
+
+Let us watch the VIF do its dirty work directly. As two predictors become more correlated, the VIF explodes:
+
+```{r}
+curve(1 / (1 - x^2), from = 0, to = 0.99, n = 500,
+      xlab = "correlation between X1 and X2", ylab = "VIF",
+      main = "Collinearity inflates the variance of your estimates")
+abline(h = 10, col = "red", lty = 2)   # a common (rough) rule-of-thumb threshold
+```
+
+Past a correlation of about 0.95 the curve rockets skyward. A predictor that is 95% predictable from the others carries almost no *unique* information, so the model cannot pin down its slope. The red line marks a rough $\text{VIF} = 10$ rule of thumb - but treat it as a smoke alarm, not a law.
+
+## Six Ways to Deal With Collinearity
+
+There is no single fix; there are trade-offs. In rough order of how often they are the *right* call:
+
+1.  **Delete a redundant predictor.** If two variables measure nearly the same thing, you probably do not need both. Cheapest fix, but you lose whatever unique signal was there.
+2.  **Combine them.** Average the standardized predictors into a single composite: `rowMeans(scale(cbind(x1, x2)))`. Often the most defensible move when the predictors are indicators of one underlying construct.
+3.  **Use a shrinkage method** (e.g., ridge regression), which deliberately trades a little bias for a lot of stability.
+4.  **Reduce to principal components** and regress on those - orthogonal by construction, so VIF becomes 1, at the cost of interpretability.
+5.  **Center the predictors** (subtract the mean). This does *nothing* for correlational collinearity, but it removes the *nonessential* collinearity created by interaction and polynomial terms - which is why we center before building those.
+6.  **Impose logical order.** Sometimes theory tells you which predictor comes "first," and you enter them hierarchically rather than pretending they compete on equal footing.
+
+::: {.callout-note}
+## Combining Predictors, In Code
+
+```{r}
+composite <- rowMeans(data.frame(x1z = scale(x1), x2z = scale(x2)))
+round(summary(lm(y ~ composite))$coefficients, 3)
+```
+
+One predictor, no collinearity, and often a cleaner story than two fighting over the same variance.
+:::
+
+## Challenge
+
+::: {.callout-tip}
+## Do One Yourself
+
+Simulate three predictors where `x3` is nearly a copy of `x1` (e.g., `x3 <- x1 + rnorm(100, 0, 0.2)`), plus an outcome `y` that truly depends on `x1` and `x2`.
+
+1.  Fit `y ~ x1 + x2 + x3` and report the coefficients, their standard errors, and each VIF (compute the VIFs by hand with `1/(1 - R2_j)`).
+2.  Now drop `x3` and refit. What happened to the standard error and $t$ for `x1`? Explain *why* in terms of the VIF sitting inside the SE.
+3.  Compute the semipartial correlation for `x2` in the full model, and confirm its square equals the drop in $R^2$ when you remove `x2`.
+
+If you can explain part 2 to a skeptical colleague, you understand multicollinearity better than the software does.
+:::
+
+## Where We Go Next
+
+We have been treating every predictor as continuous. But some of the most important predictors are **categorical** - treatment vs. control, cat vs. dog, before vs. after. It turns out ANOVA is not a separate technique at all; it is just multiple regression with cleverly coded categorical predictors. That unification - the General Linear Model - is the subject of the next chapter, [ANOVA and the GLM](16-ANOVAandGLM.qmd).
