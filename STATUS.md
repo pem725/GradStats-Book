@@ -59,7 +59,7 @@ Legend: 🟥 stub/empty · 🟨 partial · 🟩 drafted · ⬜ not started synth
 | 05 | Data Cleaning | 🟥 empty | R/ data-wrangling scripts | ⬜ |
 | 06 | z-Distribution | 🟨 | PSYC 611 | ⬜ |
 | 07 | Covariance | 🟥 | PSYC 611/642 | ⬜ |
-| 08 | Hypothesis Testing | 🟥 | PSYC 611, Methods.bib | ⬜ |
+| 08 | Hypothesis Testing | 🟩 **drafted** | PSYC 611 Lec 6 (done), Methods.bib (Meehl) | ✅ |
 | 09 | Statistical Power | 🟨 | PSYC 611 | ⬜ |
 | 10 | Reliability | 🟥 | Rasch/, measurement courses | ⬜ |
 | 11 | Validity | 🟥 | Rasch/, measurement courses | ⬜ |
@@ -88,6 +88,7 @@ Legend: 🟥 stub/empty · 🟨 partial · 🟩 drafted · ⬜ not started synth
 
 - [x] Commit infra changes (gitignore, workflow, CLAUDE.md, bibs). _(commit 430970f, held locally — not pushed)_
 - [x] Chapter 14 (Bivariate Regression) drafted to publication quality & renders clean.
-- [ ] **You:** review Ch. 14 for voice/structure/format; enable GitHub Pages.
-- [ ] Draft a prose-heavy exemplar (Ch. 8 Hypothesis Testing) to test the approach on non-code material.
-- [ ] On approval, roll the pattern out: Ch. 15 (MRC) & 16 (ANOVA/GLM) from Regression4–9.R, then the rest.
+- [x] Draft a prose-heavy exemplar (Ch. 8 Hypothesis Testing) — built from 611 Lec 6 + Meehl; renders clean.
+- [ ] **You:** review the two exemplars (Ch. 14 code-heavy, Ch. 8 prose-heavy) for voice/structure/format; enable GitHub Pages.
+- [ ] On approval, roll the pattern out: Ch. 15 (MRC) & 16 (ANOVA/GLM) from Regression4–9.R, then the remaining chapters.
+- [ ] Note for Ch. 9 (Power): the 611 slides contain an error ("lower alpha → higher power" is backwards) — fix, don't copy.

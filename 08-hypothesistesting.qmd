@@ -1,3 +1,150 @@
-# Testing Hypotheses and Data
+# Testing Hypotheses with Data
 
-We often lable our efforts as hypothesis testing.  Here, we dispel that myth and talk about what exactly we are doing in hypothesis testing.  I want to emphasize that H(0) is not a hypothesis test but merely a way to test data consistency with no relationships.
+We often label our efforts "hypothesis testing." Here we dispel that myth and talk about what we are *actually* doing. Let us be blunt from the first sentence, because this is the single most misunderstood idea in all of statistics:
+
+::: {.callout-important}
+## The Whole Chapter in One Sentence
+
+The so-called "null hypothesis significance test" ($H_0$) is **not** a test of your hypothesis. It is merely a way to check whether your data are consistent with a world in which **nothing is going on** - no effect, no difference, no relationship. Rejecting the null does not prove your idea is right. It only says the data would be surprising if nothing were going on.
+
+Everything else in this chapter is commentary on that one sentence.
+:::
+
+## Learning Objectives
+
+1.  Understand what a null hypothesis actually states - and what it does not.
+2.  Learn the mechanics of a significance test so you can compute and read one.
+3.  Distinguish Type I from Type II error, and understand what $\alpha$ buys you.
+4.  Appreciate why rejecting the null is weak evidence for your theory - and why we do it anyway.
+
+## First, Why We Test Anything at All
+
+Recall the through-line of this whole book: we care about **populations**, but we only ever have access to **samples**. We make inferences about populations from samples, and we use **probability** to make educated guesses about what a sample tells us given some assumption about the population. Hold onto that sentence; the entire logic of testing hangs from it.
+
+Here is the move. We do not know the truth about the population. So we *assume* something specific about it - almost always that there is **no effect** - and then we ask: *if that assumption were true, how surprising would my data be?* If the data are surprising enough, we doubt the assumption. That assumption is the null hypothesis.
+
+## What a Null Hypothesis Really Says
+
+A null hypothesis, $H_0$, is a statement of **no effect, no difference, or no relationship**, written in the language of population parameters. It is deliberately boring. Watch what happens when we translate real questions into null statements:
+
+- A weight-loss program? $H_0$: dieters "would not be different" from people who did no program.
+- A new medication or vaccine? $H_0$: treated people show "no different outcomes" compared to untreated people.
+- A natural disaster's effect on mental health? $H_0$: the disaster "produces no effects."
+
+Notice that in every case, $H_0$ says *nothing is happening*. The alternative hypothesis, $H_1$, takes the more optimistic stance that *something* is happening. We collect data and then - and this is the crux - **we use the data to evaluate the credibility of the null**. The question we are really asking is:
+
+> How far away from the null do we need to be before the observed value is considered unlikely *if the null were true*?
+
+That is a question about **data consistency with a no-effect world**. It is emphatically *not* the question "is my theory true?" Keep those two apart and you are already ahead of most published researchers.
+
+## The Machinery: A Worked Example
+
+Let us make this concrete with the simplest test there is. Suppose a population has a mean $\mu = 20$ and standard deviation $\sigma = 4$. We draw a sample of $n = 4$ and observe a sample mean of $\bar{x} = 22$. Is that surprising if the population mean really is 20?
+
+The key idea is the **sampling distribution of the mean**: if we drew sample after sample, the means would themselves form a distribution, centered on $\mu$, with a standard deviation - the **standard error of the mean** - of $\sigma_{\bar{x}} = \sigma / \sqrt{n}$.
+
+```{r}
+mu    <- 20      # population mean under H0
+sigma <- 4       # population standard deviation
+n     <- 4       # sample size
+xbar  <- 22      # our observed sample mean
+
+se <- sigma / sqrt(n)          # standard error of the mean
+z  <- (xbar - mu) / se         # how many SEs above the null?
+p  <- pnorm(z, lower.tail = FALSE)  # P(mean > 22) if H0 is true
+
+c(standard_error = se, z = z, p_value = p)
+```
+
+So a sample mean of 22 sits exactly one standard error above the null value, and the probability of getting a mean that large (or larger) *if the null is true* is about `r round(pnorm(1, lower.tail = FALSE), 3)`. Let us see it:
+
+```{r}
+# Simulate 10,000 sample means from the H0 world and see where 22 lands
+set.seed(1908)  # the year Gosset published "Student's" t
+means <- replicate(10000, mean(rnorm(n, mean = mu, sd = sigma)))
+
+hist(means, breaks = 40, col = "grey85", border = "white",
+     main = "Sampling distribution of the mean IF the null is true",
+     xlab = "sample mean")
+abline(v = xbar, col = "red", lwd = 3)
+```
+
+The red line is our result. It is on the high side, sure, but plenty of the null world's own samples land out there too. This is what "the data are (or are not) surprising under $H_0$" looks like, drawn to scale.
+
+## The Decision Rule: $\alpha$, Critical Regions, and Four Steps
+
+We need a rule for "surprising enough." By long (and arbitrary) convention, we draw the line at 5%: we set a **significance level** $\alpha = .05$ and declare a result "statistically significant" if it falls in the most extreme 5% of the null distribution - the **critical region**.
+
+- For a **two-tailed** test (we would care about a difference in either direction), the critical values are $z = \pm 1.96$.
+- For a **one-tailed** test (we only care about one direction), the critical value is $z = 1.65$.
+
+Every significance test, no matter how fancy, follows the same four steps:
+
+1.  **State the hypotheses** and choose $\alpha$.
+2.  **Set the decision criterion** - locate the critical region.
+3.  **Collect data** and compute the test statistic.
+4.  **Decide**: if the statistic falls in the critical region, reject $H_0$; otherwise, fail to reject it.
+
+::: {.callout-warning}
+## We Never *Accept* the Null
+
+Before you try your hand, be crystal clear about something: **we never accept the null. We only reject the null or fail to reject it.** Failing to reject $H_0$ is not evidence that nothing is happening - it may just mean our sample was too small, too noisy, or too crude to detect what is there. Absence of evidence is not evidence of absence. Write that on your wall.
+:::
+
+## Two Ways to Be Wrong
+
+Because we are guessing about a population from a sample, we can guess wrong in two distinct ways:
+
+|                          | $H_0$ is really **true** | $H_0$ is really **false** |
+|--------------------------|--------------------------|---------------------------|
+| **We reject $H_0$**      | Type I error ($\alpha$)  | Correct ✓ (power, $1-\beta$) |
+| **We fail to reject $H_0$** | Correct ✓ ($1-\alpha$) | Type II error ($\beta$)   |
+
+A **Type I error** is a false alarm: we shout "effect!" when nothing is there. Its rate is exactly the $\alpha$ we chose - that is what $\alpha = .05$ *means*. A **Type II error** is a miss: we shrug "nothing here" when something really is. Three things push a test toward the correct-rejection cell: a **bigger true difference**, **less variability**, and a **larger sample**. That correct-rejection probability, $1-\beta$, is called **power**, and it gets its own chapter ([Statistical Power](09-statisticalpower.qmd)).
+
+## Now the Uncomfortable Part
+
+You could stop here, pass most stats exams, and go on to (mis)use significance tests for the rest of your career like everyone else. But we promised you the *why*, so buckle up. There are many detractors of null hypothesis significance testing (NHST), but none more insightful or knowledgeable than **Paul Meehl** [@Meehl1967]. His critique deserves your full attention.
+
+**1. The test answers the wrong question.** What you *want* to know is the probability that your hypothesis is true given your data, $P(H \mid D)$. What the p-value gives you is the probability of your data given the null, $P(D \mid H_0)$. These are not the same thing, and one is not a stand-in for the other. Confusing $P(D \mid H_0)$ with $P(H \mid D)$ is the original sin of applied statistics.
+
+**2. The null is almost certainly false before you collect a single datum.** In the social sciences, two groups are essentially *never* exactly equal down to infinite decimal places. So $P(H_0) \approx 0$ from the start - the null is a straw man. With a big enough sample you can reject *any* nil null, which means a "significant" result can be a statement about your sample size rather than about the world.
+
+**3. Rejecting $H_0$ is not evidence for $H$.** This is the logical heart of it. Even granting the test, rejecting "nothing is happening" does not establish *your particular explanation* for why something is happening. Logically, NHST commits the fallacy of **affirming the consequent**: "if my theory is true, then I'll see an effect; I see an effect; therefore my theory is true." That reasoning is invalid, and no amount of $p < .05$ repairs it.
+
+::: {.callout-note}
+## Why One Failed Prediction Doesn't Sink a Theory (or One Success Save It)
+
+Meehl pointed out that a theoretical prediction never rides alone. To derive a testable observation you must bolt your substantive theory $T$ together with a raft of **auxiliary assumptions** - other theories $A_x$, a "all else equal" clause $C_p$, assumptions about your instruments $A_i$, and the particular conditions you actually realized $C_n$:
+
+$$(T \cdot A_x \cdot C_p \cdot A_i \cdot C_n) \vdash (O_1 \supset O_2)$$
+
+Because the whole bundle is on trial, a rejected null can't tell you *which* piece failed - maybe your theory, maybe your thermometer. This is why "we ran a significance test" is a shockingly thin foundation for a scientific claim.
+:::
+
+**4. Significant is not the same as important.** A result can be statistically significant and utterly trivial, or non-significant and enormously important. An effect "may be significantly different from the null but that effect may still be very small" - you just had a big sample or a tiny standard error. This is why we report **effect sizes** (like Cohen's $d$) alongside p-values. As McKnight is fond of noting, a correlation below .5 can flag a hugely important effect, while a correlation above .9 can be a trivial finding. The p-value alone cannot tell the difference; only you and your judgment can.
+
+## So Why Do We Still Do It?
+
+Fair question. Because, as Sir Ronald Fisher himself insisted (and as we noted back in the [introduction](intro.qmd)), a significant test is best read as a **reason for optimism** - a hint that something here is worth a closer look - and *nothing more*. It is a screening tool, not a verdict.
+
+And pragmatically: since NHST tends to be the **gate-keeper of social-science findings**, you might find some comfort in knowing how the tests are computed, even as you hold them at arm's length. You have to speak the language to change the conversation. So learn it well - then use it wisely, report your effect sizes, quantify your uncertainty honestly, and never, ever confuse a small p-value with the truth of your theory.
+
+## Challenge
+
+::: {.callout-tip}
+## Do One Yourself
+
+A commuter claims her average drive is 24.3 minutes. You suspect it is longer. Over $n = 9$ independent days you record a mean of $\bar{x} = 27$ minutes; assume the population standard deviation is $\sigma = 6$ minutes.
+
+1.  State $H_0$ and $H_1$ in words and as parameter statements. Is this one-tailed or two-tailed?
+2.  Compute the standard error of the mean, the $z$ statistic, and the p-value (do it in R with `pnorm()`).
+3.  At $\alpha = .05$, what do you decide - and state the decision using the correct language (reject / fail to reject).
+4.  Now the hard part: write one sentence explaining what your p-value **does** mean, and one sentence explaining what a naive reader would **wrongly** think it means.
+
+If you can do step 4 cleanly, you understand hypothesis testing better than most people who publish for a living.
+:::
+
+## Where We Go Next
+
+We deliberately set aside one cell of the error table - the correct-rejection probability, $1-\beta$, or **power**. Power is where you take back some control: it is the part of testing you can plan for *before* you collect a single observation. That is the subject of the next chapter, [Statistical Power](09-statisticalpower.qmd).
