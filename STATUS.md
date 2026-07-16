@@ -15,7 +15,7 @@ _Last updated: 2026-07-16_
 | GitHub Pages publishing | ✅ workflow added | `.github/workflows/publish.yml` renders on push to `main` → `gh-pages` branch. |
 | Enable Pages (one-time, in GitHub UI) | ⬜ **you** | Settings → Pages → Source: *Deploy from a branch* → `gh-pages` / `(root)`. Then site lives at https://pem725.github.io/GradStats-Book/ |
 | CLAUDE.md for the repo | ✅ done | Guidance for future Claude sessions. |
-| Import teaching BibTeX | 🔄 in progress | `Methods.bib`, `PSYC643.bib` being pulled from Drive; wired into `_quarto.yml`. |
+| Import teaching BibTeX | ✅ done | `Methods.bib` (12 entries) + `PSYC643.bib` (14 entries) in repo & wired into `_quarto.yml`. Zotero library confirmed local: **5,082 PDFs** at `~/Zotero/storage/`. |
 
 **Publishing model:** you just edit `.qmd` files and `git push`. The Action renders the
 book (running all R chunks) and deploys. No local render-and-commit needed.
@@ -65,7 +65,7 @@ Legend: 🟥 stub/empty · 🟨 partial · 🟩 drafted · ⬜ not started synth
 | 11 | Validity | 🟥 | Rasch/, measurement courses | ⬜ |
 | 12 | GLM & Covariance | 🟥 | R/Regression1–2.R, PSYC 642 | ⬜ |
 | 13 | Point-Biserial Correlation | 🟥 | PSYC 642/643 | ⬜ |
-| 14 | Bivariate Regression | 🟥 | **R/Regression1–4.R**, PSYC 612/642 | ⬜ |
+| 14 | Bivariate Regression | 🟩 **drafted** | **R/Regression1.R** (done) + 2–4.R, PSYC 612/642 | ✅ |
 | 15 | Multiple Regression (MRC) | 🟥 | **R/Regression5–8.R**, PSYC 643, PSYC643.bib | ⬜ |
 | 16 | ANOVA & GLM | 🟥 | **R/Regression9.R**, PSYC 643/644 | ⬜ |
 | 17 | Basic ANOVA | 🟥 empty | PSYC 644 | ⬜ |
@@ -86,6 +86,8 @@ Legend: 🟥 stub/empty · 🟨 partial · 🟩 drafted · ⬜ not started synth
 
 ## 5. Next Actions (Claude)
 
-- [ ] Commit infra changes (gitignore, workflow, CLAUDE.md, bibs, this file).
-- [ ] Deep-recon the canonical course folders → exact lecture-notes → chapter map.
-- [ ] Begin chapter synthesis per the strategy chosen above.
+- [x] Commit infra changes (gitignore, workflow, CLAUDE.md, bibs). _(commit 430970f, held locally — not pushed)_
+- [x] Chapter 14 (Bivariate Regression) drafted to publication quality & renders clean.
+- [ ] **You:** review Ch. 14 for voice/structure/format; enable GitHub Pages.
+- [ ] Draft a prose-heavy exemplar (Ch. 8 Hypothesis Testing) to test the approach on non-code material.
+- [ ] On approval, roll the pattern out: Ch. 15 (MRC) & 16 (ANOVA/GLM) from Regression4–9.R, then the rest.
