@@ -2,6 +2,15 @@
 
 Simply put, statistical power is the probability of success - where "success" means **detecting an effect that is really there**. In the language of the last chapter, power is the one cell of the error table you can actually *plan for* before you collect a single observation. Everything else about a study - your hypotheses, your $\alpha$, the vagaries of sampling - is set once the data arrive. Power is where you take back control.
 
+::: {.callout-note}
+## Power is a SWAG - and that's the honest part
+Here is the framing (PEM) I use with my own students. A power analysis is really an estimate of
+
+$$P(\text{Party at the Pub!} \mid \text{your research plans}),$$
+
+the probability you'll be celebrating a detected effect *given* the study you're about to run - which is to say, a **S**cientific **W**ild **A**ss **G**uess. That is not an insult to the method; it is honesty about it, because power depends on things you must *guess* before any data exist (chiefly the true effect size). Why bother guessing at all? Because power protects the things you care about - **funding**, your time, scarce participants - and it is the one part of a study you can shape in advance. The goal is not false precision; it is **self-reliance**. Power estimation is daunting, important, easy to fool yourself with, and *far* more within your reach than most people realize - because when the formulas intimidate you, you can always just **simulate** it.
+:::
+
 ## Learning Objectives
 
 1.  Define power as $1 - \beta$ and locate it in the error table.
@@ -34,6 +43,21 @@ Power is a function of four things, and only four. Three you can influence; one 
 
 It is tempting - and wrong - to say "lower $\alpha$ gives higher power." Lowering $\alpha$ shrinks the rejection region, which makes it *harder* to reject the null, which **lowers** power. You cannot buy fewer false alarms (small $\alpha$) and more hits (high power) for free by tightening $\alpha$ alone; those two pull in opposite directions. The only way to improve *both* at once is to change something outside this trade-off - almost always, **collect a larger sample**.
 :::
+
+::: {.callout-note}
+## Power is a story about variance
+Every lever above is really about the [signal-to-noise](04-Dmeasures.qmd) ratio we learned to decompose as $S^2_{obs} = S^2_{true} + S^2_{error}$. Detecting an effect gets easier as the **between-group** variance (the signal - your effect) grows relative to the **within-group** variance (the noise). That is exactly why Cohen's $d$ puts the mean difference *over* the standard deviation: power lives in the **ratio**, not the numerator alone. So two moves you can sometimes control - a **cleaner measure** (less $S^2_{error}$) and a **stronger manipulation** (more signal) - buy you power just as surely as more subjects do.
+:::
+
+## Rules of Thumb (A Rough First Pass)
+
+Before any software, a few back-of-the-envelope numbers get you into the right ballpark for the conventional 80% power:
+
+- **Comparing groups** (mean differences): about **$n = 30$ per group** is the classic target - and never go below ~7 per cell if you can possibly avoid it.
+- **Associations** (correlations, $r$): you want **$N > 50$** or so.
+- **Measurement models** (EFA/CFA): **$N > 300$** is usually safe.
+
+These are deliberately crude - they hide the effect size you're implicitly assuming - but they are enough to sanity-check a plan, or to notice a design is hopeless *before* you spend a dime. Then you refine with a real calculation, which comes in two flavors: a **point estimate** from a formula (next), and a **simulation** you can watch (further down). The right habit is to reach for an existing tool first, make sure you understand the model you're planning (a $t$-test, a regression, a mixed model), and then simulate to check your guesses.
 
 ## Seeing Power in R
 
@@ -69,7 +93,7 @@ The answer (about 64 per group) is a number you want *before* you run the study,
 
 ## Power Is Really Just Simulation
 
-If the formulas ever feel like a black box, remember they are only shortcuts for something you can *watch* directly. Simulate a world where the effect is real, run the test many times, and count how often you catch it - that fraction **is** the power:
+If the formulas ever feel like a black box, remember they are only shortcuts for something you can *watch* directly. The recipe is four steps: **generate** data from a world where the effect is real, **run** your model, **collect** whether it hit ($p < \alpha$), and **repeat** a few thousand times. The fraction of hits **is** the power - and unlike a formula, this recipe works for *any* design you can simulate (a mixed model, a mediation, a weird custom test), long after the closed-form equations give up:
 
 ```{r}
 set.seed(1988)
