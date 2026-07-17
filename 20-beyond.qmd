@@ -142,6 +142,28 @@ $$\underbrace{P(\theta \mid \text{data})}_{\text{posterior}} \;\propto\; \underb
 
 The **prior** is what you believed about the parameter $\theta$ before the data; the **likelihood** is what the data say; the **posterior** is the updated belief. That's the whole machine. As McKnight puts it, Bayesian methods are "merely a vehicle for re-conceptualizing how we think about statistics" - they give you "insights you may already know, but didn't know you knew."
 
+### Why it matters: the arithmetic of the replication crisis
+
+Here is a calculation that should unsettle you, and it needs nothing but Bayes' rule. You run a well-powered study, get $p < .05$, and publish. **What is the probability your hypothesis is actually true?** Not the $p$-value - that's $P(\text{significant} \mid H \text{ false})$. The thing you want is $P(H \text{ true} \mid \text{significant})$, and it depends on how plausible your idea was *before* the data - its prior:
+
+```{r}
+power <- 0.99    # P(significant | H true)  -- a very high-powered study
+alpha <- 0.01    # P(significant | H false) -- a strict false-positive rate
+prior <- 0.02    # P(H true): your idea is ~1 of 50 plausible hypotheses
+
+post <- (power * prior) / (power * prior + alpha * (1 - prior))   # Bayes' rule
+round(post, 3)
+```
+
+Even with $99\%$ power and a $1\%$ false-positive rate, a significant result leaves you only about **67%** sure - because the idea was a long shot to begin with. Loosen the study to more realistic numbers and it collapses further:
+
+```{r}
+# modest power, ordinary screening, a rarer idea
+round((0.95 * 0.01) / (0.95 * 0.01 + 0.05 * 0.99), 3)
+```
+
+About **16%**. Chase enough low-prior ideas with $p < .05$ and *most* of your "discoveries" will be false, no matter how small the $p$-value - which is the arithmetic engine of the replication crisis we met in [hypothesis testing](08-hypothesistesting.qmd). The $p$-value never answered the question you cared about. Bayes' rule does, but it demands you state your prior out loud. That honesty is the point.
+
 ### Building a posterior by hand (grid approximation)
 
 You do not need fancy software to see the machine turn. Take the oldest example in the book - estimating a proportion (a coin's bias, a globe's water fraction, a treatment's success rate) from a handful of trials. Lay down a **grid** of possible values, evaluate prior × likelihood at each, normalize, and you have a posterior:
