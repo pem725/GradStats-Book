@@ -1,0 +1,86 @@
+# Case Study: The Data You Didn't Get {#missing}
+
+The last case study takes on the part of every real dataset that the textbooks pretend away: the **holes**. People drop out of a two-year study. Respondents skip the touchy item. A sensor fails. In the purpose-versus-happiness project - a three-wave longitudinal study tracking hundreds of people over two years - attrition was not a footnote; it was a fork in the road, because *how you handle the missing data can change the answer.*
+
+We have a slight advantage here: one of us wrote the book on it - literally [@McKnight2007], *Missing Data: A Gentle Introduction* (Guilford). The one-sentence version of that book is the thesis of this chapter: **missing data is not a nuisance to be swept aside; it is a modeling problem, and the first question is always *why* the data are missing.**
+
+::: {.callout-note}
+## A note on the data
+As with the other case studies, the study's real data are the authors' private collection. The mechanics below run on **simulated** data with a missingness mechanism we control on purpose, so you can watch a hole bend an estimate; the real study's findings are described in the text.
+:::
+
+## First Ask *Why* It's Missing
+
+Recall the three mechanisms from the [data-cleaning chapter](05-datacleaning.qmd) - they are the whole ballgame:
+
+- **MCAR** (missing completely at random): the holes are unrelated to anything. Rare, and the only case where throwing away incomplete rows is merely *wasteful*, not *biased*.
+- **MAR** (missing at random): missingness depends on things you *observed*. Fixable - if you use the observed information.
+- **MNAR** (missing not at random): missingness depends on the *unobserved value itself* (people with the highest depression skip the depression item). The hardest case; no method fully saves you, and honesty about it is the best you can do.
+
+The danger is that the most common default - **complete-case analysis** (drop anyone with a missing value) - is only safe under MCAR, and MCAR is the least common mechanism in real life. Watch what MAR does to a simple estimate.
+
+## Watch a Hole Bend an Estimate
+
+Simulate an outcome `y` that correlates with an auxiliary variable `z`, then make `y` **missing more often when `z` is high** - a textbook MAR mechanism (the missingness depends on `z`, which we *observe*):
+
+```{r}
+set.seed(2026)
+N <- 2000
+z <- rnorm(N)                              # an auxiliary variable, fully observed
+y <- 0.6 * z + rnorm(N, sd = 0.8)          # outcome; its true mean is ~ 0
+p_miss <- plogis(1.8 * z - 0.2)            # P(missing) rises with z  -> MAR
+y_obs  <- ifelse(runif(N) < p_miss, NA, y) # the data we actually get to see
+
+c(pct_missing         = round(100 * mean(is.na(y_obs)), 1),
+  true_mean           = round(mean(y), 3),                 # unobtainable in real life
+  complete_case_mean  = round(mean(y_obs, na.rm = TRUE), 3))
+```
+
+The complete-case mean is badly **biased downward**. Of course it is: we systematically dropped the high-`z` people, and high `z` means high `y`, so the survivors are not representative. The hole did not just cost us sample size - it *moved the answer*.
+
+Now recover it. The core idea of imputation is to **use the observed information** (`z`) to fill the holes in `y` - here with a stochastic regression imputation (predict the missing `y` from `z`, and add noise so we don't fake certainty):
+
+```{r}
+cc  <- !is.na(y_obs)
+fit <- lm(y_obs[cc] ~ z[cc])                               # learn y-from-z on complete cases
+imp <- y_obs
+imp[!cc] <- coef(fit)[1] + coef(fit)[2] * z[!cc] +         # predicted value ...
+            rnorm(sum(!cc), 0, sigma(fit))                 # ... plus honest noise
+round(mean(imp), 3)                                        # recovered — back near the true 0
+```
+
+Filling the holes with what `z` implies pulls the estimate back to the truth. That is the entire logic of principled missing-data handling: the information to fix the bias was *in the data we kept*, and complete-case analysis simply threw it away.
+
+## The Twist: It Depends on What You're Estimating
+
+Here is the subtlety that separates a careful analyst from a careless one. The *marginal mean* of `y` was wrecked - but watch the *regression slope* of `y` on `z`:
+
+```{r}
+c(slope_full          = round(coef(lm(y ~ z))[2], 3),      # the truth
+  slope_complete_case = round(coef(lm(y_obs ~ z))[2], 3))  # barely moved
+```
+
+The slope is essentially fine, even under 47% MAR missingness - because the missingness depends on `z`, and `z` is already *in* the model, so conditioning on it absorbs the mechanism. **Same data, same holes: the mean is biased, the slope is not.** Whether the missing data changes your answer depends on *which* answer you want and *how* the holes relate to your model. "Does missing data matter here?" is a real question with a real, case-by-case answer - not a reflex to reach for either complete-case or imputation.
+
+## Multiple Imputation: The Honest Tool
+
+Our single imputation recovered the mean, but it quietly cheated on one thing: it treated the filled-in values as if they were real, understating our uncertainty. The fix is **multiple imputation** - impute the holes several times (each with fresh noise), analyze each completed dataset, and **pool** the results with Rubin's rules, so the between-imputation variability is folded into the standard errors. In R that is the `mice` package:
+
+```r
+# The real tool (needs the mice package — shown, not run on the book's server)
+library(mice)
+imp  <- mice(data, m = 20, method = "pmm", printFlag = FALSE)  # 20 imputations
+fit  <- with(imp, lm(happiness ~ purpose + wave))              # analyze each
+pool(fit)                                                       # pool via Rubin's rules
+```
+
+The purpose-versus-happiness study did exactly this - fitting its growth models under **complete-case and under multiple imputation side by side** - and reported both, so a reader could see whether the two-year conclusions survived the missing data. That comparison *is* the analysis; presenting only the complete-case result and hoping would have been a choice to look away.
+
+## What This Case Teaches
+
+- **Missing data is a modeling problem** [@McKnight2007], not a cleaning chore. The first question is the *mechanism* ([Ch. 5](05-datacleaning.qmd)): MCAR, MAR, or MNAR.
+- **Complete-case analysis is a decision, not a default** - safe only under MCAR, and quietly biased under the far more common MAR.
+- **Imputation works by using what you kept.** Auxiliary variables that predict both the outcome and its missingness are gold.
+- **Whether it changes the answer is estimand-specific.** Check; don't assume. And when you handle it, use *multiple* imputation so your uncertainty tells the truth.
+
+That closes our apprenticeship in the wild - four real studies, every judgment call on the table: a total score caught hiding information, a measure built and confirmed and preregistered, and a dataset's holes bent (and not bent) an estimate. The tools were never the hard part. Knowing which one, when, and why - and admitting what you cannot know - is the whole job.
