@@ -1,0 +1,103 @@
+# Case Study: Building a Measure, Study by Study {#curiosity}
+
+The [last case study](24-casestudy-depression.qmd) took a finished scale apart. This one does the opposite - it *builds* one from nothing, and shows why that is far harder than writing a few questions and adding them up. The project (McKnight, Kashdan, and colleagues) set out to measure **political curiosity**: the disposition to seek out, and sit with, political information and views - including those you find uncomfortable. There is no thermometer for that. You have to construct one, and then earn the right to trust it.
+
+::: {.callout-note}
+## A note on the data
+As in the previous chapter, the study's real datasets are the authors' own research collections and are **not public**. Every runnable illustration here uses **simulated** data built to expose the mechanics; the study's actual findings are described in the text.
+:::
+
+The build follows a discipline worth memorizing, because it is how *every* good measure in psychology is made: **explore the structure, confirm it on fresh data, check it means the same thing for everyone, and predict something before you look.**
+
+## Study 1 - Explore: How Many Things Are We Even Measuring?
+
+You write a big pool of candidate items and collect responses. Now the first question: do these items measure *one* thing, or several? This is a job for **Exploratory Factor Analysis (EFA)** - a method that looks at how items correlate and infers the small number of hidden dimensions ("factors") that could produce those correlations.
+
+The workhorse decision - *how many factors?* - starts with the **eigenvalues** of the item correlation matrix. Each eigenvalue is the amount of variance one potential factor accounts for; the classic rules keep factors with an eigenvalue above 1 (they explain more than a single item's worth) and look for the "elbow" in a scree plot. Watch it recover a structure we planted on purpose - twelve items secretly built from three factors:
+
+```{r}
+#| fig-cap: "A scree plot. Three eigenvalues stand above 1, then the scree falls to rubble — three factors."
+#| fig-height: 3.4
+set.seed(2026)
+N <- 500; load <- 0.75
+F1 <- rnorm(N); F2 <- rnorm(N); F3 <- rnorm(N)             # three hidden factors
+mk  <- function(f) load * f + rnorm(N, sd = sqrt(1 - load^2))
+items <- data.frame(sapply(c(rep("F1",4), rep("F2",4), rep("F3",4)),
+                           function(f) mk(get(f))))
+names(items) <- paste0("item", 1:12)
+
+ev <- eigen(cor(items))$values                            # eigenvalues of the correlation matrix
+plot(ev, type = "b", pch = 19, col = "steelblue",
+     xlab = "Factor number", ylab = "Eigenvalue", main = "")
+abline(h = 1, lty = 2, col = "firebrick")                 # Kaiser's "keep it if > 1" line
+```
+
+```{r}
+sum(ev > 1)                                                # how many factors the data suggest
+```
+
+Three, exactly as planted. The real study did this on its item pool and found a coherent multi-dimensional structure of political curiosity. In practice you would rotate and interpret the factors with a dedicated tool:
+
+```r
+# The real EFA (needs the psych package — shown, not run here)
+library(psych)
+fa.parallel(items)              # parallel analysis: a better "how many factors?" than Kaiser alone
+efa <- fa(items, nfactors = 3, rotate = "oblimin")   # extract & rotate to interpret
+efa$loadings                    # which items load on which factor
+```
+
+But finding a structure in your data is the *easy* part. Any rich enough dataset will hand you a tidy factor solution if you go looking. The past is cheating, remember. The real test comes next.
+
+## Study 2 - Confirm: On Data You Have Not Seen
+
+Here is the cardinal rule that separates measurement from wishful thinking: **you do not confirm a structure on the same data that suggested it.** EFA is exploratory - it will always find *something*. To believe the structure is real, you fit it as a fixed hypothesis to a **new, independent sample** using **Confirmatory Factor Analysis (CFA)**, and ask whether the pre-specified model actually fits.
+
+```r
+# The real CFA on Study 2's fresh sample (needs lavaan — shown, not run here)
+library(lavaan)
+model <- '
+  curiosity  =~ item1 + item2 + item3 + item4
+  tolerance  =~ item5 + item6 + item7 + item8
+  engagement =~ item9 + item10 + item11 + item12
+'
+fit <- cfa(model, data = study2_data)
+fitMeasures(fit, c("cfi", "tli", "rmsea", "srmr"))
+```
+
+CFA does not ask "what structure is here?" - it asks "does *this* structure hold?" and answers with **fit indices** you judge against conventional standards (Hu & Bentler): **CFI and TLI ≥ .95**, **RMSEA ≤ .06**, **SRMR ≤ .08**. The political-curiosity model met those standards on the independent Study 2 sample - which is what earns the measure the right to be used. Explore once, confirm elsewhere; a structure that survives a fresh sample is a structure worth believing.
+
+## Does the Ruler Mean the Same Thing for Everyone?
+
+Before you compare groups on a measure - do liberals and conservatives differ in political curiosity? - you must first check that the measure means the *same thing* in both groups. If "curiosity" items behave differently for conservatives than for liberals, then a group difference in scores might be an artifact of the **ruler**, not a real difference in the trait. This is **measurement invariance**, tested with multi-group CFA that progressively constrains the model to be equal across groups:
+
+```r
+# Measurement invariance across political groups (lavaan — shown, not run here)
+configural <- cfa(model, data = dat, group = "conservative")            # same shape?
+metric     <- cfa(model, data = dat, group = "conservative",
+                  group.equal = "loadings")                             # same loadings?
+scalar     <- cfa(model, data = dat, group = "conservative",
+                  group.equal = c("loadings", "intercepts"))            # same intercepts?
+anova(configural, metric, scalar)   # does constraining hurt fit? if not, invariance holds
+```
+
+The study ran exactly this before comparing political groups - because a group comparison on a non-invariant scale is comparing inches to centimeters and calling the difference meaningful. It is the same lesson the [depression study](24-casestudy-depression.qmd) learned the hard way: *make sure two measurements are on the same footing before you read anything into their difference.*
+
+## Preregister: Call Your Shot Before the Data Arrive
+
+The measure built and validated, the team turned to a prediction: an "optimal distinctiveness" intervention would raise political curiosity. And here they did the single most credibility-earning thing in empirical science - they **preregistered**: wrote down the hypothesis, the design, the sample size, and the exact analysis *before collecting a single response*, and time-stamped it publicly (Studies 3 and 4 carry preregistrations in the project's OSF archive).
+
+::: {.callout-important}
+## Why preregistration is the same idea as the accountability pledge
+Recall the [Sports Page rule](23-sportspage.qmd): the past is cheating, so the only honest test is predicting the future and admitting when you were wrong. Preregistration is that rule with a notary. Without it, a researcher who peeks at the data can, consciously or not, tune the hypothesis and the analysis until something is "significant" - fitting the past and calling it a discovery. Preregistration ties your hands *before* you see the outcome, so a confirmed prediction actually means something. It converts a study from "we found a pattern" (description dressed as discovery) into "we called it, and it happened" (a real forecast that could have failed). A preregistered study that *fails* is worth more than an unregistered one that "succeeds."
+:::
+
+The confirmatory, preregistered tests - including a **mediation** analysis asking *why* the intervention worked (through what psychological mechanism) - are the payoff of the whole arc. But note the order: the measure had to be **built and trusted** (Studies 1–2) before any intervention result meant anything. You cannot detect a change in a thing you cannot yet measure.
+
+## What This Case Teaches
+
+- **Measures are built, not assumed** ([reliability](10-reliability.qmd), [validity](11-validity.qmd)): a sum of items is a hypothesis about structure, and the hypothesis has to be earned.
+- **Explore, then confirm - on fresh data.** EFA finds a structure; CFA on an independent sample tests whether it was real. Confirming on your exploration sample is the past cheating again.
+- **Check invariance before you compare groups.** A difference on a non-invariant scale can be an artifact of the instrument.
+- **Preregistration turns a pattern into a prediction** ([Ch. 23](23-sportspage.qmd)): call your shot before the data, and a hit finally counts.
+
+The final case study takes on the messiest reality of all - the data you *didn't* get - and asks whether the holes in a dataset can quietly change the answer.

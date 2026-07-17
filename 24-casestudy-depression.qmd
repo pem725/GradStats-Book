@@ -21,20 +21,39 @@ format(n_patterns(21, 3, 15), big.mark = ",")     # ways to score 15 on the BDI-
 
 ## Same Score, Different People
 
-The billion is abstract; two real students make it concrete. Here are two people from our student sample who **both scored exactly 15** - and could not look more different:
+::: {.callout-note}
+## A note on the data
+The clinical and student profiles behind this project are the authors' own research collections and are **not public**. So this chapter illustrates the *mechanics* on a **simulated** BDI-II-like sample - 21 items scored 0–3, generated from a single latent severity dimension so the symptoms covary the way real ones do - while every *finding* it quotes comes from the real six-sample analysis. Watch the machinery here; trust the numbers to the published study.
+:::
+
+The billion is abstract; two people make it concrete. First we build the simulated sample, then pull two who **both scored exactly 15**:
 
 ```{r}
-bdi <- read.csv("data/bdi_students.csv")           # 1,246 real BDI-II profiles, item level
+#| message: false
+set.seed(2026)
+N <- 1200; k <- 21
+symptoms <- c("sadness","pessimism","past_failure","loss_pleasure","guilt","punishment",
+              "self_dislike","self_critical","suicidal","crying","agitation","loss_interest",
+              "indecision","worthlessness","loss_energy","sleep","irritability","appetite",
+              "concentration","tiredness","loss_sex_interest")
+theta <- rnorm(N, mean = -0.5)                     # latent depression severity (one per person)
+diff  <- sort(rnorm(k, mean = 2.6, sd = 1.3))      # item "difficulty": most symptoms are rare
+bdi <- as.data.frame(sapply(seq_len(k), function(j) {
+  p <- plogis(outer(theta, diff[j] + c(-1.1, 0, 1.1), `-`))   # P(score >= 1, 2, 3)
+  rowSums(runif(N) < p)                                        # a graded 0..3 response
+}))
+names(bdi) <- symptoms
 totals <- rowSums(bdi)
-pair <- which(totals == 15)[c(1, 2)]
-t(bdi[pair, ])                                      # two profiles, identical total
+
+pair <- which(totals == 15)[c(1, 2)]               # two people, identical total of 15
+t(bdi[pair, ])
 ```
 
-One student's distress concentrates in self-punishment, self-dislike, and concentration; the other's is spread thinly across crying, lost pleasure, appetite, and fatigue. Same "15," different human beings, different clinical pictures. A sum score cannot tell them apart. The **profile** can.
+One person's distress concentrates in a few symptoms; the other's spreads thin across many. Same "15," different clinical pictures - and a sum score cannot tell them apart. The **profile** can.
 
 ## The Manifold Collapse
 
-If 4.4 trillion profiles are *possible*, how many actually *occur*? Almost none - because depression symptoms do not vary independently; they hang together. Count the distinct profiles in real data:
+If 4.4 trillion profiles are *possible*, how many actually *occur*? Almost none - because depression symptoms do not vary independently; they hang together. Count the distinct profiles:
 
 ```{r}
 key <- apply(bdi, 1, paste, collapse = "-")
@@ -43,7 +62,7 @@ c(people            = nrow(bdi),
   pct_unique        = round(100 * mean(!(duplicated(key) | duplicated(key, fromLast = TRUE))), 1))
 ```
 
-About **76% of these students have a profile no one else in the sample shares** (in the full six-sample analysis it was 79.7%). Of trillions of mathematically possible patterns, real people occupy a vanishingly thin sliver - what we called the **manifold collapse**. The space is huge; life uses almost none of it. Which raises the sharp question: are the profiles that *never* appear merely rare, or are some of them *impossible in principle* - incoherent given how depression actually works?
+Roughly **three-quarters have a profile no one else shares** - and in the real six-sample analysis it was **79.7%**. Even our tame simulation reproduces the effect: of trillions of mathematically possible patterns, people occupy a vanishingly thin sliver - what the study called the **manifold collapse**. The space is huge; life uses almost none of it. Which raises the sharp question: are the profiles that *never* appear merely rare, or are some of them *impossible in principle* - incoherent given how depression actually works?
 
 ## Antitypes: Profiles That Shouldn't Exist
 
