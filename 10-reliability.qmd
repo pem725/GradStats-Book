@@ -85,6 +85,57 @@ c(true_r = round(cor(Tx, Ty), 2), observed_r = round(cor(Ox, Oy), 2))
 
 The observed correlation is noticeably smaller than the true one. A real effect can hide behind a bad ruler - which means a null result might be a measurement failure, not the absence of an effect. Reliability is not bookkeeping; it is the difference between finding your effect and missing it.
 
+## A Real Scale, End to End
+
+Enough simulation - let's run the whole pipeline on real data: a 10-item scale (`x1`–`x10`) from the graduate GLM course (`data/moddat2.csv`, $n = 30$). Three moves: **key** the items, **estimate** $\alpha$, and check **which items earn their place**.
+
+Some items are worded in reverse, so a high true standing produces a *low* score - flip them first or they fight the rest of the scale and sink $\alpha$. We spot a reverse item by its *negative* item-rest correlation (it correlates the wrong way with the sum of the others):
+
+```{r}
+d <- read.csv("data/moddat2.csv")
+X <- as.matrix(d[, paste0("x", 1:10)])
+
+alpha_keyed <- function(X) {
+  r     <- sapply(seq_len(ncol(X)),                         # item-rest correlations
+                  function(j) cor(X[, j], rowSums(X[, -j, drop = FALSE])))
+  keys  <- ifelse(r < 0, -1, 1)                             # flip the reverse-worded items
+  Xk    <- sweep(X, 2, keys, `*`)
+  k     <- ncol(Xk)
+  alpha <- (k / (k - 1)) * (1 - sum(apply(Xk, 2, var)) / var(rowSums(Xk)))
+  list(alpha = alpha, keys = keys, scored = Xk)
+}
+a <- alpha_keyed(X)
+a$keys              # -1 marks a reverse-scored item
+round(a$alpha, 3)   # Cronbach's alpha for the keyed scale
+```
+
+A healthy $\alpha$. Now the classic "should I cut this item?" diagnostic - recompute $\alpha$ with each item *deleted*:
+
+```{r}
+drop <- sapply(1:10, function(j) alpha_keyed(X[, -j, drop = FALSE])$alpha)
+names(drop) <- colnames(X)
+round(drop, 3)
+```
+
+Every "alpha-if-deleted" value sits *below* the full-scale $\alpha$, so no item is dead weight - each one, even the weakest, adds more signal than noise. (Had any value come out *above* the full $\alpha$, that item would be a candidate for the chopping block: removing it would make the scale *more* reliable.)
+
+## Why Reliability Buys You Power
+
+Here is the payoff, and the link back to [statistical power](09-statisticalpower.qmd). Detection is the between-group signal over the within-group noise - and unreliability *is* that noise ($S^2_{error}$). Build the keyed scale score, then ask a real question of it - do women and men differ? - sizing the effect with Cohen's $d$:
+
+```{r}
+score <- rowSums(a$scored)                 # the keyed total score
+
+EScalc <- function(dv, cond) {             # McKnight's teaching function for Cohen's d
+  lv <- levels(factor(cond))
+  x1 <- dv[cond == lv[1]]; x2 <- dv[cond == lv[2]]
+  (mean(x1) - mean(x2)) / sqrt((var(x1) + var(x2)) / 2)
+}
+round(EScalc(score, d$sex), 2)
+```
+
+A large $d$ - but the point is *why* it was detectable: because the scale was reliable. Had $\alpha$ been 0.5 instead, half the total-score variance would be pure error, the groups would blur together, and the same real difference could sink below significance. **A reliable measure is the cheapest power you will ever buy** - you pay once, in the design, and it pays back in every analysis that follows. (In practice you'd reach for `psych::alpha(X, check.keys = TRUE)`, which does the keying, the drop statistics, and much more in one call - but now you know exactly what it is doing under the hood.)
+
 ::: {.callout-important}
 ## The Dartboard: Consistency ≠ Accuracy
 
