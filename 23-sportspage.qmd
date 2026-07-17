@@ -1,0 +1,66 @@
+# Statistics in the Wild: The Sports Page Way {#sportspage}
+
+Everything up to here was training. You have the tools now - distributions, estimation, the linear model, reliability, resampling, Bayes, and the craft of showing data honestly. What no chapter can hand you is **judgment**: which tool, when, and why - and, just as important, when *not* to reach for the fancy one. Judgment is learned the way any craft is learned: by watching someone work, seeing the decisions, and hearing why they went one way and not the other. That is what this last part of the book is - an apprenticeship. We stop explaining tools in the abstract and start using them in public, on real projects, with every choice laid bare.
+
+We begin with the friendliest lab I know: [The Sports Page](https://thesportspage.net/), a sister project to this book - a daily newsletter that takes one strange sports number and tells the truth about what it does and does not mean. Sports is a good teacher because the data are rich, the stakes are low, and the future arrives every single day to grade your predictions. If you can be honest about a baseball number, you can be honest about a clinical one.
+
+## Three Things You Can Do With Data
+
+The whole discipline reduces to three verbs, and the first commandment is to **always know which one you are doing**:
+
+1.  **Describe** what happened. This is easy - the data already know the answer. A batting average, a group mean, an $R^2$: all description.
+2.  **Predict** what will happen. This is harder, because the future is a real test you can fail. A forecast, a fitted model applied to new cases.
+3.  **Control** *why* it happens. This is hardest - it requires a mechanism, a cause, not just a curve that fits.
+
+Most sports writing stops at #1 and pretends it is doing #2. Most analytics stops at #2 and pretends it is doing #3. The single most useful habit you can build is to label your own work honestly: *this is description, this is prediction, this is a causal claim I have not earned.*
+
+::: {.callout-important}
+## The past is cheating
+Here is the idea that separates a describer from a forecaster: **any model flexible enough will fit the past perfectly, and that tells you almost nothing.** The past is a test with the answers printed on it. The real test - the only honest one - is predicting data you have not seen, and then *admitting it* when you were wrong. That is why The Sports Page grades every prediction it makes, on a schedule, in public. Being wrong is not failure; it is the data that improves the next model. A statistician who never publishes a falsifiable prediction never has to learn anything.
+:::
+
+## A Worked Judgment: The Hot Start Is a Mirage
+
+Every April, someone goes 6-for-9 and the papers anoint an MVP. Every April, they are wrong - and you already have the tools to know *why*. It is the same lesson as [statistical power](09-statisticalpower.qmd): small samples are wild. Watch what happens when we plot every hitter's performance against how many chances they have had:
+
+```{r}
+#| fig-cap: "OPS vs. plate appearances. Every extreme lives on the left — where the sample is tiny."
+#| fig-height: 3.6
+#| message: false
+library(ggplot2)
+h <- read.csv("data/mlb_hitters_2026.csv")   # a partial season, all hitters
+
+ggplot(h, aes(PA, OPS)) +
+  geom_point(alpha = 0.35, color = "steelblue") +
+  geom_hline(yintercept = median(h$OPS[h$PA >= 200]), color = "firebrick", linewidth = 0.8) +
+  labs(x = "Plate appearances", y = "OPS",
+       title = "The funnel: extremes only survive at small samples") +
+  theme_minimal(base_size = 12)
+```
+
+The plot is a **funnel**. On the right, where hitters have 200+ chances, everyone clusters near the league median (the red line). On the left, where a hitter has batted a handful of times, OPS ranges from near zero to the stratosphere. The numbers make it stark:
+
+```{r}
+c(sd_OPS_under_20_PA  = round(sd(h$OPS[h$PA <  20]),  2),   # tiny samples: huge spread
+  sd_OPS_over_200_PA  = round(sd(h$OPS[h$PA >= 200]), 2),   # big samples: tight
+  best_OPS            = round(max(h$OPS), 2),
+  its_plate_appearances = h$PA[which.max(h$OPS)])
+```
+
+The best OPS in the league belongs to someone with a single-digit number of at-bats. That is not a hitter who cracked the code; that is **noise wearing a crown**. The honest read: a hot start is *description* of a tiny sample, and mistaking it for *prediction* is the most common error in all of sports - and all of science. The player will "regress to the mean" not because of some mystical force, but because the extreme was mostly luck, and luck does not re-sign for next season.
+
+This is the entire apprenticeship in one figure. The math was easy (a standard deviation). The judgment - *knowing that the April headline is describing noise and pretending it is signal* - is the hard part, and the valuable one.
+
+## Describe, Predict, Control - On One Trend
+
+Return to the [strikeout revolution](21-graphics.qmd). Notice how the three verbs stack:
+
+- **Describe:** strikeouts per nine innings rose from about 5.4 to about 8.5 since 1985. (True, easy, and *only* a description.)
+- **Predict:** will it keep rising? You could fit a line and extrapolate - but now you owe the reader a *graded* forecast, and a humble one, because trends bend. Extrapolation is where flexible models go to embarrass themselves.
+- **Control:** *why* did it rise? Harder velocity, analytics rewarding the home-run-or-strikeout trade-off, bigger bullpens. Those are causal claims, and a line through the past cannot establish a single one of them - it can only describe the shadow they cast.
+
+Same data, three completely different epistemic commitments. Keeping them straight is not pedantry; it is the difference between analysis and astrology.
+
+## What Comes Next
+
+With the philosophy in hand, we turn to the real thing: published research, walked through end to end, with every decision on the table. You will watch measures get built and defended, watch a total score get caught throwing away information it should have kept, and watch missing data quietly change an answer. These are not toy examples - they are real studies, real datasets, and real judgment calls, some of which we would make differently today. That honesty is the point. Welcome to the apprenticeship; let's go to work.
