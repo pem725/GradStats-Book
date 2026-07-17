@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="A comprehensive graduate statistics book suitable for social and behavioral sciences. Our approach is to provide interested students a gentle guide to the rudiments of statistical estimation and inference.">
+
+<title>15&nbsp; Multiple Regression – Statistics by Us for You</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./16-ANOVAandGLM.html" rel="next">
+<link href="./14-bivariateregression.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-880c0979db5859ba2ed8f031540e3e61.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./12-GLMcovariance.html">Using Models</a></li><li class="breadcrumb-item"><a href="./15-MRC.html"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Multiple Regression</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Statistics by Us for You</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/pem725/GradStats-Book" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./author.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Authors</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">The Basics</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Variables and Distributions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-CTmeasures.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">The Best Guess</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-Dmeasures.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Dispersion and Uncertainty</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-datacleaning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Cleaning House</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Making Inferences with Data</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-zdistribution.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Expectation and Understanding: The Z-Distribution</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-covariance.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Covariance and Association</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-hypothesistesting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Testing Hypotheses with Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-statisticalpower.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Statistical Power: How to Find Things That May Not Be There</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Checking Our Data</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10-reliability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Reliability (not Validity) of Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-validity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Validity (not Reliability)</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./18-rasch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Measuring Like Ben Wright: Rasch in R, Python, and Julia</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Using Models</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-GLMcovariance.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Introducing the General Linear Model (GLM)</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13-pointbiserialcorrelation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Bridging the Gap: The Point Biserial Correlation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./14-bivariateregression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Simple Regression</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./15-MRC.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Multiple Regression</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./16-ANOVAandGLM.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">ANOVA and the General Linear Model</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./17-basicANOVA.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Basic ANOVA</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#learning-objectives" id="toc-learning-objectives" class="nav-link active" data-scroll-target="#learning-objectives"><span class="header-section-number">15.1</span> Learning Objectives</a></li>
+  <li><a href="#some-deliberately-tangled-data" id="toc-some-deliberately-tangled-data" class="nav-link" data-scroll-target="#some-deliberately-tangled-data"><span class="header-section-number">15.2</span> Some Deliberately Tangled Data</a></li>
+  <li><a href="#three-things-people-confuse" id="toc-three-things-people-confuse" class="nav-link" data-scroll-target="#three-things-people-confuse"><span class="header-section-number">15.3</span> Three Things People Confuse</a></li>
+  <li><a href="#r-r2-and-the-shrunken-r2" id="toc-r-r2-and-the-shrunken-r2" class="nav-link" data-scroll-target="#r-r2-and-the-shrunken-r2"><span class="header-section-number">15.4</span> <span class="math inline">\(R\)</span>, <span class="math inline">\(R^2\)</span>, and the “Shrunken” <span class="math inline">\(R^2\)</span></a></li>
+  <li><a href="#testing-the-coefficients-rebuilding-the-table-again" id="toc-testing-the-coefficients-rebuilding-the-table-again" class="nav-link" data-scroll-target="#testing-the-coefficients-rebuilding-the-table-again"><span class="header-section-number">15.5</span> Testing the Coefficients (Rebuilding the Table Again)</a></li>
+  <li><a href="#multicollinearity-seeing-the-damage" id="toc-multicollinearity-seeing-the-damage" class="nav-link" data-scroll-target="#multicollinearity-seeing-the-damage"><span class="header-section-number">15.6</span> Multicollinearity: Seeing the Damage</a></li>
+  <li><a href="#six-ways-to-deal-with-collinearity" id="toc-six-ways-to-deal-with-collinearity" class="nav-link" data-scroll-target="#six-ways-to-deal-with-collinearity"><span class="header-section-number">15.7</span> Six Ways to Deal With Collinearity</a></li>
+  <li><a href="#a-real-example-predicting-college-gpa" id="toc-a-real-example-predicting-college-gpa" class="nav-link" data-scroll-target="#a-real-example-predicting-college-gpa"><span class="header-section-number">15.8</span> A Real Example: Predicting College GPA</a></li>
+  <li><a href="#where-we-go-next" id="toc-where-we-go-next" class="nav-link" data-scroll-target="#where-we-go-next"><span class="header-section-number">15.9</span> Where We Go Next</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./12-GLMcovariance.html">Using Models</a></li><li class="breadcrumb-item"><a href="./15-MRC.html"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Multiple Regression</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Multiple Regression</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>One predictor is rarely enough. The world is multivariate: college GPA depends on high-school GPA <em>and</em> study time <em>and</em> sleep <em>and</em> a dozen other things. Multiple regression (often called <strong>MRC</strong>, for Multiple Regression/Correlation) is simply the line from the last chapter grown a dimension:</p>
+<p><span class="math display">\[y = b_1 x_1 + b_2 x_2 + \cdots + b_k x_k + a\]</span></p>
+<p>The logic does not change one bit. We still minimize the sum of squared residuals, and we still quantify our uncertainty about every coefficient. What <em>does</em> change - and what trips up almost everyone - is what a coefficient now <strong>means</strong> when the predictors are tangled up with each other. That tangle is the whole story of this chapter.</p>
+<section id="learning-objectives" class="level2" data-number="15.1">
+<h2 data-number="15.1" class="anchored" data-anchor-id="learning-objectives"><span class="header-section-number">15.1</span> Learning Objectives</h2>
+<ol type="1">
+<li>Understand what a regression coefficient means when other predictors are present (partialling).</li>
+<li>Distinguish the semipartial correlation, the partial correlation, and the standardized coefficient.</li>
+<li>Interpret <span class="math inline">\(R\)</span>, <span class="math inline">\(R^2\)</span>, and adjusted <span class="math inline">\(R^2\)</span> as ratios of variance.</li>
+<li>Diagnose multicollinearity with the VIF and know your options for dealing with it.</li>
+</ol>
+</section>
+<section id="some-deliberately-tangled-data" class="level2" data-number="15.2">
+<h2 data-number="15.2" class="anchored" data-anchor-id="some-deliberately-tangled-data"><span class="header-section-number">15.2</span> Some Deliberately Tangled Data</h2>
+<p>To see the interesting behavior, we need predictors that are correlated with each other. The cleanest way to <em>manufacture</em> that is to build them from a shared source, then add noise - so we know the truth going in.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1936</span>)  <span class="co"># Fisher's "The Design of Experiments"</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>base <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">100</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>y  <span class="ot">&lt;-</span> base <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">100</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>x1 <span class="ot">&lt;-</span> base <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">100</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>x2 <span class="ot">&lt;-</span> base <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">100</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(y, x1, x2)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># x1 and x2 are correlated because they share 'base'</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">cor</span>(dat), <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      y   x1   x2
+y  1.00 0.51 0.56
+x1 0.51 1.00 0.57
+x2 0.56 0.57 1.00</code></pre>
+</div>
+</div>
+<p>Now fit the two-predictor model:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>lm3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2, <span class="at">data =</span> dat)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(lm3)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(Intercept)          x1          x2 
+-0.06525968  0.27246178  0.38880552 </code></pre>
+</div>
+</div>
+<p>Here is the puzzle that drives the chapter. If you regress <code>y</code> on <code>x1</code> <em>alone</em>, you get one slope. In the joint model above you get a <strong>different</strong> slope. Why? Because in the joint model, <code>b1</code> is the effect of <code>x1</code> <em>with <code>x2</code> held constant</em> - it has been <strong>partialled</strong>. R did not lie to you in either model; the two slopes answer two different questions.</p>
+</section>
+<section id="three-things-people-confuse" class="level2" data-number="15.3">
+<h2 data-number="15.3" class="anchored" data-anchor-id="three-things-people-confuse"><span class="header-section-number">15.3</span> Three Things People Confuse</h2>
+<p>When predictors overlap, there are three distinct quantities, and sloppy language treats them as one. Picture the classic Venn diagram from Cohen, Cohen, West, and Aiken <span class="citation" data-cites="aiken_applied_2002">(<a href="#ref-aiken_applied_2002" role="doc-biblioref">Aiken 2002</a>)</span>: circle <span class="math inline">\(Y\)</span> overlaps circles <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_2\)</span>, and <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_2\)</span> overlap each other. Label the piece of <span class="math inline">\(Y\)</span> that <em>only</em> <span class="math inline">\(X_1\)</span> explains as area <span class="math inline">\(a\)</span>, and the piece <span class="math inline">\(Y\)</span> has left over (unexplained) as area <span class="math inline">\(e\)</span>.</p>
+<ul>
+<li><strong>Semipartial correlation</strong> <span class="math inline">\(sr_1\)</span>: the unique slice, <span class="math inline">\(sr_1^2 = a\)</span>. “How much of <em>all</em> of Y’s variance does <span class="math inline">\(x_1\)</span> uniquely explain?”</li>
+<li><strong>Partial correlation</strong> <span class="math inline">\(pr_1\)</span>: the unique slice relative to what is <em>left to explain</em>, <span class="math inline">\(pr_1^2 = \frac{a}{a+e}\)</span>. “Of the Y variance not already explained by <span class="math inline">\(x_2\)</span>, how much does <span class="math inline">\(x_1\)</span> explain?”</li>
+<li><strong>Standardized regression coefficient</strong> <span class="math inline">\(\beta_1\)</span>: the slope R reports when everything is standardized. This is what <code>lm()</code> gives you.</li>
+</ul>
+<p>All three are built from the same three correlations, but they are <strong>not</strong> the same number. Here they are, by formula:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>r_y1 <span class="ot">&lt;-</span> <span class="fu">cor</span>(x1, y); r_y2 <span class="ot">&lt;-</span> <span class="fu">cor</span>(x2, y); r_12 <span class="ot">&lt;-</span> <span class="fu">cor</span>(x1, x2)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># semipartial correlation of x1 (unique slice = area a)</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>sr1 <span class="ot">&lt;-</span> (r_y1 <span class="sc">-</span> r_y2 <span class="sc">*</span> r_12) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="dv">1</span> <span class="sc">-</span> r_12<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># partial correlation of x1 (a / (a + e))</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>pr1 <span class="ot">&lt;-</span> (r_y1 <span class="sc">-</span> r_y2 <span class="sc">*</span> r_12) <span class="sc">/</span> <span class="fu">sqrt</span>((<span class="dv">1</span> <span class="sc">-</span> r_y2<span class="sc">^</span><span class="dv">2</span>) <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> r_12<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co"># standardized regression coefficient (beta) for x1</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>beta1 <span class="ot">&lt;-</span> (r_y1 <span class="sc">-</span> r_y2 <span class="sc">*</span> r_12) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> r_12<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">semipartial =</span> sr1, <span class="at">partial =</span> pr1, <span class="at">beta =</span> beta1), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>semipartial     partial        beta 
+      0.234       0.282       0.284 </code></pre>
+</div>
+</div>
+<p>Notice they share the same numerator and differ only in the denominator - which is exactly why they get muddled. Let us confirm that <span class="math inline">\(\beta_1\)</span> is really the standardized slope R reports:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>lm3z <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">scale</span>(y) <span class="sc">~</span> <span class="fu">scale</span>(x1) <span class="sc">+</span> <span class="fu">scale</span>(x2), <span class="at">data =</span> dat)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">coef</span>(lm3z)[[<span class="st">"scale(x1)"</span>]], <span class="dv">3</span>)   <span class="co"># compare to beta1 above</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.284</code></pre>
+</div>
+</div>
+<p>Same number. So <strong>the coefficient <code>lm()</code> reports is a <em>partial</em> effect</strong> - it controls for the other predictors. That is the single most important sentence in multiple regression. When someone says “controlling for X,” this is the machinery they are invoking.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span><span class="math inline">\(sr\)</span> vs.&nbsp;<span class="math inline">\(pr\)</span> vs.&nbsp;<span class="math inline">\(\beta\)</span> - Say It Out Loud
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>The <strong>semipartial</strong> (<span class="math inline">\(sr\)</span>) is <span class="math inline">\(x_1\)</span>’s unique contribution measured against <em>all</em> of Y. Square it and you get the increase in <span class="math inline">\(R^2\)</span> from adding <span class="math inline">\(x_1\)</span> last. This is usually the one you want to report.</li>
+<li>The <strong>partial</strong> (<span class="math inline">\(pr\)</span>) measures the same unique contribution but against only the <em>unexplained</em> part of Y, so it is always at least as large in magnitude as the semipartial.</li>
+<li>The <strong>standardized coefficient</strong> (<span class="math inline">\(\beta\)</span>) is the slope, in standard-deviation units, and is what the model uses to predict.</li>
+</ul>
+<p>Three questions, three numbers. Do not let a textbook (or a reviewer) tell you they are interchangeable.</p>
+</div>
+</div>
+</section>
+<section id="r-r2-and-the-shrunken-r2" class="level2" data-number="15.4">
+<h2 data-number="15.4" class="anchored" data-anchor-id="r-r2-and-the-shrunken-r2"><span class="header-section-number">15.4</span> <span class="math inline">\(R\)</span>, <span class="math inline">\(R^2\)</span>, and the “Shrunken” <span class="math inline">\(R^2\)</span></h2>
+<p>Statistics is about variance, and <span class="math inline">\(R^2\)</span> is the cleanest variance story we have. <strong><span class="math inline">\(R\)</span></strong> is just the correlation between what we observed and what the model predicts; <strong><span class="math inline">\(R^2\)</span></strong> is the ratio of predicted-to-total variance:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>R  <span class="ot">&lt;-</span> <span class="fu">cor</span>(y, <span class="fu">predict</span>(lm3))</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>R2 <span class="ot">&lt;-</span> <span class="fu">var</span>(<span class="fu">predict</span>(lm3)) <span class="sc">/</span> <span class="fu">var</span>(y)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">R =</span> R, <span class="at">R2 =</span> R2, <span class="at">R2_from_summary =</span> <span class="fu">summary</span>(lm3)<span class="sc">$</span>r.squared), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>              R              R2 R2_from_summary 
+          0.607           0.368           0.368 </code></pre>
+</div>
+</div>
+<p>That is it: <span class="math inline">\(R^2 = \frac{\text{var}(\hat{y})}{\text{var}(y)}\)</span> - the fraction of Y’s variance the model reproduces. But <span class="math inline">\(R^2\)</span> is a <strong>greedy optimist</strong>: add any predictor, even pure noise, and it never goes down. So we penalize it for complexity to get the <strong>adjusted (or “shrunken”) <span class="math inline">\(R^2\)</span></strong>:</p>
+<p><span class="math display">\[R^2_{adj} = 1 - (1 - R^2)\,\frac{n - 1}{n - k - 1}\]</span></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(y); k <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>R2_adj <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> (<span class="dv">1</span> <span class="sc">-</span> R2) <span class="sc">*</span> (n <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">/</span> (n <span class="sc">-</span> k <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">R2_adj =</span> R2_adj, <span class="at">adj_from_summary =</span> <span class="fu">summary</span>(lm3)<span class="sc">$</span>adj.r.squared), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          R2_adj adj_from_summary 
+           0.355            0.355 </code></pre>
+</div>
+</div>
+<p>The adjustment is why you should <em>never</em> judge a model by raw <span class="math inline">\(R^2\)</span> alone. Throw in enough predictors and you can make <span class="math inline">\(R^2\)</span> beautiful and the model worthless.</p>
+</section>
+<section id="testing-the-coefficients-rebuilding-the-table-again" class="level2" data-number="15.5">
+<h2 data-number="15.5" class="anchored" data-anchor-id="testing-the-coefficients-rebuilding-the-table-again"><span class="header-section-number">15.5</span> Testing the Coefficients (Rebuilding the Table Again)</h2>
+<p>As always, we do not trust the machine until we can reproduce it. The standard error of a coefficient is:</p>
+<p><span class="math display">\[SE_{b_1} = \frac{s_y}{s_{x_1}} \cdot \sqrt{\text{VIF}_1} \cdot \sqrt{\frac{1 - R^2}{n - k - 1}}\]</span></p>
+<p>where the <strong>variance inflation factor</strong> <span class="math inline">\(\text{VIF}_1 = \frac{1}{1 - R^2_1}\)</span>, and <span class="math inline">\(R^2_1\)</span> comes from regressing <span class="math inline">\(x_1\)</span> on all the <em>other</em> predictors. Watch:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>R2_1  <span class="ot">&lt;-</span> <span class="fu">summary</span>(<span class="fu">lm</span>(x1 <span class="sc">~</span> x2, <span class="at">data =</span> dat))<span class="sc">$</span>r.squared   <span class="co"># x1 explained by x2</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>VIF1  <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> R2_1)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>SEb1 <span class="ot">&lt;-</span> (<span class="fu">sd</span>(y) <span class="sc">/</span> <span class="fu">sd</span>(x1)) <span class="sc">*</span> <span class="fu">sqrt</span>(VIF1) <span class="sc">*</span> <span class="fu">sqrt</span>((<span class="dv">1</span> <span class="sc">-</span> R2) <span class="sc">/</span> (n <span class="sc">-</span> k <span class="sc">-</span> <span class="dv">1</span>))</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>b1   <span class="ot">&lt;-</span> <span class="fu">coef</span>(lm3)[[<span class="st">"x1"</span>]]</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>t1   <span class="ot">&lt;-</span> b1 <span class="sc">/</span> SEb1</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>p1   <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">pt</span>(<span class="sc">-</span><span class="fu">abs</span>(t1), <span class="at">df =</span> n <span class="sc">-</span> k <span class="sc">-</span> <span class="dv">1</span>)      <span class="co"># df = n - k - 1, NOT n - 1</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">SE =</span> SEb1, <span class="at">t =</span> t1, <span class="at">p =</span> p1), <span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    SE      t      p 
+0.0941 2.8941 0.0047 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm3)<span class="sc">$</span>coefficients[<span class="st">"x1"</span>, ]              <span class="co"># compare</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Estimate  Std. Error     t value    Pr(&gt;|t|) 
+0.272461785 0.094143554 2.894109837 0.004696413 </code></pre>
+</div>
+</div>
+<p>The by-hand values match R’s table. Two things to burn in:</p>
+<ol type="1">
+<li>The degrees of freedom for a coefficient’s <span class="math inline">\(t\)</span> test are <span class="math inline">\(n - k - 1\)</span> - we spend one df per predictor <strong>and</strong> one for the intercept. (An older version of this lecture used <span class="math inline">\(n - 1\)</span> here; that is wrong, and with several predictors it matters.)</li>
+<li>The <strong>VIF sits right inside the standard error</strong>. When predictors are collinear, VIF climbs, the SE inflates, <span class="math inline">\(t\)</span> shrinks, and your once-significant predictor goes quiet - even though nothing about the <em>relationship</em> changed. Collinearity does not bias your slopes; it makes them <strong>imprecise</strong>.</li>
+</ol>
+<p>For the whole model, the omnibus test is an <span class="math inline">\(F\)</span> built from <span class="math inline">\(R^2\)</span>:</p>
+<p><span class="math display">\[F = \frac{R^2 / k}{(1 - R^2)/(n - k - 1)} \quad \text{with } df_1 = k,\ df_2 = n - k - 1\]</span></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>Fmodel <span class="ot">&lt;-</span> (R2 <span class="sc">/</span> k) <span class="sc">/</span> ((<span class="dv">1</span> <span class="sc">-</span> R2) <span class="sc">/</span> (n <span class="sc">-</span> k <span class="sc">-</span> <span class="dv">1</span>))</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>pF     <span class="ot">&lt;-</span> <span class="fu">pf</span>(Fmodel, <span class="at">df1 =</span> k, <span class="at">df2 =</span> n <span class="sc">-</span> k <span class="sc">-</span> <span class="dv">1</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">F =</span> Fmodel, <span class="at">p =</span> pF), <span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      F       p 
+28.2781  0.0000 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm3)<span class="sc">$</span>fstatistic          <span class="co"># compare F and its df</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  value   numdf   dendf 
+28.2781  2.0000 97.0000 </code></pre>
+</div>
+</div>
+</section>
+<section id="multicollinearity-seeing-the-damage" class="level2" data-number="15.6">
+<h2 data-number="15.6" class="anchored" data-anchor-id="multicollinearity-seeing-the-damage"><span class="header-section-number">15.6</span> Multicollinearity: Seeing the Damage</h2>
+<p>Let us watch the VIF do its dirty work directly. As two predictors become more correlated, the VIF explodes:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">curve</span>(<span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> x<span class="sc">^</span><span class="dv">2</span>), <span class="at">from =</span> <span class="dv">0</span>, <span class="at">to =</span> <span class="fl">0.99</span>, <span class="at">n =</span> <span class="dv">500</span>,</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">xlab =</span> <span class="st">"correlation between X1 and X2"</span>, <span class="at">ylab =</span> <span class="st">"VIF"</span>,</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">main =</span> <span class="st">"Collinearity inflates the variance of your estimates"</span>)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">10</span>, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">lty =</span> <span class="dv">2</span>)   <span class="co"># a common (rough) rule-of-thumb threshold</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="15-MRC_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Past a correlation of about 0.95 the curve rockets skyward. A predictor that is 95% predictable from the others carries almost no <em>unique</em> information, so the model cannot pin down its slope. The red line marks a rough <span class="math inline">\(\text{VIF} = 10\)</span> rule of thumb - but treat it as a smoke alarm, not a law.</p>
+</section>
+<section id="six-ways-to-deal-with-collinearity" class="level2" data-number="15.7">
+<h2 data-number="15.7" class="anchored" data-anchor-id="six-ways-to-deal-with-collinearity"><span class="header-section-number">15.7</span> Six Ways to Deal With Collinearity</h2>
+<p>There is no single fix; there are trade-offs. In rough order of how often they are the <em>right</em> call:</p>
+<ol type="1">
+<li><strong>Delete a redundant predictor.</strong> If two variables measure nearly the same thing, you probably do not need both. Cheapest fix, but you lose whatever unique signal was there.</li>
+<li><strong>Combine them.</strong> Average the standardized predictors into a single composite: <code>rowMeans(scale(cbind(x1, x2)))</code>. Often the most defensible move when the predictors are indicators of one underlying construct.</li>
+<li><strong>Use a shrinkage method</strong> (e.g., ridge regression), which deliberately trades a little bias for a lot of stability.</li>
+<li><strong>Reduce to principal components</strong> and regress on those - orthogonal by construction, so VIF becomes 1, at the cost of interpretability.</li>
+<li><strong>Center the predictors</strong> (subtract the mean). This does <em>nothing</em> for correlational collinearity, but it removes the <em>nonessential</em> collinearity created by interaction and polynomial terms - which is why we center before building those.</li>
+<li><strong>Impose logical order.</strong> Sometimes theory tells you which predictor comes “first,” and you enter them hierarchically rather than pretending they compete on equal footing.</li>
+</ol>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Combining Predictors, In Code
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>composite <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(<span class="fu">data.frame</span>(<span class="at">x1z =</span> <span class="fu">scale</span>(x1), <span class="at">x2z =</span> <span class="fu">scale</span>(x2)))</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">summary</span>(<span class="fu">lm</span>(y <span class="sc">~</span> composite))<span class="sc">$</span>coefficients, <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)   -0.039      0.112  -0.346     0.73
+composite      0.956      0.127   7.513     0.00</code></pre>
+</div>
+</div>
+<p>One predictor, no collinearity, and often a cleaner story than two fighting over the same variance.</p>
+</div>
+</div>
+</section>
+<section id="a-real-example-predicting-college-gpa" class="level2" data-number="15.8">
+<h2 data-number="15.8" class="anchored" data-anchor-id="a-real-example-predicting-college-gpa"><span class="header-section-number">15.8</span> A Real Example: Predicting College GPA</h2>
+<p>Let’s leave the simulated world and put all of this to work on the real GPA dataset from the <a href="./14-bivariateregression.html">last chapter</a>. There we predicted college GPA from high-school GPA alone. Now we add the other things an admissions office actually has: SAT total and the quality of the applicant’s letters of recommendation.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>gpa <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/gpa.csv"</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(CollegeGPA <span class="sc">~</span> HSGPA <span class="sc">+</span> SATtotal <span class="sc">+</span> QLOR, <span class="at">data =</span> gpa)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">summary</span>(fit)<span class="sc">$</span>coefficients, <span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)  -0.1533     0.3229 -0.4746   0.6362
+HSGPA         0.3764     0.1143  3.2938   0.0014
+SATtotal      0.0012     0.0003  4.0464   0.0001
+QLOR          0.0227     0.0510  0.4449   0.6574</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">R2 =</span> <span class="fu">summary</span>(fit)<span class="sc">$</span>r.squared, <span class="at">adj_R2 =</span> <span class="fu">summary</span>(fit)<span class="sc">$</span>adj.r.squared)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       R2    adj_R2 
+0.3997354 0.3809771 </code></pre>
+</div>
+</div>
+<p>Every coefficient here is a <strong>partial</strong> effect - the pull of that predictor with the other two held constant. Notice HSGPA’s slope <em>shrank</em> from its bivariate value: some of what looked like “high-school GPA” was really SAT and letter quality traveling alongside it. That is partialling doing its job.</p>
+<p>Now check for collinearity by hand, exactly as we defined it - each VIF is <span class="math inline">\(1/(1-R^2_j)\)</span> where <span class="math inline">\(R^2_j\)</span> regresses that predictor on the others:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>preds <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"HSGPA"</span>, <span class="st">"SATtotal"</span>, <span class="st">"QLOR"</span>)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>vif <span class="ot">&lt;-</span> <span class="fu">sapply</span>(preds, <span class="cf">function</span>(p) {</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  others <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(preds, p)</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  r2 <span class="ot">&lt;-</span> <span class="fu">summary</span>(<span class="fu">lm</span>(<span class="fu">as.formula</span>(<span class="fu">paste</span>(p, <span class="st">"~"</span>, <span class="fu">paste</span>(others, <span class="at">collapse =</span> <span class="st">"+"</span>))), <span class="at">data =</span> gpa))<span class="sc">$</span>r.squared</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> r2)</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(vif, <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   HSGPA SATtotal     QLOR 
+    1.94     1.24     1.66 </code></pre>
+</div>
+</div>
+<p>All three VIFs sit near 1 - our predictors carry mostly <em>distinct</em> information, so the model can pin down each slope cleanly. (Recall the HSGPA–QLOR correlation was the highest at 0.63; that is real but nowhere near the danger zone.) This is the whole workflow in miniature: fit, read the partial effects, and check that collinearity has not quietly wrecked your standard errors.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Do One Yourself
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Simulate three predictors where <code>x3</code> is nearly a copy of <code>x1</code> (e.g., <code>x3 &lt;- x1 + rnorm(100, 0, 0.2)</code>), plus an outcome <code>y</code> that truly depends on <code>x1</code> and <code>x2</code>.</p>
+<ol type="1">
+<li>Fit <code>y ~ x1 + x2 + x3</code> and report the coefficients, their standard errors, and each VIF (compute the VIFs by hand with <code>1/(1 - R2_j)</code>).</li>
+<li>Now drop <code>x3</code> and refit. What happened to the standard error and <span class="math inline">\(t\)</span> for <code>x1</code>? Explain <em>why</em> in terms of the VIF sitting inside the SE.</li>
+<li>Compute the semipartial correlation for <code>x2</code> in the full model, and confirm its square equals the drop in <span class="math inline">\(R^2\)</span> when you remove <code>x2</code>.</li>
+</ol>
+<p>If you can explain part 2 to a skeptical colleague, you understand multicollinearity better than the software does.</p>
+</div>
+</div>
+</section>
+<section id="where-we-go-next" class="level2" data-number="15.9">
+<h2 data-number="15.9" class="anchored" data-anchor-id="where-we-go-next"><span class="header-section-number">15.9</span> Where We Go Next</h2>
+<p>We have been treating every predictor as continuous. But some of the most important predictors are <strong>categorical</strong> - treatment vs.&nbsp;control, cat vs.&nbsp;dog, before vs.&nbsp;after. It turns out ANOVA is not a separate technique at all; it is just multiple regression with cleverly coded categorical predictors. That unification - the General Linear Model - is the subject of the next chapter, <a href="./16-ANOVAandGLM.html">ANOVA and the GLM</a>.</p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-aiken_applied_2002" class="csl-entry" role="listitem">
+Aiken, Stephen G. West, Patricia Cohen. 2002. <em>Applied <span>Multiple</span> <span>Regression</span>/<span>Correlation</span> <span>Analysis</span> for the <span>Behavioral</span> <span>Sciences</span></em>. 3rd ed. Routledge. <a href="https://doi.org/10.4324/9780203774441">https://doi.org/10.4324/9780203774441</a>.
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./14-bivariateregression.html" class="pagination-link" aria-label="Simple Regression">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Simple Regression</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./16-ANOVAandGLM.html" class="pagination-link" aria-label="ANOVA and the General Linear Model">
+        <span class="nav-page-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">ANOVA and the General Linear Model</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
