@@ -562,8 +562,9 @@ window.Quarto = {
   </ul></li>
   <li><a href="#nonsense-coding" id="toc-nonsense-coding" class="nav-link" data-scroll-target="#nonsense-coding"><span class="header-section-number">18.7</span> Nonsense Coding</a></li>
   <li><a href="#summary-of-all-schemes" id="toc-summary-of-all-schemes" class="nav-link" data-scroll-target="#summary-of-all-schemes"><span class="header-section-number">18.8</span> Summary of All Schemes</a></li>
-  <li><a href="#challenge" id="toc-challenge" class="nav-link" data-scroll-target="#challenge"><span class="header-section-number">18.9</span> Challenge</a></li>
-  <li><a href="#where-we-go-next" id="toc-where-we-go-next" class="nav-link" data-scroll-target="#where-we-go-next"><span class="header-section-number">18.10</span> Where We Go Next</a></li>
+  <li><a href="#a-real-example-data-from-the-glm-course" id="toc-a-real-example-data-from-the-glm-course" class="nav-link" data-scroll-target="#a-real-example-data-from-the-glm-course"><span class="header-section-number">18.9</span> A Real Example: Data From the GLM Course</a></li>
+  <li><a href="#challenge" id="toc-challenge" class="nav-link" data-scroll-target="#challenge"><span class="header-section-number">18.10</span> Challenge</a></li>
+  <li><a href="#where-we-go-next" id="toc-where-we-go-next" class="nav-link" data-scroll-target="#where-we-go-next"><span class="header-section-number">18.11</span> Where We Go Next</a></li>
   </ul>
 </nav>
     </div>
@@ -1003,8 +1004,54 @@ dog              -0.5         0.0       -0.5</code></pre>
 </table>
 <p>Across every row the <span class="math inline">\(R^2\)</span>, <span class="math inline">\(F\)</span>, and fitted values are identical. The columns “Intercept means” and “A slope means” are the only things that move.</p>
 </section>
-<section id="challenge" class="level2" data-number="18.9">
-<h2 data-number="18.9" class="anchored" data-anchor-id="challenge"><span class="header-section-number">18.9</span> Challenge</h2>
+<section id="a-real-example-data-from-the-glm-course" class="level2" data-number="18.9">
+<h2 data-number="18.9" class="anchored" data-anchor-id="a-real-example-data-from-the-glm-course"><span class="header-section-number">18.9</span> A Real Example: Data From the GLM Course</h2>
+<p>Simulated pets are friendly, but let’s prove the machinery on real data - the Module 3 dataset from the graduate GLM course (<code>data/mod3data.csv</code>). It has an outcome <code>y1</code> and a genuine four-level grouping factor, <code>f3</code>, with unequal cells (real data is always lumpy):</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>d3 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/mod3data.csv"</span>)</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>d3<span class="sc">$</span>grp <span class="ot">&lt;-</span> <span class="fu">factor</span>(d3<span class="sc">$</span>f3, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>, <span class="st">"D"</span>))</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>mu3 <span class="ot">&lt;-</span> <span class="fu">tapply</span>(d3<span class="sc">$</span>y1, d3<span class="sc">$</span>grp, mean)</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(mu3, <span class="dv">3</span>)          <span class="co"># the four real group means</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     A      B      C      D 
+ 0.506 -0.334 -0.132 -0.019 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(d3<span class="sc">$</span>grp)          <span class="co"># unequal cell sizes</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ A  B  C  D 
+ 5  7 11  7 </code></pre>
+</div>
+</div>
+<p>Dummy-code it (reference = group A) and read the coefficients straight off those means, exactly as we did for the pets:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">contrasts</span>(d3<span class="sc">$</span>grp) <span class="ot">&lt;-</span> <span class="fu">contr.treatment</span>(<span class="dv">4</span>, <span class="at">base =</span> <span class="dv">1</span>)</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>m_real <span class="ot">&lt;-</span> <span class="fu">lm</span>(y1 <span class="sc">~</span> grp, <span class="at">data =</span> d3)</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">coef</span>(m_real), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(Intercept)        grp2        grp3        grp4 
+      0.506      -0.840      -0.638      -0.525 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">intercept_is_A    =</span> <span class="fu">all.equal</span>(<span class="fu">unname</span>(<span class="fu">coef</span>(m_real)[<span class="dv">1</span>]), <span class="fu">unname</span>(mu3[<span class="st">"A"</span>])),</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">grp2_is_B_minus_A =</span> <span class="fu">all.equal</span>(<span class="fu">unname</span>(<span class="fu">coef</span>(m_real)[<span class="st">"grp2"</span>]), <span class="fu">unname</span>(mu3[<span class="st">"B"</span>] <span class="sc">-</span> mu3[<span class="st">"A"</span>])))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   intercept_is_A grp2_is_B_minus_A 
+             TRUE              TRUE </code></pre>
+</div>
+</div>
+<p>Both <code>TRUE</code> - the intercept is group A’s mean, each slope a group’s mean minus A’s. Switch to effects coding and the intercept becomes the grand mean of the four group means, unequal cells and all:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">contrasts</span>(d3<span class="sc">$</span>grp) <span class="ot">&lt;-</span> <span class="fu">contr.sum</span>(<span class="dv">4</span>)</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>m_real_eff <span class="ot">&lt;-</span> <span class="fu">lm</span>(y1 <span class="sc">~</span> grp, <span class="at">data =</span> d3)</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a><span class="fu">all.equal</span>(<span class="fu">unname</span>(<span class="fu">coef</span>(m_real_eff)[<span class="dv">1</span>]), <span class="fu">mean</span>(mu3))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+<p><code>TRUE</code>. Real data, real (unbalanced) cells - and every rule from the pet example holds without a scratch, because the arithmetic never cared whether the groups were house pets or the conditions of an actual study.</p>
+</section>
+<section id="challenge" class="level2" data-number="18.10">
+<h2 data-number="18.10" class="anchored" data-anchor-id="challenge"><span class="header-section-number">18.10</span> Challenge</h2>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1023,8 +1070,8 @@ dog              -0.5         0.0       -0.5</code></pre>
 </div>
 </div>
 </section>
-<section id="where-we-go-next" class="level2" data-number="18.10">
-<h2 data-number="18.10" class="anchored" data-anchor-id="where-we-go-next"><span class="header-section-number">18.10</span> Where We Go Next</h2>
+<section id="where-we-go-next" class="level2" data-number="18.11">
+<h2 data-number="18.11" class="anchored" data-anchor-id="where-we-go-next"><span class="header-section-number">18.11</span> Where We Go Next</h2>
 <p>Coding is where categorical data enter the linear model, and where careful thought pays off in coefficients you can actually explain. But every method so far - every mean, every <span class="math inline">\(t\)</span>, every <span class="math inline">\(b\)</span> - has leaned on assumptions: normal errors, equal variances, large samples. What happens when those assumptions fail? That is the subject of the <a href="./20-beyond.html">next part</a>, where we meet resampling, robust estimation, and Bayesian inference - three honest answers to “but what if the normal curve is lying to me?”</p>
 
 
