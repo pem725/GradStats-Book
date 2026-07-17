@@ -59,7 +59,26 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -685,7 +704,21 @@ window.Quarto = {
 <h2 data-number="9.3" class="anchored" data-anchor-id="reliability-is-a-ratio-of-variances"><span class="header-section-number">9.3</span> Reliability Is a Ratio of Variances</h2>
 <p><strong>Reliability</strong> (<span class="math inline">\(\rho\)</span>) is the fraction of the observed variance that is <em>real</em> - the signal share:</p>
 <p><span class="math display">\[\rho = \frac{\text{var}(T)}{\text{var}(O)} = \frac{\text{var}(T)}{\text{var}(T) + \text{var}(E)}\]</span></p>
-<p>It runs from 0 (all noise) to 1 (all signal). Let’s build a world where we <em>know</em> the true scores and confirm the definition:</p>
+<p>It runs from 0 (all noise) to 1 (all signal).</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>From the Field
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Reliability is necessary but not sufficient: a consistent measure can still be <em>meaningless</em> until it is anchored to something real. Sechrest, McKnight, and McKnight <span class="citation" data-cites="SechrestMcKnight1996">(<a href="#ref-SechrestMcKnight1996" role="doc-biblioref">Sechrest et al. 1996</a>)</span> made exactly this argument for psychotherapy-outcome measures - <strong>calibration</strong>, not just consistency, is what lets a score be interpreted. It is the same warning the dartboard makes later in this chapter, made in print.</p>
+</div>
+</div>
+<p>Let’s build a world where we <em>know</em> the true scores and confirm the definition:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">8</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>truth <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">1000</span>, <span class="dv">100</span>, <span class="dv">15</span>)      <span class="co"># the true scores we wish we could see</span></span>
@@ -858,6 +891,11 @@ window.Quarto = {
 <p>A reliable sensor is consistent, but consistency is worthless if it is consistently measuring the <em>wrong thing</em>. That is the bullseye question - are we measuring what we intend? - and it is the subject of <a href="./11-validity.html">validity</a>.</p>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-SechrestMcKnight1996" class="csl-entry" role="listitem">
+Sechrest, Lee, Patrick McKnight, and Katherine McKnight. 1996. <span>“Calibration of Measures for Psychotherapy Outcome Studies.”</span> <em>American Psychologist</em> 51 (10): 1065–71.
+</div>
+</div>
 </section>
 
 </main> <!-- /main -->
