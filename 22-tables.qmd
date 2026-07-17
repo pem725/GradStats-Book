@@ -1,0 +1,95 @@
+# Displaying Data: Tables {#tables}
+
+If a graph is for seeing a **pattern**, a table is for reading an **exact value**. Ask which one your reader needs. Do they need to feel the shape of a trend? Draw it. Do they need to look up "what was the bust rate for the Jets, exactly?" or compare a handful of precise numbers side by side? Give them a table. A table is not a failed graph; it is a different instrument for a different job - and, like a graph, it can be honest or it can bury the truth in a fog of digits.
+
+We continue with the same real data from [The Sports Page](https://thesportspage.net/) we used for graphics, so you can feel the difference between the two instruments on identical numbers.
+
+## Learning Objectives
+
+1.  Decide when a **table** serves the reader better than a graph.
+2.  Round to **meaningful precision** - kill false precision.
+3.  **Order** rows to carry information, and align numbers so they can be compared.
+4.  Summarize to the **question**, rather than dumping the raw data.
+
+## When a Table Beats a Graph
+
+A table wins when the numbers are **few**, the **exact values matter**, or the reader will **look things up** rather than scan for a shape. The strikeout trend was a job for a line. But "what did each decade actually look like, in numbers I can quote?" is a job for a small table. Summarize the 42 years down to five decade averages - few rows, exact values, quotable:
+
+```{r}
+#| message: false
+mlb <- read.csv("data/mlb_league_by_year.csv")
+mlb$decade <- paste0(floor(mlb$year / 10) * 10, "s")
+
+dec <- aggregate(cbind(K_9, BB_9, HR_9, AVG) ~ decade, data = mlb, FUN = mean)
+knitr::kable(dec, digits = c(0, 2, 2, 2, 3),
+             col.names = c("Decade", "K/9", "BB/9", "HR/9", "AVG"),
+             caption = "MLB by the decade: the strikeout climb, in exact numbers.")
+```
+
+Five rows, and you can *quote* any cell. The graph made you feel the strikeout climb; the table lets you say "K/9 went from about 5.7 in the 1980s to about 8.5 in the 2020s" without guessing off an axis. Same data, different instrument, different job.
+
+## Kill False Precision
+
+The fastest way to make a table lie - or just exhaust your reader - is to print every digit the computer coughed up. A bust rate stored as `0.5455` does **not** mean you know it to four decimals; with a few dozen draft picks, you barely know the second. Rounding is not sloppiness; it is honesty about how much you actually know. Watch the difference:
+
+```{r}
+nfl <- read.csv("data/nfl_draft_by_team.csv")
+worst <- nfl[order(-nfl$rate_bust_a), c("team", "n_picks", "rate_bust_a", "rate_clean_hit")]
+
+# false precision: every digit the machine produced
+knitr::kable(head(worst, 4), row.names = FALSE,
+             caption = "Too many digits — implies a precision the data don't have.")
+```
+
+```{r}
+# honest precision: percentages, rounded to what the sample can support
+worst$rate_bust_a   <- round(100 * worst$rate_bust_a)
+worst$rate_clean_hit <- round(100 * worst$rate_clean_hit)
+knitr::kable(head(worst, 4), row.names = FALSE,
+             col.names = c("Team", "Picks", "Bust rate (%)", "Clean-hit rate (%)"),
+             caption = "Rounded to whole percentages — easier to read, honest about precision.")
+```
+
+The second table is easier to read *and* more truthful. **Show the digits you can defend, and not one more.**
+
+## Order Rows to Carry Information
+
+A table's row order is free information - spend it. An alphabetical list of teams makes the reader hunt; a list **sorted by the thing you care about** answers the question before they ask it. We already sorted by bust rate above (worst first), so the ranking *is* the message. Now show the two ends that a reader actually wants - the best and worst drafters - instead of dumping all 32:
+
+```{r}
+ends <- rbind(
+  cbind(group = "Worst drafters", head(worst[, c("team", "n_picks", "rate_bust_a")], 5)),
+  cbind(group = "Best drafters",  tail(worst[, c("team", "n_picks", "rate_bust_a")], 5))
+)
+knitr::kable(ends, row.names = FALSE,
+             col.names = c("", "Team", "Picks", "Bust rate (%)"),
+             caption = "The two ends of the ranking — the comparison the reader wanted.")
+```
+
+Ten rows, sorted, grouped into the contrast that matters. A 32-row alphabetical dump would contain the same facts and communicate none of them. **Order and trim the table to the question; do not make the reader do your sorting.**
+
+::: {.callout-important}
+## The honest-table checklist
+1.  **Right instrument** - do they need exact values or a lookup? If they need a *shape*, draw it instead.
+2.  **Precision** - round to what the data support; four decimals on a noisy rate is a lie of false confidence.
+3.  **Order** - sort rows by the quantity of interest; the ranking is information.
+4.  **Trim** - summarize to the comparison (decades, top/bottom); don't dump raw rows.
+5.  **Labels** - human column names and units, so no cell needs a footnote to be understood.
+:::
+
+## Tables and Graphics Are Partners
+
+The two instruments are not rivals; a good report uses both. Show the **graph** for the pattern - "strikeouts have soared" - and put the **table** beside it for the reader who needs the exact decade numbers to quote in their own argument. The graph earns the reader's belief; the table arms them with the specifics. Reach for whichever answers the question in front of you, and often, reach for both.
+
+## Challenge
+
+::: {.callout-tip}
+## Do One Yourself
+1.  Rebuild the decade table but add a column for how much each stat *changed* from the previous decade. Which display - this table or the small-multiple graph from the last chapter - makes the change clearer, and for which reader?
+2.  Take the full 32-team draft data and design the *single* table you would actually publish. What do you sort by, how many rows do you keep, and to how many digits do you round? Defend each choice in one sentence.
+3.  Find a table in a real paper or report with obvious false precision (six decimals on a correlation, say). Round it honestly and note whether any conclusion actually depended on the digits you deleted.
+:::
+
+## Where We Go Next
+
+You can now show data honestly - as a picture and as a table - and you have the full toolkit of this book behind you: describe, measure, model, and display. What remains is the hardest thing to teach and the most valuable to learn: **judgment** - which tool, when, and why. For that, we stop explaining and start showing, walking through real published analyses with every decision laid bare. Welcome to the apprenticeship.
