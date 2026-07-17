@@ -2298,5 +2298,82 @@
       "Statistics in the Wild",
       "<span class='chapter-number'>22</span>  <span class='chapter-title'>Statistics in the Wild: The Sports Page Way</span>"
     ]
+  },
+  {
+    "objectID": "24-casestudy-depression.html",
+    "href": "24-casestudy-depression.html",
+    "title": "23  Case Study: When the Total Score Hides the Story",
+    "section": "",
+    "text": "23.1 How Much Does a Sum Score Hide?\nOur first real study is one of our own - a collaboration (McKnight, Stuewig, Kashdan) that started from a complaint you have already heard in this book: the mean throws away information. Back in the central tendency chapter that was a slogan. Here it becomes a research program, with real patients, a real depression scale, a surprising finding, and - the part you rarely see in a polished paper - a claim we made, tested, and had to take back. Watch the decisions, not just the results.\nThe instrument is the Beck Depression Inventory (BDI-II): 21 symptoms (sadness, guilt, sleep, appetite, …), each scored 0 (absent) to 3 (severe). Clinicians add the 21 items into one number, call a 15 “mild depression,” and move on. This study asks what that number destroys.\nStart with pure arithmetic - no data, no model, just counting. How many different 21-item profiles produce a total of exactly 15? The answer comes from the inclusion–exclusion principle, and it is worth computing yourself because the number is hard to believe:\nn_patterns &lt;- function(k, a, n) {                 # k items, each 0..a, summing to n\n  imax &lt;- floor(n / (a + 1))\n  sum(sapply(0:imax, function(i)\n    (-1)^i * choose(k, i) * choose(n - i * (a + 1) + k - 1, k - 1)))\n}\nformat(n_patterns(21, 3, 15), big.mark = \",\")     # ways to score 15 on the BDI-II\n\n[1] \"1,653,955,415\"\n1.65 billion distinct symptom profiles all land on “15 = mild depression.” Across all possible totals there are \\(4^{21} \\approx 4.4\\) trillion profiles, peaking at 338 billion different ways to score a 31. The clinical convention - “minimal / mild / moderate / severe” - treats all of them as the same. That is a staggering amount of thrown-away information, and the question is whether any of it mattered.",
+    "crumbs": [
+      "Statistics in the Wild",
+      "<span class='chapter-number'>23</span>  <span class='chapter-title'>Case Study: When the Total Score Hides the Story</span>"
+    ]
+  },
+  {
+    "objectID": "24-casestudy-depression.html#same-score-different-people",
+    "href": "24-casestudy-depression.html#same-score-different-people",
+    "title": "23  Case Study: When the Total Score Hides the Story",
+    "section": "23.2 Same Score, Different People",
+    "text": "23.2 Same Score, Different People\nThe billion is abstract; two real students make it concrete. Here are two people from our student sample who both scored exactly 15 - and could not look more different:\n\nbdi &lt;- read.csv(\"data/bdi_students.csv\")           # 1,246 real BDI-II profiles, item level\ntotals &lt;- rowSums(bdi)\npair &lt;- which(totals == 15)[c(1, 2)]\nt(bdi[pair, ])                                      # two profiles, identical total\n\n                  65 70\nsadness            1  1\npessimism          1  0\npast_failure       0  1\nloss_pleasure      0  1\nguilt              1  0\npunishment         2  0\nself_dislike       2  1\nself_critical      1  1\nsuicidal           0  0\ncrying             0  1\nagitation          1  1\nloss_interest      0  0\nindecision         1  1\nworthlessness      1  0\nloss_energy        1  1\nsleep              1  1\nirritability       0  1\nappetite           0  1\nconcentration      2  1\ntiredness          0  1\nloss_sex_interest  0  1\n\n\nOne student’s distress concentrates in self-punishment, self-dislike, and concentration; the other’s is spread thinly across crying, lost pleasure, appetite, and fatigue. Same “15,” different human beings, different clinical pictures. A sum score cannot tell them apart. The profile can.",
+    "crumbs": [
+      "Statistics in the Wild",
+      "<span class='chapter-number'>23</span>  <span class='chapter-title'>Case Study: When the Total Score Hides the Story</span>"
+    ]
+  },
+  {
+    "objectID": "24-casestudy-depression.html#the-manifold-collapse",
+    "href": "24-casestudy-depression.html#the-manifold-collapse",
+    "title": "23  Case Study: When the Total Score Hides the Story",
+    "section": "23.3 The Manifold Collapse",
+    "text": "23.3 The Manifold Collapse\nIf 4.4 trillion profiles are possible, how many actually occur? Almost none - because depression symptoms do not vary independently; they hang together. Count the distinct profiles in real data:\n\nkey &lt;- apply(bdi, 1, paste, collapse = \"-\")\nc(people            = nrow(bdi),\n  distinct_profiles = length(unique(key)),\n  pct_unique        = round(100 * mean(!(duplicated(key) | duplicated(key, fromLast = TRUE))), 1))\n\n           people distinct_profiles        pct_unique \n           1246.0             996.0              76.1 \n\n\nAbout 76% of these students have a profile no one else in the sample shares (in the full six-sample analysis it was 79.7%). Of trillions of mathematically possible patterns, real people occupy a vanishingly thin sliver - what we called the manifold collapse. The space is huge; life uses almost none of it. Which raises the sharp question: are the profiles that never appear merely rare, or are some of them impossible in principle - incoherent given how depression actually works?",
+    "crumbs": [
+      "Statistics in the Wild",
+      "<span class='chapter-number'>23</span>  <span class='chapter-title'>Case Study: When the Total Score Hides the Story</span>"
+    ]
+  },
+  {
+    "objectID": "24-casestudy-depression.html#antitypes-profiles-that-shouldnt-exist",
+    "href": "24-casestudy-depression.html#antitypes-profiles-that-shouldnt-exist",
+    "title": "23  Case Study: When the Total Score Hides the Story",
+    "section": "23.4 Antitypes: Profiles That Shouldn’t Exist",
+    "text": "23.4 Antitypes: Profiles That Shouldn’t Exist\nA profile can be numerically fine and clinically nonsensical - maximum worthlessness with zero sadness, say. Borrowing a term from Configural Frequency Analysis, we call these antitypes: possible on paper, absent in reality because they violate the internal structure of the construct. To catch them we need a notion of which symptoms are “easy” (commonly endorsed) and which are “hard” (rare), and then flag people who endorse hard symptoms while skipping easy ones. Here is the idea in miniature - a light ordering-violation count you can run:\n\ndifficulty &lt;- colMeans(bdi)                         # higher = more commonly endorsed = \"easier\"\novi &lt;- apply(bdi, 1, function(r)                     # count \"harder scored above easier\" pairs\n  sum(outer(seq_along(r), seq_along(r),\n            function(i, j) difficulty[i] &lt; difficulty[j] & r[i] &gt; r[j])))\nc(median_violations = median(ovi), max_violations = max(ovi),\n  cor_with_total    = round(cor(ovi, totals), 2))    # NOT just severity\n\nmedian_violations    max_violations    cor_with_total \n            20.00            113.00              0.69 \n\n\nIncoherence is its own dimension - only weakly tied to how high the total is. The real study replaces this rough count with a proper Graded Response Model (an IRT model, cousin of the Rasch model) that estimates each item’s difficulty and each person’s severity, then scores every profile’s log-likelihood. The two measures - our Ordering Violation Index (OVI) and the GRM profile log-likelihood - agree strongly, and that agreement is remarkably stable:\n# The real analysis (needs the mirt package — shown, not run on the book's server)\nlibrary(mirt)\nfit  &lt;- mirt(bdi, 1, itemtype = \"graded\")           # fit the Graded Response Model\ntheta &lt;- fscores(fit)                               # each person's estimated severity\nll    &lt;- personfit(fit)$logLik                      # how probable each profile is\ncor(ovi, ll)                                        # OVI and GRM-likelihood track each other\nAcross all six independent samples, the OVI–likelihood correlation held between −0.73 and −0.83, and the model flagged 13 strong antitypes in a pooled \\(n = 1{,}479\\). Incoherent profiles are not a fluke of one dataset; they are a stable, measurable property.",
+    "crumbs": [
+      "Statistics in the Wild",
+      "<span class='chapter-number'>23</span>  <span class='chapter-title'>Case Study: When the Total Score Hides the Story</span>"
+    ]
+  },
+  {
+    "objectID": "24-casestudy-depression.html#does-it-actually-matter-the-decision-to-chase-it",
+    "href": "24-casestudy-depression.html#does-it-actually-matter-the-decision-to-chase-it",
+    "title": "23  Case Study: When the Total Score Hides the Story",
+    "section": "23.5 Does It Actually Matter? (The Decision to Chase It)",
+    "text": "23.5 Does It Actually Matter? (The Decision to Chase It)\nA finding is only worth a paper if it predicts something. In 207 patients tracked across four therapy sessions, we asked whether the coherence of a patient’s intake profile forecast how much they improved - over and above their initial severity. It did: more incoherent intake profiles improved less (\\(p = .017\\)), controlling for baseline depression. And treatment did not merely lower the total - it reorganized the profile (cognitive and emotional symptoms improved ~20%; somatic symptoms barely moved). The shape of depression changed, not just its size. The information the sum score discarded was clinically live.",
+    "crumbs": [
+      "Statistics in the Wild",
+      "<span class='chapter-number'>23</span>  <span class='chapter-title'>Case Study: When the Total Score Hides the Story</span>"
+    ]
+  },
+  {
+    "objectID": "24-casestudy-depression.html#replication---and-a-claim-we-had-to-retract",
+    "href": "24-casestudy-depression.html#replication---and-a-claim-we-had-to-retract",
+    "title": "23  Case Study: When the Total Score Hides the Story",
+    "section": "23.6 Replication - and a Claim We Had to Retract",
+    "text": "23.6 Replication - and a Claim We Had to Retract\nTwo habits separate research from storytelling: replicate, and try to kill your own finding. We did both, and only one felt good.\nReplication. We re-ran the entire pipeline on a completely different scale - the CES-D, 20 different items - in a completely different population (a multigenerational community panel). No shared items, no shared people. Same result: 78.7% unique profiles (BDI: 79.7%), OVI–likelihood \\(r = -0.77\\). The manifold collapse is a property of depression, not of Beck’s particular questionnaire.\nThe retraction. Emboldened, we noticed the two scales reproduced nearly the same configural geometry - difficulty spread, profile uniqueness, incoherence - at a structural concordance of about 0.95, despite sharing nothing. We were ready to call it convergent validity: two windows onto the same construct.\nThen we ran the control that could destroy the claim. We took an anxiety scale of the same 0–3 format (the STICSA) - a different construct - and measured its concordance with the depression scales.\n\n\n\n\n\n\nImportantWatch a good control kill a good story\n\n\n\nThe anxiety scale concorded just as highly as the two depression scales did with each other. If a different construct fits the pattern equally well, the pattern is not about the construct - it is about the shared response format (21-ish items, 0–3, summed). Our “convergent validity” evaporated. The concordance is real, but it is a format-general regularity, not evidence that the scales read the same thing. We cut the claim.\nThis is the least glamorous and most important move in statistics: a discriminant test - deliberately giving your hypothesis a chance to fail by showing something it shouldn’t explain that it explains anyway. We wanted the convergent-validity story. The data said no. In a textbook you usually see only the surviving claims; here you saw one die. That is the job.",
+    "crumbs": [
+      "Statistics in the Wild",
+      "<span class='chapter-number'>23</span>  <span class='chapter-title'>Case Study: When the Total Score Hides the Story</span>"
+    ]
+  },
+  {
+    "objectID": "24-casestudy-depression.html#what-this-case-teaches",
+    "href": "24-casestudy-depression.html#what-this-case-teaches",
+    "title": "23  Case Study: When the Total Score Hides the Story",
+    "section": "23.7 What This Case Teaches",
+    "text": "23.7 What This Case Teaches\n\nThe mean/sum discards structure (Ch. 3): a total score is a lossy compression, and sometimes the lost bits are the clinically important ones.\nIRT recovers the structure (Ch. 18): a Graded Response Model turns “which profiles are coherent?” into a computable question.\nPrediction is the test (Ch. 20): the finding earned its keep by forecasting treatment response, not by fitting the past.\nDiscriminant tests protect you from yourself (Ch. 8): the discipline that retracted our convergent-validity claim is the same discipline that makes any claim trustworthy.\n\nThe next case study builds a measure from scratch, study by study - and shows what it looks like to preregister a prediction before the data arrive.",
+    "crumbs": [
+      "Statistics in the Wild",
+      "<span class='chapter-number'>23</span>  <span class='chapter-title'>Case Study: When the Total Score Hides the Story</span>"
+    ]
   }
 ]
