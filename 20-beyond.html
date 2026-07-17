@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="A comprehensive graduate statistics book suitable for social and behavioral sciences. Our approach is to provide interested students a gentle guide to the rudiments of statistical estimation and inference.">
+
+<title>19&nbsp; Beyond the Normal Curve: Resampling, Robust, and Bayesian Statistics – Statistics by Us for You</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./references.html" rel="next">
+<link href="./19-coding.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-c875dbb4c9335aca9cc352e974a4ec92.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-c875dbb4c9335aca9cc352e974a4ec92.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-653ffe7e8e777a348df834c28797d719.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-20dfcf0d63a59e46238f4c852114a2f2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-dark"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = true;
+    const darkModeDefault = authorPrefersDark;
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./20-beyond.html">Beyond the Normal Curve</a></li><li class="breadcrumb-item"><a href="./20-beyond.html"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Beyond the Normal Curve: Resampling, Robust, and Bayesian Statistics</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Statistics by Us for You</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/pem725/GradStats-Book" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./author.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Authors</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">The Basics</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Variables and Distributions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-CTmeasures.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">The Best Guess</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-Dmeasures.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Dispersion and Uncertainty</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-datacleaning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Cleaning House</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Making Inferences with Data</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-zdistribution.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Expectation and Understanding: The Z-Distribution</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-covariance.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Covariance and Association</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-hypothesistesting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Testing Hypotheses with Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-statisticalpower.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Statistical Power: How to Find Things That May Not Be There</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Checking Our Data</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10-reliability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Reliability (not Validity) of Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-validity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Validity (not Reliability)</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./18-rasch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Measuring Like Ben Wright: Rasch in R, Python, and Julia</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Using Models</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-GLMcovariance.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Introducing the General Linear Model (GLM)</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13-pointbiserialcorrelation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Bridging the Gap: The Point Biserial Correlation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./14-bivariateregression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Simple Regression</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./15-MRC.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Multiple Regression</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./16-ANOVAandGLM.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">ANOVA and the General Linear Model</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./17-basicANOVA.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Basic ANOVA</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./19-coding.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Coding Categorical Predictors</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Beyond the Normal Curve</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./20-beyond.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Beyond the Normal Curve: Resampling, Robust, and Bayesian Statistics</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#learning-objectives" id="toc-learning-objectives" class="nav-link active" data-scroll-target="#learning-objectives"><span class="header-section-number">19.1</span> Learning Objectives</a></li>
+  <li><a href="#part-1-resampling-let-the-data-be-their-own-population" id="toc-part-1-resampling-let-the-data-be-their-own-population" class="nav-link" data-scroll-target="#part-1-resampling-let-the-data-be-their-own-population"><span class="header-section-number">19.2</span> Part 1 · Resampling: Let the Data Be Their Own Population</a>
+  <ul class="collapse">
+  <li><a href="#the-bootstrap-estimation" id="toc-the-bootstrap-estimation" class="nav-link" data-scroll-target="#the-bootstrap-estimation"><span class="header-section-number">19.2.1</span> The bootstrap (estimation)</a></li>
+  <li><a href="#the-permutation-test-testing" id="toc-the-permutation-test-testing" class="nav-link" data-scroll-target="#the-permutation-test-testing"><span class="header-section-number">19.2.2</span> The permutation test (testing)</a></li>
+  <li><a href="#the-jackknife-a-leave-one-out-cousin" id="toc-the-jackknife-a-leave-one-out-cousin" class="nav-link" data-scroll-target="#the-jackknife-a-leave-one-out-cousin"><span class="header-section-number">19.2.3</span> The jackknife (a leave-one-out cousin)</a></li>
+  </ul></li>
+  <li><a href="#part-2-robust-statistics-when-a-few-points-hijack-the-mean" id="toc-part-2-robust-statistics-when-a-few-points-hijack-the-mean" class="nav-link" data-scroll-target="#part-2-robust-statistics-when-a-few-points-hijack-the-mean"><span class="header-section-number">19.3</span> Part 2 · Robust Statistics: When a Few Points Hijack the Mean</a></li>
+  <li><a href="#part-3-bayesian-inference-probability-of-the-model-given-the-data" id="toc-part-3-bayesian-inference-probability-of-the-model-given-the-data" class="nav-link" data-scroll-target="#part-3-bayesian-inference-probability-of-the-model-given-the-data"><span class="header-section-number">19.4</span> Part 3 · Bayesian Inference: Probability of the Model Given the Data</a>
+  <ul class="collapse">
+  <li><a href="#building-a-posterior-by-hand-grid-approximation" id="toc-building-a-posterior-by-hand-grid-approximation" class="nav-link" data-scroll-target="#building-a-posterior-by-hand-grid-approximation"><span class="header-section-number">19.4.1</span> Building a posterior by hand (grid approximation)</a></li>
+  <li><a href="#from-the-toy-to-the-real-thing" id="toc-from-the-toy-to-the-real-thing" class="nav-link" data-scroll-target="#from-the-toy-to-the-real-thing"><span class="header-section-number">19.4.2</span> From the toy to the real thing</a></li>
+  </ul></li>
+  <li><a href="#the-distinction-woven-together" id="toc-the-distinction-woven-together" class="nav-link" data-scroll-target="#the-distinction-woven-together"><span class="header-section-number">19.5</span> The Distinction, Woven Together</a></li>
+  <li><a href="#challenge" id="toc-challenge" class="nav-link" data-scroll-target="#challenge"><span class="header-section-number">19.6</span> Challenge</a></li>
+  <li><a href="#where-we-go-next" id="toc-where-we-go-next" class="nav-link" data-scroll-target="#where-we-go-next"><span class="header-section-number">19.7</span> Where We Go Next</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./20-beyond.html">Beyond the Normal Curve</a></li><li class="breadcrumb-item"><a href="./20-beyond.html"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Beyond the Normal Curve: Resampling, Robust, and Bayesian Statistics</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="beyond" class="quarto-section-identifier"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Beyond the Normal Curve: Resampling, Robust, and Bayesian Statistics</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Every method in this book so far has quietly leaned on three crutches: the <strong>normal curve</strong> (errors are Gaussian), a <strong>point estimate</strong> (one number for the answer), and a <strong>reject / fail-to-reject</strong> verdict (the <span class="math inline">\(p\)</span>-value ritual). Those crutches work astonishingly well when the world cooperates. This chapter is about what to do when it doesn’t - when your sample is small, your distribution is lumpy, a few wild points hijack the average, or you simply want a more honest account of what you know.</p>
+<p>We meet three families of methods: <strong>resampling</strong> (let the data be their own population), <strong>robust</strong> statistics (estimators a few bad points can’t bully), and <strong>Bayesian</strong> inference (probability of the <em>model given the data</em>, not the data given the model). They are not three unrelated tricks. They share a spine, and naming that spine is the most useful thing this chapter can do for you.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>The distinction that runs through everything: estimation vs.&nbsp;testing
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Two different questions hide inside “doing statistics”:</p>
+<ul>
+<li><strong>Estimation</strong> - <em>what is the value, and how sure am I?</em> A number <strong>and its uncertainty</strong>: a slope and its interval, an effect and its spread.</li>
+<li><strong>Testing</strong> - <em>is it different from some reference, or which model is better?</em> A decision or a comparison.</li>
+</ul>
+<p>Classical training fuses these into one motion (compute <span class="math inline">\(t\)</span>, read <span class="math inline">\(p\)</span>, declare significance). The methods in this chapter pull them back apart - and, strikingly, all three do <strong>testing through estimation</strong>: they estimate the whole distribution of the answer first, then let the <em>test</em> fall out of it (does the interval exclude zero? how much posterior sits near the null?). Keep asking, of every method below: <em>is this estimating, or testing - and how does it get from one to the other?</em></p>
+</div>
+</div>
+<section id="learning-objectives" class="level2" data-number="19.1">
+<h2 data-number="19.1" class="anchored" data-anchor-id="learning-objectives"><span class="header-section-number">19.1</span> Learning Objectives</h2>
+<ol type="1">
+<li>Use <strong>resampling</strong> (bootstrap, permutation, jackknife) to get standard errors, intervals, and tests without a normal-curve assumption.</li>
+<li>Use <strong>robust</strong> estimators (median, trimmed mean, MAD, M-estimators) that a handful of outliers cannot capture.</li>
+<li>Read a <strong>Bayesian</strong> analysis - prior, likelihood, posterior - and report it as estimation (credible interval) and as testing (ROPE, model comparison).</li>
+<li>Draw the estimation-vs-testing distinction cleanly in each framework.</li>
+</ol>
+</section>
+<section id="part-1-resampling-let-the-data-be-their-own-population" class="level2" data-number="19.2">
+<h2 data-number="19.2" class="anchored" data-anchor-id="part-1-resampling-let-the-data-be-their-own-population"><span class="header-section-number">19.2</span> Part 1 · Resampling: Let the Data Be Their Own Population</h2>
+<p>The logic is almost too simple to trust. A statistic - a mean, a slope, an indirect effect - has a <strong>sampling distribution</strong>: the spread of values it would take across repeated samples from the population. Classical theory <em>derives</em> that spread from formulas that assume normality and large <span class="math inline">\(n\)</span>. <strong>Resampling estimates it directly</strong>, by treating your one sample as a stand-in for the population and drawing new samples from it.</p>
+<blockquote class="blockquote">
+<p>When data sets are small, the usual methods… may be inappropriate (because of distributional characteristics) or insensitive. Bootstrapping, jackknifing and other methods of resampling may be helpful. - McKnight, McKnight &amp; Figueredo, <em>Australasian Evaluation Society</em>, 1997</p>
+</blockquote>
+<section id="the-bootstrap-estimation" class="level3" data-number="19.2.1">
+<h3 data-number="19.2.1" class="anchored" data-anchor-id="the-bootstrap-estimation"><span class="header-section-number">19.2.1</span> The bootstrap (estimation)</h3>
+<p><strong>Bootstrapping</strong> resamples your data <em>with replacement</em>, <code>n</code> observations drawn from <code>n</code>, over and over, recomputing the statistic each time. The spread of those recomputed values <em>is</em> the estimated sampling distribution. Take a small, skewed sample - exactly where the normal-theory formula is least trustworthy - and bootstrap the mean:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>samp <span class="ot">&lt;-</span> <span class="fu">rexp</span>(<span class="dv">30</span>, <span class="at">rate =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">50</span>)          <span class="co"># n = 30, right-skewed (non-normal) data</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>B <span class="ot">&lt;-</span> <span class="dv">2000</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>boot_means <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B, <span class="fu">mean</span>(<span class="fu">sample</span>(samp, <span class="at">replace =</span> <span class="cn">TRUE</span>)))   <span class="co"># resample &amp; recompute</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">estimate =</span> <span class="fu">mean</span>(samp),</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">boot_SE  =</span> <span class="fu">sd</span>(boot_means),                       <span class="co"># bootstrap standard error</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">lower95  =</span> <span class="fu">quantile</span>(boot_means, <span class="fl">0.025</span>),          <span class="co"># percentile confidence interval</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">upper95  =</span> <span class="fu">quantile</span>(boot_means, <span class="fl">0.975</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     estimate       boot_SE  lower95.2.5% upper95.97.5% 
+     49.52879      11.10770      31.55877      74.60971 </code></pre>
+</div>
+</div>
+<p>That is the entire idea: <code>sample(samp, replace = TRUE)</code> inside <code>replicate()</code>, then read the <strong>standard error</strong> off <code>sd()</code> and the <strong>confidence interval</strong> off <code>quantile()</code>. No formula, no normality, no <span class="math inline">\(z\)</span>. The 2.5th and 97.5th percentiles of the bootstrap distribution are a <strong>percentile confidence interval</strong> - and notice it can be <em>asymmetric</em>, honestly reflecting the skew that a normal-theory interval would paper over.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(boot_means, <span class="at">breaks =</span> <span class="dv">40</span>, <span class="at">col =</span> <span class="st">"grey80"</span>, <span class="at">border =</span> <span class="st">"white"</span>,</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">""</span>, <span class="at">xlab =</span> <span class="st">"resampled mean"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="fu">quantile</span>(boot_means, <span class="fu">c</span>(.<span class="dv">025</span>, .<span class="dv">975</span>)), <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="fu">mean</span>(samp), <span class="at">col =</span> <span class="st">"blue"</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="20-beyond_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>The bootstrap sampling distribution of the mean, with the percentile 95% interval.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="the-permutation-test-testing" class="level3" data-number="19.2.2">
+<h3 data-number="19.2.2" class="anchored" data-anchor-id="the-permutation-test-testing"><span class="header-section-number">19.2.2</span> The permutation test (testing)</h3>
+<p>The bootstrap <em>estimated</em> an interval. To <em>test</em> a hypothesis - say, that two groups have the same mean - we resample differently. Under the null “the group label is irrelevant,” we can <strong>shuffle the labels</strong> and see how big a difference arises by chance alone. The observed difference is “significant” if it lands in the tail of that shuffled distribution.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">7</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>g1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">15</span>, <span class="at">mean =</span> <span class="fl">0.0</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>g2 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">15</span>, <span class="at">mean =</span> <span class="fl">0.8</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>obs <span class="ot">&lt;-</span> <span class="fu">mean</span>(g2) <span class="sc">-</span> <span class="fu">mean</span>(g1)                         <span class="co"># the observed difference</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>pool   <span class="ot">&lt;-</span> <span class="fu">c</span>(g1, g2)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>labels <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="at">each =</span> <span class="dv">15</span>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>perm   <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">5000</span>, {                        <span class="co"># shuffle labels 5000 times</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  s <span class="ot">&lt;-</span> <span class="fu">sample</span>(labels)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mean</span>(pool[s <span class="sc">==</span> <span class="dv">2</span>]) <span class="sc">-</span> <span class="fu">mean</span>(pool[s <span class="sc">==</span> <span class="dv">1</span>])</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">observed_diff =</span> obs,</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">permutation_p =</span> <span class="fu">mean</span>(<span class="fu">abs</span>(perm) <span class="sc">&gt;=</span> <span class="fu">abs</span>(obs)))      <span class="co"># two-sided p-value</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>observed_diff permutation_p 
+    0.4426625     0.2974000 </code></pre>
+</div>
+</div>
+<p>The permutation <span class="math inline">\(p\)</span>-value is the fraction of shuffles that beat the real difference. It makes <strong>no distributional assumption at all</strong> - it is the purest possible hypothesis test, built only from the exchangeability of labels under the null.</p>
+</section>
+<section id="the-jackknife-a-leave-one-out-cousin" class="level3" data-number="19.2.3">
+<h3 data-number="19.2.3" class="anchored" data-anchor-id="the-jackknife-a-leave-one-out-cousin"><span class="header-section-number">19.2.3</span> The jackknife (a leave-one-out cousin)</h3>
+<p>Older and simpler than the bootstrap, the <strong>jackknife</strong> recomputes the statistic leaving out one observation at a time. It is handy for a quick standard error and for spotting influential points (if dropping one case moves the estimate a lot, you’ve found a leverage problem):</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>jk    <span class="ot">&lt;-</span> <span class="fu">sapply</span>(<span class="fu">seq_along</span>(samp), <span class="cf">function</span>(i) <span class="fu">mean</span>(samp[<span class="sc">-</span>i]))       <span class="co"># leave-one-out means</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>n     <span class="ot">&lt;-</span> <span class="fu">length</span>(samp)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>jk_se <span class="ot">&lt;-</span> <span class="fu">sqrt</span>((n <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> <span class="fu">mean</span>((jk <span class="sc">-</span> <span class="fu">mean</span>(jk))<span class="sc">^</span><span class="dv">2</span>))                  <span class="co"># jackknife SE</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">jackknife_mean =</span> <span class="fu">mean</span>(jk), <span class="at">jackknife_SE =</span> jk_se)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>jackknife_mean   jackknife_SE 
+      49.52879       10.96781 </code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Estimation vs.&nbsp;testing, the resampling version
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Same engine, two jobs. <strong>Bootstrap → estimation</strong> (an SE and a percentile interval for <em>whatever</em> statistic you can compute - a mean, a correlation, a regression slope, even a mediation indirect effect <span class="math inline">\(a\cdot b\)</span>). <strong>Permutation → testing</strong> (a <span class="math inline">\(p\)</span>-value from label shuffling). And the two meet: a bootstrap <strong>interval that excludes zero</strong> <em>is</em> a test. Resampling’s honesty is also its discipline - it is <strong>not</strong> a substitute for collecting more data, and it demands a representative, random sample to begin with.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="part-2-robust-statistics-when-a-few-points-hijack-the-mean" class="level2" data-number="19.3">
+<h2 data-number="19.3" class="anchored" data-anchor-id="part-2-robust-statistics-when-a-few-points-hijack-the-mean"><span class="header-section-number">19.3</span> Part 2 · Robust Statistics: When a Few Points Hijack the Mean</h2>
+<p>Recall from the <a href="./03-CTmeasures.html">central tendency chapter</a> that the mean is a <em>least-squares</em> estimator: it sits where squared deviations are smallest. Squaring is exactly why it’s fragile - one faraway point contributes an enormous squared deviation and drags the mean toward itself. A single bad value can move the mean anywhere; its <strong>breakdown point</strong> (the fraction of contamination it can tolerate before giving nonsense) is essentially <span class="math inline">\(0\%\)</span>.</p>
+<p>Watch nineteen clean observations and one fat-fingered data-entry error:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">rnorm</span>(<span class="dv">19</span>, <span class="at">mean =</span> <span class="dv">100</span>, <span class="at">sd =</span> <span class="dv">10</span>), <span class="dv">250</span>)        <span class="co"># 19 good values + 1 gross outlier</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">mean       =</span> <span class="fu">mean</span>(z),</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">median     =</span> <span class="fu">median</span>(z),</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">trimmed10  =</span> <span class="fu">mean</span>(z, <span class="at">trim =</span> <span class="fl">0.10</span>),         <span class="co"># drop the extreme 10% each tail</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">SD         =</span> <span class="fu">sd</span>(z),</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">MAD        =</span> <span class="fu">mad</span>(z)), <span class="dv">2</span>)                    <span class="co"># median absolute deviation</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     mean    median trimmed10        SD       MAD 
+   109.11    103.60    102.92     34.38      9.26 </code></pre>
+</div>
+</div>
+<p>The <strong>mean</strong> and <strong>SD</strong> are inflated by the lone outlier; the <strong>median</strong>, <strong>10% trimmed mean</strong>, and <strong>MAD</strong> barely notice it. That resistance is the whole point of robust statistics:</p>
+<ul>
+<li><strong>Median</strong> - breakdown point <span class="math inline">\(50\%\)</span>: half your data can be garbage before it fails.</li>
+<li><strong>Trimmed mean</strong> - discard a fixed fraction of each tail, then average the rest. A tunable compromise between mean (0% trim) and median (50% trim).</li>
+<li><strong>MAD</strong> - the robust analogue of the SD, a median of absolute deviations from the median.</li>
+<li><strong>M-estimators</strong> (Huber, Tukey bisquare) - down-weight, rather than discard, extreme points, via iteratively reweighted least squares. These are the robust-regression workhorses.</li>
+</ul>
+<p>For real robust modeling in R, reach for maintained tools - <code>MASS::rlm()</code> for robust regression, and Rand Wilcox’s <strong><code>WRS2</code></strong> package for robust group comparisons (trimmed-means tests, robust ANOVA). The idioms look like this:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rlm</span>(happy <span class="sc">~</span> dogness, <span class="at">data =</span> d)          <span class="co"># robust regression (Huber M-estimator)</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(WRS2)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="fu">yuen</span>(happy <span class="sc">~</span> group, <span class="at">data =</span> d)           <span class="co"># robust two-group test on trimmed means</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="fu">t1way</span>(happy <span class="sc">~</span> group, <span class="at">data =</span> d)          <span class="co"># robust one-way "ANOVA"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Estimation vs.&nbsp;testing, the robust version
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Estimation:</strong> report a robust <em>center and spread</em> - a trimmed mean with a MAD, or robust regression coefficients - instead of mean <span class="math inline">\(\pm\)</span> SD when the tails are heavy. <strong>Testing:</strong> use tests built on those robust estimators (Yuen’s trimmed-means test, <code>t1way</code>) or - the pragmatic favorite in this book - <strong>bootstrap the robust estimator</strong> and check whether its interval excludes the null. Robustness and resampling are natural allies: diagnose the violation, then resample the resistant estimator.</p>
+</div>
+</div>
+</section>
+<section id="part-3-bayesian-inference-probability-of-the-model-given-the-data" class="level2" data-number="19.4">
+<h2 data-number="19.4" class="anchored" data-anchor-id="part-3-bayesian-inference-probability-of-the-model-given-the-data"><span class="header-section-number">19.4</span> Part 3 · Bayesian Inference: Probability of the Model Given the Data</h2>
+<p>Frequentist statistics computes <span class="math inline">\(P(\text{data} \mid \text{hypothesis})\)</span> - the <span class="math inline">\(p\)</span>-value is the probability of data this extreme <em>if the null were true</em>. That is a strange quantity to hang careers on: it answers a question nobody asked. Bayesian inference computes what you actually wanted, <span class="math inline">\(P(\text{hypothesis} \mid \text{data})\)</span>, by way of <strong>Bayes’ rule</strong>:</p>
+<p><span class="math display">\[\underbrace{P(\theta \mid \text{data})}_{\text{posterior}} \;\propto\; \underbrace{P(\text{data} \mid \theta)}_{\text{likelihood}} \times \underbrace{P(\theta)}_{\text{prior}}\]</span></p>
+<p>The <strong>prior</strong> is what you believed about the parameter <span class="math inline">\(\theta\)</span> before the data; the <strong>likelihood</strong> is what the data say; the <strong>posterior</strong> is the updated belief. That’s the whole machine. As McKnight puts it, Bayesian methods are “merely a vehicle for re-conceptualizing how we think about statistics” - they give you “insights you may already know, but didn’t know you knew.”</p>
+<section id="building-a-posterior-by-hand-grid-approximation" class="level3" data-number="19.4.1">
+<h3 data-number="19.4.1" class="anchored" data-anchor-id="building-a-posterior-by-hand-grid-approximation"><span class="header-section-number">19.4.1</span> Building a posterior by hand (grid approximation)</h3>
+<p>You do not need fancy software to see the machine turn. Take the oldest example in the book - estimating a proportion (a coin’s bias, a globe’s water fraction, a treatment’s success rate) from a handful of trials. Lay down a <strong>grid</strong> of possible values, evaluate prior × likelihood at each, normalize, and you have a posterior:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>grid  <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="at">length.out =</span> <span class="dv">1000</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>prior <span class="ot">&lt;-</span> <span class="fu">dbeta</span>(grid, <span class="dv">2</span>, <span class="dv">2</span>)                 <span class="co"># weakly informative: centered at 0.5, gentle</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>like  <span class="ot">&lt;-</span> <span class="fu">dbinom</span>(<span class="dv">6</span>, <span class="at">size =</span> <span class="dv">9</span>, <span class="at">prob =</span> grid)  <span class="co"># data: 6 successes in 9 trials</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>post  <span class="ot">&lt;-</span> like <span class="sc">*</span> prior</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>post  <span class="ot">&lt;-</span> post <span class="sc">/</span> <span class="fu">sum</span>(post)                  <span class="co"># normalize to a proper distribution</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(grid, post, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"blue"</span>,</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="fu">expression</span>(theta <span class="sc">~</span> <span class="st">"(the proportion)"</span>), <span class="at">ylab =</span> <span class="st">"posterior density"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="20-beyond_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Grid-approximation posterior for a proportion after 6 successes in 9 trials.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Now <em>summarize</em> the posterior - and here the estimation-vs-testing split becomes concrete.</p>
+<p><strong>Estimation.</strong> The answer is the whole posterior; we compress it into a point and an interval. Sampling from the grid makes this a one-liner. A Bayesian interval is a <strong>credible</strong> (or “compatibility”) interval, and - unlike a confidence interval - it means the plain-English thing: “given the model and data, there’s a 95% probability <span class="math inline">\(\theta\)</span> is in here.”</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>draws <span class="ot">&lt;-</span> <span class="fu">sample</span>(grid, <span class="fl">1e5</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>, <span class="at">prob =</span> post)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">posterior_mean   =</span> <span class="fu">mean</span>(draws),</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">credible_lower95 =</span> <span class="fu">quantile</span>(draws, <span class="fl">0.025</span>),</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">credible_upper95 =</span> <span class="fu">quantile</span>(draws, <span class="fl">0.975</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        posterior_mean  credible_lower95.2.5% credible_upper95.97.5% 
+             0.6154759              0.3503504              0.8488488 </code></pre>
+</div>
+</div>
+<p><strong>Testing.</strong> Rather than a point-null “is <span class="math inline">\(\theta\)</span> <em>exactly</em> 0.5?” (a question of measure zero that is never truly true), Bayesians ask a better one: how much posterior belief sits in a <strong>Region of Practical Equivalence (ROPE)</strong> around the null - a band of values “close enough to 0.5 to not care”? If almost none of the posterior is in the ROPE, the effect is credibly <em>not</em> null; if most of it is, you have evidence <em>for</em> practical equivalence - something a <span class="math inline">\(p\)</span>-value can never give you.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>rope_lo <span class="ot">&lt;-</span> <span class="fl">0.45</span>; rope_hi <span class="ot">&lt;-</span> <span class="fl">0.55</span>                <span class="co"># "practically a fair coin"</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(draws <span class="sc">&gt;</span> rope_lo <span class="sc">&amp;</span> draws <span class="sc">&lt;</span> rope_hi)          <span class="co"># posterior probability inside the ROPE</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.19318</code></pre>
+</div>
+</div>
+</section>
+<section id="from-the-toy-to-the-real-thing" class="level3" data-number="19.4.2">
+<h3 data-number="19.4.2" class="anchored" data-anchor-id="from-the-toy-to-the-real-thing"><span class="header-section-number">19.4.2</span> From the toy to the real thing</h3>
+<p>Grid approximation shows the logic but doesn’t scale past a parameter or two. For real models, samplers (MCMC) do the integration. McKnight’s teaching stack is McElreath’s <strong><code>rethinking</code></strong> for concepts and <strong><code>brms</code></strong> for applied work - both compile to Stan under the hood. The <em>thinking</em> is identical to the grid above; only the engine changes:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rethinking)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">quap</span>(<span class="fu">alist</span>(</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>        y    <span class="sc">~</span> <span class="fu">dnorm</span>(mu, sigma),     <span class="co"># likelihood</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>        mu   <span class="ot">&lt;-</span> a <span class="sc">+</span> b <span class="sc">*</span> x,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>        a    <span class="sc">~</span> <span class="fu">dnorm</span>(<span class="dv">0</span>, <span class="dv">10</span>),         <span class="co"># priors</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>        b    <span class="sc">~</span> <span class="fu">dnorm</span>(<span class="dv">0</span>, <span class="dv">1</span>),          <span class="co">#   weakly informative on a standardized predictor</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>        sigma <span class="sc">~</span> <span class="fu">dexp</span>(<span class="dv">1</span>)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>     ), <span class="at">data =</span> d)</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>post <span class="ot">&lt;-</span> <span class="fu">extract.samples</span>(m)</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="fu">HPDI</span>(post<span class="sc">$</span>b, <span class="at">prob =</span> <span class="fl">0.89</span>)            <span class="co"># highest-posterior-density (credible) interval</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="fu">compare</span>(m1, m2, <span class="at">func =</span> WAIC)         <span class="co"># model comparison (predictive testing)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(brms); <span class="fu">library</span>(bayestestR)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">brm</span>(y <span class="sc">~</span> x, <span class="at">data =</span> d, <span class="at">family =</span> <span class="fu">gaussian</span>(),</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">prior =</span> <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">class =</span> <span class="st">"b"</span>))   <span class="co"># regularizing prior</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="fu">hdi</span>(fit)                             <span class="co"># estimation: credible intervals</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="fu">p_direction</span>(fit)                     <span class="co"># probability the effect has a given sign</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="fu">rope</span>(fit, <span class="at">range =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.05</span>, <span class="fl">0.05</span>))    <span class="co"># testing: mass in the ROPE</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="fu">loo</span>(fit)                             <span class="co"># model comparison via leave-one-out</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Two habits from McKnight’s applied pipeline are worth stealing: <strong>standardize predictors</strong> so a <code>normal(0, 1)</code> prior is genuinely weakly-informative and interpretable, and <strong>simulate from your priors before touching the data</strong> to check they imply sane predictions (an over-tight prior underfits; a too-vague one overfits).</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Estimation vs.&nbsp;testing, the Bayesian version
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Estimation is primary and everything else is downstream of it.</strong> Fit the model, get a posterior, report a <strong>credible interval</strong> (HPDI). “Testing” then comes in two honest flavors, neither of which is point-null rejection: <strong>practical significance</strong> via the <strong>ROPE</strong> (how much posterior is near the null?), and <strong>model comparison</strong> via predictive scores (<strong>WAIC</strong>, <strong>PSIS-LOO</strong>) or <strong>Bayes factors</strong>. A caution McKnight repeats: <em>predictive testing is not causal estimation</em> - a confounded model can out-predict the correct causal one, so “which model forecasts better” and “which parameter is right” are different questions. Do not let a good WAIC talk you out of a good DAG.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="the-distinction-woven-together" class="level2" data-number="19.5">
+<h2 data-number="19.5" class="anchored" data-anchor-id="the-distinction-woven-together"><span class="header-section-number">19.5</span> The Distinction, Woven Together</h2>
+<p>One table, three frameworks, two questions:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Framework</th>
+<th><strong>Estimation</strong> (value + uncertainty)</th>
+<th><strong>Testing</strong> (difference / comparison)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Classical (normal theory)</td>
+<td>estimate <span class="math inline">\(\pm\)</span> standard error; confidence interval</td>
+<td><span class="math inline">\(t\)</span>/<span class="math inline">\(F\)</span> test, <span class="math inline">\(p\)</span>-value</td>
+</tr>
+<tr class="even">
+<td><strong>Resampling</strong></td>
+<td>bootstrap SE + percentile interval</td>
+<td>permutation <span class="math inline">\(p\)</span>; bootstrap interval excludes null</td>
+</tr>
+<tr class="odd">
+<td><strong>Robust</strong></td>
+<td>trimmed mean + MAD; robust regression coefficients</td>
+<td>Yuen/<code>t1way</code>; bootstrap the robust estimator</td>
+</tr>
+<tr class="even">
+<td><strong>Bayesian</strong></td>
+<td>posterior + credible (HPDI) interval</td>
+<td>ROPE; model comparison (WAIC/LOO); Bayes factor</td>
+</tr>
+</tbody>
+</table>
+<p>Read down the <strong>estimation</strong> column and the four approaches are more alike than different: all report a best value and a spread. Read down the <strong>testing</strong> column and you see the modern lesson of this whole book - <strong>testing is best done as a consequence of estimation, not as a separate ritual.</strong> Estimate the distribution of your answer honestly, and the test is already in your hands.</p>
+</section>
+<section id="challenge" class="level2" data-number="19.6">
+<h2 data-number="19.6" class="anchored" data-anchor-id="challenge"><span class="header-section-number">19.6</span> Challenge</h2>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Do One Yourself
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>Bootstrap a statistic that has <em>no</em> simple standard-error formula - the <strong>median</strong>, or the <strong>correlation</strong> between two variables. Compare your percentile interval to what you’d get pretending it was normal.</li>
+<li>Take the outlier demo (<code>z</code>) and sweep the trimmed mean’s trim fraction from 0 to 0.5. Plot the trimmed mean against the trim fraction. Where does it stop moving, and what value has it become?</li>
+<li>Re-run the grid-approximation posterior with a <em>strong</em> prior (<code>dbeta(grid, 20, 20)</code>) and a <em>flat</em> one (<code>dbeta(grid, 1, 1)</code>). How much does the prior move the posterior with only 9 trials, and with a simulated 900 trials? What does that tell you about when priors matter?</li>
+</ol>
+</div>
+</div>
+</section>
+<section id="where-we-go-next" class="level2" data-number="19.7">
+<h2 data-number="19.7" class="anchored" data-anchor-id="where-we-go-next"><span class="header-section-number">19.7</span> Where We Go Next</h2>
+<p>You now have three ways past the normal curve, and a single principle - estimate first, test second - that ties them together and reaches back through every chapter you’ve read. That principle is the quiet thesis of this book: statistics is the disciplined quantification of uncertainty, and the honest currency of uncertainty is a <em>distribution</em>, not a verdict. Wherever your data take you next - a resampled interval, a robust slope, a posterior - you are doing the same human thing we started with: saying what you know, and how sure you are.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<!-- Make the book-title link (upper-left sidebar) point explicitly at index.html.
+     Quarto renders it as href="./" (the home = the current directory). A web
+     server resolves "./" to index.html automatically, but a plain file:// browser
+     opening the rendered _book/ folder shows "./" as a bare directory listing and
+     never loads the home page. Rewriting to index.html makes the title work in
+     both places. Scoped to .sidebar-title so no other link is affected. -->
+<script>
+  window.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".sidebar-title a").forEach(function (a) {
+      var href = a.getAttribute("href");
+      if (href === "./" || href === "." || href === "" || href === null) {
+        a.setAttribute("href", "index.html");
+      }
+    });
+  });
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./19-coding.html" class="pagination-link" aria-label="Coding Categorical Predictors">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Coding Categorical Predictors</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./references.html" class="pagination-link" aria-label="References">
+        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

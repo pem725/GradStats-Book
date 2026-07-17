@@ -528,6 +528,29 @@ window.Quarto = {
  <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Basic ANOVA</span></span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./19-coding.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Coding Categorical Predictors</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Beyond the Normal Curve</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./20-beyond.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Beyond the Normal Curve: Resampling, Robust, and Bayesian Statistics</span></span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item">
@@ -804,6 +827,19 @@ F-statistic: 1.028 on 1 and 3 DF,  p-value: 0.3853</code></pre>
 <p>“When calculating the standard error of estimate and the standard error of <span class="math inline">\(b\)</span>, why are the calculations for the degrees of freedom different? (I.e., standard error of estimate <span class="math inline">\(N-2\)</span> but standard error of <span class="math inline">\(b\)</span> <span class="math inline">\(N-1\)</span>.)”</p>
 </blockquote>
 <p>Sharp catch - and the honest answer is that they should <strong>not</strong> be different. There is only one rule here: the degrees of freedom equal <span class="math inline">\(N\)</span> minus the number of parameters you estimated. In simple regression you estimate two (a slope and an intercept), so <em>every</em> standard error in this chapter - the estimate, the slope, the intercept - rests on the same <span class="math inline">\(N-2\)</span>. If a formula sheet ever shows <span class="math inline">\(N-1\)</span> for the SE of <span class="math inline">\(b\)</span>, that is a slip, not a second rule. (When we add predictors in the <a href="./15-MRC.html">next chapter</a>, that same one rule becomes <span class="math inline">\(N-k-1\)</span>.)</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Another route to the slope’s uncertainty: bootstrap it
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The standard-error formula above assumes normal, equal-variance errors. When you doubt that, you can skip the formula entirely and <strong>bootstrap</strong> the slope: resample your rows with replacement a few thousand times, refit <code>lm()</code> each time, and read the SE and a 95% interval straight off the spread of the resampled slopes - no distributional assumption required. Same slope, an honest interval. See <a href="./20-beyond.html">Beyond the Normal Curve</a>.</p>
 </div>
 </div>
 </section>

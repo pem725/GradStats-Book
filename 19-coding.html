@@ -1,0 +1,1480 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="A comprehensive graduate statistics book suitable for social and behavioral sciences. Our approach is to provide interested students a gentle guide to the rudiments of statistical estimation and inference.">
+
+<title>18&nbsp; Coding Categorical Predictors – Statistics by Us for You</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./20-beyond.html" rel="next">
+<link href="./17-basicANOVA.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-c875dbb4c9335aca9cc352e974a4ec92.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-c875dbb4c9335aca9cc352e974a4ec92.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-653ffe7e8e777a348df834c28797d719.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-20dfcf0d63a59e46238f4c852114a2f2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-dark"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = true;
+    const darkModeDefault = authorPrefersDark;
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./12-GLMcovariance.html">Using Models</a></li><li class="breadcrumb-item"><a href="./19-coding.html"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Coding Categorical Predictors</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Statistics by Us for You</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/pem725/GradStats-Book" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./author.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Authors</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">The Basics</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Variables and Distributions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-CTmeasures.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">The Best Guess</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-Dmeasures.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Dispersion and Uncertainty</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-datacleaning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Cleaning House</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Making Inferences with Data</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-zdistribution.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Expectation and Understanding: The Z-Distribution</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-covariance.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Covariance and Association</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-hypothesistesting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Testing Hypotheses with Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-statisticalpower.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Statistical Power: How to Find Things That May Not Be There</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Checking Our Data</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10-reliability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Reliability (not Validity) of Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-validity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Validity (not Reliability)</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./18-rasch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Measuring Like Ben Wright: Rasch in R, Python, and Julia</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Using Models</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-GLMcovariance.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Introducing the General Linear Model (GLM)</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13-pointbiserialcorrelation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Bridging the Gap: The Point Biserial Correlation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./14-bivariateregression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Simple Regression</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./15-MRC.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Multiple Regression</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./16-ANOVAandGLM.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">ANOVA and the General Linear Model</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./17-basicANOVA.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Basic ANOVA</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./19-coding.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Coding Categorical Predictors</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Beyond the Normal Curve</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./20-beyond.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Beyond the Normal Curve: Resampling, Robust, and Bayesian Statistics</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#learning-objectives" id="toc-learning-objectives" class="nav-link active" data-scroll-target="#learning-objectives"><span class="header-section-number">18.1</span> Learning Objectives</a></li>
+  <li><a href="#a-category-is-a-binned-continuum" id="toc-a-category-is-a-binned-continuum" class="nav-link" data-scroll-target="#a-category-is-a-binned-continuum"><span class="header-section-number">18.2</span> A Category Is a Binned Continuum</a></li>
+  <li><a href="#dummy-reference-coding" id="toc-dummy-reference-coding" class="nav-link" data-scroll-target="#dummy-reference-coding"><span class="header-section-number">18.3</span> Dummy (Reference) Coding</a></li>
+  <li><a href="#effects-deviation-coding" id="toc-effects-deviation-coding" class="nav-link" data-scroll-target="#effects-deviation-coding"><span class="header-section-number">18.4</span> Effects (Deviation) Coding</a></li>
+  <li><a href="#weighted-effects-coding" id="toc-weighted-effects-coding" class="nav-link" data-scroll-target="#weighted-effects-coding"><span class="header-section-number">18.5</span> Weighted Effects Coding</a></li>
+  <li><a href="#contrast-coding" id="toc-contrast-coding" class="nav-link" data-scroll-target="#contrast-coding"><span class="header-section-number">18.6</span> Contrast Coding</a>
+  <ul class="collapse">
+  <li><a href="#helmert-contrasts" id="toc-helmert-contrasts" class="nav-link" data-scroll-target="#helmert-contrasts"><span class="header-section-number">18.6.1</span> Helmert contrasts</a></li>
+  <li><a href="#custom-orthogonal-contrasts" id="toc-custom-orthogonal-contrasts" class="nav-link" data-scroll-target="#custom-orthogonal-contrasts"><span class="header-section-number">18.6.2</span> Custom orthogonal contrasts</a></li>
+  </ul></li>
+  <li><a href="#nonsense-coding" id="toc-nonsense-coding" class="nav-link" data-scroll-target="#nonsense-coding"><span class="header-section-number">18.7</span> Nonsense Coding</a></li>
+  <li><a href="#summary-of-all-schemes" id="toc-summary-of-all-schemes" class="nav-link" data-scroll-target="#summary-of-all-schemes"><span class="header-section-number">18.8</span> Summary of All Schemes</a></li>
+  <li><a href="#challenge" id="toc-challenge" class="nav-link" data-scroll-target="#challenge"><span class="header-section-number">18.9</span> Challenge</a></li>
+  <li><a href="#where-we-go-next" id="toc-where-we-go-next" class="nav-link" data-scroll-target="#where-we-go-next"><span class="header-section-number">18.10</span> Where We Go Next</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./12-GLMcovariance.html">Using Models</a></li><li class="breadcrumb-item"><a href="./19-coding.html"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Coding Categorical Predictors</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="coding" class="quarto-section-identifier"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Coding Categorical Predictors</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>In the <a href="./16-ANOVAandGLM.html">ANOVA and the GLM</a> chapter we let R turn a factor into numbers for us and got on with life. That was a convenient lie. R <em>always</em> codes a categorical predictor into numbers before it fits anything - and <strong>the code you choose decides what every coefficient means.</strong> Change the code and the intercept, the slopes, the <em>t</em>-tests all change their meaning, even though the model’s fit (its <span class="math inline">\(R^2\)</span>, its <span class="math inline">\(F\)</span>, its predicted values) does not budge an inch.</p>
+<p>That last sentence is the whole chapter. The coding scheme is a lens, not a model. Pick the lens that answers your question, and the coefficients read like plain English. Pick a careless lens and you get numbers that are technically correct and completely meaningless - what we will (fondly) call <strong>nonsense coding</strong>.</p>
+<section id="learning-objectives" class="level2" data-number="18.1">
+<h2 data-number="18.1" class="anchored" data-anchor-id="learning-objectives"><span class="header-section-number">18.1</span> Learning Objectives</h2>
+<ol type="1">
+<li>See that a categorical predictor is just a continuous variable we chopped into bins - and that “how we chop” is a choice.</li>
+<li>Interpret <strong>dummy</strong> (reference), <strong>effects</strong> (deviation), <strong>weighted effects</strong>, and <strong>contrast</strong> codes - reading each coefficient straight off the group means.</li>
+<li>Recover every coefficient <em>by hand</em> from the marginal means, so no <code>lm()</code> output is ever a mystery.</li>
+<li>Understand why the omnibus fit is invariant to coding, and why bad codes give “nonsense” coefficients.</li>
+</ol>
+</section>
+<section id="a-category-is-a-binned-continuum" class="level2" data-number="18.2">
+<h2 data-number="18.2" class="anchored" data-anchor-id="a-category-is-a-binned-continuum"><span class="header-section-number">18.2</span> A Category Is a Binned Continuum</h2>
+<p>Let’s build a categorical variable from scratch so we can see the seams. Take a continuous “dogness” score, chop it into four bins, and call them <code>cat</code>, <code>fish</code>, <code>pig</code>, <code>dog</code> (cat lovers are welcome to write their own course):</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">725</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>n   <span class="ot">&lt;-</span> <span class="dv">200</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>x   <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n)                                   <span class="co"># a continuous "dogness" score</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>pet <span class="ot">&lt;-</span> <span class="fu">cut</span>(x, <span class="dv">4</span>, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"cat"</span>, <span class="st">"fish"</span>, <span class="st">"pig"</span>, <span class="st">"dog"</span>))</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>happy <span class="ot">&lt;-</span> x <span class="sc">+</span> <span class="fu">rnorm</span>(n)                             <span class="co"># more dogness -&gt; happier, on average</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(pet, happy)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(pet)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>pet
+ cat fish  pig  dog 
+   9   60   94   37 </code></pre>
+</div>
+</div>
+<p><code>pet</code> is now a <strong>factor</strong>: R stores it as integer codes with labels attached. The moment we put it in a model, R replaces those four labels with three columns of numbers (four groups need <span class="math inline">\(4-1=3\)</span> columns, plus the intercept). <em>Which</em> three columns is the coding scheme. Here are the group means we will spend the rest of the chapter reconstructing:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>means <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(happy <span class="sc">~</span> pet, <span class="at">data =</span> d, <span class="at">FUN =</span> mean)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>means</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">pet</th>
+<th style="text-align: right;">happy</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">cat</td>
+<td style="text-align: right;">-2.539008</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">fish</td>
+<td style="text-align: right;">-1.159632</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">pig</td>
+<td style="text-align: right;">0.371500</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">dog</td>
+<td style="text-align: right;">1.196379</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="dummy-reference-coding" class="level2" data-number="18.3">
+<h2 data-number="18.3" class="anchored" data-anchor-id="dummy-reference-coding"><span class="header-section-number">18.3</span> Dummy (Reference) Coding</h2>
+<p>Dummy coding - R’s default, also called <em>reference</em> or <em>indicator</em> coding - picks one group as the <strong>reference</strong> and compares every other group to it. Let’s make <code>dog</code> the reference (the 4th level):</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">contrasts</span>(d<span class="sc">$</span>pet) <span class="ot">&lt;-</span> <span class="fu">contr.treatment</span>(<span class="dv">4</span>, <span class="at">base =</span> <span class="dv">4</span>)   <span class="co"># reference = level 4 = dog</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">contrasts</span>(d<span class="sc">$</span>pet)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     1 2 3
+cat  1 0 0
+fish 0 1 0
+pig  0 0 1
+dog  0 0 0</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>m_dummy <span class="ot">&lt;-</span> <span class="fu">lm</span>(happy <span class="sc">~</span> pet, <span class="at">data =</span> d)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">coef</span>(m_dummy), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(Intercept)        pet1        pet2        pet3 
+      1.196      -3.735      -2.356      -0.825 </code></pre>
+</div>
+</div>
+<p>Read the coefficients straight off the means:</p>
+<ul>
+<li><strong><code>(Intercept)</code></strong> is the reference-group mean - the mean happiness of <code>dog</code>.</li>
+<li><strong>each slope</strong> is that group’s mean <em>minus</em> the reference mean: <code>pet1</code> is <span class="math inline">\(\bar{y}_{cat} - \bar{y}_{dog}\)</span>, <code>pet2</code> is <span class="math inline">\(\bar{y}_{fish} - \bar{y}_{dog}\)</span>, and so on.</li>
+</ul>
+<p>Don’t take my word for it - check:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">&lt;-</span> <span class="fu">setNames</span>(means<span class="sc">$</span>happy, means<span class="sc">$</span>pet)             <span class="co"># named group means</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">intercept_is_dog_mean =</span> <span class="fu">all.equal</span>(<span class="fu">unname</span>(<span class="fu">coef</span>(m_dummy)[<span class="dv">1</span>]), <span class="fu">unname</span>(mu[<span class="st">"dog"</span>])),</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">cat_slope_is_cat_minus_dog =</span> <span class="fu">all.equal</span>(<span class="fu">unname</span>(<span class="fu">coef</span>(m_dummy)[<span class="st">"pet1"</span>]),</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>                                         <span class="fu">unname</span>(mu[<span class="st">"cat"</span>] <span class="sc">-</span> mu[<span class="st">"dog"</span>])))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     intercept_is_dog_mean cat_slope_is_cat_minus_dog 
+                      TRUE                       TRUE </code></pre>
+</div>
+</div>
+<p>Both <code>TRUE</code>. Every dummy coefficient is a <strong>simple difference from the reference</strong>. That is exactly why dummy coding is the right lens when you have a control group and want each treatment compared to it.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>The interaction trap
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Add a second predictor <em>with an interaction</em> and a dummy slope is no longer “group mean minus reference mean” overall - it is that difference <strong>only at the reference level of the other predictor</strong> (i.e., where the other predictor’s dummy is 0). This is the single most common misreading of regression output. When an interaction is in the model, stop reading coefficients off marginal means and solve the full equation instead. (This bites hardest in the factorial models of <a href="./16-ANOVAandGLM.html">ANOVA &amp; the GLM</a>.)</p>
+</div>
+</div>
+</section>
+<section id="effects-deviation-coding" class="level2" data-number="18.4">
+<h2 data-number="18.4" class="anchored" data-anchor-id="effects-deviation-coding"><span class="header-section-number">18.4</span> Effects (Deviation) Coding</h2>
+<p>Dummy coding asks “how does each group differ from <em>one</em> group?” <strong>Effects coding</strong> (a.k.a. deviation coding, <code>contr.sum</code>) asks a different question: “how does each group differ from the <strong>grand mean</strong>?” The zero point moves from a reference group to the center of everything.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">contrasts</span>(d<span class="sc">$</span>pet) <span class="ot">&lt;-</span> <span class="fu">contr.sum</span>(<span class="dv">4</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">contrasts</span>(d<span class="sc">$</span>pet)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3]
+cat     1    0    0
+fish    0    1    0
+pig     0    0    1
+dog    -1   -1   -1</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>m_eff <span class="ot">&lt;-</span> <span class="fu">lm</span>(happy <span class="sc">~</span> pet, <span class="at">data =</span> d)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">coef</span>(m_eff), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(Intercept)        pet1        pet2        pet3 
+     -0.533      -2.006      -0.627       0.904 </code></pre>
+</div>
+</div>
+<p>Now the meanings shift:</p>
+<ul>
+<li><strong><code>(Intercept)</code></strong> is the <strong>grand mean</strong> - but note <em>which</em> grand mean: the mean of the four <strong>group means</strong>, not the mean of the raw data (those differ when groups are unequal in size).</li>
+<li><strong>each slope</strong> is a group’s mean <em>minus</em> the grand mean - its “effect.”</li>
+<li><strong>the last group</strong> (<code>dog</code>) has no coefficient of its own. Because effects sum to zero, its effect is minus the sum of the others.</li>
+</ul>
+<p>Watch the grand-mean subtlety, because it trips everyone:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>GM_groups <span class="ot">&lt;-</span> <span class="fu">mean</span>(means<span class="sc">$</span>happy)                     <span class="co"># mean of the GROUP means</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>GM_raw    <span class="ot">&lt;-</span> <span class="fu">mean</span>(d<span class="sc">$</span>happy)                          <span class="co"># mean of the raw data</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">intercept =</span> <span class="fu">unname</span>(<span class="fu">coef</span>(m_eff)[<span class="dv">1</span>]),</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">grand_mean_of_groups =</span> GM_groups,                 <span class="co"># this one matches</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">grand_mean_of_raw    =</span> GM_raw)                    <span class="co"># this one (slightly) does not</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           intercept grand_mean_of_groups    grand_mean_of_raw 
+         -0.53269001          -0.53269001          -0.06620966 </code></pre>
+</div>
+</div>
+<p>And recover the invisible fourth effect - <code>dog</code> - as minus the sum of the rest:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>eff <span class="ot">&lt;-</span> <span class="fu">coef</span>(m_eff)[<span class="sc">-</span><span class="dv">1</span>]                              <span class="co"># pet1, pet2, pet3 = cat, fish, pig</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>dog_effect <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fu">sum</span>(eff)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">all.equal</span>(<span class="fu">unname</span>(mu[<span class="st">"dog"</span>] <span class="sc">-</span> GM_groups), <span class="fu">unname</span>(dog_effect))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+<p><code>TRUE</code>. That is the whole trick of effects coding: the coefficients are <strong>deviations that must sum to zero</strong>, so the omitted group is always recoverable.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Dummy vs.&nbsp;effects, in one line
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Dummy codes make the zero <em>explicit</em> (it is the reference group); effects codes make the zero <em>implicit</em> (it is the grand mean, sitting between the deviations).</strong> That is the mnemonic to carry out of this chapter.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Always check your contrasts
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>contr.sum</code> on a two-level factor assigns <code>+1</code> to the <em>first</em> level and <code>-1</code> to the second - which is often the opposite of what you expect, silently flipping the sign of your effect. R’s default level ordering (alphabetical!) will burn you the same way. Print <code>contrasts(yourfactor)</code> <em>before</em> you interpret anything.</p>
+</div>
+</div>
+</section>
+<section id="weighted-effects-coding" class="level2" data-number="18.5">
+<h2 data-number="18.5" class="anchored" data-anchor-id="weighted-effects-coding"><span class="header-section-number">18.5</span> Weighted Effects Coding</h2>
+<p>Plain effects coding centers on the mean of the group means, treating a group of 10 and a group of 200 as equals. When your cells are unbalanced and you want the <strong>population</strong> grand mean (weighted by how many people are actually in each group), you need <strong>weighted effects coding</strong>.</p>
+<p>Let’s make an unbalanced world - many pigs, few dogs - and build the weighted codes by hand, pushing the cell-size ratios onto the comparison group’s row:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">9</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>cnt   <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">cat =</span> <span class="dv">20</span>, <span class="at">fish =</span> <span class="dv">30</span>, <span class="at">pig =</span> <span class="dv">40</span>, <span class="at">dog =</span> <span class="dv">10</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>petw  <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">rep</span>(<span class="fu">names</span>(cnt), cnt), <span class="at">levels =</span> <span class="fu">names</span>(cnt))</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co"># group-specific means so the demo has structure:</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>mu_w  <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">cat =</span> <span class="dv">0</span>, <span class="at">fish =</span> <span class="dv">1</span>, <span class="at">pig =</span> <span class="dv">2</span>, <span class="at">dog =</span> <span class="dv">3</span>)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>happyw <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="fu">length</span>(petw), <span class="at">mean =</span> mu_w[<span class="fu">as.character</span>(petw)], <span class="at">sd =</span> <span class="dv">1</span>)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="fu">contrasts</span>(petw) <span class="ot">&lt;-</span> <span class="fu">contr.sum</span>(<span class="dv">4</span>)          <span class="co"># start from unweighted effects codes</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>M <span class="ot">&lt;-</span> <span class="fu">contrasts</span>(petw)</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="fu">table</span>(petw)</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="co"># reweight the comparison (last) group's row by the cell-size ratios:</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>M[<span class="dv">4</span>, ] <span class="ot">&lt;-</span> <span class="fu">c</span>(M[<span class="dv">4</span>, <span class="dv">1</span>] <span class="sc">*</span> N[<span class="dv">1</span>] <span class="sc">/</span> N[<span class="dv">4</span>],</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>            M[<span class="dv">4</span>, <span class="dv">2</span>] <span class="sc">*</span> N[<span class="dv">2</span>] <span class="sc">/</span> N[<span class="dv">4</span>],</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>            M[<span class="dv">4</span>, <span class="dv">3</span>] <span class="sc">*</span> N[<span class="dv">3</span>] <span class="sc">/</span> N[<span class="dv">4</span>])</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a><span class="fu">contrasts</span>(petw) <span class="ot">&lt;-</span> M</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(M, <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3]
+cat     1    0    0
+fish    0    1    0
+pig     0    0    1
+dog    -2   -3   -4</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>m_weff <span class="ot">&lt;-</span> <span class="fu">lm</span>(happyw <span class="sc">~</span> petw)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The payoff: the intercept is now the <strong>sample</strong> grand mean - the ordinary mean of the raw data, weighted by cell size - not the mean of the group means:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">intercept   =</span> <span class="fu">unname</span>(<span class="fu">coef</span>(m_weff)[<span class="dv">1</span>]),</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">raw_mean    =</span> <span class="fu">mean</span>(happyw),               <span class="co"># weighted effects intercept matches THIS</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">groups_mean =</span> <span class="fu">mean</span>(<span class="fu">tapply</span>(happyw, petw, mean)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  intercept    raw_mean groups_mean 
+   1.346485    1.346485    1.390092 </code></pre>
+</div>
+</div>
+<p>The intercept tracks the raw mean. “The weights get pushed onto the comparison-group means” - unbalanced data no longer distorts your grand mean.</p>
+</section>
+<section id="contrast-coding" class="level2" data-number="18.6">
+<h2 data-number="18.6" class="anchored" data-anchor-id="contrast-coding"><span class="header-section-number">18.6</span> Contrast Coding</h2>
+<p>Dummy and effects codes answer fixed questions. <strong>Contrast codes</strong> let <em>you</em> pose the question - “is the average of these two groups different from the average of those two?” - by writing the comparison directly into the code columns. Done right (orthogonally), each coefficient is one clean, independent comparison.</p>
+<section id="helmert-contrasts" class="level3" data-number="18.6.1">
+<h3 data-number="18.6.1" class="anchored" data-anchor-id="helmert-contrasts"><span class="header-section-number">18.6.1</span> Helmert contrasts</h3>
+<p>R ships one useful family, <strong>Helmert</strong> codes, which compare each level to the <em>pooled mean of the levels before it</em>:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">contrasts</span>(d<span class="sc">$</span>pet) <span class="ot">&lt;-</span> <span class="fu">contr.helmert</span>(<span class="dv">4</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>m_helm <span class="ot">&lt;-</span> <span class="fu">lm</span>(happy <span class="sc">~</span> pet, <span class="at">data =</span> d)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">coef</span>(m_helm), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(Intercept)        pet1        pet2        pet3 
+     -0.533       0.690       0.740       0.576 </code></pre>
+</div>
+</div>
+<p>The intercept is again the (unweighted) grand mean. The first Helmert slope is <em>half</em> the gap between the first two group means - why half? Because the code uses <span class="math inline">\(-1\)</span> and <span class="math inline">\(+1\)</span>, a two-unit spread, so the slope is the difference divided by 2:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">helmert_b1 =</span> <span class="fu">unname</span>(<span class="fu">coef</span>(m_helm)[<span class="dv">2</span>]),</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">half_the_gap =</span> <span class="fu">unname</span>((mu[<span class="st">"fish"</span>] <span class="sc">-</span> mu[<span class="st">"cat"</span>]) <span class="sc">/</span> <span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  helmert_b1 half_the_gap 
+    0.689688     0.689688 </code></pre>
+</div>
+</div>
+</section>
+<section id="custom-orthogonal-contrasts" class="level3" data-number="18.6.2">
+<h3 data-number="18.6.2" class="anchored" data-anchor-id="custom-orthogonal-contrasts"><span class="header-section-number">18.6.2</span> Custom orthogonal contrasts</h3>
+<p>The real power is writing your own. Suppose the scientific questions are: (1) are the “usual” pets (<code>cat</code>, <code>fish</code>) different from the “unusual” ones (<code>pig</code>, <code>dog</code>)? (2) <code>cat</code> vs.&nbsp;<code>fish</code>? (3) <code>pig</code> vs.&nbsp;<code>dog</code>? Encode exactly those, and <strong>name the columns</strong> so the output documents itself:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>sgc <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>( <span class="fl">0.5</span>,  <span class="fl">0.5</span>, <span class="sc">-</span><span class="fl">0.5</span>, <span class="sc">-</span><span class="fl">0.5</span>,   <span class="co"># usual (cat,fish) vs unusual (pig,dog)</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>                 <span class="fl">0.5</span>, <span class="sc">-</span><span class="fl">0.5</span>,  <span class="fl">0.0</span>,  <span class="fl">0.0</span>,   <span class="co"># cat vs fish</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>                 <span class="fl">0.0</span>,  <span class="fl">0.0</span>,  <span class="fl">0.5</span>, <span class="sc">-</span><span class="fl">0.5</span>),  <span class="co"># pig vs dog</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">nrow =</span> <span class="dv">4</span>,</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>              <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="fu">levels</span>(d<span class="sc">$</span>pet),</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>                              <span class="fu">c</span>(<span class="st">"usual_vs_unusual"</span>, <span class="st">"cat_vs_fish"</span>, <span class="st">"pig_vs_dog"</span>)))</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>sgc</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     usual_vs_unusual cat_vs_fish pig_vs_dog
+cat               0.5         0.5        0.0
+fish              0.5        -0.5        0.0
+pig              -0.5         0.0        0.5
+dog              -0.5         0.0       -0.5</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">contrasts</span>(d<span class="sc">$</span>pet) <span class="ot">&lt;-</span> sgc</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>m_con <span class="ot">&lt;-</span> <span class="fu">lm</span>(happy <span class="sc">~</span> pet, <span class="at">data =</span> d)</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">coef</span>(m_con), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        (Intercept) petusual_vs_unusual      petcat_vs_fish       petpig_vs_dog 
+             -0.533              -2.633              -1.379              -0.825 </code></pre>
+</div>
+</div>
+<p>These three contrasts are <strong>orthogonal</strong> (each pair of columns is uncorrelated), so the three comparisons are independent - each coefficient answers its question without contamination from the others. Confirm the first one really is the usual-vs-unusual gap:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>usual   <span class="ot">&lt;-</span> <span class="fu">mean</span>(mu[<span class="fu">c</span>(<span class="st">"cat"</span>, <span class="st">"fish"</span>)])</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>unusual <span class="ot">&lt;-</span> <span class="fu">mean</span>(mu[<span class="fu">c</span>(<span class="st">"pig"</span>, <span class="st">"dog"</span>)])</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">contrast_b1 =</span> <span class="fu">unname</span>(<span class="fu">coef</span>(m_con)[<span class="st">"petusual_vs_unusual"</span>]),</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">usual_minus_unusual =</span> usual <span class="sc">-</span> unusual)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        contrast_b1 usual_minus_unusual 
+          -2.633259           -2.633259 </code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>The rule to remember
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Effects and contrast codes must be centered to move between means and coefficients</strong> - so you divide by the right denominator (the spread of the codes) when you compute a <span class="math inline">\(b\)</span> from marginal means, and multiply back when you go the other way. Miss the denominator and your hand-check will be “off by a factor” and you’ll think you broke something. You didn’t; you forgot to center.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="nonsense-coding" class="level2" data-number="18.7">
+<h2 data-number="18.7" class="anchored" data-anchor-id="nonsense-coding"><span class="header-section-number">18.7</span> Nonsense Coding</h2>
+<p>Now the capstone - and the point of the whole chapter. What if we assign <em>arbitrary</em> numbers to the groups? Not a reference, not deviations, not a meaningful comparison - just… numbers we made up:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>nonsense <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>( <span class="fl">3.0</span>, <span class="sc">-</span><span class="fl">7.0</span>,  <span class="fl">2.5</span>,  <span class="fl">0.1</span>,</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>                      <span class="fl">1.0</span>,  <span class="fl">1.0</span>, <span class="sc">-</span><span class="fl">2.0</span>,  <span class="fl">4.0</span>,</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>                     <span class="sc">-</span><span class="fl">5.0</span>,  <span class="fl">2.0</span>,  <span class="fl">8.0</span>, <span class="sc">-</span><span class="fl">1.0</span>),</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">nrow =</span> <span class="dv">4</span>,</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>                   <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="fu">levels</span>(d<span class="sc">$</span>pet), <span class="fu">c</span>(<span class="st">"huh"</span>, <span class="st">"wat"</span>, <span class="st">"lol"</span>)))</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="fu">contrasts</span>(d<span class="sc">$</span>pet) <span class="ot">&lt;-</span> nonsense</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>m_nonsense <span class="ot">&lt;-</span> <span class="fu">lm</span>(happy <span class="sc">~</span> pet, <span class="at">data =</span> d)</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">coef</span>(m_nonsense), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(Intercept)      pethuh      petwat      petlol 
+     -1.734       0.158       0.834       0.422 </code></pre>
+</div>
+</div>
+<p>Those coefficients are gibberish - <code>huh</code>, <code>wat</code>, <code>lol</code>, indeed. You cannot read a single one off the group means. And yet look at what has <strong>not</strong> changed:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The model fit is byte-for-byte identical to the sensible codings:</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">same_fitted =</span> <span class="fu">isTRUE</span>(<span class="fu">all.equal</span>(<span class="fu">fitted</span>(m_nonsense), <span class="fu">fitted</span>(m_dummy))),</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">same_r2     =</span> <span class="fu">all.equal</span>(<span class="fu">summary</span>(m_nonsense)<span class="sc">$</span>r.squared, <span class="fu">summary</span>(m_dummy)<span class="sc">$</span>r.squared),</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">same_F      =</span> <span class="fu">all.equal</span>(<span class="fu">summary</span>(m_nonsense)<span class="sc">$</span>fstatistic[<span class="dv">1</span>],</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>                          <span class="fu">summary</span>(m_dummy)<span class="sc">$</span>fstatistic[<span class="dv">1</span>]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>same_fitted     same_r2      same_F 
+       TRUE        TRUE        TRUE </code></pre>
+</div>
+</div>
+<p>All <code>TRUE</code>. <strong>Every coding scheme in this chapter fits the exact same model</strong> - same predicted values, same <span class="math inline">\(R^2\)</span>, same omnibus <span class="math inline">\(F\)</span>. Dummy, effects, weighted, contrast, and nonsense codes are five different <em>descriptions</em> of one fitted surface. The omnibus test (“does <code>pet</code> matter at all?”) is blind to coding. Only the <strong>individual coefficients</strong> - the intercept and the <span class="math inline">\(b\)</span>’s - carry the fingerprint of the code you chose.</p>
+<p>That is the lesson worth tattooing on the inside of your eyelids:</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Coding does not change the model - only the meaning of the coefficients
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The data decide the fit. <em>You</em> decide, through the coding scheme, which questions the coefficients answer. Choose codes whose contrasts match your scientific question and the output reads like a sentence. Choose thoughtlessly and you get nonsense coding: correct arithmetic, meaningless numbers.</p>
+</div>
+</div>
+</section>
+<section id="summary-of-all-schemes" class="level2" data-number="18.8">
+<h2 data-number="18.8" class="anchored" data-anchor-id="summary-of-all-schemes"><span class="header-section-number">18.8</span> Summary of All Schemes</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Scheme</th>
+<th>R helper</th>
+<th>Intercept means</th>
+<th>A slope means</th>
+<th>Use it when</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Dummy / reference</td>
+<td><code>contr.treatment</code></td>
+<td>reference-group mean</td>
+<td>group − reference</td>
+<td>you have a control/baseline group</td>
+</tr>
+<tr class="even">
+<td>Effects / deviation</td>
+<td><code>contr.sum</code></td>
+<td>grand mean (of group means)</td>
+<td>group − grand mean</td>
+<td>groups are balanced; you want deviations</td>
+</tr>
+<tr class="odd">
+<td>Weighted effects</td>
+<td>hand-built from <code>contr.sum</code></td>
+<td>sample grand mean (weighted)</td>
+<td>group − weighted grand mean</td>
+<td>groups are <strong>unbalanced</strong></td>
+</tr>
+<tr class="even">
+<td>Contrast (Helmert/custom)</td>
+<td><code>contr.helmert</code> / your matrix</td>
+<td>grand mean</td>
+<td>one planned comparison</td>
+<td>you have specific, orthogonal questions</td>
+</tr>
+<tr class="odd">
+<td>Nonsense</td>
+<td>arbitrary matrix</td>
+<td>nothing interpretable</td>
+<td>nothing interpretable</td>
+<td>never (it’s the cautionary tale)</td>
+</tr>
+</tbody>
+</table>
+<p>Across every row the <span class="math inline">\(R^2\)</span>, <span class="math inline">\(F\)</span>, and fitted values are identical. The columns “Intercept means” and “A slope means” are the only things that move.</p>
+</section>
+<section id="challenge" class="level2" data-number="18.9">
+<h2 data-number="18.9" class="anchored" data-anchor-id="challenge"><span class="header-section-number">18.9</span> Challenge</h2>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Do One Yourself
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>Refit the four-group model with <code>contr.treatment</code> using <code>cat</code> as the reference instead of <code>dog</code>. Which coefficients change sign, and why is <span class="math inline">\(R^2\)</span> untouched?</li>
+<li>Build a <strong>balanced</strong> version of the pet data (equal cell sizes) and show that weighted and unweighted effects coding then give the <em>same</em> intercept. Explain in one sentence why the weights stop mattering.</li>
+<li>Invent your own orthogonal contrast set for four groups (check orthogonality with <code>crossprod(yourmatrix)</code> - the off-diagonals should be 0). Fit it, and reconstruct one coefficient from the group means, remembering to divide by the code spread.</li>
+</ol>
+</div>
+</div>
+</section>
+<section id="where-we-go-next" class="level2" data-number="18.10">
+<h2 data-number="18.10" class="anchored" data-anchor-id="where-we-go-next"><span class="header-section-number">18.10</span> Where We Go Next</h2>
+<p>Coding is where categorical data enter the linear model, and where careful thought pays off in coefficients you can actually explain. But every method so far - every mean, every <span class="math inline">\(t\)</span>, every <span class="math inline">\(b\)</span> - has leaned on assumptions: normal errors, equal variances, large samples. What happens when those assumptions fail? That is the subject of the <a href="./20-beyond.html">next part</a>, where we meet resampling, robust estimation, and Bayesian inference - three honest answers to “but what if the normal curve is lying to me?”</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<!-- Make the book-title link (upper-left sidebar) point explicitly at index.html.
+     Quarto renders it as href="./" (the home = the current directory). A web
+     server resolves "./" to index.html automatically, but a plain file:// browser
+     opening the rendered _book/ folder shows "./" as a bare directory listing and
+     never loads the home page. Rewriting to index.html makes the title work in
+     both places. Scoped to .sidebar-title so no other link is affected. -->
+<script>
+  window.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".sidebar-title a").forEach(function (a) {
+      var href = a.getAttribute("href");
+      if (href === "./" || href === "." || href === "" || href === null) {
+        a.setAttribute("href", "index.html");
+      }
+    });
+  });
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./17-basicANOVA.html" class="pagination-link" aria-label="Basic ANOVA">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Basic ANOVA</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./20-beyond.html" class="pagination-link" aria-label="Beyond the Normal Curve: Resampling, Robust, and Bayesian Statistics">
+        <span class="nav-page-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Beyond the Normal Curve: Resampling, Robust, and Bayesian Statistics</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
