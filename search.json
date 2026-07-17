@@ -1435,7 +1435,7 @@
     "href": "14-bivariateregression.html#what-best-means-residuals",
     "title": "14  Simple Regression",
     "section": "14.4 What “Best” Means: Residuals",
-    "text": "14.4 What “Best” Means: Residuals\nThe red line is “best” in a very specific sense. For each point, the residual is the vertical distance between what we observed (\\(y\\)) and what the line predicts (\\(\\hat{y}\\)):\n\\[e = y - \\hat{y}\\]\nLet’s draw those distances.\n\nplot(x, y, xlim = c(0, 6), pch = 19,\n     main = \"Residuals: the vertical gaps the line leaves behind\")\nabline(lm1, col = \"red\", lwd = 2)\nfor (i in 1:5) {\n  segments(x[i], y[i], x[i], coef(lm1)[[2]] * x[i] + coef(lm1)[[1]],\n           col = \"blue\", lwd = 2)\n}\n\n\n\n\n\n\n\n\nHere are the residuals themselves:\n\nresid(lm1)\n\n   1    2    3    4    5 \n-2.0  1.3  2.6 -1.1 -0.8 \n\n\nTwo facts worth burning into memory:\n\nsum(resid(lm1))        # the residuals sum to (essentially) zero\n\n[1] 7.771561e-16\n\nsum(resid(lm1)^2)      # the sum of SQUARED residuals - this is what we minimize\n\n[1] 14.3\n\n\n\n\n\n\n\n\nImportantLeast Squares, Defined\n\n\n\nThe “best” line is the one line (out of infinitely many possible lines) that makes sum(resid^2) as small as it can possibly be. That is all “least squares” means: least (smallest) squares (of the residuals). The residuals sum to zero for any line through the means, so we cannot minimize their plain sum - it is always zero. Squaring first solves that, and it punishes big misses more than small ones. We shall return to that squared quantity again and again; it is the beating heart of the whole enterprise.",
+    "text": "14.4 What “Best” Means: Residuals\nThe red line is “best” in a very specific sense. For each point, the residual is the vertical distance between what we observed (\\(y\\)) and what the line predicts (\\(\\hat{y}\\)):\n\\[e = y - \\hat{y}\\]\nLet’s draw those distances.\n\nplot(x, y, xlim = c(0, 6), pch = 19,\n     main = \"Residuals: the vertical gaps the line leaves behind\")\nabline(lm1, col = \"red\", lwd = 2)\nfor (i in 1:5) {\n  segments(x[i], y[i], x[i], coef(lm1)[[2]] * x[i] + coef(lm1)[[1]],\n           col = \"blue\", lwd = 2)\n}\n\n\n\n\n\n\n\n\nHere are the residuals themselves:\n\nresid(lm1)\n\n   1    2    3    4    5 \n-2.0  1.3  2.6 -1.1 -0.8 \n\n\nTwo facts worth burning into memory:\n\nsum(resid(lm1))        # the residuals sum to (essentially) zero\n\n[1] 1.665335e-15\n\nsum(resid(lm1)^2)      # the sum of SQUARED residuals - this is what we minimize\n\n[1] 14.3\n\n\n\n\n\n\n\n\nImportantLeast Squares, Defined\n\n\n\nThe “best” line is the one line (out of infinitely many possible lines) that makes sum(resid^2) as small as it can possibly be. That is all “least squares” means: least (smallest) squares (of the residuals). The residuals sum to zero for any line through the means, so we cannot minimize their plain sum - it is always zero. Squaring first solves that, and it punishes big misses more than small ones. We shall return to that squared quantity again and again; it is the beating heart of the whole enterprise.",
     "crumbs": [
       "Using Models",
       "<span class='chapter-number'>14</span>  <span class='chapter-title'>Simple Regression</span>"
@@ -2506,6 +2506,116 @@
     "crumbs": [
       "Statistics in the Wild",
       "<span class='chapter-number'>25</span>  <span class='chapter-title'>Case Study: The Data You Didn't Get</span>"
+    ]
+  },
+  {
+    "objectID": "27-methods-showcase.html",
+    "href": "27-methods-showcase.html",
+    "title": "26  The Methods in Practice: The Authors at Work",
+    "section": "",
+    "text": "26.1 Measurement: Reliability, Validity, and What a Number Means\nEvery method in this book is a real tool, and the surest proof is that the people who wrote the book have spent their careers using these tools on real problems - measuring pain and depression and curiosity, running clinical trials, wrestling with missing data, arguing about what a number even means. This closing chapter is a field guide with receipts: for each family of methods, it points to where the book teaches it and to published work where you can watch it do real scientific labor. Consider it both a map and an invitation - read ours, then go make your own.\nA note on completeness and honesty: the list below is selected, not exhaustive, and it favors publications whose citation details we could verify. A few relevant pieces (a Monte-Carlo study of CFA fit statistics; an IRT calibration paper) are still in preparation and are omitted here rather than cited as finished. That is the same discipline the case studies preached: claim only what you can stand behind.\nTaught in Reliability and Validity. Measurement theory is the authors’ signature territory - the argument that a measure is a claim to be defended, not a column of numbers to be trusted.",
+    "crumbs": [
+      "The Methods in Practice",
+      "<span class='chapter-number'>26</span>  <span class='chapter-title'>The Methods in Practice: The Authors at Work</span>"
+    ]
+  },
+  {
+    "objectID": "27-methods-showcase.html#measurement-reliability-validity-and-what-a-number-means",
+    "href": "27-methods-showcase.html#measurement-reliability-validity-and-what-a-number-means",
+    "title": "26  The Methods in Practice: The Authors at Work",
+    "section": "",
+    "text": "Sechrest, McKnight, & McKnight (Sechrest et al. 1996) - Calibration of measures for psychotherapy outcome studies (American Psychologist). The foundational statement: scores mean nothing until they are calibrated against something real.\nCoan, Allen, & McKnight (Coan et al. 2006) - a capability model of frontal EEG asymmetry (Biological Psychology): reconceiving what an individual-differences measure is measuring.\nSchnyer et al. (Schnyer et al. 2005) - building a Chinese-medicine assessment with the Delphi method and inter-rater reliability (J. Alternative & Complementary Medicine).\nMcKnight & Sechrest (McKnight and Sechrest 2003) - The use and misuse of the term “experience” (Philosophical Psychology): what happens when a construct is never properly measured.",
+    "crumbs": [
+      "The Methods in Practice",
+      "<span class='chapter-number'>26</span>  <span class='chapter-title'>The Methods in Practice: The Authors at Work</span>"
+    ]
+  },
+  {
+    "objectID": "27-methods-showcase.html#irt-rasch-and-generalizability-theory",
+    "href": "27-methods-showcase.html#irt-rasch-and-generalizability-theory",
+    "title": "26  The Methods in Practice: The Authors at Work",
+    "section": "26.2 IRT, Rasch, and Generalizability Theory",
+    "text": "26.2 IRT, Rasch, and Generalizability Theory\nTaught in Measuring Like Ben Wright. The authors’ item-response work runs unusually deep for a statistics-textbook author - and one paper was co-written with Ben Wright himself.\n\nConrad, Wright, McKnight, et al. (Conrad et al. 2004) - Comparing traditional and Rasch analyses of the Mississippi PTSD Scale (J. Applied Measurement). Yes, that Wright, from the Rasch chapter - reverse-scored items behave badly, and Rasch reveals why.\nMcKnight & Babcock-Parziale (McKnight and Babcock-Parziale 2007) - Rasch plus generalizability theory in one study of a vision-rehabilitation outcome (Optometry and Vision Science).\nBabcock-Parziale, McKnight, & Head (Babcock-Parziale et al. 2005) - psychometric equating of two blind-rehabilitation measures (JRRD).\nStroud, McKnight, & Jensen (Stroud et al. 2004) - using IRT to shorten a disability scale without losing information (The Journal of Pain).",
+    "crumbs": [
+      "The Methods in Practice",
+      "<span class='chapter-number'>26</span>  <span class='chapter-title'>The Methods in Practice: The Authors at Work</span>"
+    ]
+  },
+  {
+    "objectID": "27-methods-showcase.html#factor-analysis-sem-and-growth-curves",
+    "href": "27-methods-showcase.html#factor-analysis-sem-and-growth-curves",
+    "title": "26  The Methods in Practice: The Authors at Work",
+    "section": "26.3 Factor Analysis, SEM, and Growth Curves",
+    "text": "26.3 Factor Analysis, SEM, and Growth Curves\nTaught in Building a Measure (EFA → CFA → invariance). The authors’ factor-analytic work leans confirmatory and simulation-flavored.\n\nVoelkle & McKnight (Voelkle and McKnight 2012) - One size fits all? (Methodology): a Monte-Carlo comparison of repeated-measures (M)ANOVA and latent curve modeling - exactly the ANOVA-is-a-GLM idea, extended into structural models.",
+    "crumbs": [
+      "The Methods in Practice",
+      "<span class='chapter-number'>26</span>  <span class='chapter-title'>The Methods in Practice: The Authors at Work</span>"
+    ]
+  },
+  {
+    "objectID": "27-methods-showcase.html#latent-class-and-mixture-models",
+    "href": "27-methods-showcase.html#latent-class-and-mixture-models",
+    "title": "26  The Methods in Practice: The Authors at Work",
+    "section": "26.4 Latent Class and Mixture Models",
+    "text": "26.4 Latent Class and Mixture Models\nTaught (as configural profiles/antitypes) in When the Total Score Hides the Story.\n\nKashdan, McKnight, Richey, & Hofmann (Kashdan et al. 2009) - latent class analysis uncovering a neglected, risk-prone subtype of social-anxiety disorder in the National Comorbidity Survey (Behaviour Research and Therapy). A hidden subgroup a sum score would never find.",
+    "crumbs": [
+      "The Methods in Practice",
+      "<span class='chapter-number'>26</span>  <span class='chapter-title'>The Methods in Practice: The Authors at Work</span>"
+    ]
+  },
+  {
+    "objectID": "27-methods-showcase.html#missing-data",
+    "href": "27-methods-showcase.html#missing-data",
+    "title": "26  The Methods in Practice: The Authors at Work",
+    "section": "26.5 Missing Data",
+    "text": "26.5 Missing Data\nTaught in Data Cleaning and The Data You Didn’t Get. This is the authoritative slot - one of us wrote the book.\n\nMcKnight, McKnight, Sidani, & Figueredo (McKnight et al. 2007) - Missing Data: A Gentle Introduction (Guilford Press). The book behind the missing-data case study.\nMcKnight & McKnight (McKnight and McKnight 2013) - Missing data in psychological science, in the Oxford Handbook of Research Strategies for Clinical Psychology.",
+    "crumbs": [
+      "The Methods in Practice",
+      "<span class='chapter-number'>26</span>  <span class='chapter-title'>The Methods in Practice: The Authors at Work</span>"
+    ]
+  },
+  {
+    "objectID": "27-methods-showcase.html#mediation-and-moderation",
+    "href": "27-methods-showcase.html#mediation-and-moderation",
+    "title": "26  The Methods in Practice: The Authors at Work",
+    "section": "26.6 Mediation and Moderation",
+    "text": "26.6 Mediation and Moderation\nTaught alongside Multiple Regression and the modern-methods chapter (bootstrapped indirect effects).\n\nMcKnight, Afram, Kashdan, Kasle, & Zautra (McKnight, Afram, et al. 2010) - a bootstrapped mixed-effects mediation model: coping self-efficacy as the mechanism between catastrophizing and physical functioning (J. Behavioral Medicine). The exact bootstrap-the-indirect-effect logic from Beyond the Normal Curve.\nHofmann, Richey, Kashdan, & McKnight (Hofmann et al. 2009) - anxiety disorders moderate the externalizing–substance-use link (J. Anxiety Disorders).",
+    "crumbs": [
+      "The Methods in Practice",
+      "<span class='chapter-number'>26</span>  <span class='chapter-title'>The Methods in Practice: The Authors at Work</span>"
+    ]
+  },
+  {
+    "objectID": "27-methods-showcase.html#longitudinal-multilevel-and-the-applied-glm",
+    "href": "27-methods-showcase.html#longitudinal-multilevel-and-the-applied-glm",
+    "title": "26  The Methods in Practice: The Authors at Work",
+    "section": "26.7 Longitudinal, Multilevel, and the Applied GLM",
+    "text": "26.7 Longitudinal, Multilevel, and the Applied GLM\nTaught across the GLM chapters and Power. The authors’ clinical-trial and diary work is where the linear model earns its living.\n\nMcKnight, Kasle, Going, et al. (McKnight, Kasle, et al. 2010) - a 24-month randomized controlled trial of strength training for knee osteoarthritis (Arthritis Care & Research).\nKasle, Wilhelm, McKnight, et al. (Kasle et al. 2010) - a prospective study of mutuality and inflammation in rheumatoid arthritis (Arthritis Care & Research).\nDoorley, Kashdan, Alexander, Blalock, & McKnight (Doorley et al. 2019) - a daily-diary / multilevel design on distress tolerance (Motivation and Emotion).\nBaer, Kivlahan, Blume, McKnight, & Marlatt (Baer et al. 2001) - a 4-year longitudinal follow-up of a brief-intervention trial (American Journal of Public Health).\nForoughi, Monfort, Paczynski, McKnight, & Greenwood (Foroughi et al. 2016) - placebo effects in cognitive training (PNAS): a design lesson about what a “control” group must control.",
+    "crumbs": [
+      "The Methods in Practice",
+      "<span class='chapter-number'>26</span>  <span class='chapter-title'>The Methods in Practice: The Authors at Work</span>"
+    ]
+  },
+  {
+    "objectID": "27-methods-showcase.html#theory-worth-measuring",
+    "href": "27-methods-showcase.html#theory-worth-measuring",
+    "title": "26  The Methods in Practice: The Authors at Work",
+    "section": "26.8 Theory Worth Measuring",
+    "text": "26.8 Theory Worth Measuring\nTaught implicitly throughout - because the whole point of good measurement is a question worth answering.\n\nMcKnight & Kashdan (McKnight and Kashdan 2009b) - the case for functional impairment as the real outcome in depression research (Clinical Psychology Review).\nMcKnight & Kashdan (McKnight and Kashdan 2009a) - Purpose in life as a system that creates and sustains health and well-being (Review of General Psychology) - the construct behind the purpose-and-happiness case study.\nKashdan & McKnight (Kashdan and McKnight 2010) - The darker side of social anxiety (Current Directions in Psychological Science).",
+    "crumbs": [
+      "The Methods in Practice",
+      "<span class='chapter-number'>26</span>  <span class='chapter-title'>The Methods in Practice: The Authors at Work</span>"
+    ]
+  },
+  {
+    "objectID": "27-methods-showcase.html#go-make-your-own",
+    "href": "27-methods-showcase.html#go-make-your-own",
+    "title": "26  The Methods in Practice: The Authors at Work",
+    "section": "26.9 Go Make Your Own",
+    "text": "26.9 Go Make Your Own\nThat is the map: every method in this book has done real work in the world, and now you have the coordinates to go read it. But the deeper invitation is the one this whole book has been making since the first page. The tools are not the point. The point is a career’s worth of honest questions, carefully measured, honestly modeled, and truthfully reported - some of which you will get wrong, and say so. Read ours. Then go collect your own body of work, and someday write the field guide with your receipts in it.\n\n\n\n\nBabcock-Parziale, Judith, Patrick E. McKnight, and Daniel N. Head. 2005. “Evaluating Psychometric Properties of a Clinical and a Self-Report Blind Rehabilitation Outcome Measure.” Journal of Rehabilitation Research and Development 42 (4).\n\n\nBaer, John S., Daniel R. Kivlahan, Arthur W. Blume, Patrick McKnight, and G. Alan Marlatt. 2001. “Brief Intervention for Heavy-Drinking College Students: 4-Year Follow-up and Natural History.” American Journal of Public Health 91 (8): 1310–16.\n\n\nCoan, James A., John J. B. Allen, and Patrick E. McKnight. 2006. “A Capability Model of Individual Differences in Frontal EEG Asymmetry.” Biological Psychology 72 (2): 198–207.\n\n\nConrad, Kendon J., Benjamin D. Wright, Patrick McKnight, Miles McFall, Alan Fontana, and Robert Rosenheck. 2004. “Comparing Traditional and Rasch Analyses of the Mississippi PTSD Scale: Revealing the Role of Reverse-Scored Items.” Journal of Applied Measurement 5 (1).\n\n\nDoorley, James D., Todd B. Kashdan, Leah A. Alexander, Dan V. Blalock, and Patrick E. McKnight. 2019. “Distress Tolerance in Romantic Relationships: A Daily Diary Exploration with Methodological Considerations.” Motivation and Emotion 43: 505–16.\n\n\nForoughi, Cyrus K., Samuel S. Monfort, Martin Paczynski, Patrick E. McKnight, and P. M. Greenwood. 2016. “Placebo Effects in Cognitive Training.” Proceedings of the National Academy of Sciences 113 (27).\n\n\nHofmann, Stefan G., J. Anthony Richey, Todd B. Kashdan, and Patrick E. McKnight. 2009. “Anxiety Disorders Moderate the Association Between Externalizing Problems and Substance Use Disorders.” Journal of Anxiety Disorders.\n\n\nKashdan, Todd B., and Patrick E. McKnight. 2010. “The Darker Side of Social Anxiety: When Aggressive Impulsivity Prevails over Shy Inhibition.” Current Directions in Psychological Science 19 (1): 47–50.\n\n\nKashdan, Todd B., Patrick E. McKnight, J. Anthony Richey, and Stefan G. Hofmann. 2009. “When Social Anxiety Disorder Co-Exists with Risk-Prone, Approach Behavior: Investigating a Neglected, Meaningful Subset of People in the National Comorbidity Survey–Replication.” Behaviour Research and Therapy 47 (7): 559–68.\n\n\nKasle, Shelley, Mari S. Wilhelm, Patrick E. McKnight, Saba Z. Sheikh, and Alex J. Zautra. 2010. “Mutuality’s Prospective Beneficial Effects on Inflammation in Female Patients with Rheumatoid Arthritis.” Arthritis Care and Research 62 (1): 92–100.\n\n\nMcKnight, Patrick E., Anita Afram, Todd B. Kashdan, Shelley Kasle, and Alex Zautra. 2010. “Coping Self-Efficacy as a Mediator Between Catastrophizing and Physical Functioning: Treatment Target Selection in an Osteoarthritis Sample.” Journal of Behavioral Medicine 33 (3): 239–49.\n\n\nMcKnight, Patrick E., and Judith Babcock-Parziale. 2007. “Respondent Impact on Functional Ability Outcome Measures in Vision Rehabilitation.” Optometry and Vision Science 84 (8): 721–28.\n\n\nMcKnight, Patrick E., and Todd B. Kashdan. 2009a. “Purpose in Life as a System That Creates and Sustains Health and Well-Being: An Integrative, Testable Theory.” Review of General Psychology 13 (3): 242–51.\n\n\nMcKnight, Patrick E., and Todd B. Kashdan. 2009b. “The Importance of Functional Impairment to Mental Health Outcomes: A Case for Reassessing Our Goals in Depression Treatment Research.” Clinical Psychology Review 29 (3): 243–59.\n\n\nMcKnight, Patrick E., Shelley Kasle, Scott Going, et al. 2010. “A Comparison of Strength Training, Self-Management, and the Combination for Early Osteoarthritis of the Knee.” Arthritis Care and Research 62 (1): 45–53.\n\n\nMcKnight, Patrick E., and Katherine M. McKnight. 2013. “Missing Data in Psychological Science.” In The Oxford Handbook of Research Strategies for Clinical Psychology, edited by Jonathan S. Comer and Philip C. Kendall. Oxford University Press.\n\n\nMcKnight, Patrick E., Katherine M. McKnight, Souraya Sidani, and Aurelio José Figueredo. 2007. Missing Data: A Gentle Introduction. Methodology in the Social Sciences. Guilford Press.\n\n\nMcKnight, Patrick E., and Lee Sechrest. 2003. “The Use and Misuse of the Term ‘Experience’ in Contemporary Psychology: A Reanalysis of the Experience–Performance Relationship.” Philosophical Psychology 16 (3): 431–60.\n\n\nSchnyer, Rosa N., Lisa A. Conboy, Eric Jacobson, et al. 2005. “Development of a Chinese Medicine Assessment Measure: An Interdisciplinary Approach Using the Delphi Method.” Journal of Alternative and Complementary Medicine 11 (6): 1005–13.\n\n\nSechrest, Lee, Patrick McKnight, and Katherine McKnight. 1996. “Calibration of Measures for Psychotherapy Outcome Studies.” American Psychologist 51 (10): 1065–71.\n\n\nStroud, Michael W., Patrick E. McKnight, and Mark P. Jensen. 2004. “Assessment of Self-Reported Physical Activity in Patients with Chronic Pain: Development of an Abbreviated Roland-Morris Disability Scale.” The Journal of Pain 5.\n\n\nVoelkle, Manuel C., and Patrick E. McKnight. 2012. “One Size Fits All? A Monte-Carlo Simulation on the Relationship Between Repeated-Measures (m)ANOVA and Latent Curve Modeling.” Methodology.",
+    "crumbs": [
+      "The Methods in Practice",
+      "<span class='chapter-number'>26</span>  <span class='chapter-title'>The Methods in Practice: The Authors at Work</span>"
     ]
   }
 ]
