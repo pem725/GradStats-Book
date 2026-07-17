@@ -69,6 +69,8 @@ Legend: 🟥 stub/empty · 🟨 partial · 🟩 drafted · ⬜ not started synth
 | 15 | Multiple Regression (MRC) | 🟩 **drafted** | **R/Regression4.R**; fixed df & F errors | ✅ |
 | 16 | ANOVA & GLM | 🟩 **drafted** | **R/Regression7.R** + 8–9.R | ✅ |
 | 17 | Basic ANOVA | 🟩 **drafted** | SS partition; ANOVA=regression | ✅ |
+| 19 | Coding Categorical Predictors | 🟩 **drafted** | **Regression7/8/9.R** — dummy/effects/weighted/contrast/nonsense | ✅ |
+| 20 | Beyond the Normal Curve | 🟩 **drafted** | AES-1997 resampling + `sobel.R`; PSYC757 brms/ROPE; robust (new) | ✅ |
 
 **All body chapters drafted and rendering** (16 + a new Rasch chapter, `18-rasch.qmd`,
 in the "Checking Our Data" part). The whole book builds end-to-end (`quarto render`,

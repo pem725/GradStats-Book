@@ -164,6 +164,11 @@ Look back at the `x` row of `summary(lm1)`. The estimate, the standard error, th
 Sharp catch - and the honest answer is that they should **not** be different. There is only one rule here: the degrees of freedom equal $N$ minus the number of parameters you estimated. In simple regression you estimate two (a slope and an intercept), so *every* standard error in this chapter - the estimate, the slope, the intercept - rests on the same $N-2$. If a formula sheet ever shows $N-1$ for the SE of $b$, that is a slip, not a second rule. (When we add predictors in the [next chapter](15-MRC.qmd), that same one rule becomes $N-k-1$.)
 :::
 
+::: {.callout-note}
+## Another route to the slope's uncertainty: bootstrap it
+The standard-error formula above assumes normal, equal-variance errors. When you doubt that, you can skip the formula entirely and **bootstrap** the slope: resample your rows with replacement a few thousand times, refit `lm()` each time, and read the SE and a 95% interval straight off the spread of the resampled slopes - no distributional assumption required. Same slope, an honest interval. See [Beyond the Normal Curve](20-beyond.qmd).
+:::
+
 ## The Meaning of the Slope (Mind Your Units)
 
 Students memorize "b is the change in y per unit change in x" and then promptly forget to *interpret* it. Units are your friend here. Suppose $x$ is height in inches and $y$ is weight in pounds:
