@@ -523,7 +523,7 @@ F-statistic: 1.028 on 1 and 3 DF,  p-value: 0.3853</code></pre>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">resid</span>(lm1))        <span class="co"># the residuals sum to (essentially) zero</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 1.665335e-15</code></pre>
+<pre><code>[1] 7.771561e-16</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">resid</span>(lm1)<span class="sc">^</span><span class="dv">2</span>)      <span class="co"># the sum of SQUARED residuals - this is what we minimize</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -773,6 +773,22 @@ Lewis-Beck, Colin, and Michael Lewis-Beck. 2024. <em>Applied <span>Regression</s
 </section>
 
 </main> <!-- /main -->
+<!-- Make the book-title link (upper-left sidebar) point explicitly at index.html.
+     Quarto renders it as href="./" (the home = the current directory). A web
+     server resolves "./" to index.html automatically, but a plain file:// browser
+     opening the rendered _book/ folder shows "./" as a bare directory listing and
+     never loads the home page. Rewriting to index.html makes the title work in
+     both places. Scoped to .sidebar-title so no other link is affected. -->
+<script>
+  window.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".sidebar-title a").forEach(function (a) {
+      var href = a.getAttribute("href");
+      if (href === "./" || href === "." || href === "" || href === null) {
+        a.setAttribute("href", "index.html");
+      }
+    });
+  });
+</script>
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";

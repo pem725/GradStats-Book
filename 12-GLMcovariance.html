@@ -494,6 +494,22 @@ window.Quarto = {
 </section>
 
 </main> <!-- /main -->
+<!-- Make the book-title link (upper-left sidebar) point explicitly at index.html.
+     Quarto renders it as href="./" (the home = the current directory). A web
+     server resolves "./" to index.html automatically, but a plain file:// browser
+     opening the rendered _book/ folder shows "./" as a bare directory listing and
+     never loads the home page. Rewriting to index.html makes the title work in
+     both places. Scoped to .sidebar-title so no other link is affected. -->
+<script>
+  window.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".sidebar-title a").forEach(function (a) {
+      var href = a.getAttribute("href");
+      if (href === "./" || href === "." || href === "" || href === null) {
+        a.setAttribute("href", "index.html");
+      }
+    });
+  });
+</script>
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
