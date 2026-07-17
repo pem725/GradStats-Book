@@ -76,8 +76,8 @@ helix_df <- data.frame(
 # draw; a ready-made text label with hoverinfo = "text" is the robust idiom.)
 helix_df$label <- paste0(helix_df$lvl, "<br>Mastery: ", round(helix_df$mperc), "%")
 
-# Create the 3D helix. Transparent backgrounds + a light font let it sit
-# cleanly on the book's dark theme.
+# Create the 3D helix. It sits on a light figure card (see brand.scss), so the
+# default light background + dark text read cleanly on either book theme.
 plot_ly(helix_df,
         x = ~x, y = ~y, z = ~z,
         type = "scatter3d",
@@ -87,8 +87,6 @@ plot_ly(helix_df,
         text = ~label,
         hoverinfo = "text") %>%
   layout(
-    paper_bgcolor = "rgba(0,0,0,0)",
-    font   = list(color = "#c8c8c8"),
     legend = list(title = list(text = "Level of Mastery")),
     scene  = list(
       xaxis = list(title = "", showgrid = FALSE, zeroline = FALSE, showline = FALSE, showticklabels = FALSE),

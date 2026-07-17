@@ -47,8 +47,14 @@ biblio-style: apalike
 
 format:
   html:
-    theme: darkly            # dark Bootswatch theme (now actually applied)
+    # Light/dark toggle (a switch appears in the navbar). Dark is listed first,
+    # so it is the default; readers can flip to the light (flatly) theme.
+    # brand.scss layers shared figure/table polish on top of both.
+    theme:
+      dark: [darkly, brand.scss]
+      light: [flatly, brand.scss]
     highlight-style: pygments
+    df-print: kable          # render data.frame output as tidy tables, not raw text
     # Make the upper-left book title link to index.html (works over file:// too).
     include-after-body: _includes/home-link.html
 

@@ -1,0 +1,60 @@
+/*-- scss:defaults --*/
+// (Colors come from the Bootswatch base themes — darkly / flatly. This file
+//  only adds shared, theme-independent polish for figures and tables.)
+
+
+/*-- scss:rules --*/
+
+// --- Figures -------------------------------------------------------------
+// Every plot in the book is a static PNG (base R plot/hist/curve, ggplot2) or
+// an interactive widget (plotly). A static image cannot recolor itself when the
+// reader flips the light/dark toggle, so instead of fighting that, we frame each
+// figure as a clean light "card": white background, gentle padding, rounded
+// corners, a soft shadow. On the dark theme it reads as a deliberate framed
+// plate; on the light theme it blends in naturally.
+.cell-output-display > img,
+.cell-output-display > figure img,
+.quarto-figure img,
+figure.figure > img {
+  background-color: #ffffff;
+  padding: 0.65rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.28);
+  max-width: 100%;
+}
+
+// Interactive plotly widgets get the same light card so they match.
+.cell-output-display .html-widget,
+.cell-output-display .plotly {
+  background-color: #ffffff;
+  padding: 0.4rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.28);
+}
+
+// The cover image and inline logos are not data figures — leave them alone.
+img.quarto-cover-image,
+.sidebar-logo {
+  background: none !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+}
+
+// --- Tables --------------------------------------------------------------
+// Bootstrap already recolors .table for each theme; add zebra striping (which
+// Quarto's markdown/kable tables don't get by default) and a firmer header rule
+// so tables read cleanly on both light and dark.
+table.table {
+  border-radius: 0.4rem;
+  overflow: hidden;
+}
+table.table > thead th {
+  border-bottom: 2px solid rgba(128, 128, 128, 0.55);
+  font-weight: 600;
+}
+table.table > tbody > tr:nth-of-type(odd) > * {
+  background-color: rgba(128, 128, 128, 0.08);
+}
+table.table > tbody > tr:hover > * {
+  background-color: rgba(128, 128, 128, 0.16);
+}
