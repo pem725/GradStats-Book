@@ -8,7 +8,7 @@
 
 <meta name="description" content="A comprehensive graduate statistics book suitable for social and behavioral sciences. Our approach is to provide interested students a gentle guide to the rudiments of statistical estimation and inference.">
 
-<title>12&nbsp; Introducing the General Linear Model (GLM) – Statistics by Us for You</title>
+<title>20&nbsp; Displaying Data: Graphics – Statistics by Us for You</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -69,8 +69,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./13-pointbiserialcorrelation.html" rel="next">
-<link href="./18-rasch.html" rel="prev">
+<link href="./22-tables.html" rel="next">
+<link href="./20-beyond.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -312,7 +312,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./12-GLMcovariance.html">Using Models</a></li><li class="breadcrumb-item"><a href="./12-GLMcovariance.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Introducing the General Linear Model (GLM)</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./21-graphics.html">Displaying Data</a></li><li class="breadcrumb-item"><a href="./21-graphics.html"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Displaying Data: Graphics</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -475,7 +475,7 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./12-GLMcovariance.html" class="sidebar-item-text sidebar-link active">
+  <a href="./12-GLMcovariance.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Introducing the General Linear Model (GLM)</span></span></a>
   </div>
 </li>
@@ -545,7 +545,7 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./21-graphics.html" class="sidebar-item-text sidebar-link">
+  <a href="./21-graphics.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Displaying Data: Graphics</span></span></a>
   </div>
 </li>
@@ -573,12 +573,14 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#learning-objectives" id="toc-learning-objectives" class="nav-link active" data-scroll-target="#learning-objectives"><span class="header-section-number">12.1</span> Learning Objectives</a></li>
-  <li><a href="#one-equation-to-rule-them-all" id="toc-one-equation-to-rule-them-all" class="nav-link" data-scroll-target="#one-equation-to-rule-them-all"><span class="header-section-number">12.2</span> One Equation to Rule Them All</a></li>
-  <li><a href="#the-same-answer-three-ways" id="toc-the-same-answer-three-ways" class="nav-link" data-scroll-target="#the-same-answer-three-ways"><span class="header-section-number">12.3</span> The Same Answer, Three Ways</a></li>
-  <li><a href="#what-general-means-and-what-it-doesnt" id="toc-what-general-means-and-what-it-doesnt" class="nav-link" data-scroll-target="#what-general-means-and-what-it-doesnt"><span class="header-section-number">12.4</span> What “General” Means (and What It Doesn’t)</a></li>
-  <li><a href="#challenge" id="toc-challenge" class="nav-link" data-scroll-target="#challenge"><span class="header-section-number">12.5</span> Challenge</a></li>
-  <li><a href="#where-we-go-next" id="toc-where-we-go-next" class="nav-link" data-scroll-target="#where-we-go-next"><span class="header-section-number">12.6</span> Where We Go Next</a></li>
+  <li><a href="#learning-objectives" id="toc-learning-objectives" class="nav-link active" data-scroll-target="#learning-objectives"><span class="header-section-number">20.1</span> Learning Objectives</a></li>
+  <li><a href="#match-the-geometry-to-the-question" id="toc-match-the-geometry-to-the-question" class="nav-link" data-scroll-target="#match-the-geometry-to-the-question"><span class="header-section-number">20.2</span> Match the Geometry to the Question</a></li>
+  <li><a href="#dont-lie-with-the-axis" id="toc-dont-lie-with-the-axis" class="nav-link" data-scroll-target="#dont-lie-with-the-axis"><span class="header-section-number">20.3</span> Don’t Lie With the Axis</a></li>
+  <li><a href="#small-multiples-beat-the-dual-axis-abomination" id="toc-small-multiples-beat-the-dual-axis-abomination" class="nav-link" data-scroll-target="#small-multiples-beat-the-dual-axis-abomination"><span class="header-section-number">20.4</span> Small Multiples Beat the Dual-Axis Abomination</a></li>
+  <li><a href="#rank-dont-pie" id="toc-rank-dont-pie" class="nav-link" data-scroll-target="#rank-dont-pie"><span class="header-section-number">20.5</span> Rank, Don’t Pie</a></li>
+  <li><a href="#show-the-distribution-not-just-the-mean" id="toc-show-the-distribution-not-just-the-mean" class="nav-link" data-scroll-target="#show-the-distribution-not-just-the-mean"><span class="header-section-number">20.6</span> Show the Distribution, Not Just the Mean</a></li>
+  <li><a href="#challenge" id="toc-challenge" class="nav-link" data-scroll-target="#challenge"><span class="header-section-number">20.7</span> Challenge</a></li>
+  <li><a href="#where-we-go-next" id="toc-where-we-go-next" class="nav-link" data-scroll-target="#where-we-go-next"><span class="header-section-number">20.8</span> Where We Go Next</a></li>
   </ul>
 </nav>
     </div>
@@ -586,9 +588,9 @@ window.Quarto = {
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./12-GLMcovariance.html">Using Models</a></li><li class="breadcrumb-item"><a href="./12-GLMcovariance.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Introducing the General Linear Model (GLM)</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./21-graphics.html">Displaying Data</a></li><li class="breadcrumb-item"><a href="./21-graphics.html"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Displaying Data: Graphics</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Introducing the General Linear Model (GLM)</span></h1>
+<h1 class="title"><span id="graphics" class="quarto-section-identifier"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Displaying Data: Graphics</span></span></h1>
 </div>
 
 
@@ -605,79 +607,196 @@ window.Quarto = {
 </header>
 
 
-<p>The General Linear Model (GLM) is a statistical model that is used to model the relationship between a single dependent variable and one or more independent variables. Multiple regression and ANOVA are specific applications of the GLM. In fact - and this is the punchline we will spend the rest of the book earning - the t-test, correlation, regression, ANOVA, and ANCOVA are <strong>not five techniques. They are one technique wearing five costumes.</strong> Learn the one, and the five come free.</p>
-<section id="learning-objectives" class="level2" data-number="12.1">
-<h2 data-number="12.1" class="anchored" data-anchor-id="learning-objectives"><span class="header-section-number">12.1</span> Learning Objectives</h2>
+<p>A graph is not decoration. A graph is an <strong>argument</strong> - a claim about what the numbers mean, made in a language (position, length, color) that the eye reads faster than any sentence. And like any argument, a graph can be honest or it can lie, sometimes without its maker even noticing. This chapter is about making the honest kind, and recognizing the other kind.</p>
+<p>The examples here come from a real project - <a href="https://thesportspage.net/">The Sports Page</a>, a daily newsletter (a sister project to this book) that takes one strange sports number and tells the truth about what it does and does not mean. Its house rule is the same one that runs through this whole book: <em>describe what happened, predict what will happen, and never dress up one as the other.</em> Good graphics are how you keep that promise to your reader.</p>
+<section id="learning-objectives" class="level2" data-number="20.1">
+<h2 data-number="20.1" class="anchored" data-anchor-id="learning-objectives"><span class="header-section-number">20.1</span> Learning Objectives</h2>
 <ol type="1">
-<li>State the General Linear Model in one equation.</li>
-<li>See that covariance is the engine turning inside it.</li>
-<li>Watch a t-test, an ANOVA, and a regression return the <em>same</em> answer.</li>
-<li>Understand what “general” does and does not mean.</li>
+<li>Match the <strong>geometry</strong> of a graph to the question (trend, comparison, distribution, relationship).</li>
+<li>Recognize how an axis can exaggerate or hide a real change - and choose an honest one.</li>
+<li>Prefer <strong>small multiples</strong> to overloaded dual-axis charts, and <strong>ranked bars</strong> to pie charts.</li>
+<li>Show the <strong>distribution</strong>, not just a summary, and tame overplotting.</li>
 </ol>
 </section>
-<section id="one-equation-to-rule-them-all" class="level2" data-number="12.2">
-<h2 data-number="12.2" class="anchored" data-anchor-id="one-equation-to-rule-them-all"><span class="header-section-number">12.2</span> One Equation to Rule Them All</h2>
-<p>Strip away the vocabulary and every model in this section is:</p>
-<p><span class="math display">\[Y = b_0 + b_1 X_1 + b_2 X_2 + \cdots + b_k X_k + e\]</span></p>
-<p>An outcome <span class="math inline">\(Y\)</span> is modeled as a weighted sum of predictors plus error <span class="math inline">\(e\)</span>. That is it. Whether the <span class="math inline">\(X\)</span>’s are continuous (regression), categorical (ANOVA), or a mix (ANCOVA) changes only how we <em>code</em> them - never the underlying machine. And, as we saw in the <a href="./07-covariance.html">covariance chapter</a>, the weights themselves are built from covariances and variances. Covariance is the fuel; the GLM is the engine.</p>
-</section>
-<section id="the-same-answer-three-ways" class="level2" data-number="12.3">
-<h2 data-number="12.3" class="anchored" data-anchor-id="the-same-answer-three-ways"><span class="header-section-number">12.3</span> The Same Answer, Three Ways</h2>
-<p>Talk is cheap. Let’s take one simple question - do two groups differ on an outcome? - and answer it with three “different” methods. Watch the p-value:</p>
+<section id="match-the-geometry-to-the-question" class="level2" data-number="20.2">
+<h2 data-number="20.2" class="anchored" data-anchor-id="match-the-geometry-to-the-question"><span class="header-section-number">20.2</span> Match the Geometry to the Question</h2>
+<p>The first decision is not color or font - it is <em>geometry</em>. What shape of mark answers your question? A change <strong>over time</strong> wants a line. Here is a true story: over the last four decades, major-league baseball became a strikeout sport. Watch it in one line:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">12</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>group <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"control"</span>, <span class="st">"treatment"</span>), <span class="at">each =</span> <span class="dv">40</span>))</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">80</span>) <span class="sc">+</span> <span class="fu">ifelse</span>(group <span class="sc">==</span> <span class="st">"treatment"</span>, <span class="fl">0.6</span>, <span class="dv">0</span>)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>p_ttest <span class="ot">&lt;-</span> <span class="fu">t.test</span>(y <span class="sc">~</span> group, <span class="at">var.equal =</span> <span class="cn">TRUE</span>)<span class="sc">$</span>p.value</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>p_anova <span class="ot">&lt;-</span> <span class="fu">summary</span>(<span class="fu">aov</span>(y <span class="sc">~</span> group))[[<span class="dv">1</span>]][[<span class="st">"Pr(&gt;F)"</span>]][<span class="dv">1</span>]</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>p_regr  <span class="ot">&lt;-</span> <span class="fu">summary</span>(<span class="fu">lm</span>(y <span class="sc">~</span> group))<span class="sc">$</span>coefficients[<span class="dv">2</span>, <span class="st">"Pr(&gt;|t|)"</span>]</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">t_test =</span> p_ttest, <span class="at">ANOVA =</span> p_anova, <span class="at">regression =</span> p_regr), <span class="dv">6</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>    t_test      ANOVA regression 
-   0.00026    0.00026    0.00026 </code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>mlb <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/mlb_league_by_year.csv"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(mlb, <span class="fu">aes</span>(year, K_9)) <span class="sc">+</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"steelblue"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"steelblue"</span>, <span class="at">size =</span> <span class="fl">1.4</span>) <span class="sc">+</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Strikeouts per 9 innings"</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"The strikeout revolution"</span>) <span class="sc">+</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="21-graphics_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Strikeouts per nine innings, MLB, 1985–present. A trend wants a line.</figcaption>
+</figure>
 </div>
 </div>
-<p>Three identical p-values. The t-test, the ANOVA, and the regression are literally the same model here - the t-test is a two-group ANOVA, the two-group ANOVA is a regression with one dummy-coded predictor, and (as a bonus) <span class="math inline">\(F = t^2\)</span>:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>t_stat <span class="ot">&lt;-</span> <span class="fu">t.test</span>(y <span class="sc">~</span> group, <span class="at">var.equal =</span> <span class="cn">TRUE</span>)<span class="sc">$</span>statistic</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>F_stat <span class="ot">&lt;-</span> <span class="fu">summary</span>(<span class="fu">aov</span>(y <span class="sc">~</span> group))[[<span class="dv">1</span>]][[<span class="st">"F value"</span>]][<span class="dv">1</span>]</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">t_squared =</span> t_stat<span class="sc">^</span><span class="dv">2</span>, <span class="at">F =</span> F_stat), <span class="dv">4</span>)   <span class="co"># F = t^2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>t_squared.t           F 
-    14.6466     14.6466 </code></pre>
 </div>
-</div>
-<p>Once you see this, a huge amount of statistics stops being a pile of disconnected recipes and becomes a single, learnable idea.</p>
+<p>A line says “these points are connected in sequence” - exactly the claim you want for a time trend. A bar chart here would be wrong: bars say “these are separate categories to compare,” which is a different (and misleading) sentence. <strong>The geometry is the argument.</strong> Trend → line; category comparison → bar; one distribution → histogram; two variables → scatter. Pick the mark that makes the claim you actually mean.</p>
 </section>
-<section id="what-general-means-and-what-it-doesnt" class="level2" data-number="12.4">
-<h2 data-number="12.4" class="anchored" data-anchor-id="what-general-means-and-what-it-doesnt"><span class="header-section-number">12.4</span> What “General” Means (and What It Doesn’t)</h2>
-<p>The GLM is <strong>general</strong> because it swallows so many named procedures. But it does carry assumptions - chiefly that the errors are roughly normal and that the relationship is <em>linear in the parameters</em>. When the outcome is not continuous-and-normal (a yes/no, a count), we need the <strong>generalized</strong> linear model (note the extra syllable) - logistic and Poisson regression - which we met briefly at the end of the <a href="./16-ANOVAandGLM.html">ANOVA &amp; GLM chapter</a>. Do not confuse the two: the <em>general</em> linear model is the unifying frame for this whole section; the <em>generalized</em> linear model extends it to other kinds of outcomes.</p>
+<section id="dont-lie-with-the-axis" class="level2" data-number="20.3">
+<h2 data-number="20.3" class="anchored" data-anchor-id="dont-lie-with-the-axis"><span class="header-section-number">20.3</span> Don’t Lie With the Axis</h2>
+<p>Same data, two axes, two completely different stories. Batting average has drifted down over the same period - from about .257 to about .242, a real but <em>modest</em> slide. First, watch a zoomed-in y-axis turn that modest slide into a catastrophe:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(mlb, <span class="fu">aes</span>(year, AVG)) <span class="sc">+</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"firebrick"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">c</span>(<span class="fl">0.242</span>, <span class="fl">0.258</span>)) <span class="sc">+</span>                 <span class="co"># axis zoomed to the data</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"AVG"</span>, <span class="at">title =</span> <span class="st">"“Hitting is DEAD”"</span>) <span class="sc">+</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">11</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="21-graphics_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Dishonest axis: zoomed tight, a 15-point drift looks like a cliff.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Now the exact same numbers, on an axis anchored to a meaningful baseline:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(mlb, <span class="fu">aes</span>(year, AVG)) <span class="sc">+</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"firebrick"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.3</span>)) <span class="sc">+</span>                        <span class="co"># axis from a meaningful zero</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"AVG"</span>, <span class="at">title =</span> <span class="st">"“Hitting drifted down a bit”"</span>) <span class="sc">+</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">11</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="21-graphics_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Honest axis: from a meaningful zero, the same drift is a gentle slope.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Same numbers, opposite impressions. The first axis turns a 15-point drift into a cliff and screams a crisis; the second, anchored to a meaningful baseline, tells the truth: hitting softened, it did not collapse. Neither axis is <em>always</em> right - a zoomed axis is legitimate when small differences genuinely matter (and you say so) - but the choice is never innocent. <strong>Ask what the axis is doing to the size of the effect, and whether that is honest.</strong></p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>The most common accidental lie
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A truncated y-axis is the single most common way a well-meaning person makes a nothing-burger look like a catastrophe (or vice versa). Before you publish a chart, look at your axis limits and ask: <em>would this effect still look this big if I started from zero?</em> If the honest version is boring, the honest answer might be that the effect is boring.</p>
+</div>
+</div>
+</section>
+<section id="small-multiples-beat-the-dual-axis-abomination" class="level2" data-number="20.4">
+<h2 data-number="20.4" class="anchored" data-anchor-id="small-multiples-beat-the-dual-axis-abomination"><span class="header-section-number">20.4</span> Small Multiples Beat the Dual-Axis Abomination</h2>
+<p>You have three trends to show at once - strikeouts, walks, and home runs per plate appearance. The temptation is to jam them onto one chart with two or three y-axes. Resist. Dual-axis charts let you <em>manufacture</em> any relationship you like by rescaling one axis, and readers cannot tell which line belongs to which scale. The honest tool is <strong>small multiples</strong>: the same chart repeated, one panel per series, on comparable axes.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>long <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">year =</span> <span class="fu">rep</span>(mlb<span class="sc">$</span>year, <span class="dv">3</span>),</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">rate =</span> <span class="fu">c</span>(mlb<span class="sc">$</span>K_PA, mlb<span class="sc">$</span>BB_PA, mlb<span class="sc">$</span>HR_PA),</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">kind =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"Strikeouts"</span>, <span class="st">"Walks"</span>, <span class="st">"Home runs"</span>), <span class="at">each =</span> <span class="fu">nrow</span>(mlb))</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(long, <span class="fu">aes</span>(year, rate)) <span class="sc">+</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"steelblue"</span>, <span class="at">linewidth =</span> <span class="fl">0.9</span>) <span class="sc">+</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> kind, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span>               <span class="co"># one panel per series</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"per plate appearance"</span>) <span class="sc">+</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">11</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="21-graphics_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Three league trends as small multiples — comparable, honest, readable.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Each panel tells its own honest story (strikeouts soared, walks held steady, homers crept up), and no rescaling trick can fake a relationship between them. When you have many series, <strong>repeat the chart; don’t overload it.</strong></p>
+</section>
+<section id="rank-dont-pie" class="level2" data-number="20.5">
+<h2 data-number="20.5" class="anchored" data-anchor-id="rank-dont-pie"><span class="header-section-number">20.5</span> Rank, Don’t Pie</h2>
+<p>For comparing a quantity across categories, the eye reads <strong>position along a common scale</strong> far more accurately than it reads the <em>angles</em> of a pie. So a bar chart beats a pie chart almost always - and a <em>sorted</em> bar chart beats an unsorted one, because the ordering is itself information. Which NFL teams draft worst? Thirty-two teams is already far too many for a pie; rank them:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>nfl <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/nfl_draft_by_team.csv"</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(nfl, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(team, rate_bust_a), <span class="at">y =</span> rate_bust_a)) <span class="sc">+</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">"grey35"</span>) <span class="sc">+</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span>                                        <span class="co"># horizontal: labels stay readable</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Bust rate (no Pro Bowl)"</span>, <span class="at">title =</span> <span class="st">"Draft busts by team"</span>) <span class="sc">+</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="21-graphics_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>NFL first-round bust rate by team — ranked bars, not a 32-slice pie.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Sorted, horizontal, one bar per team: you can read off the best and worst drafters in a second, and every team is comparable on the same axis. A pie chart of these same 32 numbers would be an unreadable pinwheel - you could not tell 22% from 25% by eye, and the ranking would vanish. <strong>Pie charts work for maybe two or three slices; past that, rank a bar chart.</strong></p>
+</section>
+<section id="show-the-distribution-not-just-the-mean" class="level2" data-number="20.6">
+<h2 data-number="20.6" class="anchored" data-anchor-id="show-the-distribution-not-just-the-mean"><span class="header-section-number">20.6</span> Show the Distribution, Not Just the Mean</h2>
+<p>A single summary number - a mean, a bar - throws away the shape of the data, and the shape is usually the story. Do not draw a bar of averages when you could draw the whole distribution. Here are this season’s qualified hitters; a histogram shows the <em>spread</em> of performance a mean would erase:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>h <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/mlb_hitters_2026.csv"</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>h <span class="ot">&lt;-</span> h[h<span class="sc">$</span>PA <span class="sc">&gt;=</span> <span class="dv">50</span>, ]</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(h, <span class="fu">aes</span>(OPS)) <span class="sc">+</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">30</span>, <span class="at">fill =</span> <span class="st">"steelblue"</span>, <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">median</span>(h<span class="sc">$</span>OPS), <span class="at">color =</span> <span class="st">"firebrick"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"OPS"</span>, <span class="at">y =</span> <span class="st">"hitters"</span>, <span class="at">title =</span> <span class="st">"Most hitters are ordinary; a few are stars"</span>) <span class="sc">+</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="21-graphics_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>The distribution of OPS across qualified hitters — the shape a single mean hides.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>And when you plot two variables against each other with hundreds of points, they pile up and hide their own density. The fix is <strong>transparency</strong> (or jitter): let the dark regions show where the data actually concentrate.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(h, <span class="fu">aes</span>(OBP, SLG)) <span class="sc">+</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.35</span>, <span class="at">color =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span>         <span class="co"># alpha tames overplotting</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"On-base percentage"</span>, <span class="at">y =</span> <span class="st">"Slugging percentage"</span>) <span class="sc">+</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="21-graphics_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>On-base vs.&nbsp;slugging, 400+ hitters. Transparency reveals the crowd.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The cloud’s shape - a positive drift, a dense middle, a few lonely stars in the upper right - is information a table of two means could never carry. That is the whole reason graphics exist.</p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Important</span>The Roadmap From Here
+<span class="screen-reader-only">Important</span>The honest-graph checklist
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Everything remaining in this book is a special case of the equation above:</p>
-<ul>
-<li><strong><a href="./13-pointbiserialcorrelation.html">Point-biserial correlation</a></strong> - the bridge: one continuous, one dichotomous variable.</li>
-<li><strong><a href="./14-bivariateregression.html">Bivariate regression</a></strong> - one continuous predictor.</li>
-<li><strong><a href="./15-MRC.html">Multiple regression</a></strong> - many continuous predictors.</li>
-<li><strong><a href="./16-ANOVAandGLM.html">ANOVA and the GLM</a></strong> - categorical predictors via coding.</li>
-<li><strong><a href="./17-basicANOVA.html">Basic ANOVA</a></strong> - partitioning variance, the classical view.</li>
-</ul>
-<p>Same engine, different fuel. Keep the one equation in your head and you will never be lost.</p>
+<p>Before a chart leaves your hands, run it past four questions:</p>
+<ol type="1">
+<li><strong>Geometry</strong> - does the mark (line/bar/histogram/scatter) make the claim I actually mean?</li>
+<li><strong>Axis</strong> - would the effect look this big if I started from a meaningful zero? If not, am I saying so?</li>
+<li><strong>Load</strong> - am I overloading one chart (dual axes, too many series, a 32-slice pie) where small multiples or a ranked bar would be clearer?</li>
+<li><strong>Honesty of summary</strong> - am I hiding a distribution behind a mean, or implying a relationship the data (small <span class="math inline">\(n\)</span>, no mechanism) haven’t earned?</li>
+</ol>
+<p>A graph that survives all four is an argument you can stand behind.</p>
 </div>
 </div>
 </section>
-<section id="challenge" class="level2" data-number="12.5">
-<h2 data-number="12.5" class="anchored" data-anchor-id="challenge"><span class="header-section-number">12.5</span> Challenge</h2>
+<section id="challenge" class="level2" data-number="20.7">
+<h2 data-number="20.7" class="anchored" data-anchor-id="challenge"><span class="header-section-number">20.7</span> Challenge</h2>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -689,16 +808,16 @@ window.Quarto = {
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li>Generate your own two-group data. Confirm that <code>t.test(..., var.equal = TRUE)</code>, <code>aov()</code>, and <code>lm()</code> give the identical p-value, and that <span class="math inline">\(F = t^2\)</span>.</li>
-<li>Add a <em>continuous</em> covariate to the outcome and fit <code>lm(y ~ group + covariate)</code>. You have just run an ANCOVA without learning a new technique - explain to a friend why that is not cheating.</li>
-<li>In one sentence, state the difference between the <em>general</em> linear model and the <em>generalized</em> linear model.</li>
+<li>Redraw the strikeout-revolution line with a truncated y-axis that makes the rise look even more extreme, then with a zero-based axis that makes it look tame. Which is honest, and why does “honest” depend on the question?</li>
+<li>Take the hitters data and draw a bar chart of <em>mean</em> OPS by team, then a boxplot (or jittered points) of OPS by team. What does the second show that the first hides?</li>
+<li>Find a chart in the wild (a news site, a company slide) with a truncated axis or a pie chart with too many slices. Redraw it honestly and write one sentence on what changed.</li>
 </ol>
 </div>
 </div>
 </section>
-<section id="where-we-go-next" class="level2" data-number="12.6">
-<h2 data-number="12.6" class="anchored" data-anchor-id="where-we-go-next"><span class="header-section-number">12.6</span> Where We Go Next</h2>
-<p>Let’s build the bridge that makes the “categorical predictors are just regression” claim concrete, using the simplest possible categorical predictor - a single yes/no. That is the <a href="./13-pointbiserialcorrelation.html">point-biserial correlation</a>.</p>
+<section id="where-we-go-next" class="level2" data-number="20.8">
+<h2 data-number="20.8" class="anchored" data-anchor-id="where-we-go-next"><span class="header-section-number">20.8</span> Where We Go Next</h2>
+<p>Graphics are half of how we show data; the other half is the <strong>table</strong> - and tables have their own quiet craft, their own ways of telling the truth or burying it. That is the <a href="./22-tables.html">next chapter</a>. Then, with tables and graphics both in hand, we turn to the real payoff of this whole book: watching these tools used in anger, on published work, with every judgment call laid bare.</p>
 
 
 </section>
@@ -1135,13 +1254,13 @@ window.Quarto = {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./18-rasch.html" class="pagination-link" aria-label="Measuring Like Ben Wright: Rasch in R, Python, and Julia">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Measuring Like Ben Wright: Rasch in R, Python, and Julia</span></span>
+      <a href="./20-beyond.html" class="pagination-link" aria-label="Beyond the Normal Curve: Resampling, Robust, and Bayesian Statistics">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Beyond the Normal Curve: Resampling, Robust, and Bayesian Statistics</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./13-pointbiserialcorrelation.html" class="pagination-link" aria-label="Bridging the Gap: The Point Biserial Correlation">
-        <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Bridging the Gap: The Point Biserial Correlation</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./22-tables.html" class="pagination-link" aria-label="Displaying Data: Tables">
+        <span class="nav-page-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Displaying Data: Tables</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

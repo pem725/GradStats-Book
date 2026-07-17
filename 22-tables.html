@@ -8,7 +8,7 @@
 
 <meta name="description" content="A comprehensive graduate statistics book suitable for social and behavioral sciences. Our approach is to provide interested students a gentle guide to the rudiments of statistical estimation and inference.">
 
-<title>12&nbsp; Introducing the General Linear Model (GLM) – Statistics by Us for You</title>
+<title>21&nbsp; Displaying Data: Tables – Statistics by Us for You</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -69,8 +69,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./13-pointbiserialcorrelation.html" rel="next">
-<link href="./18-rasch.html" rel="prev">
+<link href="./references.html" rel="next">
+<link href="./21-graphics.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -111,35 +111,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 </head>
 
@@ -312,7 +283,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./12-GLMcovariance.html">Using Models</a></li><li class="breadcrumb-item"><a href="./12-GLMcovariance.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Introducing the General Linear Model (GLM)</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./21-graphics.html">Displaying Data</a></li><li class="breadcrumb-item"><a href="./22-tables.html"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Displaying Data: Tables</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -475,7 +446,7 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./12-GLMcovariance.html" class="sidebar-item-text sidebar-link active">
+  <a href="./12-GLMcovariance.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Introducing the General Linear Model (GLM)</span></span></a>
   </div>
 </li>
@@ -551,7 +522,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./22-tables.html" class="sidebar-item-text sidebar-link">
+  <a href="./22-tables.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Displaying Data: Tables</span></span></a>
   </div>
 </li>
@@ -573,12 +544,13 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#learning-objectives" id="toc-learning-objectives" class="nav-link active" data-scroll-target="#learning-objectives"><span class="header-section-number">12.1</span> Learning Objectives</a></li>
-  <li><a href="#one-equation-to-rule-them-all" id="toc-one-equation-to-rule-them-all" class="nav-link" data-scroll-target="#one-equation-to-rule-them-all"><span class="header-section-number">12.2</span> One Equation to Rule Them All</a></li>
-  <li><a href="#the-same-answer-three-ways" id="toc-the-same-answer-three-ways" class="nav-link" data-scroll-target="#the-same-answer-three-ways"><span class="header-section-number">12.3</span> The Same Answer, Three Ways</a></li>
-  <li><a href="#what-general-means-and-what-it-doesnt" id="toc-what-general-means-and-what-it-doesnt" class="nav-link" data-scroll-target="#what-general-means-and-what-it-doesnt"><span class="header-section-number">12.4</span> What “General” Means (and What It Doesn’t)</a></li>
-  <li><a href="#challenge" id="toc-challenge" class="nav-link" data-scroll-target="#challenge"><span class="header-section-number">12.5</span> Challenge</a></li>
-  <li><a href="#where-we-go-next" id="toc-where-we-go-next" class="nav-link" data-scroll-target="#where-we-go-next"><span class="header-section-number">12.6</span> Where We Go Next</a></li>
+  <li><a href="#learning-objectives" id="toc-learning-objectives" class="nav-link active" data-scroll-target="#learning-objectives"><span class="header-section-number">21.1</span> Learning Objectives</a></li>
+  <li><a href="#when-a-table-beats-a-graph" id="toc-when-a-table-beats-a-graph" class="nav-link" data-scroll-target="#when-a-table-beats-a-graph"><span class="header-section-number">21.2</span> When a Table Beats a Graph</a></li>
+  <li><a href="#kill-false-precision" id="toc-kill-false-precision" class="nav-link" data-scroll-target="#kill-false-precision"><span class="header-section-number">21.3</span> Kill False Precision</a></li>
+  <li><a href="#order-rows-to-carry-information" id="toc-order-rows-to-carry-information" class="nav-link" data-scroll-target="#order-rows-to-carry-information"><span class="header-section-number">21.4</span> Order Rows to Carry Information</a></li>
+  <li><a href="#tables-and-graphics-are-partners" id="toc-tables-and-graphics-are-partners" class="nav-link" data-scroll-target="#tables-and-graphics-are-partners"><span class="header-section-number">21.5</span> Tables and Graphics Are Partners</a></li>
+  <li><a href="#challenge" id="toc-challenge" class="nav-link" data-scroll-target="#challenge"><span class="header-section-number">21.6</span> Challenge</a></li>
+  <li><a href="#where-we-go-next" id="toc-where-we-go-next" class="nav-link" data-scroll-target="#where-we-go-next"><span class="header-section-number">21.7</span> Where We Go Next</a></li>
   </ul>
 </nav>
     </div>
@@ -586,9 +558,9 @@ window.Quarto = {
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./12-GLMcovariance.html">Using Models</a></li><li class="breadcrumb-item"><a href="./12-GLMcovariance.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Introducing the General Linear Model (GLM)</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./21-graphics.html">Displaying Data</a></li><li class="breadcrumb-item"><a href="./22-tables.html"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Displaying Data: Tables</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Introducing the General Linear Model (GLM)</span></h1>
+<h1 class="title"><span id="tables" class="quarto-section-identifier"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Displaying Data: Tables</span></span></h1>
 </div>
 
 
@@ -605,79 +577,295 @@ window.Quarto = {
 </header>
 
 
-<p>The General Linear Model (GLM) is a statistical model that is used to model the relationship between a single dependent variable and one or more independent variables. Multiple regression and ANOVA are specific applications of the GLM. In fact - and this is the punchline we will spend the rest of the book earning - the t-test, correlation, regression, ANOVA, and ANCOVA are <strong>not five techniques. They are one technique wearing five costumes.</strong> Learn the one, and the five come free.</p>
-<section id="learning-objectives" class="level2" data-number="12.1">
-<h2 data-number="12.1" class="anchored" data-anchor-id="learning-objectives"><span class="header-section-number">12.1</span> Learning Objectives</h2>
+<p>If a graph is for seeing a <strong>pattern</strong>, a table is for reading an <strong>exact value</strong>. Ask which one your reader needs. Do they need to feel the shape of a trend? Draw it. Do they need to look up “what was the bust rate for the Jets, exactly?” or compare a handful of precise numbers side by side? Give them a table. A table is not a failed graph; it is a different instrument for a different job - and, like a graph, it can be honest or it can bury the truth in a fog of digits.</p>
+<p>We continue with the same real data from <a href="https://thesportspage.net/">The Sports Page</a> we used for graphics, so you can feel the difference between the two instruments on identical numbers.</p>
+<section id="learning-objectives" class="level2" data-number="21.1">
+<h2 data-number="21.1" class="anchored" data-anchor-id="learning-objectives"><span class="header-section-number">21.1</span> Learning Objectives</h2>
 <ol type="1">
-<li>State the General Linear Model in one equation.</li>
-<li>See that covariance is the engine turning inside it.</li>
-<li>Watch a t-test, an ANOVA, and a regression return the <em>same</em> answer.</li>
-<li>Understand what “general” does and does not mean.</li>
+<li>Decide when a <strong>table</strong> serves the reader better than a graph.</li>
+<li>Round to <strong>meaningful precision</strong> - kill false precision.</li>
+<li><strong>Order</strong> rows to carry information, and align numbers so they can be compared.</li>
+<li>Summarize to the <strong>question</strong>, rather than dumping the raw data.</li>
 </ol>
 </section>
-<section id="one-equation-to-rule-them-all" class="level2" data-number="12.2">
-<h2 data-number="12.2" class="anchored" data-anchor-id="one-equation-to-rule-them-all"><span class="header-section-number">12.2</span> One Equation to Rule Them All</h2>
-<p>Strip away the vocabulary and every model in this section is:</p>
-<p><span class="math display">\[Y = b_0 + b_1 X_1 + b_2 X_2 + \cdots + b_k X_k + e\]</span></p>
-<p>An outcome <span class="math inline">\(Y\)</span> is modeled as a weighted sum of predictors plus error <span class="math inline">\(e\)</span>. That is it. Whether the <span class="math inline">\(X\)</span>’s are continuous (regression), categorical (ANOVA), or a mix (ANCOVA) changes only how we <em>code</em> them - never the underlying machine. And, as we saw in the <a href="./07-covariance.html">covariance chapter</a>, the weights themselves are built from covariances and variances. Covariance is the fuel; the GLM is the engine.</p>
-</section>
-<section id="the-same-answer-three-ways" class="level2" data-number="12.3">
-<h2 data-number="12.3" class="anchored" data-anchor-id="the-same-answer-three-ways"><span class="header-section-number">12.3</span> The Same Answer, Three Ways</h2>
-<p>Talk is cheap. Let’s take one simple question - do two groups differ on an outcome? - and answer it with three “different” methods. Watch the p-value:</p>
+<section id="when-a-table-beats-a-graph" class="level2" data-number="21.2">
+<h2 data-number="21.2" class="anchored" data-anchor-id="when-a-table-beats-a-graph"><span class="header-section-number">21.2</span> When a Table Beats a Graph</h2>
+<p>A table wins when the numbers are <strong>few</strong>, the <strong>exact values matter</strong>, or the reader will <strong>look things up</strong> rather than scan for a shape. The strikeout trend was a job for a line. But “what did each decade actually look like, in numbers I can quote?” is a job for a small table. Summarize the 42 years down to five decade averages - few rows, exact values, quotable:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">12</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>group <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"control"</span>, <span class="st">"treatment"</span>), <span class="at">each =</span> <span class="dv">40</span>))</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">80</span>) <span class="sc">+</span> <span class="fu">ifelse</span>(group <span class="sc">==</span> <span class="st">"treatment"</span>, <span class="fl">0.6</span>, <span class="dv">0</span>)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>p_ttest <span class="ot">&lt;-</span> <span class="fu">t.test</span>(y <span class="sc">~</span> group, <span class="at">var.equal =</span> <span class="cn">TRUE</span>)<span class="sc">$</span>p.value</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>p_anova <span class="ot">&lt;-</span> <span class="fu">summary</span>(<span class="fu">aov</span>(y <span class="sc">~</span> group))[[<span class="dv">1</span>]][[<span class="st">"Pr(&gt;F)"</span>]][<span class="dv">1</span>]</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>p_regr  <span class="ot">&lt;-</span> <span class="fu">summary</span>(<span class="fu">lm</span>(y <span class="sc">~</span> group))<span class="sc">$</span>coefficients[<span class="dv">2</span>, <span class="st">"Pr(&gt;|t|)"</span>]</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">t_test =</span> p_ttest, <span class="at">ANOVA =</span> p_anova, <span class="at">regression =</span> p_regr), <span class="dv">6</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>    t_test      ANOVA regression 
-   0.00026    0.00026    0.00026 </code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>mlb <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/mlb_league_by_year.csv"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>mlb<span class="sc">$</span>decade <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="fu">floor</span>(mlb<span class="sc">$</span>year <span class="sc">/</span> <span class="dv">10</span>) <span class="sc">*</span> <span class="dv">10</span>, <span class="st">"s"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>dec <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(<span class="fu">cbind</span>(K_9, BB_9, HR_9, AVG) <span class="sc">~</span> decade, <span class="at">data =</span> mlb, <span class="at">FUN =</span> mean)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(dec, <span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">3</span>),</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Decade"</span>, <span class="st">"K/9"</span>, <span class="st">"BB/9"</span>, <span class="st">"HR/9"</span>, <span class="st">"AVG"</span>),</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>             <span class="at">caption =</span> <span class="st">"MLB by the decade: the strikeout climb, in exact numbers."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>MLB by the decade: the strikeout climb, in exact numbers.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Decade</th>
+<th style="text-align: right;">K/9</th>
+<th style="text-align: right;">BB/9</th>
+<th style="text-align: right;">HR/9</th>
+<th style="text-align: right;">AVG</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1980s</td>
+<td style="text-align: right;">5.70</td>
+<td style="text-align: right;">3.30</td>
+<td style="text-align: right;">0.87</td>
+<td style="text-align: right;">0.257</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1990s</td>
+<td style="text-align: right;">6.18</td>
+<td style="text-align: right;">3.45</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">0.264</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2000s</td>
+<td style="text-align: right;">6.62</td>
+<td style="text-align: right;">3.38</td>
+<td style="text-align: right;">1.08</td>
+<td style="text-align: right;">0.265</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2010s</td>
+<td style="text-align: right;">7.87</td>
+<td style="text-align: right;">3.12</td>
+<td style="text-align: right;">1.08</td>
+<td style="text-align: right;">0.254</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2020s</td>
+<td style="text-align: right;">8.69</td>
+<td style="text-align: right;">3.31</td>
+<td style="text-align: right;">1.19</td>
+<td style="text-align: right;">0.244</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
-<p>Three identical p-values. The t-test, the ANOVA, and the regression are literally the same model here - the t-test is a two-group ANOVA, the two-group ANOVA is a regression with one dummy-coded predictor, and (as a bonus) <span class="math inline">\(F = t^2\)</span>:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>t_stat <span class="ot">&lt;-</span> <span class="fu">t.test</span>(y <span class="sc">~</span> group, <span class="at">var.equal =</span> <span class="cn">TRUE</span>)<span class="sc">$</span>statistic</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>F_stat <span class="ot">&lt;-</span> <span class="fu">summary</span>(<span class="fu">aov</span>(y <span class="sc">~</span> group))[[<span class="dv">1</span>]][[<span class="st">"F value"</span>]][<span class="dv">1</span>]</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">t_squared =</span> t_stat<span class="sc">^</span><span class="dv">2</span>, <span class="at">F =</span> F_stat), <span class="dv">4</span>)   <span class="co"># F = t^2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>t_squared.t           F 
-    14.6466     14.6466 </code></pre>
-</div>
-</div>
-<p>Once you see this, a huge amount of statistics stops being a pile of disconnected recipes and becomes a single, learnable idea.</p>
+<p>Five rows, and you can <em>quote</em> any cell. The graph made you feel the strikeout climb; the table lets you say “K/9 went from about 5.7 in the 1980s to about 8.5 in the 2020s” without guessing off an axis. Same data, different instrument, different job.</p>
 </section>
-<section id="what-general-means-and-what-it-doesnt" class="level2" data-number="12.4">
-<h2 data-number="12.4" class="anchored" data-anchor-id="what-general-means-and-what-it-doesnt"><span class="header-section-number">12.4</span> What “General” Means (and What It Doesn’t)</h2>
-<p>The GLM is <strong>general</strong> because it swallows so many named procedures. But it does carry assumptions - chiefly that the errors are roughly normal and that the relationship is <em>linear in the parameters</em>. When the outcome is not continuous-and-normal (a yes/no, a count), we need the <strong>generalized</strong> linear model (note the extra syllable) - logistic and Poisson regression - which we met briefly at the end of the <a href="./16-ANOVAandGLM.html">ANOVA &amp; GLM chapter</a>. Do not confuse the two: the <em>general</em> linear model is the unifying frame for this whole section; the <em>generalized</em> linear model extends it to other kinds of outcomes.</p>
+<section id="kill-false-precision" class="level2" data-number="21.3">
+<h2 data-number="21.3" class="anchored" data-anchor-id="kill-false-precision"><span class="header-section-number">21.3</span> Kill False Precision</h2>
+<p>The fastest way to make a table lie - or just exhaust your reader - is to print every digit the computer coughed up. A bust rate stored as <code>0.5455</code> does <strong>not</strong> mean you know it to four decimals; with a few dozen draft picks, you barely know the second. Rounding is not sloppiness; it is honesty about how much you actually know. Watch the difference:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>nfl <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/nfl_draft_by_team.csv"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>worst <span class="ot">&lt;-</span> nfl[<span class="fu">order</span>(<span class="sc">-</span>nfl<span class="sc">$</span>rate_bust_a), <span class="fu">c</span>(<span class="st">"team"</span>, <span class="st">"n_picks"</span>, <span class="st">"rate_bust_a"</span>, <span class="st">"rate_clean_hit"</span>)]</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># false precision: every digit the machine produced</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(worst, <span class="dv">4</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">caption =</span> <span class="st">"Too many digits — implies a precision the data don't have."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Too many digits — implies a precision the data don’t have.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">team</th>
+<th style="text-align: right;">n_picks</th>
+<th style="text-align: right;">rate_bust_a</th>
+<th style="text-align: right;">rate_clean_hit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">LV</td>
+<td style="text-align: right;">44</td>
+<td style="text-align: right;">0.7273</td>
+<td style="text-align: right;">0.2500</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CIN</td>
+<td style="text-align: right;">52</td>
+<td style="text-align: right;">0.7174</td>
+<td style="text-align: right;">0.2609</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">GB</td>
+<td style="text-align: right;">49</td>
+<td style="text-align: right;">0.6905</td>
+<td style="text-align: right;">0.2381</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NYG</td>
+<td style="text-align: right;">49</td>
+<td style="text-align: right;">0.6829</td>
+<td style="text-align: right;">0.3171</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># honest precision: percentages, rounded to what the sample can support</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>worst<span class="sc">$</span>rate_bust_a   <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="dv">100</span> <span class="sc">*</span> worst<span class="sc">$</span>rate_bust_a)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>worst<span class="sc">$</span>rate_clean_hit <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="dv">100</span> <span class="sc">*</span> worst<span class="sc">$</span>rate_clean_hit)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(worst, <span class="dv">4</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Team"</span>, <span class="st">"Picks"</span>, <span class="st">"Bust rate (%)"</span>, <span class="st">"Clean-hit rate (%)"</span>),</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">caption =</span> <span class="st">"Rounded to whole percentages — easier to read, honest about precision."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Rounded to whole percentages — easier to read, honest about precision.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Team</th>
+<th style="text-align: right;">Picks</th>
+<th style="text-align: right;">Bust rate (%)</th>
+<th style="text-align: right;">Clean-hit rate (%)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">LV</td>
+<td style="text-align: right;">44</td>
+<td style="text-align: right;">73</td>
+<td style="text-align: right;">25</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CIN</td>
+<td style="text-align: right;">52</td>
+<td style="text-align: right;">72</td>
+<td style="text-align: right;">26</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">GB</td>
+<td style="text-align: right;">49</td>
+<td style="text-align: right;">69</td>
+<td style="text-align: right;">24</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NYG</td>
+<td style="text-align: right;">49</td>
+<td style="text-align: right;">68</td>
+<td style="text-align: right;">32</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>The second table is easier to read <em>and</em> more truthful. <strong>Show the digits you can defend, and not one more.</strong></p>
+</section>
+<section id="order-rows-to-carry-information" class="level2" data-number="21.4">
+<h2 data-number="21.4" class="anchored" data-anchor-id="order-rows-to-carry-information"><span class="header-section-number">21.4</span> Order Rows to Carry Information</h2>
+<p>A table’s row order is free information - spend it. An alphabetical list of teams makes the reader hunt; a list <strong>sorted by the thing you care about</strong> answers the question before they ask it. We already sorted by bust rate above (worst first), so the ranking <em>is</em> the message. Now show the two ends that a reader actually wants - the best and worst drafters - instead of dumping all 32:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>ends <span class="ot">&lt;-</span> <span class="fu">rbind</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cbind</span>(<span class="at">group =</span> <span class="st">"Worst drafters"</span>, <span class="fu">head</span>(worst[, <span class="fu">c</span>(<span class="st">"team"</span>, <span class="st">"n_picks"</span>, <span class="st">"rate_bust_a"</span>)], <span class="dv">5</span>)),</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cbind</span>(<span class="at">group =</span> <span class="st">"Best drafters"</span>,  <span class="fu">tail</span>(worst[, <span class="fu">c</span>(<span class="st">"team"</span>, <span class="st">"n_picks"</span>, <span class="st">"rate_bust_a"</span>)], <span class="dv">5</span>))</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(ends, <span class="at">row.names =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">""</span>, <span class="st">"Team"</span>, <span class="st">"Picks"</span>, <span class="st">"Bust rate (%)"</span>),</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>             <span class="at">caption =</span> <span class="st">"The two ends of the ranking — the comparison the reader wanted."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>The two ends of the ranking — the comparison the reader wanted.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">Team</th>
+<th style="text-align: right;">Picks</th>
+<th style="text-align: right;">Bust rate (%)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Worst drafters</td>
+<td style="text-align: left;">LV</td>
+<td style="text-align: right;">44</td>
+<td style="text-align: right;">73</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Worst drafters</td>
+<td style="text-align: left;">CIN</td>
+<td style="text-align: right;">52</td>
+<td style="text-align: right;">72</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Worst drafters</td>
+<td style="text-align: left;">GB</td>
+<td style="text-align: right;">49</td>
+<td style="text-align: right;">69</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Worst drafters</td>
+<td style="text-align: left;">NYG</td>
+<td style="text-align: right;">49</td>
+<td style="text-align: right;">68</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Worst drafters</td>
+<td style="text-align: left;">LAR</td>
+<td style="text-align: right;">51</td>
+<td style="text-align: right;">68</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Best drafters</td>
+<td style="text-align: left;">BUF</td>
+<td style="text-align: right;">46</td>
+<td style="text-align: right;">48</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Best drafters</td>
+<td style="text-align: left;">MIN</td>
+<td style="text-align: right;">48</td>
+<td style="text-align: right;">48</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Best drafters</td>
+<td style="text-align: left;">KC</td>
+<td style="text-align: right;">42</td>
+<td style="text-align: right;">47</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Best drafters</td>
+<td style="text-align: left;">BAL</td>
+<td style="text-align: right;">33</td>
+<td style="text-align: right;">40</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Best drafters</td>
+<td style="text-align: left;">WAS</td>
+<td style="text-align: right;">35</td>
+<td style="text-align: right;">38</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Ten rows, sorted, grouped into the contrast that matters. A 32-row alphabetical dump would contain the same facts and communicate none of them. <strong>Order and trim the table to the question; do not make the reader do your sorting.</strong></p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Important</span>The Roadmap From Here
+<span class="screen-reader-only">Important</span>The honest-table checklist
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Everything remaining in this book is a special case of the equation above:</p>
-<ul>
-<li><strong><a href="./13-pointbiserialcorrelation.html">Point-biserial correlation</a></strong> - the bridge: one continuous, one dichotomous variable.</li>
-<li><strong><a href="./14-bivariateregression.html">Bivariate regression</a></strong> - one continuous predictor.</li>
-<li><strong><a href="./15-MRC.html">Multiple regression</a></strong> - many continuous predictors.</li>
-<li><strong><a href="./16-ANOVAandGLM.html">ANOVA and the GLM</a></strong> - categorical predictors via coding.</li>
-<li><strong><a href="./17-basicANOVA.html">Basic ANOVA</a></strong> - partitioning variance, the classical view.</li>
-</ul>
-<p>Same engine, different fuel. Keep the one equation in your head and you will never be lost.</p>
+<ol type="1">
+<li><strong>Right instrument</strong> - do they need exact values or a lookup? If they need a <em>shape</em>, draw it instead.</li>
+<li><strong>Precision</strong> - round to what the data support; four decimals on a noisy rate is a lie of false confidence.</li>
+<li><strong>Order</strong> - sort rows by the quantity of interest; the ranking is information.</li>
+<li><strong>Trim</strong> - summarize to the comparison (decades, top/bottom); don’t dump raw rows.</li>
+<li><strong>Labels</strong> - human column names and units, so no cell needs a footnote to be understood.</li>
+</ol>
 </div>
 </div>
 </section>
-<section id="challenge" class="level2" data-number="12.5">
-<h2 data-number="12.5" class="anchored" data-anchor-id="challenge"><span class="header-section-number">12.5</span> Challenge</h2>
+<section id="tables-and-graphics-are-partners" class="level2" data-number="21.5">
+<h2 data-number="21.5" class="anchored" data-anchor-id="tables-and-graphics-are-partners"><span class="header-section-number">21.5</span> Tables and Graphics Are Partners</h2>
+<p>The two instruments are not rivals; a good report uses both. Show the <strong>graph</strong> for the pattern - “strikeouts have soared” - and put the <strong>table</strong> beside it for the reader who needs the exact decade numbers to quote in their own argument. The graph earns the reader’s belief; the table arms them with the specifics. Reach for whichever answers the question in front of you, and often, reach for both.</p>
+</section>
+<section id="challenge" class="level2" data-number="21.6">
+<h2 data-number="21.6" class="anchored" data-anchor-id="challenge"><span class="header-section-number">21.6</span> Challenge</h2>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -689,16 +877,16 @@ window.Quarto = {
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li>Generate your own two-group data. Confirm that <code>t.test(..., var.equal = TRUE)</code>, <code>aov()</code>, and <code>lm()</code> give the identical p-value, and that <span class="math inline">\(F = t^2\)</span>.</li>
-<li>Add a <em>continuous</em> covariate to the outcome and fit <code>lm(y ~ group + covariate)</code>. You have just run an ANCOVA without learning a new technique - explain to a friend why that is not cheating.</li>
-<li>In one sentence, state the difference between the <em>general</em> linear model and the <em>generalized</em> linear model.</li>
+<li>Rebuild the decade table but add a column for how much each stat <em>changed</em> from the previous decade. Which display - this table or the small-multiple graph from the last chapter - makes the change clearer, and for which reader?</li>
+<li>Take the full 32-team draft data and design the <em>single</em> table you would actually publish. What do you sort by, how many rows do you keep, and to how many digits do you round? Defend each choice in one sentence.</li>
+<li>Find a table in a real paper or report with obvious false precision (six decimals on a correlation, say). Round it honestly and note whether any conclusion actually depended on the digits you deleted.</li>
 </ol>
 </div>
 </div>
 </section>
-<section id="where-we-go-next" class="level2" data-number="12.6">
-<h2 data-number="12.6" class="anchored" data-anchor-id="where-we-go-next"><span class="header-section-number">12.6</span> Where We Go Next</h2>
-<p>Let’s build the bridge that makes the “categorical predictors are just regression” claim concrete, using the simplest possible categorical predictor - a single yes/no. That is the <a href="./13-pointbiserialcorrelation.html">point-biserial correlation</a>.</p>
+<section id="where-we-go-next" class="level2" data-number="21.7">
+<h2 data-number="21.7" class="anchored" data-anchor-id="where-we-go-next"><span class="header-section-number">21.7</span> Where We Go Next</h2>
+<p>You can now show data honestly - as a picture and as a table - and you have the full toolkit of this book behind you: describe, measure, model, and display. What remains is the hardest thing to teach and the most valuable to learn: <strong>judgment</strong> - which tool, when, and why. For that, we stop explaining and start showing, walking through real published analyses with every decision laid bare. Welcome to the apprenticeship.</p>
 
 
 </section>
@@ -1135,13 +1323,13 @@ window.Quarto = {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./18-rasch.html" class="pagination-link" aria-label="Measuring Like Ben Wright: Rasch in R, Python, and Julia">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Measuring Like Ben Wright: Rasch in R, Python, and Julia</span></span>
+      <a href="./21-graphics.html" class="pagination-link" aria-label="Displaying Data: Graphics">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Displaying Data: Graphics</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./13-pointbiserialcorrelation.html" class="pagination-link" aria-label="Bridging the Gap: The Point Biserial Correlation">
-        <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Bridging the Gap: The Point Biserial Correlation</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./references.html" class="pagination-link" aria-label="References">
+        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

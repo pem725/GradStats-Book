@@ -1435,7 +1435,7 @@
     "href": "14-bivariateregression.html#what-best-means-residuals",
     "title": "14  Simple Regression",
     "section": "14.4 What “Best” Means: Residuals",
-    "text": "14.4 What “Best” Means: Residuals\nThe red line is “best” in a very specific sense. For each point, the residual is the vertical distance between what we observed (\\(y\\)) and what the line predicts (\\(\\hat{y}\\)):\n\\[e = y - \\hat{y}\\]\nLet’s draw those distances.\n\nplot(x, y, xlim = c(0, 6), pch = 19,\n     main = \"Residuals: the vertical gaps the line leaves behind\")\nabline(lm1, col = \"red\", lwd = 2)\nfor (i in 1:5) {\n  segments(x[i], y[i], x[i], coef(lm1)[[2]] * x[i] + coef(lm1)[[1]],\n           col = \"blue\", lwd = 2)\n}\n\n\n\n\n\n\n\n\nHere are the residuals themselves:\n\nresid(lm1)\n\n   1    2    3    4    5 \n-2.0  1.3  2.6 -1.1 -0.8 \n\n\nTwo facts worth burning into memory:\n\nsum(resid(lm1))        # the residuals sum to (essentially) zero\n\n[1] 1.665335e-15\n\nsum(resid(lm1)^2)      # the sum of SQUARED residuals - this is what we minimize\n\n[1] 14.3\n\n\n\n\n\n\n\n\nImportantLeast Squares, Defined\n\n\n\nThe “best” line is the one line (out of infinitely many possible lines) that makes sum(resid^2) as small as it can possibly be. That is all “least squares” means: least (smallest) squares (of the residuals). The residuals sum to zero for any line through the means, so we cannot minimize their plain sum - it is always zero. Squaring first solves that, and it punishes big misses more than small ones. We shall return to that squared quantity again and again; it is the beating heart of the whole enterprise.",
+    "text": "14.4 What “Best” Means: Residuals\nThe red line is “best” in a very specific sense. For each point, the residual is the vertical distance between what we observed (\\(y\\)) and what the line predicts (\\(\\hat{y}\\)):\n\\[e = y - \\hat{y}\\]\nLet’s draw those distances.\n\nplot(x, y, xlim = c(0, 6), pch = 19,\n     main = \"Residuals: the vertical gaps the line leaves behind\")\nabline(lm1, col = \"red\", lwd = 2)\nfor (i in 1:5) {\n  segments(x[i], y[i], x[i], coef(lm1)[[2]] * x[i] + coef(lm1)[[1]],\n           col = \"blue\", lwd = 2)\n}\n\n\n\n\n\n\n\n\nHere are the residuals themselves:\n\nresid(lm1)\n\n   1    2    3    4    5 \n-2.0  1.3  2.6 -1.1 -0.8 \n\n\nTwo facts worth burning into memory:\n\nsum(resid(lm1))        # the residuals sum to (essentially) zero\n\n[1] 7.771561e-16\n\nsum(resid(lm1)^2)      # the sum of SQUARED residuals - this is what we minimize\n\n[1] 14.3\n\n\n\n\n\n\n\n\nImportantLeast Squares, Defined\n\n\n\nThe “best” line is the one line (out of infinitely many possible lines) that makes sum(resid^2) as small as it can possibly be. That is all “least squares” means: least (smallest) squares (of the residuals). The residuals sum to zero for any line through the means, so we cannot minimize their plain sum - it is always zero. Squaring first solves that, and it punishes big misses more than small ones. We shall return to that squared quantity again and again; it is the beating heart of the whole enterprise.",
     "crumbs": [
       "Using Models",
       "<span class='chapter-number'>14</span>  <span class='chapter-title'>Simple Regression</span>"
@@ -2051,10 +2051,197 @@
     "href": "20-beyond.html#where-we-go-next",
     "title": "19  Beyond the Normal Curve: Resampling, Robust, and Bayesian Statistics",
     "section": "19.7 Where We Go Next",
-    "text": "19.7 Where We Go Next\nYou now have three ways past the normal curve, and a single principle - estimate first, test second - that ties them together and reaches back through every chapter you’ve read. That principle is the quiet thesis of this book: statistics is the disciplined quantification of uncertainty, and the honest currency of uncertainty is a distribution, not a verdict. Wherever your data take you next - a resampled interval, a robust slope, a posterior - you are doing the same human thing we started with: saying what you know, and how sure you are.",
+    "text": "19.7 Where We Go Next\nYou now have three ways past the normal curve, and a single principle - estimate first, test second - that ties them together and reaches back through every chapter you’ve read. That principle is the quiet thesis of this book: statistics is the disciplined quantification of uncertainty, and the honest currency of uncertainty is a distribution, not a verdict. Wherever your data take you - a resampled interval, a robust slope, a posterior - you are doing the same human thing we started with: saying what you know, and how sure you are.\nAnd knowing something is only half the job. The other half is showing it - honestly, to someone else who did not run your analysis and will not read your code. That craft, the display of data in graphics and tables, is where we turn next.",
     "crumbs": [
       "Beyond the Normal Curve",
       "<span class='chapter-number'>19</span>  <span class='chapter-title'>Beyond the Normal Curve: Resampling, Robust, and Bayesian Statistics</span>"
+    ]
+  },
+  {
+    "objectID": "21-graphics.html",
+    "href": "21-graphics.html",
+    "title": "20  Displaying Data: Graphics",
+    "section": "",
+    "text": "20.1 Learning Objectives\nA graph is not decoration. A graph is an argument - a claim about what the numbers mean, made in a language (position, length, color) that the eye reads faster than any sentence. And like any argument, a graph can be honest or it can lie, sometimes without its maker even noticing. This chapter is about making the honest kind, and recognizing the other kind.\nThe examples here come from a real project - The Sports Page, a daily newsletter (a sister project to this book) that takes one strange sports number and tells the truth about what it does and does not mean. Its house rule is the same one that runs through this whole book: describe what happened, predict what will happen, and never dress up one as the other. Good graphics are how you keep that promise to your reader.",
+    "crumbs": [
+      "Displaying Data",
+      "<span class='chapter-number'>20</span>  <span class='chapter-title'>Displaying Data: Graphics</span>"
+    ]
+  },
+  {
+    "objectID": "21-graphics.html#learning-objectives",
+    "href": "21-graphics.html#learning-objectives",
+    "title": "20  Displaying Data: Graphics",
+    "section": "",
+    "text": "Match the geometry of a graph to the question (trend, comparison, distribution, relationship).\nRecognize how an axis can exaggerate or hide a real change - and choose an honest one.\nPrefer small multiples to overloaded dual-axis charts, and ranked bars to pie charts.\nShow the distribution, not just a summary, and tame overplotting.",
+    "crumbs": [
+      "Displaying Data",
+      "<span class='chapter-number'>20</span>  <span class='chapter-title'>Displaying Data: Graphics</span>"
+    ]
+  },
+  {
+    "objectID": "21-graphics.html#match-the-geometry-to-the-question",
+    "href": "21-graphics.html#match-the-geometry-to-the-question",
+    "title": "20  Displaying Data: Graphics",
+    "section": "20.2 Match the Geometry to the Question",
+    "text": "20.2 Match the Geometry to the Question\nThe first decision is not color or font - it is geometry. What shape of mark answers your question? A change over time wants a line. Here is a true story: over the last four decades, major-league baseball became a strikeout sport. Watch it in one line:\n\nlibrary(ggplot2)\nmlb &lt;- read.csv(\"data/mlb_league_by_year.csv\")\n\nggplot(mlb, aes(year, K_9)) +\n  geom_line(color = \"steelblue\", linewidth = 1) +\n  geom_point(color = \"steelblue\", size = 1.4) +\n  labs(x = NULL, y = \"Strikeouts per 9 innings\",\n       title = \"The strikeout revolution\") +\n  theme_minimal(base_size = 12)\n\n\n\n\nStrikeouts per nine innings, MLB, 1985–present. A trend wants a line.\n\n\n\n\nA line says “these points are connected in sequence” - exactly the claim you want for a time trend. A bar chart here would be wrong: bars say “these are separate categories to compare,” which is a different (and misleading) sentence. The geometry is the argument. Trend → line; category comparison → bar; one distribution → histogram; two variables → scatter. Pick the mark that makes the claim you actually mean.",
+    "crumbs": [
+      "Displaying Data",
+      "<span class='chapter-number'>20</span>  <span class='chapter-title'>Displaying Data: Graphics</span>"
+    ]
+  },
+  {
+    "objectID": "21-graphics.html#dont-lie-with-the-axis",
+    "href": "21-graphics.html#dont-lie-with-the-axis",
+    "title": "20  Displaying Data: Graphics",
+    "section": "20.3 Don’t Lie With the Axis",
+    "text": "20.3 Don’t Lie With the Axis\nSame data, two axes, two completely different stories. Batting average has drifted down over the same period - from about .257 to about .242, a real but modest slide. First, watch a zoomed-in y-axis turn that modest slide into a catastrophe:\n\nggplot(mlb, aes(year, AVG)) +\n  geom_line(color = \"firebrick\", linewidth = 1) +\n  coord_cartesian(ylim = c(0.242, 0.258)) +                 # axis zoomed to the data\n  labs(x = NULL, y = \"AVG\", title = \"“Hitting is DEAD”\") +\n  theme_minimal(base_size = 11)\n\n\n\n\nDishonest axis: zoomed tight, a 15-point drift looks like a cliff.\n\n\n\n\nNow the exact same numbers, on an axis anchored to a meaningful baseline:\n\nggplot(mlb, aes(year, AVG)) +\n  geom_line(color = \"firebrick\", linewidth = 1) +\n  coord_cartesian(ylim = c(0, 0.3)) +                        # axis from a meaningful zero\n  labs(x = NULL, y = \"AVG\", title = \"“Hitting drifted down a bit”\") +\n  theme_minimal(base_size = 11)\n\n\n\n\nHonest axis: from a meaningful zero, the same drift is a gentle slope.\n\n\n\n\nSame numbers, opposite impressions. The first axis turns a 15-point drift into a cliff and screams a crisis; the second, anchored to a meaningful baseline, tells the truth: hitting softened, it did not collapse. Neither axis is always right - a zoomed axis is legitimate when small differences genuinely matter (and you say so) - but the choice is never innocent. Ask what the axis is doing to the size of the effect, and whether that is honest.\n\n\n\n\n\n\nWarningThe most common accidental lie\n\n\n\nA truncated y-axis is the single most common way a well-meaning person makes a nothing-burger look like a catastrophe (or vice versa). Before you publish a chart, look at your axis limits and ask: would this effect still look this big if I started from zero? If the honest version is boring, the honest answer might be that the effect is boring.",
+    "crumbs": [
+      "Displaying Data",
+      "<span class='chapter-number'>20</span>  <span class='chapter-title'>Displaying Data: Graphics</span>"
+    ]
+  },
+  {
+    "objectID": "21-graphics.html#small-multiples-beat-the-dual-axis-abomination",
+    "href": "21-graphics.html#small-multiples-beat-the-dual-axis-abomination",
+    "title": "20  Displaying Data: Graphics",
+    "section": "20.4 Small Multiples Beat the Dual-Axis Abomination",
+    "text": "20.4 Small Multiples Beat the Dual-Axis Abomination\nYou have three trends to show at once - strikeouts, walks, and home runs per plate appearance. The temptation is to jam them onto one chart with two or three y-axes. Resist. Dual-axis charts let you manufacture any relationship you like by rescaling one axis, and readers cannot tell which line belongs to which scale. The honest tool is small multiples: the same chart repeated, one panel per series, on comparable axes.\n\nlong &lt;- data.frame(\n  year = rep(mlb$year, 3),\n  rate = c(mlb$K_PA, mlb$BB_PA, mlb$HR_PA),\n  kind = rep(c(\"Strikeouts\", \"Walks\", \"Home runs\"), each = nrow(mlb))\n)\nggplot(long, aes(year, rate)) +\n  geom_line(color = \"steelblue\", linewidth = 0.9) +\n  facet_wrap(~ kind, scales = \"free_y\") +               # one panel per series\n  labs(x = NULL, y = \"per plate appearance\") +\n  theme_minimal(base_size = 11)\n\n\n\n\nThree league trends as small multiples — comparable, honest, readable.\n\n\n\n\nEach panel tells its own honest story (strikeouts soared, walks held steady, homers crept up), and no rescaling trick can fake a relationship between them. When you have many series, repeat the chart; don’t overload it.",
+    "crumbs": [
+      "Displaying Data",
+      "<span class='chapter-number'>20</span>  <span class='chapter-title'>Displaying Data: Graphics</span>"
+    ]
+  },
+  {
+    "objectID": "21-graphics.html#rank-dont-pie",
+    "href": "21-graphics.html#rank-dont-pie",
+    "title": "20  Displaying Data: Graphics",
+    "section": "20.5 Rank, Don’t Pie",
+    "text": "20.5 Rank, Don’t Pie\nFor comparing a quantity across categories, the eye reads position along a common scale far more accurately than it reads the angles of a pie. So a bar chart beats a pie chart almost always - and a sorted bar chart beats an unsorted one, because the ordering is itself information. Which NFL teams draft worst? Thirty-two teams is already far too many for a pie; rank them:\n\nnfl &lt;- read.csv(\"data/nfl_draft_by_team.csv\")\nggplot(nfl, aes(x = reorder(team, rate_bust_a), y = rate_bust_a)) +\n  geom_col(fill = \"grey35\") +\n  coord_flip() +                                        # horizontal: labels stay readable\n  labs(x = NULL, y = \"Bust rate (no Pro Bowl)\", title = \"Draft busts by team\") +\n  theme_minimal(base_size = 10)\n\n\n\n\nNFL first-round bust rate by team — ranked bars, not a 32-slice pie.\n\n\n\n\nSorted, horizontal, one bar per team: you can read off the best and worst drafters in a second, and every team is comparable on the same axis. A pie chart of these same 32 numbers would be an unreadable pinwheel - you could not tell 22% from 25% by eye, and the ranking would vanish. Pie charts work for maybe two or three slices; past that, rank a bar chart.",
+    "crumbs": [
+      "Displaying Data",
+      "<span class='chapter-number'>20</span>  <span class='chapter-title'>Displaying Data: Graphics</span>"
+    ]
+  },
+  {
+    "objectID": "21-graphics.html#show-the-distribution-not-just-the-mean",
+    "href": "21-graphics.html#show-the-distribution-not-just-the-mean",
+    "title": "20  Displaying Data: Graphics",
+    "section": "20.6 Show the Distribution, Not Just the Mean",
+    "text": "20.6 Show the Distribution, Not Just the Mean\nA single summary number - a mean, a bar - throws away the shape of the data, and the shape is usually the story. Do not draw a bar of averages when you could draw the whole distribution. Here are this season’s qualified hitters; a histogram shows the spread of performance a mean would erase:\n\nh &lt;- read.csv(\"data/mlb_hitters_2026.csv\")\nh &lt;- h[h$PA &gt;= 50, ]\n\nggplot(h, aes(OPS)) +\n  geom_histogram(bins = 30, fill = \"steelblue\", color = \"white\") +\n  geom_vline(xintercept = median(h$OPS), color = \"firebrick\", linewidth = 1) +\n  labs(x = \"OPS\", y = \"hitters\", title = \"Most hitters are ordinary; a few are stars\") +\n  theme_minimal(base_size = 12)\n\n\n\n\nThe distribution of OPS across qualified hitters — the shape a single mean hides.\n\n\n\n\nAnd when you plot two variables against each other with hundreds of points, they pile up and hide their own density. The fix is transparency (or jitter): let the dark regions show where the data actually concentrate.\n\nggplot(h, aes(OBP, SLG)) +\n  geom_point(alpha = 0.35, color = \"steelblue\") +         # alpha tames overplotting\n  labs(x = \"On-base percentage\", y = \"Slugging percentage\") +\n  theme_minimal(base_size = 12)\n\n\n\n\nOn-base vs. slugging, 400+ hitters. Transparency reveals the crowd.\n\n\n\n\nThe cloud’s shape - a positive drift, a dense middle, a few lonely stars in the upper right - is information a table of two means could never carry. That is the whole reason graphics exist.\n\n\n\n\n\n\nImportantThe honest-graph checklist\n\n\n\nBefore a chart leaves your hands, run it past four questions:\n\nGeometry - does the mark (line/bar/histogram/scatter) make the claim I actually mean?\nAxis - would the effect look this big if I started from a meaningful zero? If not, am I saying so?\nLoad - am I overloading one chart (dual axes, too many series, a 32-slice pie) where small multiples or a ranked bar would be clearer?\nHonesty of summary - am I hiding a distribution behind a mean, or implying a relationship the data (small \\(n\\), no mechanism) haven’t earned?\n\nA graph that survives all four is an argument you can stand behind.",
+    "crumbs": [
+      "Displaying Data",
+      "<span class='chapter-number'>20</span>  <span class='chapter-title'>Displaying Data: Graphics</span>"
+    ]
+  },
+  {
+    "objectID": "21-graphics.html#challenge",
+    "href": "21-graphics.html#challenge",
+    "title": "20  Displaying Data: Graphics",
+    "section": "20.7 Challenge",
+    "text": "20.7 Challenge\n\n\n\n\n\n\nTipDo One Yourself\n\n\n\n\nRedraw the strikeout-revolution line with a truncated y-axis that makes the rise look even more extreme, then with a zero-based axis that makes it look tame. Which is honest, and why does “honest” depend on the question?\nTake the hitters data and draw a bar chart of mean OPS by team, then a boxplot (or jittered points) of OPS by team. What does the second show that the first hides?\nFind a chart in the wild (a news site, a company slide) with a truncated axis or a pie chart with too many slices. Redraw it honestly and write one sentence on what changed.",
+    "crumbs": [
+      "Displaying Data",
+      "<span class='chapter-number'>20</span>  <span class='chapter-title'>Displaying Data: Graphics</span>"
+    ]
+  },
+  {
+    "objectID": "21-graphics.html#where-we-go-next",
+    "href": "21-graphics.html#where-we-go-next",
+    "title": "20  Displaying Data: Graphics",
+    "section": "20.8 Where We Go Next",
+    "text": "20.8 Where We Go Next\nGraphics are half of how we show data; the other half is the table - and tables have their own quiet craft, their own ways of telling the truth or burying it. That is the next chapter. Then, with tables and graphics both in hand, we turn to the real payoff of this whole book: watching these tools used in anger, on published work, with every judgment call laid bare.",
+    "crumbs": [
+      "Displaying Data",
+      "<span class='chapter-number'>20</span>  <span class='chapter-title'>Displaying Data: Graphics</span>"
+    ]
+  },
+  {
+    "objectID": "22-tables.html",
+    "href": "22-tables.html",
+    "title": "21  Displaying Data: Tables",
+    "section": "",
+    "text": "21.1 Learning Objectives\nIf a graph is for seeing a pattern, a table is for reading an exact value. Ask which one your reader needs. Do they need to feel the shape of a trend? Draw it. Do they need to look up “what was the bust rate for the Jets, exactly?” or compare a handful of precise numbers side by side? Give them a table. A table is not a failed graph; it is a different instrument for a different job - and, like a graph, it can be honest or it can bury the truth in a fog of digits.\nWe continue with the same real data from The Sports Page we used for graphics, so you can feel the difference between the two instruments on identical numbers.",
+    "crumbs": [
+      "Displaying Data",
+      "<span class='chapter-number'>21</span>  <span class='chapter-title'>Displaying Data: Tables</span>"
+    ]
+  },
+  {
+    "objectID": "22-tables.html#learning-objectives",
+    "href": "22-tables.html#learning-objectives",
+    "title": "21  Displaying Data: Tables",
+    "section": "",
+    "text": "Decide when a table serves the reader better than a graph.\nRound to meaningful precision - kill false precision.\nOrder rows to carry information, and align numbers so they can be compared.\nSummarize to the question, rather than dumping the raw data.",
+    "crumbs": [
+      "Displaying Data",
+      "<span class='chapter-number'>21</span>  <span class='chapter-title'>Displaying Data: Tables</span>"
+    ]
+  },
+  {
+    "objectID": "22-tables.html#when-a-table-beats-a-graph",
+    "href": "22-tables.html#when-a-table-beats-a-graph",
+    "title": "21  Displaying Data: Tables",
+    "section": "21.2 When a Table Beats a Graph",
+    "text": "21.2 When a Table Beats a Graph\nA table wins when the numbers are few, the exact values matter, or the reader will look things up rather than scan for a shape. The strikeout trend was a job for a line. But “what did each decade actually look like, in numbers I can quote?” is a job for a small table. Summarize the 42 years down to five decade averages - few rows, exact values, quotable:\n\nmlb &lt;- read.csv(\"data/mlb_league_by_year.csv\")\nmlb$decade &lt;- paste0(floor(mlb$year / 10) * 10, \"s\")\n\ndec &lt;- aggregate(cbind(K_9, BB_9, HR_9, AVG) ~ decade, data = mlb, FUN = mean)\nknitr::kable(dec, digits = c(0, 2, 2, 2, 3),\n             col.names = c(\"Decade\", \"K/9\", \"BB/9\", \"HR/9\", \"AVG\"),\n             caption = \"MLB by the decade: the strikeout climb, in exact numbers.\")\n\n\nMLB by the decade: the strikeout climb, in exact numbers.\n\n\nDecade\nK/9\nBB/9\nHR/9\nAVG\n\n\n\n\n1980s\n5.70\n3.30\n0.87\n0.257\n\n\n1990s\n6.18\n3.45\n0.96\n0.264\n\n\n2000s\n6.62\n3.38\n1.08\n0.265\n\n\n2010s\n7.87\n3.12\n1.08\n0.254\n\n\n2020s\n8.69\n3.31\n1.19\n0.244\n\n\n\n\n\nFive rows, and you can quote any cell. The graph made you feel the strikeout climb; the table lets you say “K/9 went from about 5.7 in the 1980s to about 8.5 in the 2020s” without guessing off an axis. Same data, different instrument, different job.",
+    "crumbs": [
+      "Displaying Data",
+      "<span class='chapter-number'>21</span>  <span class='chapter-title'>Displaying Data: Tables</span>"
+    ]
+  },
+  {
+    "objectID": "22-tables.html#kill-false-precision",
+    "href": "22-tables.html#kill-false-precision",
+    "title": "21  Displaying Data: Tables",
+    "section": "21.3 Kill False Precision",
+    "text": "21.3 Kill False Precision\nThe fastest way to make a table lie - or just exhaust your reader - is to print every digit the computer coughed up. A bust rate stored as 0.5455 does not mean you know it to four decimals; with a few dozen draft picks, you barely know the second. Rounding is not sloppiness; it is honesty about how much you actually know. Watch the difference:\n\nnfl &lt;- read.csv(\"data/nfl_draft_by_team.csv\")\nworst &lt;- nfl[order(-nfl$rate_bust_a), c(\"team\", \"n_picks\", \"rate_bust_a\", \"rate_clean_hit\")]\n\n# false precision: every digit the machine produced\nknitr::kable(head(worst, 4), row.names = FALSE,\n             caption = \"Too many digits — implies a precision the data don't have.\")\n\n\nToo many digits — implies a precision the data don’t have.\n\n\nteam\nn_picks\nrate_bust_a\nrate_clean_hit\n\n\n\n\nLV\n44\n0.7273\n0.2500\n\n\nCIN\n52\n0.7174\n0.2609\n\n\nGB\n49\n0.6905\n0.2381\n\n\nNYG\n49\n0.6829\n0.3171\n\n\n\n\n\n\n# honest precision: percentages, rounded to what the sample can support\nworst$rate_bust_a   &lt;- round(100 * worst$rate_bust_a)\nworst$rate_clean_hit &lt;- round(100 * worst$rate_clean_hit)\nknitr::kable(head(worst, 4), row.names = FALSE,\n             col.names = c(\"Team\", \"Picks\", \"Bust rate (%)\", \"Clean-hit rate (%)\"),\n             caption = \"Rounded to whole percentages — easier to read, honest about precision.\")\n\n\nRounded to whole percentages — easier to read, honest about precision.\n\n\nTeam\nPicks\nBust rate (%)\nClean-hit rate (%)\n\n\n\n\nLV\n44\n73\n25\n\n\nCIN\n52\n72\n26\n\n\nGB\n49\n69\n24\n\n\nNYG\n49\n68\n32\n\n\n\n\n\nThe second table is easier to read and more truthful. Show the digits you can defend, and not one more.",
+    "crumbs": [
+      "Displaying Data",
+      "<span class='chapter-number'>21</span>  <span class='chapter-title'>Displaying Data: Tables</span>"
+    ]
+  },
+  {
+    "objectID": "22-tables.html#order-rows-to-carry-information",
+    "href": "22-tables.html#order-rows-to-carry-information",
+    "title": "21  Displaying Data: Tables",
+    "section": "21.4 Order Rows to Carry Information",
+    "text": "21.4 Order Rows to Carry Information\nA table’s row order is free information - spend it. An alphabetical list of teams makes the reader hunt; a list sorted by the thing you care about answers the question before they ask it. We already sorted by bust rate above (worst first), so the ranking is the message. Now show the two ends that a reader actually wants - the best and worst drafters - instead of dumping all 32:\n\nends &lt;- rbind(\n  cbind(group = \"Worst drafters\", head(worst[, c(\"team\", \"n_picks\", \"rate_bust_a\")], 5)),\n  cbind(group = \"Best drafters\",  tail(worst[, c(\"team\", \"n_picks\", \"rate_bust_a\")], 5))\n)\nknitr::kable(ends, row.names = FALSE,\n             col.names = c(\"\", \"Team\", \"Picks\", \"Bust rate (%)\"),\n             caption = \"The two ends of the ranking — the comparison the reader wanted.\")\n\n\nThe two ends of the ranking — the comparison the reader wanted.\n\n\n\nTeam\nPicks\nBust rate (%)\n\n\n\n\nWorst drafters\nLV\n44\n73\n\n\nWorst drafters\nCIN\n52\n72\n\n\nWorst drafters\nGB\n49\n69\n\n\nWorst drafters\nNYG\n49\n68\n\n\nWorst drafters\nLAR\n51\n68\n\n\nBest drafters\nBUF\n46\n48\n\n\nBest drafters\nMIN\n48\n48\n\n\nBest drafters\nKC\n42\n47\n\n\nBest drafters\nBAL\n33\n40\n\n\nBest drafters\nWAS\n35\n38\n\n\n\n\n\nTen rows, sorted, grouped into the contrast that matters. A 32-row alphabetical dump would contain the same facts and communicate none of them. Order and trim the table to the question; do not make the reader do your sorting.\n\n\n\n\n\n\nImportantThe honest-table checklist\n\n\n\n\nRight instrument - do they need exact values or a lookup? If they need a shape, draw it instead.\nPrecision - round to what the data support; four decimals on a noisy rate is a lie of false confidence.\nOrder - sort rows by the quantity of interest; the ranking is information.\nTrim - summarize to the comparison (decades, top/bottom); don’t dump raw rows.\nLabels - human column names and units, so no cell needs a footnote to be understood.",
+    "crumbs": [
+      "Displaying Data",
+      "<span class='chapter-number'>21</span>  <span class='chapter-title'>Displaying Data: Tables</span>"
+    ]
+  },
+  {
+    "objectID": "22-tables.html#tables-and-graphics-are-partners",
+    "href": "22-tables.html#tables-and-graphics-are-partners",
+    "title": "21  Displaying Data: Tables",
+    "section": "21.5 Tables and Graphics Are Partners",
+    "text": "21.5 Tables and Graphics Are Partners\nThe two instruments are not rivals; a good report uses both. Show the graph for the pattern - “strikeouts have soared” - and put the table beside it for the reader who needs the exact decade numbers to quote in their own argument. The graph earns the reader’s belief; the table arms them with the specifics. Reach for whichever answers the question in front of you, and often, reach for both.",
+    "crumbs": [
+      "Displaying Data",
+      "<span class='chapter-number'>21</span>  <span class='chapter-title'>Displaying Data: Tables</span>"
+    ]
+  },
+  {
+    "objectID": "22-tables.html#challenge",
+    "href": "22-tables.html#challenge",
+    "title": "21  Displaying Data: Tables",
+    "section": "21.6 Challenge",
+    "text": "21.6 Challenge\n\n\n\n\n\n\nTipDo One Yourself\n\n\n\n\nRebuild the decade table but add a column for how much each stat changed from the previous decade. Which display - this table or the small-multiple graph from the last chapter - makes the change clearer, and for which reader?\nTake the full 32-team draft data and design the single table you would actually publish. What do you sort by, how many rows do you keep, and to how many digits do you round? Defend each choice in one sentence.\nFind a table in a real paper or report with obvious false precision (six decimals on a correlation, say). Round it honestly and note whether any conclusion actually depended on the digits you deleted.",
+    "crumbs": [
+      "Displaying Data",
+      "<span class='chapter-number'>21</span>  <span class='chapter-title'>Displaying Data: Tables</span>"
+    ]
+  },
+  {
+    "objectID": "22-tables.html#where-we-go-next",
+    "href": "22-tables.html#where-we-go-next",
+    "title": "21  Displaying Data: Tables",
+    "section": "21.7 Where We Go Next",
+    "text": "21.7 Where We Go Next\nYou can now show data honestly - as a picture and as a table - and you have the full toolkit of this book behind you: describe, measure, model, and display. What remains is the hardest thing to teach and the most valuable to learn: judgment - which tool, when, and why. For that, we stop explaining and start showing, walking through real published analyses with every decision laid bare. Welcome to the apprenticeship.",
+    "crumbs": [
+      "Displaying Data",
+      "<span class='chapter-number'>21</span>  <span class='chapter-title'>Displaying Data: Tables</span>"
     ]
   }
 ]
