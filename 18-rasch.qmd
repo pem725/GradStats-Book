@@ -26,20 +26,29 @@ That is the logistic curve from the [z-distribution](06-zdistribution.qmd) and [
 
 Wright's running example in *Best Test Design* [@wright_best_1979] is the **Knox Cube Test (KCT)**: a child watches the examiner tap a sequence on four cubes, then tries to repeat it. Each of the 18 items is a tapping pattern, and the items are named by the taps - `1-4`, `2-3`, `1-3-2-4`, and so on. Longer sequences are harder, so the KCT is very nearly a perfect ladder of difficulty - which is exactly why Wright loved it for teaching.
 
-The original 1979 response matrix (34 children, after Wright set aside those with perfect or zero scores) survives only as a scanned table, so here we **reconstruct** a response set faithful to its documented structure: the first few items are passed by almost everyone, the last by almost no one, with a sharp jump in difficulty where the sequences grow from four taps to five.
+We use Wright's **actual data**: 35 children, 18 items, the very responses from *Best Test Design*, stored as a plain text table (`data/knox.dat`). The children even keep their names - Richard, Tracie, Walter, and the rest.
 
 ```{r}
-set.seed(1979)  # the year of Best Test Design
+## Wright's own Knox Cube Test responses (Best Test Design, 1979):
+## 35 children (rows) by 18 tapping items (columns), 1 = repeated correctly.
+kct <- read.table("data/knox.dat", header = TRUE, stringsAsFactors = FALSE)
+
 taps <- c("1-4","2-3","1-2-4","1-3-4","2-1-4","3-4-1","1-4-3-2","1-4-2-3",
           "1-3-2-4","2-4-3-1","1-3-1-2-4","1-3-2-4-3","1-4-3-2-4","1-4-2-3-4-1",
           "1-3-2-4-1-3","1-4-2-3-1-4","1-4-3-1-2-4","4-1-3-4-2-1-4")
-delta_true <- seq(-4.5, 4.5, length.out = 18)   # KCT items climb in difficulty
-theta      <- rnorm(35, mean = 0, sd = 2)        # 35 children, a wide range of ability
-P <- outer(theta, delta_true, function(a, d) plogis(a - d))
-X <- matrix(rbinom(length(P), 1, P), nrow = 35,
-            dimnames = list(NULL, taps))
-X[1:5, 1:8]   # a corner of the person-by-item response matrix
+X <- as.matrix(kct[, paste0("i", 1:18)])
+rownames(X) <- kct$Name
+colnames(X) <- taps
+X[1:6, 1:9]   # a corner: the first children, the easiest items
 ```
+
+Before we estimate anything, look at the item margins - how many of the 35 children passed each item:
+
+```{r}
+colSums(X)    # passes per item, easy (left) to hard (right)
+```
+
+Everyone passes the first three items and **no one** passes the last. Those items carry no information about *differences* - and you cannot compute a finite logit for a perfect or zero score (it is $\log$ of $\infty$). So the calibration engine will set them aside automatically. Watch for that in a moment: 18 items go in, but only the estimable ones come out.
 
 ## The Engine: Joint Maximum Likelihood (What BIGSTEPS Does)
 
@@ -94,6 +103,10 @@ Nothing above was special to R. Here is the identical algorithm in Python with N
 ```python
 import numpy as np
 
+# Wright's Knox Cube Test data: skip the header, drop the Name & sex columns.
+rows = [ln.split() for ln in open("data/knox.dat")][1:]
+X = np.array([[int(v) for v in r[2:]] for r in rows], float)
+
 def rasch_jmle(X, tol=1e-6, maxit=300):
     X = np.asarray(X, float)
     while True:                                   # drop perfect/zero rows & cols
@@ -130,6 +143,10 @@ And in Julia, where the math reads almost like the equations themselves:
 ```julia
 using Statistics
 σ(z) = 1 / (1 + exp(-z))
+
+# Wright's Knox Cube Test data: skip the header, drop the Name & sex columns.
+rows = split.(readlines("data/knox.dat")[2:end])
+X = [parse(Int, rows[i][j]) for i in 1:length(rows), j in 3:20]
 
 function rasch_jmle(X; tol=1e-6, maxit=300)
     X = float.(X)
@@ -176,8 +193,8 @@ Our thirty lines calibrate items and measure persons - the heart of BIGSTEPS. Pr
 ::: {.callout-tip}
 ## Do One Yourself
 
-1.  Run the R calibration, then make it more like the real KCT: force the first two items to be passed by everyone and the last by no one. Confirm the estimator *drops* those items (no finite difficulty exists for a perfect or zero item) and explain why in one sentence.
-2.  Plot person ability against raw score. What shape is it, and why does every person with the same score get the same measure?
+1.  Wright's data already hands you the lesson: items `1-4`, `2-3`, `1-2-4` were passed by all 35 children and `4-1-3-4-2-1-4` by none. Confirm from `colSums(X)` that these are exactly the items the estimator dropped, and explain in one sentence why no finite difficulty exists for them.
+2.  Plot person ability against raw score. What shape is it, and why does every child with the same score (there are several with 10) get the *same* measure?
 3.  Translate one of the two `for` loops (ability *or* difficulty updates) into the language you know best, and check it against the R output. You will have written a piece of BIGSTEPS.
 :::
 

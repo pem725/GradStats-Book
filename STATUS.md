@@ -76,14 +76,16 @@ exit 0). Chapters 12/13/17 equivalence claims (t=ANOVA=regression, point-biseria
 SS partition, `lm` F = `aov` F) verified numerically.
 
 **Ch. 18 — Rasch (honoring Ben Wright):** from-scratch JMLE (the BIGSTEPS/UCON engine)
-in R (executed, verified: converges in 23 iters, recovers item-difficulty ordering at
-r≈0.98), with faithful Python (NumPy) and Julia translations as static code blocks
-(the build server only runs R). Uses Wright's 18 Knox Cube Test items with a response
-matrix reconstructed to his documented structure (the 1979 raw table is a scan). Source
+in R (executed, verified), with faithful Python (NumPy) and Julia translations
+(the build server only runs R, so those two are shown as static blocks). **Now runs on
+Wright's *actual* Knox Cube Test data** (`data/knox.dat` — 35 named children × 18 tapping
+items, straight from *Best Test Design*, dropped in by PEM 2026-07-16). The engine
+converges in 31 iterations, automatically sets aside the 3 all-pass items and the 1
+no-pass item (no finite logit), and recovers Wright's difficulty ladder (Spearman 0.97
+of difficulty vs. item order). All three languages read the same `data/knox.dat`. Source
 PDFs (Best Test Design, Rating Scale Analysis, Making Measures) are gitignored — never
-committed (large + copyrighted). To make the Python/Julia blocks *executable*, add
-Python+Julia setup to the publish workflow; if you have the real KCT `.txt`, drop it in
-`data/` and swap the reconstruction for the exact matrix.
+committed (large + copyrighted). To make the Python/Julia blocks *executable on the build
+server*, add Python+Julia setup to the publish workflow.
 
 Chapters 02–07, 10–13, 17 are drafted from the book's established voice/framework plus
 the digested 611 lectures and CTT material — solid, correct, self-contained (base R +
