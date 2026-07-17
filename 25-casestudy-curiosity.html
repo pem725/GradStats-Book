@@ -8,7 +8,7 @@
 
 <meta name="description" content="A comprehensive graduate statistics book suitable for social and behavioral sciences. Our approach is to provide interested students a gentle guide to the rudiments of statistical estimation and inference.">
 
-<title>8&nbsp; Statistical Power: How to Find Things That May Not Be There – Statistics by Us for You</title>
+<title>24&nbsp; Case Study: Building a Measure, Study by Study – Statistics by Us for You</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -69,8 +69,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./10-reliability.html" rel="next">
-<link href="./08-hypothesistesting.html" rel="prev">
+<link href="./references.html" rel="next">
+<link href="./24-casestudy-depression.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -111,35 +111,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 </head>
 
@@ -312,7 +283,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./06-zdistribution.html">Making Inferences with Data</a></li><li class="breadcrumb-item"><a href="./09-statisticalpower.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Statistical Power: How to Find Things That May Not Be There</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./23-sportspage.html">Statistics in the Wild</a></li><li class="breadcrumb-item"><a href="./25-casestudy-curiosity.html"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Case Study: Building a Measure, Study by Study</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -429,7 +400,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./09-statisticalpower.html" class="sidebar-item-text sidebar-link active">
+  <a href="./09-statisticalpower.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Statistical Power: How to Find Things That May Not Be There</span></span></a>
   </div>
 </li>
@@ -580,7 +551,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./25-casestudy-curiosity.html" class="sidebar-item-text sidebar-link">
+  <a href="./25-casestudy-curiosity.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Case Study: Building a Measure, Study by Study</span></span></a>
   </div>
 </li>
@@ -602,15 +573,11 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#learning-objectives" id="toc-learning-objectives" class="nav-link active" data-scroll-target="#learning-objectives"><span class="header-section-number">8.1</span> Learning Objectives</a></li>
-  <li><a href="#power-is-one-cell-of-a-table-you-already-know" id="toc-power-is-one-cell-of-a-table-you-already-know" class="nav-link" data-scroll-target="#power-is-one-cell-of-a-table-you-already-know"><span class="header-section-number">8.2</span> Power Is One Cell of a Table You Already Know</a></li>
-  <li><a href="#the-four-levers" id="toc-the-four-levers" class="nav-link" data-scroll-target="#the-four-levers"><span class="header-section-number">8.3</span> The Four Levers</a></li>
-  <li><a href="#rules-of-thumb-a-rough-first-pass" id="toc-rules-of-thumb-a-rough-first-pass" class="nav-link" data-scroll-target="#rules-of-thumb-a-rough-first-pass"><span class="header-section-number">8.4</span> Rules of Thumb (A Rough First Pass)</a></li>
-  <li><a href="#seeing-power-in-r" id="toc-seeing-power-in-r" class="nav-link" data-scroll-target="#seeing-power-in-r"><span class="header-section-number">8.5</span> Seeing Power in R</a></li>
-  <li><a href="#planning-a-study-solve-for-n" id="toc-planning-a-study-solve-for-n" class="nav-link" data-scroll-target="#planning-a-study-solve-for-n"><span class="header-section-number">8.6</span> Planning a Study: Solve for <span class="math inline">\(n\)</span></a></li>
-  <li><a href="#power-is-really-just-simulation" id="toc-power-is-really-just-simulation" class="nav-link" data-scroll-target="#power-is-really-just-simulation"><span class="header-section-number">8.7</span> Power Is Really Just Simulation</a></li>
-  <li><a href="#challenge" id="toc-challenge" class="nav-link" data-scroll-target="#challenge"><span class="header-section-number">8.8</span> Challenge</a></li>
-  <li><a href="#where-we-go-next" id="toc-where-we-go-next" class="nav-link" data-scroll-target="#where-we-go-next"><span class="header-section-number">8.9</span> Where We Go Next</a></li>
+  <li><a href="#study-1---explore-how-many-things-are-we-even-measuring" id="toc-study-1---explore-how-many-things-are-we-even-measuring" class="nav-link active" data-scroll-target="#study-1---explore-how-many-things-are-we-even-measuring"><span class="header-section-number">24.1</span> Study 1 - Explore: How Many Things Are We Even Measuring?</a></li>
+  <li><a href="#study-2---confirm-on-data-you-have-not-seen" id="toc-study-2---confirm-on-data-you-have-not-seen" class="nav-link" data-scroll-target="#study-2---confirm-on-data-you-have-not-seen"><span class="header-section-number">24.2</span> Study 2 - Confirm: On Data You Have Not Seen</a></li>
+  <li><a href="#does-the-ruler-mean-the-same-thing-for-everyone" id="toc-does-the-ruler-mean-the-same-thing-for-everyone" class="nav-link" data-scroll-target="#does-the-ruler-mean-the-same-thing-for-everyone"><span class="header-section-number">24.3</span> Does the Ruler Mean the Same Thing for Everyone?</a></li>
+  <li><a href="#preregister-call-your-shot-before-the-data-arrive" id="toc-preregister-call-your-shot-before-the-data-arrive" class="nav-link" data-scroll-target="#preregister-call-your-shot-before-the-data-arrive"><span class="header-section-number">24.4</span> Preregister: Call Your Shot Before the Data Arrive</a></li>
+  <li><a href="#what-this-case-teaches" id="toc-what-this-case-teaches" class="nav-link" data-scroll-target="#what-this-case-teaches"><span class="header-section-number">24.5</span> What This Case Teaches</a></li>
   </ul>
 </nav>
     </div>
@@ -618,9 +585,9 @@ window.Quarto = {
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./06-zdistribution.html">Making Inferences with Data</a></li><li class="breadcrumb-item"><a href="./09-statisticalpower.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Statistical Power: How to Find Things That May Not Be There</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./23-sportspage.html">Statistics in the Wild</a></li><li class="breadcrumb-item"><a href="./25-casestudy-curiosity.html"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Case Study: Building a Measure, Study by Study</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Statistical Power: How to Find Things That May Not Be There</span></h1>
+<h1 class="title"><span id="curiosity" class="quarto-section-identifier"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Case Study: Building a Measure, Study by Study</span></span></h1>
 </div>
 
 
@@ -637,194 +604,114 @@ window.Quarto = {
 </header>
 
 
-<p>Simply put, statistical power is the probability of success - where “success” means <strong>detecting an effect that is really there</strong>. In the language of the last chapter, power is the one cell of the error table you can actually <em>plan for</em> before you collect a single observation. Everything else about a study - your hypotheses, your <span class="math inline">\(\alpha\)</span>, the vagaries of sampling - is set once the data arrive. Power is where you take back control.</p>
+<p>The <a href="./24-casestudy-depression.html">last case study</a> took a finished scale apart. This one does the opposite - it <em>builds</em> one from nothing, and shows why that is far harder than writing a few questions and adding them up. The project (McKnight, Kashdan, and colleagues) set out to measure <strong>political curiosity</strong>: the disposition to seek out, and sit with, political information and views - including those you find uncomfortable. There is no thermometer for that. You have to construct one, and then earn the right to trust it.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Power is a SWAG - and that’s the honest part
+<span class="screen-reader-only">Note</span>A note on the data
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Here is the framing (PEM) I use with my own students. A power analysis is really an estimate of</p>
-<p><span class="math display">\[P(\text{Party at the Pub!} \mid \text{your research plans}),\]</span></p>
-<p>the probability you’ll be celebrating a detected effect <em>given</em> the study you’re about to run - which is to say, a <strong>S</strong>cientific <strong>W</strong>ild <strong>A</strong>ss <strong>G</strong>uess. That is not an insult to the method; it is honesty about it, because power depends on things you must <em>guess</em> before any data exist (chiefly the true effect size). Why bother guessing at all? Because power protects the things you care about - <strong>funding</strong>, your time, scarce participants - and it is the one part of a study you can shape in advance. The goal is not false precision; it is <strong>self-reliance</strong>. Power estimation is daunting, important, easy to fool yourself with, and <em>far</em> more within your reach than most people realize - because when the formulas intimidate you, you can always just <strong>simulate</strong> it.</p>
+<p>As in the previous chapter, the study’s real datasets are the authors’ own research collections and are <strong>not public</strong>. Every runnable illustration here uses <strong>simulated</strong> data built to expose the mechanics; the study’s actual findings are described in the text.</p>
 </div>
 </div>
-<section id="learning-objectives" class="level2" data-number="8.1">
-<h2 data-number="8.1" class="anchored" data-anchor-id="learning-objectives"><span class="header-section-number">8.1</span> Learning Objectives</h2>
-<ol type="1">
-<li>Define power as <span class="math inline">\(1 - \beta\)</span> and locate it in the error table.</li>
-<li>Identify the four levers that raise or lower power.</li>
-<li>Use R to compute power and to plan a sample size.</li>
-<li>Understand the honest trade-off between power and Type I error.</li>
-</ol>
+<p>The build follows a discipline worth memorizing, because it is how <em>every</em> good measure in psychology is made: <strong>explore the structure, confirm it on fresh data, check it means the same thing for everyone, and predict something before you look.</strong></p>
+<section id="study-1---explore-how-many-things-are-we-even-measuring" class="level2" data-number="24.1">
+<h2 data-number="24.1" class="anchored" data-anchor-id="study-1---explore-how-many-things-are-we-even-measuring"><span class="header-section-number">24.1</span> Study 1 - Explore: How Many Things Are We Even Measuring?</h2>
+<p>You write a big pool of candidate items and collect responses. Now the first question: do these items measure <em>one</em> thing, or several? This is a job for <strong>Exploratory Factor Analysis (EFA)</strong> - a method that looks at how items correlate and infers the small number of hidden dimensions (“factors”) that could produce those correlations.</p>
+<p>The workhorse decision - <em>how many factors?</em> - starts with the <strong>eigenvalues</strong> of the item correlation matrix. Each eigenvalue is the amount of variance one potential factor accounts for; the classic rules keep factors with an eigenvalue above 1 (they explain more than a single item’s worth) and look for the “elbow” in a scree plot. Watch it recover a structure we planted on purpose - twelve items secretly built from three factors:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">500</span>; load <span class="ot">&lt;-</span> <span class="fl">0.75</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>F1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N); F2 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N); F3 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)             <span class="co"># three hidden factors</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>mk  <span class="ot">&lt;-</span> <span class="cf">function</span>(f) load <span class="sc">*</span> f <span class="sc">+</span> <span class="fu">rnorm</span>(N, <span class="at">sd =</span> <span class="fu">sqrt</span>(<span class="dv">1</span> <span class="sc">-</span> load<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>items <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">sapply</span>(<span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">"F1"</span>,<span class="dv">4</span>), <span class="fu">rep</span>(<span class="st">"F2"</span>,<span class="dv">4</span>), <span class="fu">rep</span>(<span class="st">"F3"</span>,<span class="dv">4</span>)),</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>                           <span class="cf">function</span>(f) <span class="fu">mk</span>(<span class="fu">get</span>(f))))</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(items) <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"item"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>ev <span class="ot">&lt;-</span> <span class="fu">eigen</span>(<span class="fu">cor</span>(items))<span class="sc">$</span>values                            <span class="co"># eigenvalues of the correlation matrix</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(ev, <span class="at">type =</span> <span class="st">"b"</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">col =</span> <span class="st">"steelblue"</span>,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Factor number"</span>, <span class="at">ylab =</span> <span class="st">"Eigenvalue"</span>, <span class="at">main =</span> <span class="st">""</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">1</span>, <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"firebrick"</span>)                 <span class="co"># Kaiser's "keep it if &gt; 1" line</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="25-casestudy-curiosity_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>A scree plot. Three eigenvalues stand above 1, then the scree falls to rubble — three factors.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(ev <span class="sc">&gt;</span> <span class="dv">1</span>)                                                <span class="co"># how many factors the data suggest</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3</code></pre>
+</div>
+</div>
+<p>Three, exactly as planted. The real study did this on its item pool and found a coherent multi-dimensional structure of political curiosity. In practice you would rotate and interpret the factors with a dedicated tool:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The real EFA (needs the psych package — shown, not run here)</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(psych)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">fa.parallel</span>(items)              <span class="co"># parallel analysis: a better "how many factors?" than Kaiser alone</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>efa <span class="ot">&lt;-</span> <span class="fu">fa</span>(items, <span class="at">nfactors =</span> <span class="dv">3</span>, <span class="at">rotate =</span> <span class="st">"oblimin"</span>)   <span class="co"># extract &amp; rotate to interpret</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>efa<span class="sc">$</span>loadings                    <span class="co"># which items load on which factor</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>But finding a structure in your data is the <em>easy</em> part. Any rich enough dataset will hand you a tidy factor solution if you go looking. The past is cheating, remember. The real test comes next.</p>
 </section>
-<section id="power-is-one-cell-of-a-table-you-already-know" class="level2" data-number="8.2">
-<h2 data-number="8.2" class="anchored" data-anchor-id="power-is-one-cell-of-a-table-you-already-know"><span class="header-section-number">8.2</span> Power Is One Cell of a Table You Already Know</h2>
-<p>Recall the decision table from <a href="./08-hypothesistesting.html">Hypothesis Testing</a>:</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 32%">
-<col style="width: 32%">
-<col style="width: 34%">
-</colgroup>
-<thead>
-<tr class="header">
-<th></th>
-<th><span class="math inline">\(H_0\)</span> is really <strong>true</strong></th>
-<th><span class="math inline">\(H_0\)</span> is really <strong>false</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>We reject <span class="math inline">\(H_0\)</span></strong></td>
-<td>Type I error (<span class="math inline">\(\alpha\)</span>)</td>
-<td><strong>Correct ✓ (power, <span class="math inline">\(1-\beta\)</span>)</strong></td>
-</tr>
-<tr class="even">
-<td><strong>We fail to reject <span class="math inline">\(H_0\)</span></strong></td>
-<td>Correct ✓ (<span class="math inline">\(1-\alpha\)</span>)</td>
-<td>Type II error (<span class="math inline">\(\beta\)</span>)</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Power</strong> is the highlighted cell: the probability we correctly reject the null <em>given that the null is false</em> - that is, given there is a real effect to find. Its complement is <span class="math inline">\(\beta\)</span>, the Type II error rate (the miss). By long convention we aim for power of <strong>0.80</strong>: an 80% chance of catching a true effect, and thus a 20% chance of missing it. That 20% should bother you; it is why underpowered research is such a quiet disaster. When power is low, you not only miss real effects - the significant results you <em>do</em> find are more likely to be flukes.</p>
+<section id="study-2---confirm-on-data-you-have-not-seen" class="level2" data-number="24.2">
+<h2 data-number="24.2" class="anchored" data-anchor-id="study-2---confirm-on-data-you-have-not-seen"><span class="header-section-number">24.2</span> Study 2 - Confirm: On Data You Have Not Seen</h2>
+<p>Here is the cardinal rule that separates measurement from wishful thinking: <strong>you do not confirm a structure on the same data that suggested it.</strong> EFA is exploratory - it will always find <em>something</em>. To believe the structure is real, you fit it as a fixed hypothesis to a <strong>new, independent sample</strong> using <strong>Confirmatory Factor Analysis (CFA)</strong>, and ask whether the pre-specified model actually fits.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The real CFA on Study 2's fresh sample (needs lavaan — shown, not run here)</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lavaan)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="st">'</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="st">  curiosity  =~ item1 + item2 + item3 + item4</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="st">  tolerance  =~ item5 + item6 + item7 + item8</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="st">  engagement =~ item9 + item10 + item11 + item12</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="st">'</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">cfa</span>(model, <span class="at">data =</span> study2_data)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="fu">fitMeasures</span>(fit, <span class="fu">c</span>(<span class="st">"cfi"</span>, <span class="st">"tli"</span>, <span class="st">"rmsea"</span>, <span class="st">"srmr"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>CFA does not ask “what structure is here?” - it asks “does <em>this</em> structure hold?” and answers with <strong>fit indices</strong> you judge against conventional standards (Hu &amp; Bentler): <strong>CFI and TLI ≥ .95</strong>, <strong>RMSEA ≤ .06</strong>, <strong>SRMR ≤ .08</strong>. The political-curiosity model met those standards on the independent Study 2 sample - which is what earns the measure the right to be used. Explore once, confirm elsewhere; a structure that survives a fresh sample is a structure worth believing.</p>
 </section>
-<section id="the-four-levers" class="level2" data-number="8.3">
-<h2 data-number="8.3" class="anchored" data-anchor-id="the-four-levers"><span class="header-section-number">8.3</span> The Four Levers</h2>
-<p>Power is a function of four things, and only four. Three you can influence; one you mostly cannot.</p>
-<ol type="1">
-<li><strong>Effect size</strong> - how big the true effect is. Bigger effects are easier to detect. We usually express it in standardized units, e.g., Cohen’s <span class="math inline">\(d = \frac{\text{mean difference}}{\text{standard deviation}}\)</span>. You do not <em>control</em> the true effect, but you can sometimes measure it more cleanly to keep it from being buried in noise.</li>
-<li><strong>Sample size (<span class="math inline">\(n\)</span>)</strong> - more data, more power. This is the lever you actually turn. Nearly every underpowered study is really a too-small study.</li>
-<li><strong>Significance level (<span class="math inline">\(\alpha\)</span>)</strong> - a more <em>lenient</em> <span class="math inline">\(\alpha\)</span> (say .10) makes it easier to reject, so power goes <strong>up</strong>; a <em>stricter</em> <span class="math inline">\(\alpha\)</span> (say .01) makes it harder to reject, so power goes <strong>down</strong>. (More on this trade-off below - it is exactly backwards in a lot of lecture notes, including an old version of mine.)</li>
-<li><strong>Directionality</strong> - a one-tailed test concentrates all of <span class="math inline">\(\alpha\)</span> in the predicted direction, so it has more power <em>there</em> - at the cost of being blind to an effect in the other direction.</li>
-</ol>
-<div class="callout callout-style-default callout-warning callout-titled">
+<section id="does-the-ruler-mean-the-same-thing-for-everyone" class="level2" data-number="24.3">
+<h2 data-number="24.3" class="anchored" data-anchor-id="does-the-ruler-mean-the-same-thing-for-everyone"><span class="header-section-number">24.3</span> Does the Ruler Mean the Same Thing for Everyone?</h2>
+<p>Before you compare groups on a measure - do liberals and conservatives differ in political curiosity? - you must first check that the measure means the <em>same thing</em> in both groups. If “curiosity” items behave differently for conservatives than for liberals, then a group difference in scores might be an artifact of the <strong>ruler</strong>, not a real difference in the trait. This is <strong>measurement invariance</strong>, tested with multi-group CFA that progressively constrains the model to be equal across groups:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Measurement invariance across political groups (lavaan — shown, not run here)</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>configural <span class="ot">&lt;-</span> <span class="fu">cfa</span>(model, <span class="at">data =</span> dat, <span class="at">group =</span> <span class="st">"conservative"</span>)            <span class="co"># same shape?</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>metric     <span class="ot">&lt;-</span> <span class="fu">cfa</span>(model, <span class="at">data =</span> dat, <span class="at">group =</span> <span class="st">"conservative"</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>                  <span class="at">group.equal =</span> <span class="st">"loadings"</span>)                             <span class="co"># same loadings?</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>scalar     <span class="ot">&lt;-</span> <span class="fu">cfa</span>(model, <span class="at">data =</span> dat, <span class="at">group =</span> <span class="st">"conservative"</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>                  <span class="at">group.equal =</span> <span class="fu">c</span>(<span class="st">"loadings"</span>, <span class="st">"intercepts"</span>))            <span class="co"># same intercepts?</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(configural, metric, scalar)   <span class="co"># does constraining hurt fit? if not, invariance holds</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The study ran exactly this before comparing political groups - because a group comparison on a non-invariant scale is comparing inches to centimeters and calling the difference meaningful. It is the same lesson the <a href="./24-casestudy-depression.html">depression study</a> learned the hard way: <em>make sure two measurements are on the same footing before you read anything into their difference.</em></p>
+</section>
+<section id="preregister-call-your-shot-before-the-data-arrive" class="level2" data-number="24.4">
+<h2 data-number="24.4" class="anchored" data-anchor-id="preregister-call-your-shot-before-the-data-arrive"><span class="header-section-number">24.4</span> Preregister: Call Your Shot Before the Data Arrive</h2>
+<p>The measure built and validated, the team turned to a prediction: an “optimal distinctiveness” intervention would raise political curiosity. And here they did the single most credibility-earning thing in empirical science - they <strong>preregistered</strong>: wrote down the hypothesis, the design, the sample size, and the exact analysis <em>before collecting a single response</em>, and time-stamped it publicly (Studies 3 and 4 carry preregistrations in the project’s OSF archive).</p>
+<div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>The <span class="math inline">\(\alpha\)</span>-Power Trade-off (Getting It Right)
+<span class="screen-reader-only">Important</span>Why preregistration is the same idea as the accountability pledge
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>It is tempting - and wrong - to say “lower <span class="math inline">\(\alpha\)</span> gives higher power.” Lowering <span class="math inline">\(\alpha\)</span> shrinks the rejection region, which makes it <em>harder</em> to reject the null, which <strong>lowers</strong> power. You cannot buy fewer false alarms (small <span class="math inline">\(\alpha\)</span>) and more hits (high power) for free by tightening <span class="math inline">\(\alpha\)</span> alone; those two pull in opposite directions. The only way to improve <em>both</em> at once is to change something outside this trade-off - almost always, <strong>collect a larger sample</strong>.</p>
+<p>Recall the <a href="./23-sportspage.html">Sports Page rule</a>: the past is cheating, so the only honest test is predicting the future and admitting when you were wrong. Preregistration is that rule with a notary. Without it, a researcher who peeks at the data can, consciously or not, tune the hypothesis and the analysis until something is “significant” - fitting the past and calling it a discovery. Preregistration ties your hands <em>before</em> you see the outcome, so a confirmed prediction actually means something. It converts a study from “we found a pattern” (description dressed as discovery) into “we called it, and it happened” (a real forecast that could have failed). A preregistered study that <em>fails</em> is worth more than an unregistered one that “succeeds.”</p>
 </div>
 </div>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Power is a story about variance
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Every lever above is really about the <a href="./04-Dmeasures.html">signal-to-noise</a> ratio we learned to decompose as <span class="math inline">\(S^2_{obs} = S^2_{true} + S^2_{error}\)</span>. Detecting an effect gets easier as the <strong>between-group</strong> variance (the signal - your effect) grows relative to the <strong>within-group</strong> variance (the noise). That is exactly why Cohen’s <span class="math inline">\(d\)</span> puts the mean difference <em>over</em> the standard deviation: power lives in the <strong>ratio</strong>, not the numerator alone. So two moves you can sometimes control - a <strong>cleaner measure</strong> (less <span class="math inline">\(S^2_{error}\)</span>) and a <strong>stronger manipulation</strong> (more signal) - buy you power just as surely as more subjects do.</p>
-</div>
-</div>
+<p>The confirmatory, preregistered tests - including a <strong>mediation</strong> analysis asking <em>why</em> the intervention worked (through what psychological mechanism) - are the payoff of the whole arc. But note the order: the measure had to be <strong>built and trusted</strong> (Studies 1–2) before any intervention result meant anything. You cannot detect a change in a thing you cannot yet measure.</p>
 </section>
-<section id="rules-of-thumb-a-rough-first-pass" class="level2" data-number="8.4">
-<h2 data-number="8.4" class="anchored" data-anchor-id="rules-of-thumb-a-rough-first-pass"><span class="header-section-number">8.4</span> Rules of Thumb (A Rough First Pass)</h2>
-<p>Before any software, a few back-of-the-envelope numbers get you into the right ballpark for the conventional 80% power:</p>
+<section id="what-this-case-teaches" class="level2" data-number="24.5">
+<h2 data-number="24.5" class="anchored" data-anchor-id="what-this-case-teaches"><span class="header-section-number">24.5</span> What This Case Teaches</h2>
 <ul>
-<li><strong>Comparing groups</strong> (mean differences): about <strong><span class="math inline">\(n = 30\)</span> per group</strong> is the classic target - and never go below ~7 per cell if you can possibly avoid it.</li>
-<li><strong>Associations</strong> (correlations, <span class="math inline">\(r\)</span>): you want <strong><span class="math inline">\(N &gt; 50\)</span></strong> or so.</li>
-<li><strong>Measurement models</strong> (EFA/CFA): <strong><span class="math inline">\(N &gt; 300\)</span></strong> is usually safe.</li>
+<li><strong>Measures are built, not assumed</strong> (<a href="./10-reliability.html">reliability</a>, <a href="./11-validity.html">validity</a>): a sum of items is a hypothesis about structure, and the hypothesis has to be earned.</li>
+<li><strong>Explore, then confirm - on fresh data.</strong> EFA finds a structure; CFA on an independent sample tests whether it was real. Confirming on your exploration sample is the past cheating again.</li>
+<li><strong>Check invariance before you compare groups.</strong> A difference on a non-invariant scale can be an artifact of the instrument.</li>
+<li><strong>Preregistration turns a pattern into a prediction</strong> (<a href="./23-sportspage.html">Ch. 23</a>): call your shot before the data, and a hit finally counts.</li>
 </ul>
-<p>These are deliberately crude - they hide the effect size you’re implicitly assuming - but they are enough to sanity-check a plan, or to notice a design is hopeless <em>before</em> you spend a dime. Then you refine with a real calculation, which comes in two flavors: a <strong>point estimate</strong> from a formula (next), and a <strong>simulation</strong> you can watch (further down). The right habit is to reach for an existing tool first, make sure you understand the model you’re planning (a <span class="math inline">\(t\)</span>-test, a regression, a mixed model), and then simulate to check your guesses.</p>
-</section>
-<section id="seeing-power-in-r" class="level2" data-number="8.5">
-<h2 data-number="8.5" class="anchored" data-anchor-id="seeing-power-in-r"><span class="header-section-number">8.5</span> Seeing Power in R</h2>
-<p>Base R ships with <code>power.t.test()</code>, which ties together effect size, <span class="math inline">\(n\)</span>, <span class="math inline">\(\alpha\)</span>, and power - give it any three and it solves for the fourth. First, the trade-offs, made concrete:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Hold the effect (d = 0.5) and n = 30 per group; vary alpha</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sapply</span>(<span class="fu">c</span>(<span class="fl">0.01</span>, <span class="fl">0.05</span>, <span class="fl">0.10</span>), <span class="cf">function</span>(a)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">power.t.test</span>(<span class="at">n =</span> <span class="dv">30</span>, <span class="at">delta =</span> <span class="fl">0.5</span>, <span class="at">sd =</span> <span class="dv">1</span>, <span class="at">sig.level =</span> a)<span class="sc">$</span>power)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.2437156 0.4778410 0.6060253</code></pre>
-</div>
-</div>
-<p>Read left to right: as <span class="math inline">\(\alpha\)</span> goes from strict (.01) to lenient (.10), power <strong>rises</strong>. Stricter <span class="math inline">\(\alpha\)</span> costs you power - the trade-off, in numbers.</p>
-<p>Now the lever you actually control - sample size:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Hold effect (d = 0.5) and alpha (.05); vary n per group</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sapply</span>(<span class="fu">c</span>(<span class="dv">20</span>, <span class="dv">50</span>, <span class="dv">100</span>), <span class="cf">function</span>(nn)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">power.t.test</span>(<span class="at">n =</span> nn, <span class="at">delta =</span> <span class="fl">0.5</span>, <span class="at">sd =</span> <span class="dv">1</span>, <span class="at">sig.level =</span> <span class="fl">0.05</span>)<span class="sc">$</span>power)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.3377084 0.6968888 0.9404272</code></pre>
-</div>
-</div>
-<p>More data, more power - and unlike the <span class="math inline">\(\alpha\)</span> trade-off, this buys power <em>without</em> raising your false-alarm rate.</p>
-</section>
-<section id="planning-a-study-solve-for-n" class="level2" data-number="8.6">
-<h2 data-number="8.6" class="anchored" data-anchor-id="planning-a-study-solve-for-n"><span class="header-section-number">8.6</span> Planning a Study: Solve for <span class="math inline">\(n\)</span></h2>
-<p>The real payoff is planning. If you want 80% power to detect a medium effect (<span class="math inline">\(d = 0.5\)</span>) at <span class="math inline">\(\alpha = .05\)</span>, how many people do you need? Leave <code>n</code> out and let R solve for it:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">power.t.test</span>(<span class="at">delta =</span> <span class="fl">0.5</span>, <span class="at">sd =</span> <span class="dv">1</span>, <span class="at">sig.level =</span> <span class="fl">0.05</span>, <span class="at">power =</span> <span class="fl">0.80</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-     Two-sample t test power calculation 
-
-              n = 63.76576
-          delta = 0.5
-             sd = 1
-      sig.level = 0.05
-          power = 0.8
-    alternative = two.sided
-
-NOTE: n is number in *each* group</code></pre>
-</div>
-</div>
-<p>The answer (about 64 per group) is a number you want <em>before</em> you run the study, not after. Running first and computing power later - so-called “post-hoc power” - tells you almost nothing useful; power is a design tool, not a consolation prize.</p>
-</section>
-<section id="power-is-really-just-simulation" class="level2" data-number="8.7">
-<h2 data-number="8.7" class="anchored" data-anchor-id="power-is-really-just-simulation"><span class="header-section-number">8.7</span> Power Is Really Just Simulation</h2>
-<p>If the formulas ever feel like a black box, remember they are only shortcuts for something you can <em>watch</em> directly. The recipe is four steps: <strong>generate</strong> data from a world where the effect is real, <strong>run</strong> your model, <strong>collect</strong> whether it hit (<span class="math inline">\(p &lt; \alpha\)</span>), and <strong>repeat</strong> a few thousand times. The fraction of hits <strong>is</strong> the power - and unlike a formula, this recipe works for <em>any</em> design you can simulate (a mixed model, a mediation, a weird custom test), long after the closed-form equations give up:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1988</span>)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fl">0.5</span>; n <span class="ot">&lt;-</span> <span class="dv">64</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>hits <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">2000</span>, {</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  group1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">0</span>,  <span class="at">sd =</span> <span class="dv">1</span>)</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  group2 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> d,  <span class="at">sd =</span> <span class="dv">1</span>)   <span class="co"># a real difference of d</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">t.test</span>(group1, group2)<span class="sc">$</span>p.value <span class="sc">&lt;</span> <span class="fl">0.05</span>   <span class="co"># did we detect it?</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(hits)   <span class="co"># simulated power ~ 0.80</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.812</code></pre>
-</div>
-</div>
-<p>The simulation lands right where <code>power.t.test()</code> said it would. No magic - just a claim about how often a true effect trips the wire.</p>
-</section>
-<section id="challenge" class="level2" data-number="8.8">
-<h2 data-number="8.8" class="anchored" data-anchor-id="challenge"><span class="header-section-number">8.8</span> Challenge</h2>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Do One Yourself
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ol type="1">
-<li>Use <code>power.t.test()</code> to find the sample size needed for 80% power to detect a <em>small</em> effect (<span class="math inline">\(d = 0.2\)</span>) at <span class="math inline">\(\alpha = .05\)</span>. Compare it to the <span class="math inline">\(n\)</span> for a <em>large</em> effect (<span class="math inline">\(d = 0.8\)</span>). Why the enormous difference?</li>
-<li>Fix <span class="math inline">\(n = 40\)</span> per group and <span class="math inline">\(d = 0.4\)</span>. Compute power at <span class="math inline">\(\alpha = .01\)</span>, <span class="math inline">\(.05\)</span>, and <span class="math inline">\(.10\)</span>. State in one sentence what you are giving up as you raise <span class="math inline">\(\alpha\)</span> to gain power.</li>
-<li>Write the simulation from the last section yourself, but for a one-sample test against a null mean. Confirm your simulated power matches <code>power.t.test(..., type = "one.sample")</code>.</li>
-</ol>
-<p>If part 2 makes you a little uncomfortable, good - that discomfort <em>is</em> the trade-off, and pretending it away is how bad studies get funded.</p>
-</div>
-</div>
-</section>
-<section id="where-we-go-next" class="level2" data-number="8.9">
-<h2 data-number="8.9" class="anchored" data-anchor-id="where-we-go-next"><span class="header-section-number">8.9</span> Where We Go Next</h2>
-<p>Power closes out our tour of inference: we now know how to test, how we can be wrong, and how to design a study that can actually find what it is looking for. Next we turn from <em>testing</em> our conclusions to <em>trusting our measurements</em> - the twin questions of <a href="./10-reliability.html">reliability</a> and <a href="./11-validity.html">validity</a>. After all, the most powerful test in the world is worthless if the ruler is rubber.</p>
+<p>The final case study takes on the messiest reality of all - the data you <em>didn’t</em> get - and asks whether the holes in a dataset can quietly change the answer.</p>
 
 
 </section>
@@ -1261,13 +1148,13 @@ NOTE: n is number in *each* group</code></pre>
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./08-hypothesistesting.html" class="pagination-link" aria-label="Testing Hypotheses with Data">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Testing Hypotheses with Data</span></span>
+      <a href="./24-casestudy-depression.html" class="pagination-link" aria-label="Case Study: When the Total Score Hides the Story">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Case Study: When the Total Score Hides the Story</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./10-reliability.html" class="pagination-link" aria-label="Reliability (not Validity) of Data">
-        <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Reliability (not Validity) of Data</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./references.html" class="pagination-link" aria-label="References">
+        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

@@ -69,7 +69,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./references.html" rel="next">
+<link href="./25-casestudy-curiosity.html" rel="next">
 <link href="./23-sportspage.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -578,6 +578,12 @@ window.Quarto = {
  <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Case Study: When the Total Score Hides the Story</span></span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./25-casestudy-curiosity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Case Study: Building a Measure, Study by Study</span></span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item">
@@ -649,42 +655,68 @@ window.Quarto = {
 </section>
 <section id="same-score-different-people" class="level2" data-number="23.2">
 <h2 data-number="23.2" class="anchored" data-anchor-id="same-score-different-people"><span class="header-section-number">23.2</span> Same Score, Different People</h2>
-<p>The billion is abstract; two real students make it concrete. Here are two people from our student sample who <strong>both scored exactly 15</strong> - and could not look more different:</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>A note on the data
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The clinical and student profiles behind this project are the authors’ own research collections and are <strong>not public</strong>. So this chapter illustrates the <em>mechanics</em> on a <strong>simulated</strong> BDI-II-like sample - 21 items scored 0–3, generated from a single latent severity dimension so the symptoms covary the way real ones do - while every <em>finding</em> it quotes comes from the real six-sample analysis. Watch the machinery here; trust the numbers to the published study.</p>
+</div>
+</div>
+<p>The billion is abstract; two people make it concrete. First we build the simulated sample, then pull two who <strong>both scored exactly 15</strong>:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>bdi <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/bdi_students.csv"</span>)           <span class="co"># 1,246 real BDI-II profiles, item level</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>totals <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(bdi)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>pair <span class="ot">&lt;-</span> <span class="fu">which</span>(totals <span class="sc">==</span> <span class="dv">15</span>)[<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>)]</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">t</span>(bdi[pair, ])                                      <span class="co"># two profiles, identical total</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">1200</span>; k <span class="ot">&lt;-</span> <span class="dv">21</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>symptoms <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"sadness"</span>,<span class="st">"pessimism"</span>,<span class="st">"past_failure"</span>,<span class="st">"loss_pleasure"</span>,<span class="st">"guilt"</span>,<span class="st">"punishment"</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>              <span class="st">"self_dislike"</span>,<span class="st">"self_critical"</span>,<span class="st">"suicidal"</span>,<span class="st">"crying"</span>,<span class="st">"agitation"</span>,<span class="st">"loss_interest"</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>              <span class="st">"indecision"</span>,<span class="st">"worthlessness"</span>,<span class="st">"loss_energy"</span>,<span class="st">"sleep"</span>,<span class="st">"irritability"</span>,<span class="st">"appetite"</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>              <span class="st">"concentration"</span>,<span class="st">"tiredness"</span>,<span class="st">"loss_sex_interest"</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N, <span class="at">mean =</span> <span class="sc">-</span><span class="fl">0.5</span>)                     <span class="co"># latent depression severity (one per person)</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>diff  <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">rnorm</span>(k, <span class="at">mean =</span> <span class="fl">2.6</span>, <span class="at">sd =</span> <span class="fl">1.3</span>))      <span class="co"># item "difficulty": most symptoms are rare</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>bdi <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">sapply</span>(<span class="fu">seq_len</span>(k), <span class="cf">function</span>(j) {</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">&lt;-</span> <span class="fu">plogis</span>(<span class="fu">outer</span>(theta, diff[j] <span class="sc">+</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">1.1</span>, <span class="dv">0</span>, <span class="fl">1.1</span>), <span class="st">`</span><span class="at">-</span><span class="st">`</span>))   <span class="co"># P(score &gt;= 1, 2, 3)</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowSums</span>(<span class="fu">runif</span>(N) <span class="sc">&lt;</span> p)                                        <span class="co"># a graded 0..3 response</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>}))</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(bdi) <span class="ot">&lt;-</span> symptoms</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>totals <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(bdi)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>pair <span class="ot">&lt;-</span> <span class="fu">which</span>(totals <span class="sc">==</span> <span class="dv">15</span>)[<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>)]               <span class="co"># two people, identical total of 15</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="fu">t</span>(bdi[pair, ])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>                  65 70
-sadness            1  1
-pessimism          1  0
-past_failure       0  1
-loss_pleasure      0  1
-guilt              1  0
-punishment         2  0
-self_dislike       2  1
+<pre><code>                  17 24
+sadness            3  3
+pessimism          3  3
+past_failure       1  1
+loss_pleasure      2  2
+guilt              0  0
+punishment         2  1
+self_dislike       0  0
 self_critical      1  1
-suicidal           0  0
-crying             0  1
-agitation          1  1
-loss_interest      0  0
-indecision         1  1
-worthlessness      1  0
-loss_energy        1  1
-sleep              1  1
-irritability       0  1
-appetite           0  1
-concentration      2  1
-tiredness          0  1
-loss_sex_interest  0  1</code></pre>
+suicidal           0  1
+crying             1  0
+agitation          0  0
+loss_interest      1  0
+indecision         1  2
+worthlessness      0  1
+loss_energy        0  0
+sleep              0  0
+irritability       0  0
+appetite           0  0
+concentration      0  0
+tiredness          0  0
+loss_sex_interest  0  0</code></pre>
 </div>
 </div>
-<p>One student’s distress concentrates in self-punishment, self-dislike, and concentration; the other’s is spread thinly across crying, lost pleasure, appetite, and fatigue. Same “15,” different human beings, different clinical pictures. A sum score cannot tell them apart. The <strong>profile</strong> can.</p>
+<p>One person’s distress concentrates in a few symptoms; the other’s spreads thin across many. Same “15,” different clinical pictures - and a sum score cannot tell them apart. The <strong>profile</strong> can.</p>
 </section>
 <section id="the-manifold-collapse" class="level2" data-number="23.3">
 <h2 data-number="23.3" class="anchored" data-anchor-id="the-manifold-collapse"><span class="header-section-number">23.3</span> The Manifold Collapse</h2>
-<p>If 4.4 trillion profiles are <em>possible</em>, how many actually <em>occur</em>? Almost none - because depression symptoms do not vary independently; they hang together. Count the distinct profiles in real data:</p>
+<p>If 4.4 trillion profiles are <em>possible</em>, how many actually <em>occur</em>? Almost none - because depression symptoms do not vary independently; they hang together. Count the distinct profiles:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>key <span class="ot">&lt;-</span> <span class="fu">apply</span>(bdi, <span class="dv">1</span>, paste, <span class="at">collapse =</span> <span class="st">"-"</span>)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">people            =</span> <span class="fu">nrow</span>(bdi),</span>
@@ -692,10 +724,10 @@ loss_sex_interest  0  1</code></pre>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">pct_unique        =</span> <span class="fu">round</span>(<span class="dv">100</span> <span class="sc">*</span> <span class="fu">mean</span>(<span class="sc">!</span>(<span class="fu">duplicated</span>(key) <span class="sc">|</span> <span class="fu">duplicated</span>(key, <span class="at">fromLast =</span> <span class="cn">TRUE</span>))), <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>           people distinct_profiles        pct_unique 
-           1246.0             996.0              76.1 </code></pre>
+           1200.0             973.0              74.8 </code></pre>
 </div>
 </div>
-<p>About <strong>76% of these students have a profile no one else in the sample shares</strong> (in the full six-sample analysis it was 79.7%). Of trillions of mathematically possible patterns, real people occupy a vanishingly thin sliver - what we called the <strong>manifold collapse</strong>. The space is huge; life uses almost none of it. Which raises the sharp question: are the profiles that <em>never</em> appear merely rare, or are some of them <em>impossible in principle</em> - incoherent given how depression actually works?</p>
+<p>Roughly <strong>three-quarters have a profile no one else shares</strong> - and in the real six-sample analysis it was <strong>79.7%</strong>. Even our tame simulation reproduces the effect: of trillions of mathematically possible patterns, people occupy a vanishingly thin sliver - what the study called the <strong>manifold collapse</strong>. The space is huge; life uses almost none of it. Which raises the sharp question: are the profiles that <em>never</em> appear merely rare, or are some of them <em>impossible in principle</em> - incoherent given how depression actually works?</p>
 </section>
 <section id="antitypes-profiles-that-shouldnt-exist" class="level2" data-number="23.4">
 <h2 data-number="23.4" class="anchored" data-anchor-id="antitypes-profiles-that-shouldnt-exist"><span class="header-section-number">23.4</span> Antitypes: Profiles That Shouldn’t Exist</h2>
@@ -709,7 +741,7 @@ loss_sex_interest  0  1</code></pre>
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">cor_with_total    =</span> <span class="fu">round</span>(<span class="fu">cor</span>(ovi, totals), <span class="dv">2</span>))    <span class="co"># NOT just severity</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>median_violations    max_violations    cor_with_total 
-            20.00            113.00              0.69 </code></pre>
+             10.0              51.0               0.7 </code></pre>
 </div>
 </div>
 <p>Incoherence is its own dimension - only weakly tied to how <em>high</em> the total is. The real study replaces this rough count with a proper <strong>Graded Response Model</strong> (an IRT model, cousin of the <a href="./18-rasch.html">Rasch model</a>) that estimates each item’s difficulty and each person’s severity, then scores every profile’s log-likelihood. The two measures - our Ordering Violation Index (OVI) and the GRM profile log-likelihood - agree strongly, and that agreement is remarkably stable:</p>
@@ -1196,8 +1228,8 @@ loss_sex_interest  0  1</code></pre>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./references.html" class="pagination-link" aria-label="References">
-        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./25-casestudy-curiosity.html" class="pagination-link" aria-label="Case Study: Building a Measure, Study by Study">
+        <span class="nav-page-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Case Study: Building a Measure, Study by Study</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
