@@ -46,44 +46,56 @@ My (PEM) graduate advisor Lee Sechrest often likened learning to a helix. Every 
 ## The Helix Model of Learning
 
 ```{r}
-#| echo: TRUE
-#| fig.cap: "The Helix Model of Learning"
+#| echo: true
+#| label: fig-helix
+#| fig-cap: "The Helix Model of Learning"
+#| fig-height: 6
 #| code-fold: true
 #| code-summary: "Click me to peek at the code!"
-#| messages: FALSE
-#| warning: FALSE
+#| message: false
+#| warning: false
 
 # Load the necessary library
 library(plotly)
 
-# Create data for the helix
-theta <- seq(0, 6*pi, length.out = 500)
-x <- cos(theta)
-y <- sin(theta)
-z <- theta
-lvl <- rep(c("1. Basic Arithmetic", "2. Simple Calculations", "3. Conceptual Understanding", "4. Principled Application", "5. Mastery"), each = 100)
-mperc <- seq(0,100,length.out = 500)
+# Create data for the helix: every learner enters at the bottom and spirals
+# upward toward mastery.
+theta <- seq(0, 6 * pi, length.out = 500)
+helix_df <- data.frame(
+  x     = cos(theta),
+  y     = sin(theta),
+  z     = theta,
+  lvl   = rep(c("1. Basic Arithmetic", "2. Simple Calculations",
+                "3. Conceptual Understanding", "4. Principled Application",
+                "5. Mastery"), each = 100),
+  mperc = seq(0, 100, length.out = 500)
+)
 
-# Create a data frame
-helix_df <- data.frame(x = x, y = y, z = z, lvl = lvl, mperc = mperc)
+# Precompute a plain-text hover label per point. (Referencing non-existent
+# plotly fields with format codes like %{lvl:.0%} makes the 3D plot fail to
+# draw; a ready-made text label with hoverinfo = "text" is the robust idiom.)
+helix_df$label <- paste0(helix_df$lvl, "<br>Mastery: ", round(helix_df$mperc), "%")
 
-# Create a 3D plot
-plot_ly(helix_df, 
-        x = ~x, y = ~y, z = ~z, 
-        type = 'scatter3d', 
-        mode = 'lines', 
-        color = lvl, 
-        line = list(width=4),
-        hovertemplate = paste("<b>Level</b>: %{lvl:.0%}<br>",
-                              "<b>Mastery</b>: %{mperc:.0%}",
-                              "<extra></extra>")) %>%
+# Create the 3D helix. Transparent backgrounds + a light font let it sit
+# cleanly on the book's dark theme.
+plot_ly(helix_df,
+        x = ~x, y = ~y, z = ~z,
+        type = "scatter3d",
+        mode = "lines",
+        color = ~lvl,
+        line = list(width = 6),
+        text = ~label,
+        hoverinfo = "text") %>%
   layout(
-    scene = list(
-      xaxis = list(title = '', showgrid = FALSE, zeroline = FALSE, showline = FALSE, showticklabels = FALSE),
-      yaxis = list(title = '', showgrid = FALSE, zeroline = FALSE, showline = FALSE, showticklabels = FALSE),
-      zaxis = list(title = '', showgrid = FALSE, zeroline = F, showline = F, showticklabels = FALSE)),
-      legend = list(title = 'Level of Mastery')
+    paper_bgcolor = "rgba(0,0,0,0)",
+    font   = list(color = "#c8c8c8"),
+    legend = list(title = list(text = "Level of Mastery")),
+    scene  = list(
+      xaxis = list(title = "", showgrid = FALSE, zeroline = FALSE, showline = FALSE, showticklabels = FALSE),
+      yaxis = list(title = "", showgrid = FALSE, zeroline = FALSE, showline = FALSE, showticklabels = FALSE),
+      zaxis = list(title = "", showgrid = FALSE, zeroline = FALSE, showline = FALSE, showticklabels = FALSE)
     )
+  )
 ```
 
 # A 30,000 ft View of Statistics {#view .unnumbered}
