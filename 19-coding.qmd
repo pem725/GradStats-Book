@@ -245,6 +245,38 @@ The data decide the fit. *You* decide, through the coding scheme, which question
 
 Across every row the $R^2$, $F$, and fitted values are identical. The columns "Intercept means" and "A slope means" are the only things that move.
 
+## A Real Example: Data From the GLM Course
+
+Simulated pets are friendly, but let's prove the machinery on real data - the Module 3 dataset from the graduate GLM course (`data/mod3data.csv`). It has an outcome `y1` and a genuine four-level grouping factor, `f3`, with unequal cells (real data is always lumpy):
+
+```{r}
+d3 <- read.csv("data/mod3data.csv")
+d3$grp <- factor(d3$f3, labels = c("A", "B", "C", "D"))
+mu3 <- tapply(d3$y1, d3$grp, mean)
+round(mu3, 3)          # the four real group means
+table(d3$grp)          # unequal cell sizes
+```
+
+Dummy-code it (reference = group A) and read the coefficients straight off those means, exactly as we did for the pets:
+
+```{r}
+contrasts(d3$grp) <- contr.treatment(4, base = 1)
+m_real <- lm(y1 ~ grp, data = d3)
+round(coef(m_real), 3)
+c(intercept_is_A    = all.equal(unname(coef(m_real)[1]), unname(mu3["A"])),
+  grp2_is_B_minus_A = all.equal(unname(coef(m_real)["grp2"]), unname(mu3["B"] - mu3["A"])))
+```
+
+Both `TRUE` - the intercept is group A's mean, each slope a group's mean minus A's. Switch to effects coding and the intercept becomes the grand mean of the four group means, unequal cells and all:
+
+```{r}
+contrasts(d3$grp) <- contr.sum(4)
+m_real_eff <- lm(y1 ~ grp, data = d3)
+all.equal(unname(coef(m_real_eff)[1]), mean(mu3))
+```
+
+`TRUE`. Real data, real (unbalanced) cells - and every rule from the pet example holds without a scratch, because the arithmetic never cared whether the groups were house pets or the conditions of an actual study.
+
 ## Challenge
 
 ::: {.callout-tip}
