@@ -553,11 +553,12 @@ window.Quarto = {
   <li><a href="#learning-objectives" id="toc-learning-objectives" class="nav-link active" data-scroll-target="#learning-objectives"><span class="header-section-number">8.1</span> Learning Objectives</a></li>
   <li><a href="#power-is-one-cell-of-a-table-you-already-know" id="toc-power-is-one-cell-of-a-table-you-already-know" class="nav-link" data-scroll-target="#power-is-one-cell-of-a-table-you-already-know"><span class="header-section-number">8.2</span> Power Is One Cell of a Table You Already Know</a></li>
   <li><a href="#the-four-levers" id="toc-the-four-levers" class="nav-link" data-scroll-target="#the-four-levers"><span class="header-section-number">8.3</span> The Four Levers</a></li>
-  <li><a href="#seeing-power-in-r" id="toc-seeing-power-in-r" class="nav-link" data-scroll-target="#seeing-power-in-r"><span class="header-section-number">8.4</span> Seeing Power in R</a></li>
-  <li><a href="#planning-a-study-solve-for-n" id="toc-planning-a-study-solve-for-n" class="nav-link" data-scroll-target="#planning-a-study-solve-for-n"><span class="header-section-number">8.5</span> Planning a Study: Solve for <span class="math inline">\(n\)</span></a></li>
-  <li><a href="#power-is-really-just-simulation" id="toc-power-is-really-just-simulation" class="nav-link" data-scroll-target="#power-is-really-just-simulation"><span class="header-section-number">8.6</span> Power Is Really Just Simulation</a></li>
-  <li><a href="#challenge" id="toc-challenge" class="nav-link" data-scroll-target="#challenge"><span class="header-section-number">8.7</span> Challenge</a></li>
-  <li><a href="#where-we-go-next" id="toc-where-we-go-next" class="nav-link" data-scroll-target="#where-we-go-next"><span class="header-section-number">8.8</span> Where We Go Next</a></li>
+  <li><a href="#rules-of-thumb-a-rough-first-pass" id="toc-rules-of-thumb-a-rough-first-pass" class="nav-link" data-scroll-target="#rules-of-thumb-a-rough-first-pass"><span class="header-section-number">8.4</span> Rules of Thumb (A Rough First Pass)</a></li>
+  <li><a href="#seeing-power-in-r" id="toc-seeing-power-in-r" class="nav-link" data-scroll-target="#seeing-power-in-r"><span class="header-section-number">8.5</span> Seeing Power in R</a></li>
+  <li><a href="#planning-a-study-solve-for-n" id="toc-planning-a-study-solve-for-n" class="nav-link" data-scroll-target="#planning-a-study-solve-for-n"><span class="header-section-number">8.6</span> Planning a Study: Solve for <span class="math inline">\(n\)</span></a></li>
+  <li><a href="#power-is-really-just-simulation" id="toc-power-is-really-just-simulation" class="nav-link" data-scroll-target="#power-is-really-just-simulation"><span class="header-section-number">8.7</span> Power Is Really Just Simulation</a></li>
+  <li><a href="#challenge" id="toc-challenge" class="nav-link" data-scroll-target="#challenge"><span class="header-section-number">8.8</span> Challenge</a></li>
+  <li><a href="#where-we-go-next" id="toc-where-we-go-next" class="nav-link" data-scroll-target="#where-we-go-next"><span class="header-section-number">8.9</span> Where We Go Next</a></li>
   </ul>
 </nav>
     </div>
@@ -585,6 +586,21 @@ window.Quarto = {
 
 
 <p>Simply put, statistical power is the probability of success - where “success” means <strong>detecting an effect that is really there</strong>. In the language of the last chapter, power is the one cell of the error table you can actually <em>plan for</em> before you collect a single observation. Everything else about a study - your hypotheses, your <span class="math inline">\(\alpha\)</span>, the vagaries of sampling - is set once the data arrive. Power is where you take back control.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Power is a SWAG - and that’s the honest part
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Here is the framing (PEM) I use with my own students. A power analysis is really an estimate of</p>
+<p><span class="math display">\[P(\text{Party at the Pub!} \mid \text{your research plans}),\]</span></p>
+<p>the probability you’ll be celebrating a detected effect <em>given</em> the study you’re about to run - which is to say, a <strong>S</strong>cientific <strong>W</strong>ild <strong>A</strong>ss <strong>G</strong>uess. That is not an insult to the method; it is honesty about it, because power depends on things you must <em>guess</em> before any data exist (chiefly the true effect size). Why bother guessing at all? Because power protects the things you care about - <strong>funding</strong>, your time, scarce participants - and it is the one part of a study you can shape in advance. The goal is not false precision; it is <strong>self-reliance</strong>. Power estimation is daunting, important, easy to fool yourself with, and <em>far</em> more within your reach than most people realize - because when the formulas intimidate you, you can always just <strong>simulate</strong> it.</p>
+</div>
+</div>
 <section id="learning-objectives" class="level2" data-number="8.1">
 <h2 data-number="8.1" class="anchored" data-anchor-id="learning-objectives"><span class="header-section-number">8.1</span> Learning Objectives</h2>
 <ol type="1">
@@ -647,9 +663,32 @@ window.Quarto = {
 <p>It is tempting - and wrong - to say “lower <span class="math inline">\(\alpha\)</span> gives higher power.” Lowering <span class="math inline">\(\alpha\)</span> shrinks the rejection region, which makes it <em>harder</em> to reject the null, which <strong>lowers</strong> power. You cannot buy fewer false alarms (small <span class="math inline">\(\alpha\)</span>) and more hits (high power) for free by tightening <span class="math inline">\(\alpha\)</span> alone; those two pull in opposite directions. The only way to improve <em>both</em> at once is to change something outside this trade-off - almost always, <strong>collect a larger sample</strong>.</p>
 </div>
 </div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Power is a story about variance
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Every lever above is really about the <a href="./04-Dmeasures.html">signal-to-noise</a> ratio we learned to decompose as <span class="math inline">\(S^2_{obs} = S^2_{true} + S^2_{error}\)</span>. Detecting an effect gets easier as the <strong>between-group</strong> variance (the signal - your effect) grows relative to the <strong>within-group</strong> variance (the noise). That is exactly why Cohen’s <span class="math inline">\(d\)</span> puts the mean difference <em>over</em> the standard deviation: power lives in the <strong>ratio</strong>, not the numerator alone. So two moves you can sometimes control - a <strong>cleaner measure</strong> (less <span class="math inline">\(S^2_{error}\)</span>) and a <strong>stronger manipulation</strong> (more signal) - buy you power just as surely as more subjects do.</p>
+</div>
+</div>
 </section>
-<section id="seeing-power-in-r" class="level2" data-number="8.4">
-<h2 data-number="8.4" class="anchored" data-anchor-id="seeing-power-in-r"><span class="header-section-number">8.4</span> Seeing Power in R</h2>
+<section id="rules-of-thumb-a-rough-first-pass" class="level2" data-number="8.4">
+<h2 data-number="8.4" class="anchored" data-anchor-id="rules-of-thumb-a-rough-first-pass"><span class="header-section-number">8.4</span> Rules of Thumb (A Rough First Pass)</h2>
+<p>Before any software, a few back-of-the-envelope numbers get you into the right ballpark for the conventional 80% power:</p>
+<ul>
+<li><strong>Comparing groups</strong> (mean differences): about <strong><span class="math inline">\(n = 30\)</span> per group</strong> is the classic target - and never go below ~7 per cell if you can possibly avoid it.</li>
+<li><strong>Associations</strong> (correlations, <span class="math inline">\(r\)</span>): you want <strong><span class="math inline">\(N &gt; 50\)</span></strong> or so.</li>
+<li><strong>Measurement models</strong> (EFA/CFA): <strong><span class="math inline">\(N &gt; 300\)</span></strong> is usually safe.</li>
+</ul>
+<p>These are deliberately crude - they hide the effect size you’re implicitly assuming - but they are enough to sanity-check a plan, or to notice a design is hopeless <em>before</em> you spend a dime. Then you refine with a real calculation, which comes in two flavors: a <strong>point estimate</strong> from a formula (next), and a <strong>simulation</strong> you can watch (further down). The right habit is to reach for an existing tool first, make sure you understand the model you’re planning (a <span class="math inline">\(t\)</span>-test, a regression, a mixed model), and then simulate to check your guesses.</p>
+</section>
+<section id="seeing-power-in-r" class="level2" data-number="8.5">
+<h2 data-number="8.5" class="anchored" data-anchor-id="seeing-power-in-r"><span class="header-section-number">8.5</span> Seeing Power in R</h2>
 <p>Base R ships with <code>power.t.test()</code>, which ties together effect size, <span class="math inline">\(n\)</span>, <span class="math inline">\(\alpha\)</span>, and power - give it any three and it solves for the fourth. First, the trade-offs, made concrete:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Hold the effect (d = 0.5) and n = 30 per group; vary alpha</span></span>
@@ -671,8 +710,8 @@ window.Quarto = {
 </div>
 <p>More data, more power - and unlike the <span class="math inline">\(\alpha\)</span> trade-off, this buys power <em>without</em> raising your false-alarm rate.</p>
 </section>
-<section id="planning-a-study-solve-for-n" class="level2" data-number="8.5">
-<h2 data-number="8.5" class="anchored" data-anchor-id="planning-a-study-solve-for-n"><span class="header-section-number">8.5</span> Planning a Study: Solve for <span class="math inline">\(n\)</span></h2>
+<section id="planning-a-study-solve-for-n" class="level2" data-number="8.6">
+<h2 data-number="8.6" class="anchored" data-anchor-id="planning-a-study-solve-for-n"><span class="header-section-number">8.6</span> Planning a Study: Solve for <span class="math inline">\(n\)</span></h2>
 <p>The real payoff is planning. If you want 80% power to detect a medium effect (<span class="math inline">\(d = 0.5\)</span>) at <span class="math inline">\(\alpha = .05\)</span>, how many people do you need? Leave <code>n</code> out and let R solve for it:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">power.t.test</span>(<span class="at">delta =</span> <span class="fl">0.5</span>, <span class="at">sd =</span> <span class="dv">1</span>, <span class="at">sig.level =</span> <span class="fl">0.05</span>, <span class="at">power =</span> <span class="fl">0.80</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -692,9 +731,9 @@ NOTE: n is number in *each* group</code></pre>
 </div>
 <p>The answer (about 64 per group) is a number you want <em>before</em> you run the study, not after. Running first and computing power later - so-called “post-hoc power” - tells you almost nothing useful; power is a design tool, not a consolation prize.</p>
 </section>
-<section id="power-is-really-just-simulation" class="level2" data-number="8.6">
-<h2 data-number="8.6" class="anchored" data-anchor-id="power-is-really-just-simulation"><span class="header-section-number">8.6</span> Power Is Really Just Simulation</h2>
-<p>If the formulas ever feel like a black box, remember they are only shortcuts for something you can <em>watch</em> directly. Simulate a world where the effect is real, run the test many times, and count how often you catch it - that fraction <strong>is</strong> the power:</p>
+<section id="power-is-really-just-simulation" class="level2" data-number="8.7">
+<h2 data-number="8.7" class="anchored" data-anchor-id="power-is-really-just-simulation"><span class="header-section-number">8.7</span> Power Is Really Just Simulation</h2>
+<p>If the formulas ever feel like a black box, remember they are only shortcuts for something you can <em>watch</em> directly. The recipe is four steps: <strong>generate</strong> data from a world where the effect is real, <strong>run</strong> your model, <strong>collect</strong> whether it hit (<span class="math inline">\(p &lt; \alpha\)</span>), and <strong>repeat</strong> a few thousand times. The fraction of hits <strong>is</strong> the power - and unlike a formula, this recipe works for <em>any</em> design you can simulate (a mixed model, a mediation, a weird custom test), long after the closed-form equations give up:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1988</span>)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fl">0.5</span>; n <span class="ot">&lt;-</span> <span class="dv">64</span></span>
@@ -710,8 +749,8 @@ NOTE: n is number in *each* group</code></pre>
 </div>
 <p>The simulation lands right where <code>power.t.test()</code> said it would. No magic - just a claim about how often a true effect trips the wire.</p>
 </section>
-<section id="challenge" class="level2" data-number="8.7">
-<h2 data-number="8.7" class="anchored" data-anchor-id="challenge"><span class="header-section-number">8.7</span> Challenge</h2>
+<section id="challenge" class="level2" data-number="8.8">
+<h2 data-number="8.8" class="anchored" data-anchor-id="challenge"><span class="header-section-number">8.8</span> Challenge</h2>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -731,8 +770,8 @@ NOTE: n is number in *each* group</code></pre>
 </div>
 </div>
 </section>
-<section id="where-we-go-next" class="level2" data-number="8.8">
-<h2 data-number="8.8" class="anchored" data-anchor-id="where-we-go-next"><span class="header-section-number">8.8</span> Where We Go Next</h2>
+<section id="where-we-go-next" class="level2" data-number="8.9">
+<h2 data-number="8.9" class="anchored" data-anchor-id="where-we-go-next"><span class="header-section-number">8.9</span> Where We Go Next</h2>
 <p>Power closes out our tour of inference: we now know how to test, how we can be wrong, and how to design a study that can actually find what it is looking for. Next we turn from <em>testing</em> our conclusions to <em>trusting our measurements</em> - the twin questions of <a href="./10-reliability.html">reliability</a> and <a href="./11-validity.html">validity</a>. After all, the most powerful test in the world is worthless if the ruler is rubber.</p>
 
 
