@@ -4,19 +4,19 @@
     "href": "index.html",
     "title": "Statistics by Us for You",
     "section": "",
-    "text": "Welcome\nThis is a free, open graduate statistics textbook for the social and behavioral sciences. “Free” in two ways: it costs nothing, and you are welcome to read it, use it, and help make it better. We wrote it because we wanted one place where a curious student could learn not just how to run an analysis, but why it works and when to trust it.\nThe book grows out of decades of teaching and research. Wherever we can, we use real data and real decisions from our own published work, so you can see how these methods behave outside a tidy example. Every analysis is written in R and runs as you read — nothing is hidden behind a curtain, and you are encouraged to change the code and see what happens.\nYou do not need to be a mathematician to follow along. You need curiosity, a little patience, and a willingness to try the code yourself. Start at the beginning if the subject is new to you, or jump straight to a chapter you need today. However you read it, our hope is the same: that statistics stops feeling like a set of rules to memorize and starts feeling like a clear way of thinking about uncertainty.\nThe book lives online at pem725.github.io/GradStats-Book and is developed openly on GitHub. Read it, run it, and tell us how to make it better.",
+    "text": "Welcome\nThis is a free, open graduate statistics textbook for the social and behavioral sciences. “Free” in two ways: it costs nothing, and you are welcome to read it, use it, and help make it better. We wrote it because we wanted one place where a curious student could learn not just how to run an analysis, but why it works and when to trust it.\nThe book grows out of decades of teaching and research. Wherever we can, we use real data and real decisions from our own published work, so you can see how these methods behave outside a tidy example. Every analysis is written in R and runs as you read — nothing is hidden behind a curtain, and you are encouraged to change the code and see what happens.\nYou do not need to be a mathematician to follow along. You need curiosity, a little patience, and a willingness to try the code yourself. Start at the beginning if the subject is new to you, or jump straight to a chapter you need today. However you read it, our hope is the same: that statistics stops feeling like a set of rules to memorize and starts feeling like a clear way of thinking about uncertainty.\nThe book lives online at pem725.github.io/GradStats-Book and is developed openly on GitHub. Read it, run it, and tell us how to make it better.\n\nGraduate Statistics in Plain Ol’ English by Patrick E. McKnight, Simone C. McKnight, Jeffrey Stuewig, and Todd B. Kashdan is licensed under CC BY-NC-ND 4.0.",
     "crumbs": [
       "Welcome"
     ]
   },
   {
-    "objectID": "index.html#license",
-    "href": "index.html#license",
-    "title": "Statistics by Us for You",
-    "section": "License",
-    "text": "License\nGraduate Statistics in Plain Ol’ English by Patrick E. McKnight, Simone C. McKnight, Jeffrey Stuewig, & Todd B. Kashdan is licensed under a Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License.",
+    "objectID": "foreword.html",
+    "href": "foreword.html",
+    "title": "Foreword",
+    "section": "",
+    "text": "To be written.\nWe are inviting a colleague from outside our group to introduce this book in their own words. Their foreword will appear here.",
     "crumbs": [
-      "Welcome"
+      "Foreword"
     ]
   },
   {
@@ -1446,7 +1446,7 @@
     "href": "14-bivariateregression.html#what-best-means-residuals",
     "title": "14  Simple Regression",
     "section": "14.4 What “Best” Means: Residuals",
-    "text": "14.4 What “Best” Means: Residuals\nThe red line is “best” in a very specific sense. For each point, the residual is the vertical distance between what we observed (\\(y\\)) and what the line predicts (\\(\\hat{y}\\)):\n\\[e = y - \\hat{y}\\]\nLet’s draw those distances.\n\nplot(x, y, xlim = c(0, 6), pch = 19,\n     main = \"Residuals: the vertical gaps the line leaves behind\")\nabline(lm1, col = \"red\", lwd = 2)\nfor (i in 1:5) {\n  segments(x[i], y[i], x[i], coef(lm1)[[2]] * x[i] + coef(lm1)[[1]],\n           col = \"blue\", lwd = 2)\n}\n\n\n\n\n\n\n\n\nHere are the residuals themselves:\n\nresid(lm1)\n\n   1    2    3    4    5 \n-2.0  1.3  2.6 -1.1 -0.8 \n\n\nTwo facts worth burning into memory:\n\nsum(resid(lm1))        # the residuals sum to (essentially) zero\n\n[1] 1.665335e-15\n\nsum(resid(lm1)^2)      # the sum of SQUARED residuals - this is what we minimize\n\n[1] 14.3\n\n\n\n\n\n\n\n\nImportantLeast Squares, Defined\n\n\n\nThe “best” line is the one line (out of infinitely many possible lines) that makes sum(resid^2) as small as it can possibly be. That is all “least squares” means: least (smallest) squares (of the residuals). The residuals sum to zero for any line through the means, so we cannot minimize their plain sum - it is always zero. Squaring first solves that, and it punishes big misses more than small ones. We shall return to that squared quantity again and again; it is central to everything that follows.",
+    "text": "14.4 What “Best” Means: Residuals\nThe red line is “best” in a very specific sense. For each point, the residual is the vertical distance between what we observed (\\(y\\)) and what the line predicts (\\(\\hat{y}\\)):\n\\[e = y - \\hat{y}\\]\nLet’s draw those distances.\n\nplot(x, y, xlim = c(0, 6), pch = 19,\n     main = \"Residuals: the vertical gaps the line leaves behind\")\nabline(lm1, col = \"red\", lwd = 2)\nfor (i in 1:5) {\n  segments(x[i], y[i], x[i], coef(lm1)[[2]] * x[i] + coef(lm1)[[1]],\n           col = \"blue\", lwd = 2)\n}\n\n\n\n\n\n\n\n\nHere are the residuals themselves:\n\nresid(lm1)\n\n   1    2    3    4    5 \n-2.0  1.3  2.6 -1.1 -0.8 \n\n\nTwo facts worth burning into memory:\n\nsum(resid(lm1))        # the residuals sum to (essentially) zero\n\n[1] 7.771561e-16\n\nsum(resid(lm1)^2)      # the sum of SQUARED residuals - this is what we minimize\n\n[1] 14.3\n\n\n\n\n\n\n\n\nImportantLeast Squares, Defined\n\n\n\nThe “best” line is the one line (out of infinitely many possible lines) that makes sum(resid^2) as small as it can possibly be. That is all “least squares” means: least (smallest) squares (of the residuals). The residuals sum to zero for any line through the means, so we cannot minimize their plain sum - it is always zero. Squaring first solves that, and it punishes big misses more than small ones. We shall return to that squared quantity again and again; it is central to everything that follows.",
     "crumbs": [
       "Using Models",
       "<span class='chapter-number'>14</span>  <span class='chapter-title'>Simple Regression</span>"
