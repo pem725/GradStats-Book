@@ -44,7 +44,7 @@ round(fa$correlation[1:2, 1:2], 2)   # estimated correlation between the two fac
 
 ## What "Fit" Actually Means: The Model-Implied Covariance
 
-Here is the engine of all of SEM, and it is simpler than its reputation. A factor model does not just describe the data - it **predicts the entire covariance matrix**. If each item is $\lambda_i \xi + \varepsilon_i$, then the model *implies* that the correlation matrix must equal $\Lambda\Lambda^{\top} + \Psi$ (loadings times loadings, plus the unique variances on the diagonal). **Fitting the model means finding loadings that make this implied matrix match the observed one.** Watch it work on a single-factor block:
+This is the engine of all of SEM, and it is simpler than its reputation suggests. A factor model does not just describe the data - it **predicts the entire covariance matrix**. If each item is $\lambda_i \xi + \varepsilon_i$, then the model *implies* that the correlation matrix must equal $\Lambda\Lambda^{\top} + \Psi$ (loadings times loadings, plus the unique variances on the diagonal). **Fitting the model means finding loadings that make this implied matrix match the observed one.** Watch it work on a single-factor block:
 
 ```{r}
 fa1     <- factanal(X[, 1:4], factors = 1)
@@ -84,7 +84,7 @@ The path `wellbeing ~ curiosity` is an ordinary regression - but between two var
 
 ## Why Bother? SEM Fixes Attenuation
 
-Recall from the [reliability chapter](10-reliability.qmd) that unreliable measures **attenuate** correlations - a real relationship looks weaker than it is because the sum scores are noisy. Regressing one sum score on another inherits that bias; the slope is pulled toward zero by measurement error. SEM's quiet superpower is that it **separates the true score from the error before estimating the relationship**. The regression among latent variables is *disattenuated* - it estimates the relationship between the constructs themselves, not between their noisy stand-ins. That is the entire reason to pay SEM's price in complexity: it gives you the relationship you actually wanted, the one between the things, not between the rulers.
+Recall from the [reliability chapter](10-reliability.qmd) that unreliable measures **attenuate** correlations - a real relationship looks weaker than it is because the sum scores are noisy. Regressing one sum score on another inherits that bias; the slope is pulled toward zero by measurement error. SEM's real strength is that it **separates the true score from the error before estimating the relationship**. The regression among latent variables is *disattenuated* - it estimates the relationship between the constructs themselves, not between their noisy stand-ins. That is the reason SEM is worth its added complexity: it gives you the relationship you actually wanted, the one between the constructs, not between their noisy measures.
 
 ::: {.callout-note}
 ## From the Field

@@ -1,6 +1,6 @@
 # Testing Hypotheses with Data
 
-We often label our efforts "hypothesis testing." Here we dispel that myth and talk about what we are *actually* doing. Let us be blunt from the first sentence, because this is the single most misunderstood idea in all of statistics:
+We often label our efforts "hypothesis testing." Here we dispel that myth and talk about what we are *actually* doing. Let us be clear from the first sentence, because this is one of the most misunderstood ideas in statistics:
 
 ::: {.callout-important}
 ## The Whole Chapter in One Sentence
@@ -35,7 +35,7 @@ Notice that in every case, $H_0$ says *nothing is happening*. The alternative hy
 
 > How far away from the null do we need to be before the observed value is considered unlikely *if the null were true*?
 
-That is a question about **data consistency with a no-effect world**. It is emphatically *not* the question "is my theory true?" Keep those two apart and you are already ahead of most published researchers.
+That is a question about **data consistency with a no-effect world**. It is emphatically *not* the question "is my theory true?" Keep those two apart and you have grasped the key distinction.
 
 ## The Machinery: A Worked Example
 
@@ -88,7 +88,7 @@ Every significance test, no matter how fancy, follows the same four steps:
 ::: {.callout-warning}
 ## We Never *Accept* the Null
 
-Before you try your hand, be crystal clear about something: **we never accept the null. We only reject the null or fail to reject it.** Failing to reject $H_0$ is not evidence that nothing is happening - it may just mean our sample was too small, too noisy, or too crude to detect what is there. Absence of evidence is not evidence of absence. Write that on your wall.
+Before you try your hand, be crystal clear about something: **we never accept the null. We only reject the null or fail to reject it.** Failing to reject $H_0$ is not evidence that nothing is happening. It may just mean our sample was too small, too noisy, or too crude to detect what is there. Absence of evidence is not evidence of absence.
 :::
 
 ## Two Ways to Be Wrong
@@ -106,9 +106,9 @@ A **Type I error** is a false alarm: we shout "effect!" when nothing is there. I
 
 You could stop here, pass most stats exams, and go on to (mis)use significance tests for the rest of your career like everyone else. But we promised you the *why*, so buckle up. There are many detractors of null hypothesis significance testing (NHST), but none more insightful or knowledgeable than **Paul Meehl** [@Meehl1967]. His critique deserves your full attention.
 
-**1. The test answers the wrong question.** What you *want* to know is the probability that your hypothesis is true given your data, $P(H \mid D)$. What the p-value gives you is the probability of your data given the null, $P(D \mid H_0)$. These are not the same thing, and one is not a stand-in for the other. Confusing $P(D \mid H_0)$ with $P(H \mid D)$ is the original sin of applied statistics.
+**1. The test answers the wrong question.** What you *want* to know is the probability that your hypothesis is true given your data, $P(H \mid D)$. What the p-value gives you is the probability of your data given the null, $P(D \mid H_0)$. These are not the same thing, and one is not a stand-in for the other. Confusing $P(D \mid H_0)$ with $P(H \mid D)$ is one of the most common mistakes in applied statistics.
 
-**2. The null is almost certainly false before you collect a single datum.** In the social sciences, two groups are essentially *never* exactly equal down to infinite decimal places. So $P(H_0) \approx 0$ from the start - the null is a straw man. With a big enough sample you can reject *any* nil null, which means a "significant" result can be a statement about your sample size rather than about the world.
+**2. The null is almost certainly false before you collect a single datum.** In the social sciences, two groups are essentially *never* exactly equal down to infinite decimal places. So $P(H_0) \approx 0$ from the start; the null is a straw man. With a big enough sample you can reject *any* nil null, which means a "significant" result can be a statement about your sample size rather than about the world.
 
 **3. Rejecting $H_0$ is not evidence for $H$.** This is the logical heart of it. Even granting the test, rejecting "nothing is happening" does not establish *your particular explanation* for why something is happening. Logically, NHST commits the fallacy of **affirming the consequent**: "if my theory is true, then I'll see an effect; I see an effect; therefore my theory is true." That reasoning is invalid, and no amount of $p < .05$ repairs it.
 
@@ -119,16 +119,16 @@ Meehl pointed out that a theoretical prediction never rides alone. To derive a t
 
 $$(T \cdot A_x \cdot C_p \cdot A_i \cdot C_n) \vdash (O_1 \supset O_2)$$
 
-Because the whole bundle is on trial, a rejected null can't tell you *which* piece failed - maybe your theory, maybe your thermometer. This is why "we ran a significance test" is a shockingly thin foundation for a scientific claim.
+Because the whole bundle is on trial, a rejected null can't tell you *which* piece failed - maybe your theory, maybe your thermometer. This is why "we ran a significance test" is a thin foundation for a scientific claim.
 :::
 
 **4. Significant is not the same as important.** A result can be statistically significant and utterly trivial, or non-significant and enormously important. An effect "may be significantly different from the null but that effect may still be very small" - you just had a big sample or a tiny standard error. This is why we report **effect sizes** (like Cohen's $d$) alongside p-values. As McKnight is fond of noting, a correlation below .5 can flag a hugely important effect, while a correlation above .9 can be a trivial finding. The p-value alone cannot tell the difference; only you and your judgment can.
 
 ## So Why Do We Still Do It?
 
-Fair question. Because, as Sir Ronald Fisher himself insisted (and as we noted back in the [introduction](intro.qmd)), a significant test is best read as a **reason for optimism** - a hint that something here is worth a closer look - and *nothing more*. It is a screening tool, not a verdict.
+Fair question. Because, as Sir Ronald Fisher himself insisted (and as we noted back in the [introduction](intro.qmd)), a significant test is best read as a **reason for optimism**, a hint that something here is worth a closer look, and *nothing more*. It is a screening tool, not a verdict.
 
-And pragmatically: since NHST tends to be the **gate-keeper of social-science findings**, you might find some comfort in knowing how the tests are computed, even as you hold them at arm's length. You have to speak the language to change the conversation. So learn it well - then use it wisely, report your effect sizes, quantify your uncertainty honestly, and never, ever confuse a small p-value with the truth of your theory.
+And pragmatically: since NHST tends to be the **gate-keeper of social-science findings**, you might find some comfort in knowing how the tests are computed, even as you hold them at arm's length. You have to speak the language to change the conversation. So learn it well, then use it wisely: report your effect sizes, quantify your uncertainty honestly, and never confuse a small p-value with the truth of your theory.
 
 ::: {.callout-important}
 ## Estimation vs. testing - and the alternatives to the ritual
@@ -147,7 +147,7 @@ A commuter claims her average drive is 24.3 minutes. You suspect it is longer. O
 3.  At $\alpha = .05$, what do you decide - and state the decision using the correct language (reject / fail to reject).
 4.  Now the hard part: write one sentence explaining what your p-value **does** mean, and one sentence explaining what a naive reader would **wrongly** think it means.
 
-If you can do step 4 cleanly, you understand hypothesis testing better than most people who publish for a living.
+If you can do step 4 cleanly, you understand hypothesis testing better than many working researchers.
 :::
 
 ## Where We Go Next

@@ -6,7 +6,7 @@ We begin with the friendliest lab I know: [The Sports Page](https://thesportspag
 
 ## Three Things You Can Do With Data
 
-The whole discipline reduces to three verbs, and the first commandment is to **always know which one you are doing**:
+The whole discipline reduces to three verbs, and the first rule is to **always know which one you are doing**:
 
 1.  **Describe** what happened. This is easy - the data already know the answer. A batting average, a group mean, an $R^2$: all description.
 2.  **Predict** what will happen. This is harder, because the future is a real test you can fail. A forecast, a fitted model applied to new cases.
@@ -16,12 +16,12 @@ Most sports writing stops at #1 and pretends it is doing #2. Most analytics stop
 
 ::: {.callout-important}
 ## The past is cheating
-Here is the idea that separates a describer from a forecaster: **any model flexible enough will fit the past perfectly, and that tells you almost nothing.** The past is a test with the answers printed on it. The real test - the only honest one - is predicting data you have not seen, and then *admitting it* when you were wrong. That is why The Sports Page grades every prediction it makes, on a schedule, in public. Being wrong is not failure; it is the data that improves the next model. A statistician who never publishes a falsifiable prediction never has to learn anything.
+Here is the idea that separates a describer from a forecaster: **any model flexible enough will fit the past perfectly, and that tells you almost nothing.** Fitting the past is easy because you already know how it turned out. The real test is predicting data you have not seen, and then acknowledging it when you were wrong. That is why The Sports Page grades every prediction it makes, on a schedule, in public. Being wrong is not failure; it is the information that improves the next model. If you never publish a prediction that could turn out wrong, you never give yourself a chance to learn.
 :::
 
 ## A Worked Judgment: The Hot Start Is a Mirage
 
-Every April, someone goes 6-for-9 and the papers anoint an MVP. Every April, they are wrong - and you already have the tools to know *why*. It is the same lesson as [statistical power](09-statisticalpower.qmd): small samples are wild. Watch what happens when we plot every hitter's performance against how many chances they have had:
+Every April, someone goes 6-for-9 and gets talked about as an MVP. Every April, that call turns out to be premature, and you already have the tools to know *why*. It is the same lesson as [statistical power](09-statisticalpower.qmd): small samples are noisy. Watch what happens when we plot every hitter's performance against how many chances they have had:
 
 ```{r}
 #| fig-cap: "OPS vs. plate appearances. Every extreme lives on the left — where the sample is tiny."
@@ -47,20 +47,20 @@ c(sd_OPS_under_20_PA  = round(sd(h$OPS[h$PA <  20]),  2),   # tiny samples: huge
   its_plate_appearances = h$PA[which.max(h$OPS)])
 ```
 
-The best OPS in the league belongs to someone with a single-digit number of at-bats. That is not a hitter who cracked the code; that is **noise wearing a crown**. The honest read: a hot start is *description* of a tiny sample, and mistaking it for *prediction* is the most common error in all of sports - and all of science. The player will "regress to the mean" not because of some mystical force, but because the extreme was mostly luck, and luck does not re-sign for next season.
+The best OPS in the league belongs to someone with a single-digit number of at-bats. That is not a hitter who has cracked the code; that is mostly **sampling noise in a very small sample**. The honest read: a hot start is *description* of a tiny sample, and mistaking it for *prediction* is one of the most common errors in sports, and in science more broadly. The player will "regress to the mean" not because of some mysterious force, but because the extreme value was mostly luck, and luck does not carry over to the rest of the season.
 
-This is the entire apprenticeship in one figure. The math was easy (a standard deviation). The judgment - *knowing that the April headline is describing noise and pretending it is signal* - is the hard part, and the valuable one.
+This is the entire apprenticeship in one figure. The math was easy (a standard deviation). The judgment, *recognizing that the April headline is describing noise while treating it as signal*, is the hard part, and the valuable one.
 
 ## Describe, Predict, Control - On One Trend
 
 Return to the [strikeout revolution](21-graphics.qmd). Notice how the three verbs stack:
 
 - **Describe:** strikeouts per nine innings rose from about 5.4 to about 8.5 since 1985. (True, easy, and *only* a description.)
-- **Predict:** will it keep rising? You could fit a line and extrapolate - but now you owe the reader a *graded* forecast, and a humble one, because trends bend. Extrapolation is where flexible models go to embarrass themselves.
-- **Control:** *why* did it rise? Harder velocity, analytics rewarding the home-run-or-strikeout trade-off, bigger bullpens. Those are causal claims, and a line through the past cannot establish a single one of them - it can only describe the shadow they cast.
+- **Predict:** will it keep rising? You could fit a line and extrapolate, but now you owe the reader a *graded* forecast, and a cautious one, because trends bend. Extrapolation is where flexible models most often go wrong.
+- **Control:** *why* did it rise? Harder velocity, analytics rewarding the home-run-or-strikeout trade-off, bigger bullpens. Those are causal claims, and a line through the past cannot establish any of them; it can only describe the pattern they leave behind.
 
-Same data, three completely different epistemic commitments. Keeping them straight is not pedantry; it is the difference between analysis and astrology.
+Same data, three very different epistemic commitments. Keeping them straight is not pedantry; it is the difference between careful analysis and guessing.
 
 ## What Comes Next
 
-With the philosophy in hand, we turn to the real thing: published research, walked through end to end, with every decision on the table. You will watch measures get built and defended, watch a total score get caught throwing away information it should have kept, and watch missing data quietly change an answer. These are not toy examples - they are real studies, real datasets, and real judgment calls, some of which we would make differently today. That honesty is the point. Welcome to the apprenticeship; let's go to work.
+With the philosophy in hand, we turn to the real thing: published research, walked through end to end, with every decision on the table. You will watch measures get built and defended, watch a total score throw away information it should have kept, and watch missing data quietly change an answer. These are not toy examples; they are real studies, real datasets, and real judgment calls, some of which we would make differently today. That honesty is the point. Welcome to the apprenticeship; let's go to work.

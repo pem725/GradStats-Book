@@ -1,12 +1,12 @@
 # Case Study: When the Total Score Hides the Story {#depression}
 
-Our first real study is one of our own - a collaboration (McKnight, Stuewig, Kashdan) that started from a complaint you have already heard in this book: **the mean throws away information.** Back in the [central tendency chapter](03-CTmeasures.qmd) that was a slogan. Here it becomes a research program, with real patients, a real depression scale, a surprising finding, and - the part you rarely see in a polished paper - a claim we made, tested, and had to take back. Watch the decisions, not just the results.
+Our first real study is one of our own - a collaboration (McKnight, Stuewig, Kashdan) that started from a point you have already met in this book: **the mean throws away information.** In the [central tendency chapter](03-CTmeasures.qmd) that was a general idea. Here it becomes a research program, with real patients and a real depression scale. It also includes something you rarely see in a finished paper: a claim we made, tested, and then had to take back. We want you to follow the decisions along the way, not just the results.
 
-The instrument is the **Beck Depression Inventory (BDI-II)**: 21 symptoms (sadness, guilt, sleep, appetite, …), each scored 0 (absent) to 3 (severe). Clinicians add the 21 items into one number, call a 15 "mild depression," and move on. This study asks what that number destroys.
+The instrument is the **Beck Depression Inventory (BDI-II)**: 21 symptoms (sadness, guilt, sleep, appetite, …), each scored 0 (absent) to 3 (severe). Clinicians add the 21 items into one number, call a 15 "mild depression," and move on. This study asks what that number leaves out.
 
 ## How Much Does a Sum Score Hide?
 
-Start with pure arithmetic - no data, no model, just counting. How many different 21-item profiles produce a total of exactly 15? The answer comes from the **inclusion–exclusion principle**, and it is worth computing yourself because the number is hard to believe:
+Start with pure arithmetic - no data and no model, just counting. How many different 21-item profiles produce a total of exactly 15? The answer comes from the **inclusion–exclusion principle**, and it is worth computing yourself because the number is larger than most people expect:
 
 ```{r}
 n_patterns <- function(k, a, n) {                 # k items, each 0..a, summing to n
@@ -17,7 +17,7 @@ n_patterns <- function(k, a, n) {                 # k items, each 0..a, summing 
 format(n_patterns(21, 3, 15), big.mark = ",")     # ways to score 15 on the BDI-II
 ```
 
-**1.65 billion** distinct symptom profiles all land on "15 = mild depression." Across all possible totals there are $4^{21} \approx 4.4$ trillion profiles, peaking at 338 billion different ways to score a 31. The clinical convention - "minimal / mild / moderate / severe" - treats all of them as the same. That is a staggering amount of thrown-away information, and the question is whether any of it mattered.
+**1.65 billion** distinct symptom profiles all land on "15 = mild depression." Across all possible totals there are $4^{21} \approx 4.4$ trillion profiles, peaking at 338 billion different ways to score a 31. The clinical convention - "minimal / mild / moderate / severe" - treats all of them as the same. That is a large amount of discarded information, and the question is whether any of it mattered.
 
 ## Same Score, Different People
 
@@ -49,7 +49,7 @@ pair <- which(totals == 15)[c(1, 2)]               # two people, identical total
 t(bdi[pair, ])
 ```
 
-One person's distress concentrates in a few symptoms; the other's spreads thin across many. Same "15," different clinical pictures - and a sum score cannot tell them apart. The **profile** can.
+One person's distress concentrates in a few symptoms; the other's spreads thin across many. Same "15," but different clinical pictures, and a sum score cannot tell them apart. The **profile** can.
 
 ## The Manifold Collapse
 
@@ -62,7 +62,7 @@ c(people            = nrow(bdi),
   pct_unique        = round(100 * mean(!(duplicated(key) | duplicated(key, fromLast = TRUE))), 1))
 ```
 
-Roughly **three-quarters have a profile no one else shares** - and in the real six-sample analysis it was **79.7%**. Even our tame simulation reproduces the effect: of trillions of mathematically possible patterns, people occupy a vanishingly thin sliver - what the study called the **manifold collapse**. The space is huge; life uses almost none of it. Which raises the sharp question: are the profiles that *never* appear merely rare, or are some of them *impossible in principle* - incoherent given how depression actually works?
+Roughly **three-quarters have a profile no one else shares**, and in the real six-sample analysis it was **79.7%**. Even our simple simulation reproduces the effect: of the trillions of mathematically possible patterns, people occupy only a small fraction, what the study called the **manifold collapse**. The space of possible profiles is huge, but real people use very little of it. That raises a genuine question: are the profiles that *never* appear merely rare, or are some of them *impossible in principle*, incoherent given how depression actually works?
 
 ## Antitypes: Profiles That Shouldn't Exist
 
@@ -77,7 +77,7 @@ c(median_violations = median(ovi), max_violations = max(ovi),
   cor_with_total    = round(cor(ovi, totals), 2))    # NOT just severity
 ```
 
-Incoherence is its own dimension - only weakly tied to how *high* the total is. The real study replaces this rough count with a proper **Graded Response Model** (an IRT model, cousin of the [Rasch model](18-rasch.qmd)) that estimates each item's difficulty and each person's severity, then scores every profile's log-likelihood. The two measures - our Ordering Violation Index (OVI) and the GRM profile log-likelihood - agree strongly, and that agreement is remarkably stable:
+Incoherence is its own dimension - only weakly tied to how *high* the total is. The real study replaces this rough count with a proper **Graded Response Model** (an IRT model, cousin of the [Rasch model](18-rasch.qmd)) that estimates each item's difficulty and each person's severity, then scores every profile's log-likelihood. The two measures - our Ordering Violation Index (OVI) and the GRM profile log-likelihood - agree strongly, and that agreement is stable across samples:
 
 ```r
 # The real analysis (needs the mirt package — shown, not run on the book's server)
@@ -94,23 +94,23 @@ Finding structure that a sum score hides is a recurring theme in the authors' wo
 
 ## Does It Actually Matter? (The Decision to Chase It)
 
-A finding is only worth a paper if it *predicts* something. In 207 patients tracked across four therapy sessions, we asked whether the **coherence of a patient's intake profile** forecast how much they improved - over and above their initial severity. It did: more incoherent intake profiles improved *less* ($p = .017$), controlling for baseline depression. And treatment did not merely lower the total - it **reorganized** the profile (cognitive and emotional symptoms improved ~20%; somatic symptoms barely moved). The *shape* of depression changed, not just its size. The information the sum score discarded was clinically live.
+A finding earns a place in a paper when it *predicts* something. In 207 patients tracked across four therapy sessions, we asked whether the **coherence of a patient's intake profile** forecast how much they improved, over and above their initial severity. It did: more incoherent intake profiles improved *less* ($p = .017$), controlling for baseline depression. And treatment did not merely lower the total; it **reorganized** the profile (cognitive and emotional symptoms improved ~20%; somatic symptoms barely moved). The *shape* of depression changed, not just its size. The information the sum score discarded was clinically meaningful.
 
 ## Replication - and a Claim We Had to Retract
 
-Two habits separate research from storytelling: **replicate**, and **try to kill your own finding**. We did both, and only one felt good.
+Two habits separate research from storytelling: **replicate**, and **try hard to disprove your own finding**. We did both here.
 
 **Replication.** We re-ran the entire pipeline on a completely different scale - the **CES-D**, 20 different items - in a completely different population (a multigenerational community panel). No shared items, no shared people. Same result: 78.7% unique profiles (BDI: 79.7%), OVI–likelihood $r = -0.77$. The manifold collapse is a property of *depression*, not of Beck's particular questionnaire.
 
-**The retraction.** Emboldened, we noticed the two scales reproduced nearly the *same* configural geometry - difficulty spread, profile uniqueness, incoherence - at a structural concordance of about 0.95, despite sharing nothing. We were ready to call it convergent validity: two windows onto the same construct.
+**The retraction.** Encouraged, we noticed the two scales reproduced nearly the *same* configural geometry (difficulty spread, profile uniqueness, incoherence) at a structural concordance of about 0.95, despite sharing nothing. We were ready to call it convergent validity: two windows onto the same construct.
 
-Then we ran the control that could destroy the claim. We took an **anxiety** scale of the same 0–3 format (the STICSA) - a *different construct* - and measured its concordance with the depression scales.
+Then we ran the control that could undermine the claim. We took an **anxiety** scale of the same 0–3 format (the STICSA), a *different construct*, and measured its concordance with the depression scales.
 
 ::: {.callout-important}
-## Watch a good control kill a good story
-The anxiety scale concorded *just as highly* as the two depression scales did with each other. If a different construct fits the pattern equally well, the pattern is **not** about the construct - it is about the shared **response format** (21-ish items, 0–3, summed). Our "convergent validity" evaporated. The concordance is real, but it is a format-general regularity, not evidence that the scales read the same thing. We cut the claim.
+## When a good control undoes a good story
+The anxiety scale concorded *just as highly* as the two depression scales did with each other. If a different construct fits the pattern equally well, the pattern is **not** about the construct; it is about the shared **response format** (21-ish items, 0–3, summed). Our claim of convergent validity did not hold up. The concordance is real, but it is a format-general regularity, not evidence that the scales read the same thing. We cut the claim.
 
-This is the least glamorous and most important move in statistics: a **discriminant test** - deliberately giving your hypothesis a chance to fail by showing something it *shouldn't* explain that it explains anyway. We wanted the convergent-validity story. The data said no. In a textbook you usually see only the surviving claims; here you saw one die. That is the job.
+This is one of the most important moves in statistics: a **discriminant test**, deliberately giving your hypothesis a chance to fail by showing something it *shouldn't* explain that it explains anyway. We wanted the convergent-validity story. The data said no. In a textbook you usually see only the claims that survived; here you have seen one that did not. That is a normal and healthy part of the work.
 :::
 
 ## What This Case Teaches

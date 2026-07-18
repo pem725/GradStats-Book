@@ -1,6 +1,6 @@
 # More Item Response Theory, and Generalizability {#irt}
 
-The [Rasch chapter](18-rasch.qmd) built one item response model from scratch and promised there was a wider world. Here it is. Item Response Theory (IRT) is a whole family of models for the same task - measuring people from their item responses - and **generalizability theory (G-theory)** is the grand generalization of [reliability](10-reliability.qmd) that asks not just "how much error?" but "error *from what*?" Both are areas where the authors have published extensively, often together in a single study.
+The [Rasch chapter](18-rasch.qmd) built one item response model from scratch and promised there was a wider world. Here it is. Item Response Theory (IRT) is a whole family of models for the same task - measuring people from their item responses - and **generalizability theory (G-theory)** is a broad extension of [reliability](10-reliability.qmd) that asks not only "how much error?" but "error *from what*?" Both are areas where the authors have published extensively, often together in a single study.
 
 ## Learning Objectives
 
@@ -11,7 +11,7 @@ The [Rasch chapter](18-rasch.qmd) built one item response model from scratch and
 
 ## Beyond Rasch: Items That Discriminate Differently
 
-Rasch makes a strong, beautiful assumption: every item is equally good at separating people; items differ *only* in difficulty. The **2PL model** relaxes it, giving each item its own **discrimination** $a_i$ (how sharply it distinguishes high from low) alongside its difficulty $b_i$:
+Rasch makes a strong, simple assumption: every item is equally good at separating people; items differ *only* in difficulty. The **2PL model** relaxes it, giving each item its own **discrimination** $a_i$ (how sharply it distinguishes high from low) alongside its difficulty $b_i$:
 
 $$P(x_{ij}=1) = \frac{1}{1 + e^{-a_i(\theta_j - b_i)}}$$
 
@@ -42,7 +42,7 @@ coef(fit, simplify = TRUE)                 # each item's discrimination (a) and 
 
 ## Generalizability: Reliability, Grown Up
 
-Classical reliability ([Ch. 10](10-reliability.qmd)) splits observed variance into "true" and "error." But *error from where*? The item you happened to use? The rater who happened to score you? The day you happened to show up? **Generalizability theory** treats each of these as a **facet** and estimates how much variance each contributes - turning "reliability" from a single number into an analysis of *sources*.
+Classical reliability ([Ch. 10](10-reliability.qmd)) splits observed variance into "true" and "error." But error from where? It could come from the particular item you used, the rater who scored you, or the day you happened to show up. **Generalizability theory** treats each of these as a **facet** and estimates how much variance each contributes, turning "reliability" from a single number into an analysis of *sources*.
 
 The machinery is the [variance-partitioning](04-Dmeasures.qmd) you already know, run with `aov`. Simulate people crossed with items, then recover how much of the variance is real person differences versus item and residual noise:
 
@@ -71,7 +71,7 @@ round(G, 3)
 
 ### The D-study: Designing the Measure
 
-Here is where G-theory pays for itself. Because you know the variance components, you can ask a **design** question - a *decision (D) study*: how many items would I need for a target reliability? It is the [power analysis](09-statisticalpower.qmd) of measurement.
+This is where G-theory pays for itself. Because you know the variance components, you can ask a **design** question - a *decision (D) study*: how many items would I need for a target reliability? It is the [power analysis](09-statisticalpower.qmd) of measurement.
 
 ```{r}
 n_items <- c(4, 8, 12, 20, 40)

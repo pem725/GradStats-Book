@@ -1,6 +1,6 @@
 # Basic ANOVA
 
-We closed the last chapter with a slogan: **ANOVA is regression with categorical predictors.** That is true, and it is the deep view. But ANOVA also has a classical view - one built entirely out of the variance ideas from early in the book - and seeing that view makes the machinery click. Analysis of variance earns its name honestly: it works by *partitioning variance* into the part explained by group membership and the part left over. Let's take it apart.
+We closed the last chapter with a slogan: **ANOVA is regression with categorical predictors.** That is true, and it is the deep view. But ANOVA also has a classical view, one built entirely out of the variance ideas from early in the book, and seeing that view makes the machinery click. Analysis of variance earns its name honestly: it works by *partitioning variance* into the part explained by group membership and the part left over. Let's take it apart.
 
 ## Learning Objectives
 
@@ -55,7 +55,7 @@ We cannot compare sums of squares directly - they depend on how many things went
 
 $$F = \frac{MS_{between}}{MS_{within}} = \frac{SS_{between}/(k-1)}{SS_{within}/(N-k)}$$
 
-with $k$ groups and $N$ observations. $F$ asks a beautifully simple question: **is the variation between groups bigger than the variation within them?** If groups matter, between-group spread dwarfs the within-group noise and $F$ climbs well above 1.
+with $k$ groups and $N$ observations. $F$ asks a simple question: **is the variation between groups bigger than the variation within them?** If groups matter, the between-group spread is large relative to the within-group noise and $F$ climbs well above 1.
 
 ```{r}
 k <- 3; N <- 90
@@ -72,7 +72,7 @@ And of course, R will do the bookkeeping for us with `aov()` - confirm it matche
 summary(aov(growth ~ dose))
 ```
 
-Same $F$, same p. Nothing up our sleeve.
+Same $F$, same p, exactly as we computed by hand.
 
 ## It Really Is the Same as Regression
 
@@ -100,7 +100,7 @@ Each row is a pairwise comparison with a confidence interval already adjusted fo
 ::: {.callout-important}
 ## Do Not Skip Straight to the Pairwise Tests
 
-The two-step dance - omnibus $F$ first, post-hoc comparisons only if it is significant - is not bureaucratic ritual. Running every pairwise t-test without the omnibus gate (and without correction) is how you manufacture false positives, one comparison at a time. The $F$ is the gatekeeper; Tukey (or a similar correction) keeps the gate honest.
+The two-step procedure, omnibus $F$ first and post-hoc comparisons only if it is significant, is not just a formality. Running every pairwise t-test without the omnibus gate (and without correction) is how you manufacture false positives, one comparison at a time. The $F$ is the gatekeeper, and Tukey (or a similar correction) keeps the gate honest.
 :::
 
 ## Challenge
@@ -115,4 +115,4 @@ The two-step dance - omnibus $F$ first, post-hoc comparisons only if it is signi
 
 ## Where We Go Next
 
-You now hold the thread that runs through all of it: **quantify your uncertainty, and remember that variance is the currency you quantify it in.** From the first histogram to this $F$ ratio, it was one idea the whole way down. But there is a loose end worth pulling. Every ANOVA you just ran handed R a factor and trusted it to build the right columns of numbers - and *how* those columns are built quietly decides what each coefficient means. That is the subject of the [next chapter](19-coding.qmd), where we stop trusting the defaults and take the coding into our own hands.
+You now hold the thread that runs through all of it: **quantify your uncertainty, and remember that variance is the currency you quantify it in.** From the first histogram to this $F$ ratio, it was one idea the whole way down. But there is a loose end worth pulling. Every ANOVA you just ran handed R a factor and trusted it to build the right columns of numbers, and *how* those columns are built quietly decides what each coefficient means. That is the subject of the [next chapter](19-coding.qmd), where we stop trusting the defaults and take the coding into our own hands.

@@ -4,7 +4,7 @@ One predictor is rarely enough. The world is multivariate: college GPA depends o
 
 $$y = b_1 x_1 + b_2 x_2 + \cdots + b_k x_k + a$$
 
-The logic does not change one bit. We still minimize the sum of squared residuals, and we still quantify our uncertainty about every coefficient. What *does* change - and what trips up almost everyone - is what a coefficient now **means** when the predictors are tangled up with each other. That tangle is the whole story of this chapter.
+The logic does not change one bit. We still minimize the sum of squared residuals, and we still quantify our uncertainty about every coefficient. What *does* change, and what trips up almost everyone, is what a coefficient now **means** when the predictors are tangled up with each other. That tangle is the story of this chapter.
 
 ## Learning Objectives
 
@@ -70,7 +70,7 @@ lm3z <- lm(scale(y) ~ scale(x1) + scale(x2), data = dat)
 round(coef(lm3z)[["scale(x1)"]], 3)   # compare to beta1 above
 ```
 
-Same number. So **the coefficient `lm()` reports is a *partial* effect** - it controls for the other predictors. That is the single most important sentence in multiple regression. When someone says "controlling for X," this is the machinery they are invoking.
+Same number. So **the coefficient `lm()` reports is a *partial* effect**: it controls for the other predictors. That is the single most important sentence in multiple regression. When someone says "controlling for X," this is the machinery they are invoking.
 
 ::: {.callout-important}
 ## $sr$ vs. $pr$ vs. $\beta$ - Say It Out Loud
@@ -92,7 +92,7 @@ R2 <- var(predict(lm3)) / var(y)
 round(c(R = R, R2 = R2, R2_from_summary = summary(lm3)$r.squared), 3)
 ```
 
-That is it: $R^2 = \frac{\text{var}(\hat{y})}{\text{var}(y)}$ - the fraction of Y's variance the model reproduces. But $R^2$ is a **greedy optimist**: add any predictor, even pure noise, and it never goes down. So we penalize it for complexity to get the **adjusted (or "shrunken") $R^2$**:
+That is it: $R^2 = \frac{\text{var}(\hat{y})}{\text{var}(y)}$, the fraction of Y's variance the model reproduces. But $R^2$ has a flaw: add any predictor, even pure noise, and it never goes down. So we penalize it for complexity to get the **adjusted (or "shrunken") $R^2$**:
 
 $$R^2_{adj} = 1 - (1 - R^2)\,\frac{n - 1}{n - k - 1}$$
 
@@ -102,7 +102,7 @@ R2_adj <- 1 - (1 - R2) * (n - 1) / (n - k - 1)
 round(c(R2_adj = R2_adj, adj_from_summary = summary(lm3)$adj.r.squared), 3)
 ```
 
-The adjustment is why you should *never* judge a model by raw $R^2$ alone. Throw in enough predictors and you can make $R^2$ beautiful and the model worthless.
+The adjustment is why you should *never* judge a model by raw $R^2$ alone. Throw in enough predictors and you can make $R^2$ look impressive while the model is worthless.
 
 ## Testing the Coefficients (Rebuilding the Table Again)
 
@@ -128,7 +128,7 @@ summary(lm3)$coefficients["x1", ]              # compare
 The by-hand values match R's table. Two things to burn in:
 
 1.  The degrees of freedom for a coefficient's $t$ test are $n - k - 1$ - we spend one df per predictor **and** one for the intercept. (An older version of this lecture used $n - 1$ here; that is wrong, and with several predictors it matters.)
-2.  The **VIF sits right inside the standard error**. When predictors are collinear, VIF climbs, the SE inflates, $t$ shrinks, and your once-significant predictor goes quiet - even though nothing about the *relationship* changed. Collinearity does not bias your slopes; it makes them **imprecise**.
+2.  The **VIF sits right inside the standard error**. When predictors are collinear, VIF climbs, the SE inflates, $t$ shrinks, and your once-significant predictor goes quiet, even though nothing about the *relationship* changed. Collinearity does not bias your slopes; it makes them **imprecise**.
 
 For the whole model, the omnibus test is an $F$ built from $R^2$:
 
@@ -143,7 +143,7 @@ summary(lm3)$fstatistic          # compare F and its df
 
 ## Multicollinearity: Seeing the Damage
 
-Let us watch the VIF do its dirty work directly. As two predictors become more correlated, the VIF explodes:
+Let us watch the VIF at work directly. As two predictors become more correlated, the VIF explodes:
 
 ```{r}
 curve(1 / (1 - x^2), from = 0, to = 0.99, n = 500,
@@ -152,7 +152,7 @@ curve(1 / (1 - x^2), from = 0, to = 0.99, n = 500,
 abline(h = 10, col = "red", lty = 2)   # a common (rough) rule-of-thumb threshold
 ```
 
-Past a correlation of about 0.95 the curve rockets skyward. A predictor that is 95% predictable from the others carries almost no *unique* information, so the model cannot pin down its slope. The red line marks a rough $\text{VIF} = 10$ rule of thumb - but treat it as a smoke alarm, not a law.
+Past a correlation of about 0.95 the curve rises very steeply. A predictor that is 95% predictable from the others carries almost no *unique* information, so the model cannot pin down its slope. The red line marks a rough $\text{VIF} = 10$ rule of thumb, but treat it as a warning sign, not a hard rule.
 
 ## Six Ways to Deal With Collinearity
 

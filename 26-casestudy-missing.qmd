@@ -1,6 +1,6 @@
 # Case Study: The Data You Didn't Get {#missing}
 
-The last case study takes on the part of every real dataset that the textbooks pretend away: the **holes**. People drop out of a two-year study. Respondents skip the touchy item. A sensor fails. In the purpose-versus-happiness project - a three-wave longitudinal study tracking hundreds of people over two years - attrition was not a footnote; it was a fork in the road, because *how you handle the missing data can change the answer.*
+The last case study takes on the part of every real dataset that textbooks often set aside: the **holes**. People drop out of a two-year study. Respondents skip the touchy item. A sensor fails. In the purpose-versus-happiness project - a three-wave longitudinal study tracking hundreds of people over two years - attrition was not a footnote; it was a genuine decision point, because *how you handle the missing data can change the answer.*
 
 We have a slight advantage here: one of us wrote the book on it - literally [@McKnight2007], *Missing Data: A Gentle Introduction* (Guilford). The one-sentence version of that book is the thesis of this chapter: **missing data is not a nuisance to be swept aside; it is a modeling problem, and the first question is always *why* the data are missing.**
 
@@ -11,7 +11,7 @@ As with the other case studies, the study's real data are the authors' private c
 
 ## First Ask *Why* It's Missing
 
-Recall the three mechanisms from the [data-cleaning chapter](05-datacleaning.qmd) - they are the whole ballgame:
+Recall the three mechanisms from the [data-cleaning chapter](05-datacleaning.qmd) - they matter more than any particular technique:
 
 - **MCAR** (missing completely at random): the holes are unrelated to anything. Rare, and the only case where throwing away incomplete rows is merely *wasteful*, not *biased*.
 - **MAR** (missing at random): missingness depends on things you *observed*. Fixable - if you use the observed information.
@@ -36,7 +36,7 @@ c(pct_missing         = round(100 * mean(is.na(y_obs)), 1),
   complete_case_mean  = round(mean(y_obs, na.rm = TRUE), 3))
 ```
 
-The complete-case mean is badly **biased downward**. Of course it is: we systematically dropped the high-`z` people, and high `z` means high `y`, so the survivors are not representative. The hole did not just cost us sample size - it *moved the answer*.
+The complete-case mean is badly **biased downward**. That makes sense: we systematically dropped the high-`z` people, and high `z` means high `y`, so the survivors are not representative. The hole did more than cost us sample size; it *moved the answer*.
 
 Now recover it. The core idea of imputation is to **use the observed information** (`z`) to fill the holes in `y` - here with a stochastic regression imputation (predict the missing `y` from `z`, and add noise so we don't fake certainty):
 
@@ -53,7 +53,7 @@ Filling the holes with what `z` implies pulls the estimate back to the truth. Th
 
 ## The Twist: It Depends on What You're Estimating
 
-Here is the subtlety that separates a careful analyst from a careless one. The *marginal mean* of `y` was wrecked - but watch the *regression slope* of `y` on `z`:
+There is a subtlety here worth slowing down for. The *marginal mean* of `y` was wrecked, but watch the *regression slope* of `y` on `z`:
 
 ```{r}
 c(slope_full          = round(coef(lm(y ~ z))[2], 3),      # the truth
@@ -64,7 +64,7 @@ The slope is essentially fine, even under 47% MAR missingness - because the miss
 
 ## Multiple Imputation: The Honest Tool
 
-Our single imputation recovered the mean, but it quietly cheated on one thing: it treated the filled-in values as if they were real, understating our uncertainty. The fix is **multiple imputation** - impute the holes several times (each with fresh noise), analyze each completed dataset, and **pool** the results with Rubin's rules, so the between-imputation variability is folded into the standard errors. In R that is the `mice` package:
+Our single imputation recovered the mean, but it glossed over one thing: it treated the filled-in values as if they were real, understating our uncertainty. The fix is **multiple imputation** - impute the holes several times (each with fresh noise), analyze each completed dataset, and **pool** the results with Rubin's rules, so the between-imputation variability is folded into the standard errors. In R that is the `mice` package:
 
 ```r
 # The real tool (needs the mice package — shown, not run on the book's server)
@@ -74,7 +74,7 @@ fit  <- with(imp, lm(happiness ~ purpose + wave))              # analyze each
 pool(fit)                                                       # pool via Rubin's rules
 ```
 
-The purpose-versus-happiness study did exactly this - fitting its growth models under **complete-case and under multiple imputation side by side** - and reported both, so a reader could see whether the two-year conclusions survived the missing data. That comparison *is* the analysis; presenting only the complete-case result and hoping would have been a choice to look away.
+The purpose-versus-happiness study did exactly this - fitting its growth models under **complete-case and under multiple imputation side by side** - and reported both, so a reader could see whether the two-year conclusions survived the missing data. That comparison *is* the analysis; reporting only the complete-case result would have meant leaving the question unanswered.
 
 ## What This Case Teaches
 
@@ -83,4 +83,4 @@ The purpose-versus-happiness study did exactly this - fitting its growth models 
 - **Imputation works by using what you kept.** Auxiliary variables that predict both the outcome and its missingness are gold.
 - **Whether it changes the answer is estimand-specific.** Check; don't assume. And when you handle it, use *multiple* imputation so your uncertainty tells the truth.
 
-That closes our apprenticeship in the wild - four real studies, every judgment call on the table: a total score caught hiding information, a measure built and confirmed and preregistered, and a dataset's holes bent (and not bent) an estimate. The tools were never the hard part. Knowing which one, when, and why - and admitting what you cannot know - is the whole job.
+That closes our tour of four real studies, with the judgment calls left in view: a total score caught hiding information, a measure built and confirmed and preregistered, and a dataset's holes that bent one estimate and left another alone. The tools themselves were rarely the hard part. The harder work is knowing which tool to use, when, and why, and being honest about what you cannot know.

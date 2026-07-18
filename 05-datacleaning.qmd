@@ -1,6 +1,6 @@
 # Cleaning House
 
-Nobody puts this chapter on a highlight reel, and yet you will spend more of your career here than anywhere else in this book. Real data arrive dirty: typos, impossible values, blanks, dates stored as text, "999" standing in for "don't know." Before a single fancy model, you must clean house. Do it carelessly and every beautiful analysis downstream is built on sand.
+This chapter rarely gets much attention, and yet you will spend more of your career here than anywhere else in this book. Real data arrive dirty: typos, impossible values, blanks, dates stored as text, "999" standing in for "don't know." Before you fit a single model, you have to clean house. Do it carelessly and every analysis downstream rests on a shaky foundation.
 
 ## Learning Objectives
 
@@ -15,7 +15,7 @@ Start with a mindset. A measure is a **sensor** - a thermometer, a questionnaire
 
 ## First, Actually Look
 
-The cheapest, most-skipped step is to *look at your data* before touching it. `str()`, `summary()`, and a few plots catch an astonishing share of problems:
+The cheapest, most-skipped step is to *look at your data* before touching it. `str()`, `summary()`, and a few plots catch a surprisingly large share of problems:
 
 ```{r}
 set.seed(3)
@@ -28,7 +28,7 @@ str(dat)
 summary(dat)
 ```
 
-Three problems already leap out: an age of 220, a negative income (and a suspicious 999), and a stray lowercase "b". None of these needed a model - just a look.
+Three problems already stand out: an age of 220, a negative income (and a suspicious 999), and a stray lowercase "b". None of these needed a model; a look was enough.
 
 ## Impossible Values and Sanity Checks
 
@@ -42,7 +42,7 @@ dat$group <- toupper(trimws(as.character(dat$group)))  # fix "b" and stray space
 table(dat$group, useNA = "ifany")
 ```
 
-Note the sneaky one: **999 was never a real income** - it was a placeholder for "declined to answer." Software cannot know that. If you had left it in, the mean income would have been science fiction. Always hunt for these coded-missing sentinels (999, -1, "N/A", empty strings) and convert them to honest `NA`.
+Note the tricky one: **999 was never a real income**. It was a placeholder for "declined to answer," and software cannot know that. If you had left it in, the mean income would have been badly wrong. Always look for these coded-missing sentinels (999, -1, "N/A", empty strings) and convert them to a genuine `NA`.
 
 ## Missing Data: The *Why* Matters
 
@@ -50,7 +50,7 @@ Once the sentinels are cleaned, you are left with genuine gaps. How you should h
 
 - **MCAR** (Missing Completely At Random): the gap is unrelated to anything - a dropped test tube. Dropping these cases loses power but does not bias you.
 - **MAR** (Missing At Random): missingness depends on things you *observed* (older people skip the income item, and you recorded age). Recoverable with the right methods.
-- **MNAR** (Missing Not At Random): missingness depends on the *unobserved value itself* (high earners hide their income). The dangerous one - no amount of cleverness fully fixes it, and it can silently bias every result.
+- **MNAR** (Missing Not At Random): missingness depends on the *unobserved value itself* (high earners hide their income). The hardest case: no method fully fixes it, and it can quietly bias every result.
 
 ```{r}
 colSums(is.na(dat))     # how much is missing, and where?
@@ -60,7 +60,7 @@ The default in most software is **listwise deletion** - throw out any row with a
 
 ## Outliers: Investigate, Don't Reflexively Delete
 
-An outlier is not automatically an error. It might be your most important data point (the one patient who responded, the fraud you were hired to find). The rule: **investigate before you act.** A value can be (1) an impossible error - fix or remove it; (2) a real but extreme observation - keep it, and consider a robust method or a transformation; or (3) genuinely interesting - study it. Deleting outliers just because they are inconvenient is how honest data becomes a lie.
+An outlier is not automatically an error. It might be your most important data point (the one patient who responded, the fraud you were hired to find). The rule: **investigate before you act.** A value can be (1) an impossible error - fix or remove it; (2) a real but extreme observation - keep it, and consider a robust method or a transformation; or (3) genuinely interesting - study it. Deleting outliers just because they are inconvenient turns honest data into a misleading result.
 
 ```{r}
 z <- scale(c(52, 61, 48, 55, 60, 58, 300))    # 300 stands out

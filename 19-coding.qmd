@@ -1,8 +1,8 @@
 # Coding Categorical Predictors {#coding}
 
-In the [ANOVA and the GLM](16-ANOVAandGLM.qmd) chapter we let R turn a factor into numbers for us and got on with life. That was a convenient lie. R *always* codes a categorical predictor into numbers before it fits anything - and **the code you choose decides what every coefficient means.** Change the code and the intercept, the slopes, the *t*-tests all change their meaning, even though the model's fit (its $R^2$, its $F$, its predicted values) does not budge an inch.
+In the [ANOVA and the GLM](16-ANOVAandGLM.qmd) chapter we let R turn a factor into numbers for us and moved on. That was a simplification worth revisiting. R *always* codes a categorical predictor into numbers before it fits anything, and **the code you choose decides what every coefficient means.** Change the code and the intercept, the slopes, and the *t*-tests all change their meaning, even though the model's fit (its $R^2$, its $F$, its predicted values) does not change at all.
 
-That last sentence is the whole chapter. The coding scheme is a lens, not a model. Pick the lens that answers your question, and the coefficients read like plain English. Pick a careless lens and you get numbers that are technically correct and completely meaningless - what we will (fondly) call **nonsense coding**.
+That is the whole chapter in one idea. The coding scheme is a lens, not a model. Pick the lens that answers your question, and the coefficients read like plain English. Pick a careless lens and you get numbers that are technically correct but not meaningful, what we will call **nonsense coding**.
 
 ## Learning Objectives
 
@@ -13,7 +13,7 @@ That last sentence is the whole chapter. The coding scheme is a lens, not a mode
 
 ## A Category Is a Binned Continuum
 
-Let's build a categorical variable from scratch so we can see the seams. Take a continuous "dogness" score, chop it into four bins, and call them `cat`, `fish`, `pig`, `dog` (cat lovers are welcome to write their own course):
+Let's build a categorical variable from scratch so we can see the seams. Take a continuous "dogness" score, chop it into four bins, and call them `cat`, `fish`, `pig`, `dog`:
 
 ```{r}
 set.seed(725)
@@ -108,7 +108,7 @@ all.equal(unname(mu["dog"] - GM_groups), unname(dog_effect))
 
 ::: {.callout-warning}
 ## Always check your contrasts
-`contr.sum` on a two-level factor assigns `+1` to the *first* level and `-1` to the second - which is often the opposite of what you expect, silently flipping the sign of your effect. R's default level ordering (alphabetical!) will burn you the same way. Print `contrasts(yourfactor)` *before* you interpret anything.
+`contr.sum` on a two-level factor assigns `+1` to the *first* level and `-1` to the second, which is often the opposite of what you expect, and it silently flips the sign of your effect. R's default level ordering (alphabetical) can catch you the same way. Print `contrasts(yourfactor)` *before* you interpret anything.
 :::
 
 ## Weighted Effects Coding
@@ -145,7 +145,7 @@ c(intercept   = unname(coef(m_weff)[1]),
   groups_mean = mean(tapply(happyw, petw, mean)))
 ```
 
-The intercept tracks the raw mean. "The weights get pushed onto the comparison-group means" - unbalanced data no longer distorts your grand mean.
+The intercept tracks the raw mean. The weights get pushed onto the comparison-group means, so unbalanced data no longer distorts your grand mean.
 
 ## Contrast Coding
 
@@ -201,7 +201,7 @@ c(contrast_b1 = unname(coef(m_con)["petusual_vs_unusual"]),
 
 ## Nonsense Coding
 
-Now the capstone - and the point of the whole chapter. What if we assign *arbitrary* numbers to the groups? Not a reference, not deviations, not a meaningful comparison - just... numbers we made up:
+Now the capstone, and the point of the whole chapter. What if we assign *arbitrary* numbers to the groups, with no reference, no deviations, and no meaningful comparison behind them?
 
 ```{r}
 nonsense <- matrix(c( 3.0, -7.0,  2.5,  0.1,
@@ -214,7 +214,7 @@ m_nonsense <- lm(happy ~ pet, data = d)
 round(coef(m_nonsense), 3)
 ```
 
-Those coefficients are gibberish - `huh`, `wat`, `lol`, indeed. You cannot read a single one off the group means. And yet look at what has **not** changed:
+Those coefficients are not interpretable, which is exactly why the columns are named `huh`, `wat`, and `lol`. You cannot read a single one off the group means. And yet look at what has **not** changed:
 
 ```{r}
 # The model fit is byte-for-byte identical to the sensible codings:
@@ -226,7 +226,7 @@ c(same_fitted = isTRUE(all.equal(fitted(m_nonsense), fitted(m_dummy))),
 
 All `TRUE`. **Every coding scheme in this chapter fits the exact same model** - same predicted values, same $R^2$, same omnibus $F$. Dummy, effects, weighted, contrast, and nonsense codes are five different *descriptions* of one fitted surface. The omnibus test ("does `pet` matter at all?") is blind to coding. Only the **individual coefficients** - the intercept and the $b$'s - carry the fingerprint of the code you chose.
 
-That is the lesson worth tattooing on the inside of your eyelids:
+That is the lesson worth holding onto:
 
 ::: {.callout-important}
 ## Coding does not change the model - only the meaning of the coefficients
@@ -275,7 +275,7 @@ m_real_eff <- lm(y1 ~ grp, data = d3)
 all.equal(unname(coef(m_real_eff)[1]), mean(mu3))
 ```
 
-`TRUE`. Real data, real (unbalanced) cells - and every rule from the pet example holds without a scratch, because the arithmetic never cared whether the groups were house pets or the conditions of an actual study.
+`TRUE`. Real data, real (unbalanced) cells, and every rule from the pet example still holds, because the arithmetic works the same whether the groups are house pets or the conditions of an actual study.
 
 ## Challenge
 
@@ -288,4 +288,4 @@ all.equal(unname(coef(m_real_eff)[1]), mean(mu3))
 
 ## Where We Go Next
 
-Coding is where categorical data enter the linear model, and where careful thought pays off in coefficients you can actually explain. It is also the last piece of the *observed-variable* linear model. But the constructs we most want to study - depression, curiosity, intelligence - are never observed directly; we see only their noisy indicators. The [next part](28-sem.qmd) turns to **latent variables** and the factor and structural models built for them - and after that, to what you do when the normal curve itself starts lying to you.
+Coding is where categorical data enter the linear model, and where careful thought pays off in coefficients you can actually explain. It is also the last piece of the *observed-variable* linear model. But the constructs we most want to study, such as depression, curiosity, and intelligence, are never observed directly; we see only their noisy indicators. The [next part](28-sem.qmd) turns to **latent variables** and the factor and structural models built for them, and after that, to what you do when the normal curve no longer describes your data well.

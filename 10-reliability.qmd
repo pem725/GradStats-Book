@@ -46,7 +46,7 @@ reliability <- var(truth) / var(observed)
 c(reliability = round(reliability, 3))
 ```
 
-About 0.78 of the variance in our observed scores is real signal; the rest is the sensor hiccupping. In practice we can never see `truth`, so we *estimate* reliability from clever comparisons.
+About 0.78 of the variance in our observed scores is real signal; the rest is sensor noise. In practice we can never see `truth`, so we *estimate* reliability from clever comparisons.
 
 ## Four Ways to Estimate Reliability
 
@@ -75,11 +75,11 @@ alpha <- (k / (k - 1)) * (1 - var_items / var_total)
 c(cronbach_alpha = round(alpha, 3))
 ```
 
-An alpha around 0.85 says the six items hang together well - they are largely reading the same underlying construct. By rough convention, 0.70 is "acceptable," 0.80+ "good," but do not worship the threshold: alpha climbs with more items whether or not they are any good, so a high alpha is necessary, not sufficient.
+An alpha around 0.85 says the six items hang together well; they are largely reading the same underlying construct. By rough convention, 0.70 is "acceptable," 0.80+ "good," but do not lean on the threshold too hard: alpha climbs with more items whether or not they are any good, so a high alpha is necessary, not sufficient.
 
 ## Why You Should Care: Attenuation
 
-Here is the practical sting. Unreliable measures **attenuate** - shrink - the correlations you are trying to detect. A real relationship between two constructs looks weaker than it is, purely because your sensors are noisy:
+Now the practical consequence. Unreliable measures **attenuate** (shrink) the correlations you are trying to detect. A real relationship between two constructs looks weaker than it is, purely because your sensors are noisy:
 
 ```{r}
 set.seed(10)
@@ -90,11 +90,11 @@ Oy <- Ty + rnorm(1000, 0, 1)
 c(true_r = round(cor(Tx, Ty), 2), observed_r = round(cor(Ox, Oy), 2))
 ```
 
-The observed correlation is noticeably smaller than the true one. A real effect can hide behind a bad ruler - which means a null result might be a measurement failure, not the absence of an effect. Reliability is not bookkeeping; it is the difference between finding your effect and missing it.
+The observed correlation is noticeably smaller than the true one. A real effect can hide behind a bad ruler, which means a null result might be a measurement failure rather than the absence of an effect. Reliability is more than bookkeeping; it can be the difference between finding your effect and missing it.
 
 ## A Real Scale, End to End
 
-Enough simulation - let's run the whole pipeline on real data: a 10-item scale (`x1`–`x10`) from the graduate GLM course (`data/moddat2.csv`, $n = 30$). Three moves: **key** the items, **estimate** $\alpha$, and check **which items earn their place**.
+Enough simulation. Let's run the whole pipeline on real data: a 10-item scale (`x1`–`x10`) from the graduate GLM course (`data/moddat2.csv`, $n = 30$). Three moves: **key** the items, **estimate** $\alpha$, and check **which items earn their place**.
 
 Some items are worded in reverse, so a high true standing produces a *low* score - flip them first or they fight the rest of the scale and sink $\alpha$. We spot a reverse item by its *negative* item-rest correlation (it correlates the wrong way with the sum of the others):
 
@@ -128,7 +128,7 @@ Every "alpha-if-deleted" value sits *below* the full-scale $\alpha$, so no item 
 
 ## Why Reliability Buys You Power
 
-Here is the payoff, and the link back to [statistical power](09-statisticalpower.qmd). Detection is the between-group signal over the within-group noise - and unreliability *is* that noise ($S^2_{error}$). Build the keyed scale score, then ask a real question of it - do women and men differ? - sizing the effect with Cohen's $d$:
+Now the payoff, and the link back to [statistical power](09-statisticalpower.qmd). Detection is the between-group signal over the within-group noise, and unreliability *is* that noise ($S^2_{error}$). Build the keyed scale score, then ask a real question of it - do women and men differ? - sizing the effect with Cohen's $d$:
 
 ```{r}
 score <- rowSums(a$scored)                 # the keyed total score
@@ -141,7 +141,7 @@ EScalc <- function(dv, cond) {             # McKnight's teaching function for Co
 round(EScalc(score, d$sex), 2)
 ```
 
-A large $d$ - but the point is *why* it was detectable: because the scale was reliable. Had $\alpha$ been 0.5 instead, half the total-score variance would be pure error, the groups would blur together, and the same real difference could sink below significance. **A reliable measure is the cheapest power you will ever buy** - you pay once, in the design, and it pays back in every analysis that follows. (In practice you'd reach for `psych::alpha(X, check.keys = TRUE)`, which does the keying, the drop statistics, and much more in one call - but now you know exactly what it is doing under the hood.)
+A large $d$. But the point is *why* it was detectable: because the scale was reliable. Had $\alpha$ been 0.5 instead, half the total-score variance would be pure error, the groups would blur together, and the same real difference could sink below significance. **A reliable measure is the cheapest power you will ever buy**: you pay once, in the design, and it pays back in every analysis that follows. (In practice you'd reach for `psych::alpha(X, check.keys = TRUE)`, which does the keying, the drop statistics, and much more in one call - but now you know exactly what it is doing under the hood.)
 
 ::: {.callout-important}
 ## The Dartboard: Consistency ≠ Accuracy

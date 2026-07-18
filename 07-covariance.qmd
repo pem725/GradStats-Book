@@ -44,7 +44,7 @@ The blue points (agreeing deviations) dominate, so covariance is positive. That 
 
 ## The Units Problem, and the Fix: Correlation
 
-Covariance has a fatal flaw for interpretation: its size depends on the **units**. Measure grade in points vs. proportions and the covariance changes wildly, even though the relationship is identical. Sound familiar? It is the same units problem the standard deviation had - and we fix it the same way, by **standardizing**. Divide covariance by both standard deviations and you get the **correlation coefficient**, $r$:
+Covariance has a serious drawback for interpretation: its size depends on the **units**. Measure grade in points versus proportions and the covariance changes a lot, even though the relationship is identical. This is the same units problem the standard deviation had, and we fix it the same way, by **standardizing**. Divide covariance by both standard deviations and you get the **correlation coefficient**, $r$:
 
 $$r = \frac{\text{cov}(x, y)}{s_x \, s_y}$$
 
@@ -57,7 +57,7 @@ Correlation is covariance stripped of its units, squeezed onto a fixed scale fro
 
 ## What Correlation Will Not Tell You
 
-Two eternal warnings. First, the one on every coffee mug: **correlation is not causation.** Ice-cream sales and drownings correlate (both driven by summer heat), but sundaes do not drown people. Second, and less appreciated: $r$ measures only the **linear** part of a relationship. A strong curved relationship can produce $r \approx 0$. This is why we told you to *always plot your data* - the single number can hide the whole story:
+Two lasting warnings. First, the familiar one: **correlation is not causation.** Ice-cream sales and drownings correlate (both driven by summer heat), but ice cream does not cause drowning. Second, and less appreciated: $r$ measures only the **linear** part of a relationship. A strong curved relationship can produce $r \approx 0$. This is why we told you to *always plot your data* - the single number can hide the whole story:
 
 ```{r}
 # a perfect U-shape: strong relationship, ~zero correlation
@@ -78,7 +78,7 @@ b_from_cov <- cov(study, grade) / var(study)
 c(cov_over_var = b_from_cov, lm_slope = coef(lm(grade ~ study))[["study"]])
 ```
 
-They match exactly. Regression, correlation, and everything downstream are covariance wearing different clothes. When we say the General Linear Model "models covariance structure," this is what we mean - and it is why this modest chapter is the true beginning of the modeling half of the book.
+They match exactly. Regression, correlation, and everything downstream are built from covariance. When we say the General Linear Model "models covariance structure," this is what we mean, and it is why this chapter is the real beginning of the modeling half of the book.
 :::
 
 ## Challenge
@@ -93,4 +93,4 @@ They match exactly. Regression, correlation, and everything downstream are covar
 
 ## Where We Go Next
 
-We now hold the engine (covariance) but have not yet built the machine. Before we assemble full models, a short detour to make sure our sensors are trustworthy: are our measurements [reliable](10-reliability.qmd) and [valid](11-validity.qmd)? A model built on a broken ruler predicts nothing - no matter how strong the covariance looks.
+We now hold the engine (covariance) but have not yet built the machine. Before we assemble full models, a short detour to make sure our sensors are trustworthy: are our measurements [reliable](10-reliability.qmd) and [valid](11-validity.qmd)? A model built on a broken ruler predicts nothing, no matter how strong the covariance looks.

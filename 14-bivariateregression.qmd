@@ -11,7 +11,7 @@ We begin with a simple bivariate (two variable) model with one outcome and one p
 
 ## A Little History (You Can Skip It, But Don't)
 
-Regression is old. Really old. Adrien-Marie Legendre published the method of **least squares** in 1805, and Carl Friedrich Gauss claimed he had been using it since 1795 (mathematicians squabble too). But the word *regression* comes from Sir Francis Galton, who in 1885 noticed that the tall sons of tall fathers tended to be a little shorter than their fathers, and the short sons of short fathers a little taller - both **regressing toward the mean**. Yule (1897) and Pearson (1903) took Galton's idea and gave us the machinery we still use today.
+Regression is old. Adrien-Marie Legendre published the method of **least squares** in 1805, and Carl Friedrich Gauss claimed he had been using it since 1795 (priority disputes like this are common in the history of mathematics). But the word *regression* comes from Sir Francis Galton, who in 1885 noticed that the tall sons of tall fathers tended to be a little shorter than their fathers, and the short sons of short fathers a little taller, both **regressing toward the mean**. Yule (1897) and Pearson (1903) took Galton's idea and gave us the machinery we still use today.
 
 Why do we tell you this? Because regression was invented to answer an honest, human question: *if I know something about you (X), what is my best guess about something else (Y)?* That is the whole game. Everything below is just bookkeeping in service of that one question.
 
@@ -25,7 +25,7 @@ For the simple linear case, that function is a straight line:
 
 $$y = bx + a$$
 
-where $b$ is the **slope** (how much $y$ changes for a one-unit change in $x$) and $a$ is the **intercept** (the value of $y$ when $x = 0$). You may have seen this in algebra class as $y = mx + b$; statisticians, being contrarians, swapped the letters. Get used to it.
+where $b$ is the **slope** (how much $y$ changes for a one-unit change in $x$) and $a$ is the **intercept** (the value of $y$ when $x = 0$). You may have seen this in algebra class as $y = mx + b$; statisticians use different letters for the same idea.
 
 Let's make some data and look at it. We will keep it tiny - five points - so you can check every number by hand.
 
@@ -46,7 +46,7 @@ abline(lm1, col = "red", lwd = 2)
 summary(lm1)
 ```
 
-R just handed us a slope and an intercept. But here is the thing we care about most in this book: **do not trust the machine until you can reproduce what it did.** The rest of this chapter rebuilds every number in that output by hand. If you can do that, you *understand* regression. If you cannot, you are just a person who can type `summary()`.
+R just handed us a slope and an intercept. Here is what matters most in this book: **do not trust the machine until you can reproduce what it did.** The rest of this chapter rebuilds every number in that output by hand. If you can do that, you *understand* regression, rather than just knowing how to type `summary()`.
 
 ## What "Best" Means: Residuals
 
@@ -82,7 +82,7 @@ sum(resid(lm1)^2)      # the sum of SQUARED residuals - this is what we minimize
 ::: {.callout-important}
 ## Least Squares, Defined
 
-The "best" line is the one line (out of infinitely many possible lines) that makes `sum(resid^2)` as small as it can possibly be. That is *all* "least squares" means: **least** (smallest) **squares** (of the residuals). The residuals sum to zero for *any* line through the means, so we cannot minimize their plain sum - it is always zero. Squaring first solves that, and it punishes big misses more than small ones. We shall return to that squared quantity again and again; it is the beating heart of the whole enterprise.
+The "best" line is the one line (out of infinitely many possible lines) that makes `sum(resid^2)` as small as it can possibly be. That is *all* "least squares" means: **least** (smallest) **squares** (of the residuals). The residuals sum to zero for *any* line through the means, so we cannot minimize their plain sum - it is always zero. Squaring first solves that, and it punishes big misses more than small ones. We shall return to that squared quantity again and again; it is central to everything that follows.
 :::
 
 ## Solving for the Slope and Intercept by Hand
@@ -118,7 +118,7 @@ a
 ::: {.callout-note}
 ## Why are those two the same?
 
-Because $\bar{y} = \frac{\sum y}{N}$ and $\bar{x} = \frac{\sum x}{N}$. Substitute those into $a = \bar{y} - b\bar{x}$, put everything over the common denominator $N$, and you land on the second formula. Try it with a pencil. We mean it - do it once and you will never be intimidated by a "scary" formula again, because you will know they are usually just a tidy version of something obvious.
+Because $\bar{y} = \frac{\sum y}{N}$ and $\bar{x} = \frac{\sum x}{N}$. Substitute those into $a = \bar{y} - b\bar{x}$, put everything over the common denominator $N$, and you land on the second formula. Try it with a pencil. Do it once and these "scary" formulas lose their power to intimidate, because you will see they are usually just a tidy version of something simple.
 :::
 
 ## Quantifying Our Uncertainty: Standard Errors
@@ -154,14 +154,14 @@ p_b <- 2 * pt(-abs(t_b), df = N - 2)
 c(slope = b, SE = Sb, t = t_b, p = p_b)
 ```
 
-Look back at the `x` row of `summary(lm1)`. The estimate, the standard error, the $t$ value, the $p$ value - **we just rebuilt the entire regression table from scratch.** That is the whole chapter in one breath: R is a fast calculator, not an oracle, and you now own every number it produced.
+Look back at the `x` row of `summary(lm1)`. The estimate, the standard error, the $t$ value, the $p$ value: **we just rebuilt the entire regression table from scratch.** That is the main lesson of the chapter: R is a fast calculator, not an oracle, and you now understand every number it produced.
 
 ::: {.callout-note}
 ## From the Mailbag (a real question from PSYC 754)
 
 > "When calculating the standard error of estimate and the standard error of $b$, why are the calculations for the degrees of freedom different? (I.e., standard error of estimate $N-2$ but standard error of $b$ $N-1$.)"
 
-Sharp catch - and the honest answer is that they should **not** be different. There is only one rule here: the degrees of freedom equal $N$ minus the number of parameters you estimated. In simple regression you estimate two (a slope and an intercept), so *every* standard error in this chapter - the estimate, the slope, the intercept - rests on the same $N-2$. If a formula sheet ever shows $N-1$ for the SE of $b$, that is a slip, not a second rule. (When we add predictors in the [next chapter](15-MRC.qmd), that same one rule becomes $N-k-1$.)
+Sharp catch, and the honest answer is that they should **not** be different. There is only one rule here: the degrees of freedom equal $N$ minus the number of parameters you estimated. In simple regression you estimate two (a slope and an intercept), so *every* standard error in this chapter - the estimate, the slope, the intercept - rests on the same $N-2$. If a formula sheet ever shows $N-1$ for the SE of $b$, that is a slip, not a second rule. (When we add predictors in the [next chapter](15-MRC.qmd), that same one rule becomes $N-k-1$.)
 :::
 
 ::: {.callout-note}
@@ -177,7 +177,7 @@ Students memorize "b is the change in y per unit change in x" and then promptly 
 - $a$ is measured in **lbs**
 - so the equation reads: $y\ (\text{lbs}) = \frac{\text{lbs}}{\text{inches}} \times \text{inches} + \text{lbs}$, i.e. $\text{lbs} = \text{lbs} + \text{lbs}$ ✓
 
-The units *have* to balance, and checking them is a free error-detector. If your slope came out in the wrong units, you did something wrong. This is a trick engineers use constantly; steal it.
+The units *have* to balance, and checking them is a free error-detector. If your slope came out in the wrong units, you did something wrong. This is a habit engineers use constantly, and it is worth adopting.
 
 ## Standardized Coefficients
 

@@ -8,7 +8,7 @@ Here is the framing (PEM) I use with my own students. A power analysis is really
 
 $$P(\text{Party at the Pub!} \mid \text{your research plans}),$$
 
-the probability you'll be celebrating a detected effect *given* the study you're about to run - which is to say, a **S**cientific **W**ild **A**ss **G**uess. That is not an insult to the method; it is honesty about it, because power depends on things you must *guess* before any data exist (chiefly the true effect size). Why bother guessing at all? Because power protects the things you care about - **funding**, your time, scarce participants - and it is the one part of a study you can shape in advance. The goal is not false precision; it is **self-reliance**. Power estimation is daunting, important, easy to fool yourself with, and *far* more within your reach than most people realize - because when the formulas intimidate you, you can always just **simulate** it.
+the probability you'll be celebrating a detected effect *given* the study you're about to run - which is to say, a **S**cientific **W**ild **A**ss **G**uess. That is not an insult to the method; it is honesty about it, because power depends on things you must *guess* before any data exist (chiefly the true effect size). Why bother guessing at all? Because power protects the things you care about (**funding**, your time, scarce participants), and it is the one part of a study you can shape in advance. The goal is not false precision; it is **self-reliance**. Power estimation is daunting, important, and easy to fool yourself with, and it is *far* more within your reach than most people realize, because when the formulas intimidate you, you can always **simulate** it.
 :::
 
 ## Learning Objectives
@@ -27,7 +27,7 @@ Recall the decision table from [Hypothesis Testing](08-hypothesistesting.qmd):
 | **We reject $H_0$**      | Type I error ($\alpha$)  | **Correct ✓ (power, $1-\beta$)** |
 | **We fail to reject $H_0$** | Correct ✓ ($1-\alpha$) | Type II error ($\beta$)   |
 
-**Power** is the highlighted cell: the probability we correctly reject the null *given that the null is false* - that is, given there is a real effect to find. Its complement is $\beta$, the Type II error rate (the miss). By long convention we aim for power of **0.80**: an 80% chance of catching a true effect, and thus a 20% chance of missing it. That 20% should bother you; it is why underpowered research is such a quiet disaster. When power is low, you not only miss real effects - the significant results you *do* find are more likely to be flukes.
+**Power** is the highlighted cell: the probability we correctly reject the null *given that the null is false* - that is, given there is a real effect to find. Its complement is $\beta$, the Type II error rate (the miss). By long convention we aim for power of **0.80**: an 80% chance of catching a true effect, and thus a 20% chance of missing it. That 20% should bother you; it is why underpowered research is such a serious problem. When power is low, you not only miss real effects, but the significant results you *do* find are more likely to be flukes.
 
 ## The Four Levers
 
@@ -35,13 +35,13 @@ Power is a function of four things, and only four. Three you can influence; one 
 
 1.  **Effect size** - how big the true effect is. Bigger effects are easier to detect. We usually express it in standardized units, e.g., Cohen's $d = \frac{\text{mean difference}}{\text{standard deviation}}$. You do not *control* the true effect, but you can sometimes measure it more cleanly to keep it from being buried in noise.
 2.  **Sample size ($n$)** - more data, more power. This is the lever you actually turn. Nearly every underpowered study is really a too-small study.
-3.  **Significance level ($\alpha$)** - a more *lenient* $\alpha$ (say .10) makes it easier to reject, so power goes **up**; a *stricter* $\alpha$ (say .01) makes it harder to reject, so power goes **down**. (More on this trade-off below - it is exactly backwards in a lot of lecture notes, including an old version of mine.)
+3.  **Significance level ($\alpha$)** - a more *lenient* $\alpha$ (say .10) makes it easier to reject, so power goes **up**; a *stricter* $\alpha$ (say .01) makes it harder to reject, so power goes **down**. (More on this trade-off below; it is exactly backwards in a lot of lecture notes, including an old version of mine.)
 4.  **Directionality** - a one-tailed test concentrates all of $\alpha$ in the predicted direction, so it has more power *there* - at the cost of being blind to an effect in the other direction.
 
 ::: {.callout-warning}
 ## The $\alpha$-Power Trade-off (Getting It Right)
 
-It is tempting - and wrong - to say "lower $\alpha$ gives higher power." Lowering $\alpha$ shrinks the rejection region, which makes it *harder* to reject the null, which **lowers** power. You cannot buy fewer false alarms (small $\alpha$) and more hits (high power) for free by tightening $\alpha$ alone; those two pull in opposite directions. The only way to improve *both* at once is to change something outside this trade-off - almost always, **collect a larger sample**.
+It is tempting, and wrong, to say "lower $\alpha$ gives higher power." Lowering $\alpha$ shrinks the rejection region, which makes it *harder* to reject the null, which **lowers** power. You cannot buy fewer false alarms (small $\alpha$) and more hits (high power) for free by tightening $\alpha$ alone; those two pull in opposite directions. The only way to improve *both* at once is to change something outside this trade-off - almost always, **collect a larger sample**.
 :::
 
 ::: {.callout-note}
@@ -57,7 +57,7 @@ Before any software, a few back-of-the-envelope numbers get you into the right b
 - **Associations** (correlations, $r$): you want **$N > 50$** or so.
 - **Measurement models** (EFA/CFA): **$N > 300$** is usually safe.
 
-These are deliberately crude - they hide the effect size you're implicitly assuming - but they are enough to sanity-check a plan, or to notice a design is hopeless *before* you spend a dime. Then you refine with a real calculation, which comes in two flavors: a **point estimate** from a formula (next), and a **simulation** you can watch (further down). The right habit is to reach for an existing tool first, make sure you understand the model you're planning (a $t$-test, a regression, a mixed model), and then simulate to check your guesses.
+These are deliberately crude (they hide the effect size you're implicitly assuming), but they are enough to sanity-check a plan, or to notice a design is hopeless *before* you spend anything. Then you refine with a real calculation, which comes in two flavors: a **point estimate** from a formula (next), and a **simulation** you can watch (further down). The right habit is to reach for an existing tool first, make sure you understand the model you're planning (a $t$-test, a regression, a mixed model), and then simulate to check your guesses.
 
 ## Seeing Power in R
 
@@ -89,11 +89,11 @@ The real payoff is planning. If you want 80% power to detect a medium effect ($d
 power.t.test(delta = 0.5, sd = 1, sig.level = 0.05, power = 0.80)
 ```
 
-The answer (about 64 per group) is a number you want *before* you run the study, not after. Running first and computing power later - so-called "post-hoc power" - tells you almost nothing useful; power is a design tool, not a consolation prize.
+The answer (about 64 per group) is a number you want *before* you run the study, not after. Running first and computing power later, so-called "post-hoc power," tells you almost nothing useful; power is a design tool, not a consolation prize.
 
 ## Power Is Really Just Simulation
 
-If the formulas ever feel like a black box, remember they are only shortcuts for something you can *watch* directly. The recipe is four steps: **generate** data from a world where the effect is real, **run** your model, **collect** whether it hit ($p < \alpha$), and **repeat** a few thousand times. The fraction of hits **is** the power - and unlike a formula, this recipe works for *any* design you can simulate (a mixed model, a mediation, a weird custom test), long after the closed-form equations give up:
+If the formulas ever feel like a black box, remember they are only shortcuts for something you can *watch* directly. The recipe is four steps: **generate** data from a world where the effect is real, **run** your model, **collect** whether it hit ($p < \alpha$), and **repeat** a few thousand times. The fraction of hits **is** the power, and unlike a formula, this recipe works for *any* design you can simulate (a mixed model, a mediation, a custom test), long after the closed-form equations give up:
 
 ```{r}
 set.seed(1988)
@@ -106,7 +106,7 @@ hits <- replicate(2000, {
 mean(hits)   # simulated power ~ 0.80
 ```
 
-The simulation lands right where `power.t.test()` said it would. No magic - just a claim about how often a true effect trips the wire.
+The simulation lands right where `power.t.test()` said it would. It is simply a count of how often a true effect trips the wire.
 
 ## Challenge
 
@@ -117,7 +117,7 @@ The simulation lands right where `power.t.test()` said it would. No magic - just
 2.  Fix $n = 40$ per group and $d = 0.4$. Compute power at $\alpha = .01$, $.05$, and $.10$. State in one sentence what you are giving up as you raise $\alpha$ to gain power.
 3.  Write the simulation from the last section yourself, but for a one-sample test against a null mean. Confirm your simulated power matches `power.t.test(..., type = "one.sample")`.
 
-If part 2 makes you a little uncomfortable, good - that discomfort *is* the trade-off, and pretending it away is how bad studies get funded.
+If part 2 makes you a little uncomfortable, good: that discomfort *is* the trade-off, and ignoring it is how underpowered studies get funded.
 :::
 
 ## Where We Go Next

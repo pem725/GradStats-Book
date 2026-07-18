@@ -1,6 +1,6 @@
 # ANOVA and the General Linear Model
 
-Here is a secret the way statistics is usually taught works hard to hide: **ANOVA is not a different technique from regression.** It is regression - the very same least-squares machinery from the last two chapters - applied to *categorical* predictors. Analysis of variance, t-tests, regression: they are all special cases of one thing, the **General Linear Model (GLM)**. Once you see the unification, half of your statistics education collapses into a single idea, and that is a mercy.
+The way statistics is usually taught tends to hide something important: **ANOVA is not a different technique from regression.** It is regression, the very same least-squares machinery from the last two chapters, applied to *categorical* predictors. Analysis of variance, t-tests, regression: they are all special cases of one thing, the **General Linear Model (GLM)**. Once you see the unification, a large part of your statistics education collapses into a single idea.
 
 The only new skill you need is **coding**: how to turn a category ("cat," "dog") into numbers a regression can chew on. That is the whole chapter.
 
@@ -21,7 +21,7 @@ x <- sort(rnorm(100))
 happy <- x + rnorm(100)
 ```
 
-Now imagine $x$ measures something like "dogness" - higher values mean more dog-like. We rarely measure dogness on a continuum; instead we lump animals into categories. Let us chop the continuum into four pet types (cat lovers are welcome to write their own textbook):
+Now imagine $x$ measures something like "dogness," where higher values mean more dog-like. We rarely measure dogness on a continuum; instead we lump animals into categories. Let us chop the continuum into four pet types:
 
 ```{r}
 pet <- cut(x, 4, labels = c("cat", "fish", "pig", "dog"))
@@ -59,7 +59,7 @@ c(petfish_coef = coef(lm_pet)[["petfish"]], fish_minus_cat = means$x[2] - means$
 c(petdog_coef = coef(lm_pet)[["petdog"]], dog_minus_cat = means$x[4] - means$x[1])
 ```
 
-There is no magic in the box. **A dummy-coded coefficient is a difference between two group means**, and the intercept is the reference group's mean. That is exactly what a t-test between two groups reports - which is your first hint that t-tests, too, are just this same model.
+There is no magic in the box. **A dummy-coded coefficient is a difference between two group means**, and the intercept is the reference group's mean. That is exactly what a t-test between two groups reports, which is your first hint that t-tests, too, are just this same model.
 
 ## Effects Coding: Differences From the Grand Mean
 
@@ -96,7 +96,7 @@ dog_effect_implied <- -(coef(lm_pet_e)[[2]] + coef(lm_pet_e)[[3]] + coef(lm_pet_
 c(implied_dog_effect = dog_effect_implied, dog_minus_GM = means$x[4] - GM)
 ```
 
-They match. The "missing" group is never missing; it is the one the constraint solves for. (Work the algebra once and you will never be spooked by a reference level again.)
+They match. The "missing" group is never missing; it is the one the constraint solves for. (Work the algebra once and reference levels stop being confusing.)
 :::
 
 ::: {.callout-note}
@@ -122,7 +122,7 @@ anova(lm_pet)["pet", "F value"]
 summary(aov(happy ~ pet))[[1]]["pet", "F value"]
 ```
 
-One model, one $F$, three names. **ANOVA is regression with categorical predictors** - the coding scheme only changes how we *slice up and label* the group differences, never the overall test. This is the General Linear Model: pick your predictors (continuous, categorical, or both), pick your coding, and it is all least squares underneath.
+One model, one $F$, three names. **ANOVA is regression with categorical predictors**: the coding scheme only changes how we *slice up and label* the group differences, never the overall test. This is the General Linear Model: pick your predictors (continuous, categorical, or both), pick your coding, and it is all least squares underneath.
 
 ## Two Categorical Predictors and Their Interaction
 
@@ -135,7 +135,7 @@ lm_fac <- lm(sad ~ pet * mess)
 round(coef(lm_fac), 3)
 ```
 
-The `pet:messmessy` terms are the **interaction** - and here the logic that saved us above saves us again. An interaction coefficient is a *difference of differences*: how the effect of pet **changes** across levels of mess. It is the cross-product of the two predictors' codes. When you meet a "significant interaction," resist the urge to panic; it is just the model telling you the group-mean pattern is not purely additive.
+The `pet:messmessy` terms are the **interaction**, and the same logic applies here. An interaction coefficient is a *difference of differences*: how the effect of pet **changes** across levels of mess. It is the cross-product of the two predictors' codes. A "significant interaction" is nothing to worry about; it just means the group-mean pattern is not purely additive.
 
 ## Beyond the Straight Line: The *Generalized* Linear Model
 
@@ -147,7 +147,7 @@ glm_fit <- glm(passed ~ x, family = binomial)
 round(coef(glm_fit), 3)
 ```
 
-Same formula syntax, same partialling logic, same "quantify the uncertainty" goal - we have just swapped `lm()` for `glm()` and told it the outcome is binomial. Linear model, general linear model, generalized linear model: it is turtles - the same turtle - all the way down.
+Same formula syntax, same partialling logic, same goal of quantifying the uncertainty. We have just swapped `lm()` for `glm()` and told it the outcome is binomial. Linear model, general linear model, generalized linear model: it is the same core idea extended step by step.
 
 ## Challenge
 
@@ -164,4 +164,4 @@ Using the `pet` factor and `happy` from this chapter:
 
 ## Where We Go Next
 
-You now hold the unifying idea of the whole enterprise: the General Linear Model. Correlation, t-tests, regression, ANOVA, ANCOVA - all one model wearing different outfits. We build these coding schemes by hand in the [dedicated coding chapter](19-coding.qmd); for the definitive treatment, see Cohen, Cohen, West, and Aiken [@aiken_applied_2002] and the accessible comparison of dummy and effects coding in Alkharusi [@alkharusi_categorical_2012]; for analysis of variance specifically, Iversen and Norpoth [@iversen_analysis_1987] remains a compact classic. From here, the road leads into the specific ANOVA designs - one-way, factorial, repeated measures - each of which is, you will not be surprised to learn, just another coded regression.
+You now hold the unifying idea of the whole enterprise: the General Linear Model. Correlation, t-tests, regression, ANOVA, ANCOVA - all one model wearing different outfits. We build these coding schemes by hand in the [dedicated coding chapter](19-coding.qmd); for the definitive treatment, see Cohen, Cohen, West, and Aiken [@aiken_applied_2002] and the accessible comparison of dummy and effects coding in Alkharusi [@alkharusi_categorical_2012]; for analysis of variance specifically, Iversen and Norpoth [@iversen_analysis_1987] remains a compact classic. From here, the road leads into the specific ANOVA designs (one-way, factorial, repeated measures), each of which is just another coded regression.
