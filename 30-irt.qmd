@@ -1,0 +1,95 @@
+# More Item Response Theory, and Generalizability {#irt}
+
+The [Rasch chapter](18-rasch.qmd) built one item response model from scratch and promised there was a wider world. Here it is. Item Response Theory (IRT) is a whole family of models for the same task - measuring people from their item responses - and **generalizability theory (G-theory)** is the grand generalization of [reliability](10-reliability.qmd) that asks not just "how much error?" but "error *from what*?" Both are areas where the authors have published extensively, often together in a single study.
+
+## Learning Objectives
+
+1.  See how the **2-parameter (2PL)** model generalizes Rasch by letting items differ in *discrimination*.
+2.  Read an **item characteristic curve** and know what its slope and location mean.
+3.  Decompose measurement error into **facets** with generalizability theory.
+4.  Compute a **G-coefficient** and use a **D-study** to design a measure - the "how many items?" question.
+
+## Beyond Rasch: Items That Discriminate Differently
+
+Rasch makes a strong, beautiful assumption: every item is equally good at separating people; items differ *only* in difficulty. The **2PL model** relaxes it, giving each item its own **discrimination** $a_i$ (how sharply it distinguishes high from low) alongside its difficulty $b_i$:
+
+$$P(x_{ij}=1) = \frac{1}{1 + e^{-a_i(\theta_j - b_i)}}$$
+
+The clearest way to feel the difference is to *look* at the items. An item's **characteristic curve** plots the probability of a correct/endorsed response against ability $\theta$. Difficulty slides the curve left-right; discrimination changes its steepness:
+
+```{r}
+#| fig-cap: "Item characteristic curves. Location = difficulty; steepness = discrimination."
+#| fig-height: 3.8
+theta <- seq(-4, 4, length.out = 300)
+icc <- function(a, b) 1 / (1 + exp(-a * (theta - b)))   # 2PL curve
+
+plot(theta, icc(1.0, -1), type = "l", lwd = 2, col = "steelblue", ylim = c(0, 1),
+     xlab = expression(theta ~ "(ability)"), ylab = "P(correct)")
+lines(theta, icc(2.5,  0), lwd = 2, col = "firebrick")           # steep = high discrimination
+lines(theta, icc(0.5,  1), lwd = 2, col = "darkgreen")           # flat  = low discrimination
+legend("topleft", bty = "n", lwd = 2,
+       col = c("steelblue", "firebrick", "darkgreen"),
+       legend = c("easy, moderate a", "medium, high a (steep)", "hard, low a (flat)"))
+```
+
+The steep red item is *discriminating*: over a narrow band of ability it flips from "probably wrong" to "probably right," so it sorts people sharply there. The flat green item barely distinguishes anyone - its responses are nearly a coin flip across a wide ability range. **Rasch is the special case where every curve has the same slope**; the 2PL, and its polytomous cousin the **Graded Response Model** (which we met dissecting [depression profiles](24-casestudy-depression.qmd)), let the data say otherwise. In practice you fit these with a maintained engine:
+
+```r
+library(mirt)                              # shown, not run on the book's server
+fit  <- mirt(data, 1, itemtype = "2PL")    # or "graded" for 0..k items (GRM)
+coef(fit, simplify = TRUE)                 # each item's discrimination (a) and difficulty (b)
+```
+
+## Generalizability: Reliability, Grown Up
+
+Classical reliability ([Ch. 10](10-reliability.qmd)) splits observed variance into "true" and "error." But *error from where*? The item you happened to use? The rater who happened to score you? The day you happened to show up? **Generalizability theory** treats each of these as a **facet** and estimates how much variance each contributes - turning "reliability" from a single number into an analysis of *sources*.
+
+The machinery is the [variance-partitioning](04-Dmeasures.qmd) you already know, run with `aov`. Simulate people crossed with items, then recover how much of the variance is real person differences versus item and residual noise:
+
+```{r}
+set.seed(2026)
+np <- 120; ni <- 12
+person <- rnorm(np, sd = 1.0)              # real differences between people
+item   <- rnorm(ni, sd = 0.5)             # items differ in easiness
+d <- expand.grid(p = 1:np, i = 1:ni)
+d$score <- person[d$p] + item[d$i] + rnorm(np * ni, sd = 0.7)
+d$p <- factor(d$p); d$i <- factor(d$i)
+
+ms  <- summary(aov(score ~ p + i, data = d))[[1]][, "Mean Sq"]   # mean squares
+v_e <- ms[3]                               # residual variance
+v_p <- (ms[1] - v_e) / ni                  # person variance (the signal)
+v_i <- (ms[2] - v_e) / np                  # item variance
+round(c(person = v_p, item = v_i, residual = v_e), 2)
+```
+
+Person variance is the **signal** - the real differences you want to measure. Item and residual variance are **noise**, now itemized by source. The **generalizability coefficient** is the same signal-share idea as reliability, but honest about the fact that you averaged over a *sample* of items:
+
+```{r}
+G <- v_p / (v_p + v_e / ni)                # G-coefficient for a test of ni items
+round(G, 3)
+```
+
+### The D-study: Designing the Measure
+
+Here is where G-theory pays for itself. Because you know the variance components, you can ask a **design** question - a *decision (D) study*: how many items would I need for a target reliability? It is the [power analysis](09-statisticalpower.qmd) of measurement.
+
+```{r}
+n_items <- c(4, 8, 12, 20, 40)
+G_by_n  <- v_p / (v_p + v_e / n_items)     # generalizability at each test length
+round(setNames(G_by_n, n_items), 3)
+```
+
+Reliability climbs with test length exactly as the [Spearman-Brown](10-reliability.qmd) logic predicts - and now you can pick the length that buys the reliability you need and stop, instead of guessing. Add a second facet (raters, occasions) and G-theory tells you whether your money is better spent on more items or more raters. That is measurement design as engineering.
+
+::: {.callout-note}
+## From the Field
+This is the authors' bread and butter. McKnight and Babcock-Parziale [@McKnightBabcock2007] combined **Rasch and generalizability theory in a single study** of a vision-rehabilitation outcome - exactly the two halves of this chapter, together. The Rasch analysis of the Mississippi PTSD Scale with Ben Wright [@ConradWrightMcKnight2004] showed reverse-scored items misbehaving; and Stroud, McKnight, and Jensen [@StroudMcKnightJensen2004] used IRT to *shorten* a disability scale without losing information - a D-study decision in action. The [methods showcase](27-methods-showcase.qmd) has the full list.
+:::
+
+## What This Chapter Teaches
+
+- **IRT is a family.** Rasch fixes item discrimination; the 2PL frees it; the GRM extends it to graded items. Read the **item characteristic curve** - location is difficulty, slope is discrimination.
+- **G-theory generalizes reliability** by decomposing error into named facets (items, raters, occasions) with the same variance-partitioning you use for ANOVA.
+- **The D-study is power analysis for measurement**: knowing the variance components, you design the test - how many items, how many raters - to hit a target reliability.
+
+We have now seen latent variables from every angle the authors work in - factors, classes, and item-response continua. That completes our tour of *modeling*. The [next part](20-beyond.qmd) steps back to a different worry entirely: what to do when the normal curve, the point estimate, and the reject/accept ritual are themselves the problem.

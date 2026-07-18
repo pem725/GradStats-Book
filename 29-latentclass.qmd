@@ -1,0 +1,101 @@
+# Latent Classes: Which Kind of Person Is This? {#latentclass}
+
+Factor analysis, in the [last chapter](28-sem.qmd), asked a *dimensional* question: **where** does each person fall on a continuum of depression, or curiosity? Latent **class** analysis (LCA) asks a categorical one: **which kind** of person is this? Instead of a score along an axis, it looks for hidden *types* - subgroups that respond in qualitatively different ways. A dimension sorts people high to low; a class says they come in *flavors*.
+
+This matters because some of the most important findings in psychology are subgroups a score would blur into mush. A total symptom count cannot tell you that a slice of anxious people are also **risk-prone approachers** rather than shy avoiders - but a latent-class model can, and the authors' own work found exactly that (more below).
+
+## Learning Objectives
+
+1.  Contrast a **dimensional** latent variable (a factor) with a **categorical** one (a class).
+2.  State the latent-class model as a **mixture** of response patterns.
+3.  Fit one from scratch with the **EM algorithm**, and read the classes off the item probabilities.
+4.  Recognize that classes can differ in *pattern*, not just *severity* - which is the whole point.
+
+## The Model: A Mixture of Kinds
+
+Suppose there are $K$ hidden classes. Each class $k$ has (a) a **size** $\pi_k$ (its share of the population) and (b) its own set of **item-endorsement probabilities** $\rho_{jk}$ - the chance a member of class $k$ says "yes" to item $j$. A person belongs to one class, but we do not see which; we see only their answers. The probability of a whole response pattern is a **mixture** - a weighted blend across the classes:
+
+$$P(\mathbf{x}_i) = \sum_{k=1}^{K} \pi_k \prod_{j=1}^{J} \rho_{jk}^{x_{ij}} (1-\rho_{jk})^{1-x_{ij}}$$
+
+The classes are the profiles $\rho_{\cdot k}$; membership is hidden. Our job is to recover both from the responses alone.
+
+## Fitting It From Scratch with EM
+
+The difficulty is a chicken-and-egg: if we knew who was in each class we could estimate the class profiles, and if we knew the profiles we could assign people to classes - but we know neither. The **EM algorithm** breaks the loop by alternating, exactly as [Rasch estimation](18-rasch.qmd) did:
+
+- **E-step** (Expectation): given current profiles, compute each person's *posterior* probability of belonging to each class.
+- **M-step** (Maximization): given those soft memberships, re-estimate each class's size and item probabilities as membership-weighted averages.
+
+Repeat until nothing moves. First, simulate two classes that differ in *pattern* - items 7–8 are reversed, so the classes are not simply "more" vs. "less" symptomatic:
+
+```{r}
+set.seed(2026)
+N <- 800; J <- 8
+prev <- c(0.35, 0.65)
+rho  <- rbind(rep(0.80, J), rep(0.20, J))
+rho[1, c(7, 8)] <- 0.30; rho[2, c(7, 8)] <- 0.70   # reverse two items: pattern, not severity
+cls  <- sample(1:2, N, replace = TRUE, prob = prev)
+X <- t(sapply(cls, function(k) rbinom(J, 1, rho[k, ])))
+```
+
+Now the entire estimator - about a dozen lines:
+
+```{r}
+lca_em <- function(X, K = 2, tol = 1e-6, maxit = 500) {
+  N <- nrow(X); J <- ncol(X)
+  set.seed(1); pi <- rep(1/K, K); p <- matrix(runif(K * J, .2, .8), K, J)
+  ll_old <- -Inf
+  for (it in 1:maxit) {
+    # E-step: log P(x_i, class k) for every person and class, then normalize to a posterior
+    loglik <- sapply(1:K, function(k)
+      log(pi[k]) + X %*% log(p[k, ]) + (1 - X) %*% log(1 - p[k, ]))
+    m    <- apply(loglik, 1, max)
+    post <- exp(loglik - m); post <- post / rowSums(post)
+    # M-step: re-estimate sizes and item probabilities as posterior-weighted averages
+    pi <- colMeans(post)
+    p  <- t(post) %*% X / colSums(post)
+    ll <- sum(m + log(rowSums(exp(loglik - m))))
+    if (abs(ll - ll_old) < tol) break; ll_old <- ll
+  }
+  list(prevalence = pi, item_prob = p, iterations = it)
+}
+
+fit <- lca_em(X, K = 2)
+cat("converged in", fit$iterations, "iterations\n")
+round(fit$prevalence, 2)          # recovered class sizes (true: .35 / .65)
+```
+
+The class sizes come back essentially exact. And the item-probability profiles - the *definitions* of the two kinds - recover the reversal we planted:
+
+```{r}
+round(fit$item_prob, 2)           # rows = classes, columns = items 1..8
+```
+
+Read the two rows: one class endorses items 1–6 heavily but items 7–8 rarely; the other is its mirror image. **These classes are not "high" and "low" depression - they are two different *shapes* of response.** A sum score, which only counts yeses, would smear them together; the mixture model pulls them apart. That is what LCA is *for*.
+
+## How Many Classes?
+
+We told the estimator $K = 2$, but in real life the number of classes is itself unknown - and it is the crux of the analysis. You fit $K = 1, 2, 3, \dots$ and compare, usually with an information criterion (**BIC** or **AIC**) that rewards fit and penalizes complexity, plus interpretability (a class you cannot describe is probably an artifact). In practice you would use a maintained tool that also handles this:
+
+```r
+# The real tool (needs the poLCA package — shown, not run on the book's server)
+library(poLCA)
+f  <- cbind(i1, i2, i3, i4, i5, i6, i7, i8) ~ 1
+m2 <- poLCA(f, data, nclass = 2)      # fit 2, 3, 4 classes ...
+m3 <- poLCA(f, data, nclass = 3)      # ... and compare
+c(m2$bic, m3$bic)                     # lower BIC = better; also judge interpretability
+```
+
+::: {.callout-note}
+## From the Field
+Kashdan, McKnight, and colleagues [@KashdanMcKnightRichey2009] applied latent-class analysis to the National Comorbidity Survey and found a **neglected subtype** of social-anxiety disorder: people who are anxious *and* risk-prone/approach-oriented, not the shy-avoidant stereotype. That subgroup is invisible to a symptom count - you can only see it once you stop asking "how much?" and start asking "what kind?" It is the same lesson as the [antitypes case study](24-casestudy-depression.qmd): structure that a total score throws away can be the most clinically important thing in the data.
+:::
+
+## What This Chapter Teaches
+
+- **Dimensions vs. types.** Factor analysis places people on continua; latent-class analysis sorts them into kinds. Ask which question your science is really asking.
+- **A latent class model is a mixture** of response-pattern probabilities - classes you cannot see, recovered from responses you can.
+- **EM solves the chicken-and-egg** by alternating soft assignment (E) and re-estimation (M), the same iterate-until-stable trick behind Rasch.
+- **Classes can differ in pattern, not just level** - and those pattern-defined subgroups are exactly what a sum score is built to hide.
+
+We have now met latent variables as *dimensions* (factors) and as *categories* (classes). The [next chapter](30-irt.qmd) returns to the dimensional view but drills deeper into it - extending the [Rasch model](18-rasch.qmd) into the wider world of item response theory and generalizability, where the authors have published extensively.
