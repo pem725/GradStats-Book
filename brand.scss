@@ -58,3 +58,21 @@ table.table > tbody > tr:nth-of-type(odd) > * {
 table.table > tbody > tr:hover > * {
   background-color: rgba(128, 128, 128, 0.16);
 }
+
+// --- Callouts: make the key term (the title) stand out ---------------------
+// The book introduces important ideas in callout boxes. Enlarge the title so
+// the key term reads at a glance, and flag the "important" callouts (the key
+// ideas) with a key emoji in place of the default icon.
+.callout .callout-title-container {
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.callout.callout-important > .callout-header .callout-icon-container {
+  display: none;                     // drop the default icon...
+}
+.callout.callout-important > .callout-header .callout-title-container::before {
+  content: "🔑 ";                    // ...and mark key ideas with a key
+  font-size: 1.15em;
+}
