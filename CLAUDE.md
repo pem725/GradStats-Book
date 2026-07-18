@@ -36,7 +36,8 @@ Requires: `quarto` (1.6.x), `R` with `knitr`, and the packages a chapter loads (
 ## Conventions & current state
 
 - **Work in progress.** Many chapters are intentionally stubs — `17-basicANOVA.qmd` is empty, and several files contain only headers or literal `foo`/`bar`/`baz` placeholders inside `::: {.callout-important}` blocks. This is expected; do not treat placeholder content as a bug to "fix" unless asked to write that section.
-- **Voice matters.** The prose is deliberately informal, personal, and opinionated ("Read, play, and learn"; first-person asides marked `(PEM)`). Match that tone when drafting or editing prose — do not sanitize it into neutral textbook language.
+- **Voice matters.** The prose is informal, personal, warm, and *supportive* — an encouraging teacher, not a stand-up act. First-person asides marked `(PEM)` are welcome. **Avoid sarcasm, innuendo, and forced cleverness, and avoid AI-writing tics** (em-dash pile-ups, rule-of-three flourishes, breathless hype, rhetorical-question spam, "it's not just X, it's Y"). Write plainly and clearly, the way McKnight and Kashdan actually write. When in doubt, cut the joke and keep the point.
+- **POMP is the house standardization.** Percent Of Maximum Possible — `100 * (x - min) / (max - min)` — puts differently-scaled measures on a common 0–100 scale. Introduced in `06-zdistribution.qmd`; prefer it when comparing across measures.
 - R chunks are teaching artifacts: keep them short, self-contained, and heavily commented so a student can read them top to bottom. `ggplot2` is the default plotting idiom; `plotly` is used for interactive 3D (e.g. the learning-helix in `intro.qmd`).
 - Key statistical concepts are introduced inside `::: {.callout-important}` fenced divs — reuse that pattern for new definitions.
 - Chapter titles/headers use `.unnumbered` (`{.unnumbered}` / `{-}`) for front-matter-style sections; numbered chapters omit it.

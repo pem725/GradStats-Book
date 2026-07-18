@@ -75,7 +75,33 @@ percentile <- pnorm(z_height) * 100
 c(z = z_height, percentile = percentile)
 ```
 
-A z of 1.5 places this person around the 93rd percentile - taller than about 93% of the population. Percentile ranks, growth charts, standardized-test scores: all just `pnorm()` wearing a costume.
+A z of 1.5 places this person around the 93rd percentile - taller than about 93% of the population. Percentile ranks, growth charts, and standardized-test scores are all `pnorm()` in another form.
+
+## Another Ruler: Percent of Maximum Possible (POMP)
+
+The z-score compares a value to *its own sample* - to the mean and spread of the data you happened to collect. That is exactly right for asking "how unusual is this person?" But it carries a limitation: because z depends on the sample, the same raw score turns into a different z in a different sample, and z-scores from two different measures are not truly on the same footing.
+
+When the goal is to compare *measures* - say, is work engagement higher than well-being in this study? - a different ruler is more honest: **POMP**, the **Percent Of Maximum Possible**. POMP rescales a score to the range the instrument *could* produce, from its lowest possible value to its highest:
+
+$$\text{POMP} = 100 \times \frac{X - \text{min}}{\text{max} - \text{min}}$$
+
+A POMP of 0 is the lowest possible score, 100 the highest, and 50 the exact middle of the scale. Crucially, that meaning does not depend on the sample. Two measures with completely different response formats - a 1–5 scale and a 1–7 scale - both land on a common 0–100 scale you can read and compare at a glance:
+
+```{r}
+mood     <- 4    # answered on a 1-5 scale
+vitality <- 5    # answered on a 1-7 scale
+
+pomp <- function(x, lo, hi) 100 * (x - lo) / (hi - lo)
+c(mood_POMP     = pomp(mood,     lo = 1, hi = 5),
+  vitality_POMP = pomp(vitality, lo = 1, hi = 7))
+```
+
+On their raw scales, 4 and 5 are hard to compare. In POMP units, the mood score sits at 75% of its possible range and vitality at about 67%, so this person is, if anything, in a slightly better mood than their vitality would suggest. This is the standardization we now use in most of our own papers (PEM): it lets a reader compare outcomes across measures directly, and it has a useful side effect - if a scale's response format changes partway through a study, the shift in POMP makes the problem hard to miss.
+
+::: {.callout-important}
+## z or POMP: two questions, two rulers
+Reach for a **z-score** to ask *how unusual is this value within its distribution?* - it locates a person relative to their sample. Reach for **POMP** to ask *how high is this score on what the instrument can measure?* - it places a score relative to the possible range, so different measures become comparable. Neither is better; they answer different questions.
+:::
 
 ::: {.callout-important}
 ## Why This Chapter Is the Hinge of the Book
