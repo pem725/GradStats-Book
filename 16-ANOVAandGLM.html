@@ -708,7 +708,7 @@ window.Quarto = {
 </header>
 
 
-<p>Here is a secret the way statistics is usually taught works hard to hide: <strong>ANOVA is not a different technique from regression.</strong> It is regression - the very same least-squares machinery from the last two chapters - applied to <em>categorical</em> predictors. Analysis of variance, t-tests, regression: they are all special cases of one thing, the <strong>General Linear Model (GLM)</strong>. Once you see the unification, half of your statistics education collapses into a single idea, and that is a mercy.</p>
+<p>The way statistics is usually taught tends to hide something important: <strong>ANOVA is not a different technique from regression.</strong> It is regression, the very same least-squares machinery from the last two chapters, applied to <em>categorical</em> predictors. Analysis of variance, t-tests, regression: they are all special cases of one thing, the <strong>General Linear Model (GLM)</strong>. Once you see the unification, a large part of your statistics education collapses into a single idea.</p>
 <p>The only new skill you need is <strong>coding</strong>: how to turn a category (“cat,” “dog”) into numbers a regression can chew on. That is the whole chapter.</p>
 <section id="learning-objectives" class="level2" data-number="16.1">
 <h2 data-number="16.1" class="anchored" data-anchor-id="learning-objectives"><span class="header-section-number">16.1</span> Learning Objectives</h2>
@@ -727,7 +727,7 @@ window.Quarto = {
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">rnorm</span>(<span class="dv">100</span>))</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>happy <span class="ot">&lt;-</span> x <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">100</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>Now imagine <span class="math inline">\(x\)</span> measures something like “dogness” - higher values mean more dog-like. We rarely measure dogness on a continuum; instead we lump animals into categories. Let us chop the continuum into four pet types (cat lovers are welcome to write their own textbook):</p>
+<p>Now imagine <span class="math inline">\(x\)</span> measures something like “dogness,” where higher values mean more dog-like. We rarely measure dogness on a continuum; instead we lump animals into categories. Let us chop the continuum into four pet types:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>pet <span class="ot">&lt;-</span> <span class="fu">cut</span>(x, <span class="dv">4</span>, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"cat"</span>, <span class="st">"fish"</span>, <span class="st">"pig"</span>, <span class="st">"dog"</span>))</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(pet)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -806,7 +806,7 @@ window.Quarto = {
      2.819993      2.819993 </code></pre>
 </div>
 </div>
-<p>There is no magic in the box. <strong>A dummy-coded coefficient is a difference between two group means</strong>, and the intercept is the reference group’s mean. That is exactly what a t-test between two groups reports - which is your first hint that t-tests, too, are just this same model.</p>
+<p>There is no magic in the box. <strong>A dummy-coded coefficient is a difference between two group means</strong>, and the intercept is the reference group’s mean. That is exactly what a t-test between two groups reports, which is your first hint that t-tests, too, are just this same model.</p>
 </section>
 <section id="effects-coding-differences-from-the-grand-mean" class="level2" data-number="16.4">
 <h2 data-number="16.4" class="anchored" data-anchor-id="effects-coding-differences-from-the-grand-mean"><span class="header-section-number">16.4</span> Effects Coding: Differences From the Grand Mean</h2>
@@ -858,7 +858,7 @@ window.Quarto = {
           1.305824           1.305824 </code></pre>
 </div>
 </div>
-<p>They match. The “missing” group is never missing; it is the one the constraint solves for. (Work the algebra once and you will never be spooked by a reference level again.)</p>
+<p>They match. The “missing” group is never missing; it is the one the constraint solves for. (Work the algebra once and reference levels stop being confusing.)</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -899,7 +899,7 @@ window.Quarto = {
 <pre><code>[1] 20.99332</code></pre>
 </div>
 </div>
-<p>One model, one <span class="math inline">\(F\)</span>, three names. <strong>ANOVA is regression with categorical predictors</strong> - the coding scheme only changes how we <em>slice up and label</em> the group differences, never the overall test. This is the General Linear Model: pick your predictors (continuous, categorical, or both), pick your coding, and it is all least squares underneath.</p>
+<p>One model, one <span class="math inline">\(F\)</span>, three names. <strong>ANOVA is regression with categorical predictors</strong>: the coding scheme only changes how we <em>slice up and label</em> the group differences, never the overall test. This is the General Linear Model: pick your predictors (continuous, categorical, or both), pick your coding, and it is all least squares underneath.</p>
 </section>
 <section id="two-categorical-predictors-and-their-interaction" class="level2" data-number="16.6">
 <h2 data-number="16.6" class="anchored" data-anchor-id="two-categorical-predictors-and-their-interaction"><span class="header-section-number">16.6</span> Two Categorical Predictors and Their Interaction</h2>
@@ -916,7 +916,7 @@ window.Quarto = {
            0.849            0.614            0.117           -0.403 </code></pre>
 </div>
 </div>
-<p>The <code>pet:messmessy</code> terms are the <strong>interaction</strong> - and here the logic that saved us above saves us again. An interaction coefficient is a <em>difference of differences</em>: how the effect of pet <strong>changes</strong> across levels of mess. It is the cross-product of the two predictors’ codes. When you meet a “significant interaction,” resist the urge to panic; it is just the model telling you the group-mean pattern is not purely additive.</p>
+<p>The <code>pet:messmessy</code> terms are the <strong>interaction</strong>, and the same logic applies here. An interaction coefficient is a <em>difference of differences</em>: how the effect of pet <strong>changes</strong> across levels of mess. It is the cross-product of the two predictors’ codes. A “significant interaction” is nothing to worry about; it just means the group-mean pattern is not purely additive.</p>
 </section>
 <section id="beyond-the-straight-line-the-generalized-linear-model" class="level2" data-number="16.7">
 <h2 data-number="16.7" class="anchored" data-anchor-id="beyond-the-straight-line-the-generalized-linear-model"><span class="header-section-number">16.7</span> Beyond the Straight Line: The <em>Generalized</em> Linear Model</h2>
@@ -930,7 +930,7 @@ window.Quarto = {
      -0.181       0.728 </code></pre>
 </div>
 </div>
-<p>Same formula syntax, same partialling logic, same “quantify the uncertainty” goal - we have just swapped <code>lm()</code> for <code>glm()</code> and told it the outcome is binomial. Linear model, general linear model, generalized linear model: it is turtles - the same turtle - all the way down.</p>
+<p>Same formula syntax, same partialling logic, same goal of quantifying the uncertainty. We have just swapped <code>lm()</code> for <code>glm()</code> and told it the outcome is binomial. Linear model, general linear model, generalized linear model: it is the same core idea extended step by step.</p>
 </section>
 <section id="challenge" class="level2" data-number="16.8">
 <h2 data-number="16.8" class="anchored" data-anchor-id="challenge"><span class="header-section-number">16.8</span> Challenge</h2>
@@ -956,7 +956,7 @@ window.Quarto = {
 </section>
 <section id="where-we-go-next" class="level2" data-number="16.9">
 <h2 data-number="16.9" class="anchored" data-anchor-id="where-we-go-next"><span class="header-section-number">16.9</span> Where We Go Next</h2>
-<p>You now hold the unifying idea of the whole enterprise: the General Linear Model. Correlation, t-tests, regression, ANOVA, ANCOVA - all one model wearing different outfits. We build these coding schemes by hand in the <a href="./19-coding.html">dedicated coding chapter</a>; for the definitive treatment, see Cohen, Cohen, West, and Aiken <span class="citation" data-cites="aiken_applied_2002">(<a href="#ref-aiken_applied_2002" role="doc-biblioref">Aiken 2002</a>)</span> and the accessible comparison of dummy and effects coding in Alkharusi <span class="citation" data-cites="alkharusi_categorical_2012">(<a href="#ref-alkharusi_categorical_2012" role="doc-biblioref">Alkharusi 2012</a>)</span>; for analysis of variance specifically, Iversen and Norpoth <span class="citation" data-cites="iversen_analysis_1987">(<a href="#ref-iversen_analysis_1987" role="doc-biblioref">Iversen and Norpoth 1987</a>)</span> remains a compact classic. From here, the road leads into the specific ANOVA designs - one-way, factorial, repeated measures - each of which is, you will not be surprised to learn, just another coded regression.</p>
+<p>You now hold the unifying idea of the whole enterprise: the General Linear Model. Correlation, t-tests, regression, ANOVA, ANCOVA - all one model wearing different outfits. We build these coding schemes by hand in the <a href="./19-coding.html">dedicated coding chapter</a>; for the definitive treatment, see Cohen, Cohen, West, and Aiken <span class="citation" data-cites="aiken_applied_2002">(<a href="#ref-aiken_applied_2002" role="doc-biblioref">Aiken 2002</a>)</span> and the accessible comparison of dummy and effects coding in Alkharusi <span class="citation" data-cites="alkharusi_categorical_2012">(<a href="#ref-alkharusi_categorical_2012" role="doc-biblioref">Alkharusi 2012</a>)</span>; for analysis of variance specifically, Iversen and Norpoth <span class="citation" data-cites="iversen_analysis_1987">(<a href="#ref-iversen_analysis_1987" role="doc-biblioref">Iversen and Norpoth 1987</a>)</span> remains a compact classic. From here, the road leads into the specific ANOVA designs (one-way, factorial, repeated measures), each of which is just another coded regression.</p>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" role="list">

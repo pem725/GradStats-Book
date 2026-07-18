@@ -657,7 +657,7 @@ window.Quarto = {
   <li><a href="#learning-objectives" id="toc-learning-objectives" class="nav-link active" data-scroll-target="#learning-objectives"><span class="header-section-number">23.1</span> Learning Objectives</a></li>
   <li><a href="#match-the-geometry-to-the-question" id="toc-match-the-geometry-to-the-question" class="nav-link" data-scroll-target="#match-the-geometry-to-the-question"><span class="header-section-number">23.2</span> Match the Geometry to the Question</a></li>
   <li><a href="#dont-lie-with-the-axis" id="toc-dont-lie-with-the-axis" class="nav-link" data-scroll-target="#dont-lie-with-the-axis"><span class="header-section-number">23.3</span> Don’t Lie With the Axis</a></li>
-  <li><a href="#small-multiples-beat-the-dual-axis-abomination" id="toc-small-multiples-beat-the-dual-axis-abomination" class="nav-link" data-scroll-target="#small-multiples-beat-the-dual-axis-abomination"><span class="header-section-number">23.4</span> Small Multiples Beat the Dual-Axis Abomination</a></li>
+  <li><a href="#small-multiples-beat-overloaded-dual-axis-charts" id="toc-small-multiples-beat-overloaded-dual-axis-charts" class="nav-link" data-scroll-target="#small-multiples-beat-overloaded-dual-axis-charts"><span class="header-section-number">23.4</span> Small Multiples Beat Overloaded Dual-Axis Charts</a></li>
   <li><a href="#rank-dont-pie" id="toc-rank-dont-pie" class="nav-link" data-scroll-target="#rank-dont-pie"><span class="header-section-number">23.5</span> Rank, Don’t Pie</a></li>
   <li><a href="#show-the-distribution-not-just-the-mean" id="toc-show-the-distribution-not-just-the-mean" class="nav-link" data-scroll-target="#show-the-distribution-not-just-the-mean"><span class="header-section-number">23.6</span> Show the Distribution, Not Just the Mean</a></li>
   <li><a href="#challenge" id="toc-challenge" class="nav-link" data-scroll-target="#challenge"><span class="header-section-number">23.7</span> Challenge</a></li>
@@ -688,7 +688,7 @@ window.Quarto = {
 </header>
 
 
-<p>A graph is not decoration. A graph is an <strong>argument</strong> - a claim about what the numbers mean, made in a language (position, length, color) that the eye reads faster than any sentence. And like any argument, a graph can be honest or it can lie, sometimes without its maker even noticing. This chapter is about making the honest kind, and recognizing the other kind.</p>
+<p>A graph is more than decoration. A graph is an <strong>argument</strong>, a claim about what the numbers mean, made in a language (position, length, color) that the eye reads faster than any sentence. And like any argument, a graph can be honest or it can mislead, sometimes without its maker even noticing. This chapter is about making the honest kind, and recognizing the other kind.</p>
 <p>The examples here come from a real project - <a href="https://thesportspage.net/">The Sports Page</a>, a daily newsletter (a sister project to this book) that takes one strange sports number and tells the truth about what it does and does not mean. Its house rule is the same one that runs through this whole book: <em>describe what happened, predict what will happen, and never dress up one as the other.</em> Good graphics are how you keep that promise to your reader.</p>
 <section id="learning-objectives" class="level2" data-number="23.1">
 <h2 data-number="23.1" class="anchored" data-anchor-id="learning-objectives"><span class="header-section-number">23.1</span> Learning Objectives</h2>
@@ -725,7 +725,7 @@ window.Quarto = {
 </section>
 <section id="dont-lie-with-the-axis" class="level2" data-number="23.3">
 <h2 data-number="23.3" class="anchored" data-anchor-id="dont-lie-with-the-axis"><span class="header-section-number">23.3</span> Don’t Lie With the Axis</h2>
-<p>Same data, two axes, two completely different stories. Batting average has drifted down over the same period - from about .257 to about .242, a real but <em>modest</em> slide. First, watch a zoomed-in y-axis turn that modest slide into a catastrophe:</p>
+<p>Same data, two axes, two very different impressions. Batting average has drifted down over the same period, from about .257 to about .242, a real but <em>modest</em> slide. First, watch a zoomed-in y-axis make that modest slide look like a catastrophe:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(mlb, <span class="fu">aes</span>(year, AVG)) <span class="sc">+</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"firebrick"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
@@ -757,7 +757,7 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>Same numbers, opposite impressions. The first axis turns a 15-point drift into a cliff and screams a crisis; the second, anchored to a meaningful baseline, tells the truth: hitting softened, it did not collapse. Neither axis is <em>always</em> right - a zoomed axis is legitimate when small differences genuinely matter (and you say so) - but the choice is never innocent. <strong>Ask what the axis is doing to the size of the effect, and whether that is honest.</strong></p>
+<p>Same numbers, opposite impressions. The first axis turns a 15-point drift into what looks like a cliff; the second, anchored to a meaningful baseline, shows the truth: hitting softened, it did not collapse. Neither axis is <em>always</em> right. A zoomed axis is legitimate when small differences genuinely matter (and you say so), but the choice is never neutral. <strong>Ask what the axis is doing to the size of the effect, and whether that is honest.</strong></p>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -768,13 +768,13 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>A truncated y-axis is the single most common way a well-meaning person makes a nothing-burger look like a catastrophe (or vice versa). Before you publish a chart, look at your axis limits and ask: <em>would this effect still look this big if I started from zero?</em> If the honest version is boring, the honest answer might be that the effect is boring.</p>
+<p>A truncated y-axis is the single most common way a well-meaning person makes a small effect look enormous (or the reverse). Before you publish a chart, look at your axis limits and ask: <em>would this effect still look this big if I started from zero?</em> If the honest version looks unremarkable, the honest answer might be that the effect is unremarkable.</p>
 </div>
 </div>
 </section>
-<section id="small-multiples-beat-the-dual-axis-abomination" class="level2" data-number="23.4">
-<h2 data-number="23.4" class="anchored" data-anchor-id="small-multiples-beat-the-dual-axis-abomination"><span class="header-section-number">23.4</span> Small Multiples Beat the Dual-Axis Abomination</h2>
-<p>You have three trends to show at once - strikeouts, walks, and home runs per plate appearance. The temptation is to jam them onto one chart with two or three y-axes. Resist. Dual-axis charts let you <em>manufacture</em> any relationship you like by rescaling one axis, and readers cannot tell which line belongs to which scale. The honest tool is <strong>small multiples</strong>: the same chart repeated, one panel per series, on comparable axes.</p>
+<section id="small-multiples-beat-overloaded-dual-axis-charts" class="level2" data-number="23.4">
+<h2 data-number="23.4" class="anchored" data-anchor-id="small-multiples-beat-overloaded-dual-axis-charts"><span class="header-section-number">23.4</span> Small Multiples Beat Overloaded Dual-Axis Charts</h2>
+<p>You have three trends to show at once: strikeouts, walks, and home runs per plate appearance. The temptation is to put them all on one chart with two or three y-axes. It is better not to. Dual-axis charts let you <em>manufacture</em> almost any relationship by rescaling one axis, and readers cannot tell which line belongs to which scale. The clearer tool is <strong>small multiples</strong>: the same chart repeated, one panel per series, on comparable axes.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>long <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">year =</span> <span class="fu">rep</span>(mlb<span class="sc">$</span>year, <span class="dv">3</span>),</span>
@@ -816,7 +816,7 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>Sorted, horizontal, one bar per team: you can read off the best and worst drafters in a second, and every team is comparable on the same axis. A pie chart of these same 32 numbers would be an unreadable pinwheel - you could not tell 22% from 25% by eye, and the ranking would vanish. <strong>Pie charts work for maybe two or three slices; past that, rank a bar chart.</strong></p>
+<p>Sorted, horizontal, one bar per team: you can read off the best and worst drafters quickly, and every team is comparable on the same axis. A pie chart of these same 32 numbers would be very hard to read; you could not tell 22% from 25% by eye, and the ranking would disappear. <strong>Pie charts work for maybe two or three slices; past that, rank a bar chart.</strong></p>
 </section>
 <section id="show-the-distribution-not-just-the-mean" class="level2" data-number="23.6">
 <h2 data-number="23.6" class="anchored" data-anchor-id="show-the-distribution-not-just-the-mean"><span class="header-section-number">23.6</span> Show the Distribution, Not Just the Mean</h2>
@@ -854,7 +854,7 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>The cloud’s shape - a positive drift, a dense middle, a few lonely stars in the upper right - is information a table of two means could never carry. That is the whole reason graphics exist.</p>
+<p>The cloud’s shape, with its positive drift, its dense middle, and a few outliers in the upper right, is information a table of two means could never carry. That is much of the reason graphics exist.</p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -898,7 +898,7 @@ window.Quarto = {
 </section>
 <section id="where-we-go-next" class="level2" data-number="23.8">
 <h2 data-number="23.8" class="anchored" data-anchor-id="where-we-go-next"><span class="header-section-number">23.8</span> Where We Go Next</h2>
-<p>Graphics are half of how we show data; the other half is the <strong>table</strong> - and tables have their own quiet craft, their own ways of telling the truth or burying it. That is the <a href="./22-tables.html">next chapter</a>. Then, with tables and graphics both in hand, we turn to the real payoff of this whole book: watching these tools used in anger, on published work, with every judgment call laid bare.</p>
+<p>Graphics are half of how we show data; the other half is the <strong>table</strong>, and tables have their own quiet craft, their own ways of telling the truth or hiding it. That is the <a href="./22-tables.html">next chapter</a>. Then, with tables and graphics both in hand, we turn to the payoff of this whole book: watching these tools used on real published work, with every judgment call laid bare.</p>
 
 
 </section>

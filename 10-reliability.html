@@ -761,7 +761,7 @@ window.Quarto = {
       0.803 </code></pre>
 </div>
 </div>
-<p>About 0.78 of the variance in our observed scores is real signal; the rest is the sensor hiccupping. In practice we can never see <code>truth</code>, so we <em>estimate</em> reliability from clever comparisons.</p>
+<p>About 0.78 of the variance in our observed scores is real signal; the rest is sensor noise. In practice we can never see <code>truth</code>, so we <em>estimate</em> reliability from clever comparisons.</p>
 </section>
 <section id="four-ways-to-estimate-reliability" class="level2" data-number="9.4">
 <h2 data-number="9.4" class="anchored" data-anchor-id="four-ways-to-estimate-reliability"><span class="header-section-number">9.4</span> Four Ways to Estimate Reliability</h2>
@@ -792,12 +792,12 @@ window.Quarto = {
          0.836 </code></pre>
 </div>
 </div>
-<p>An alpha around 0.85 says the six items hang together well - they are largely reading the same underlying construct. By rough convention, 0.70 is “acceptable,” 0.80+ “good,” but do not worship the threshold: alpha climbs with more items whether or not they are any good, so a high alpha is necessary, not sufficient.</p>
+<p>An alpha around 0.85 says the six items hang together well; they are largely reading the same underlying construct. By rough convention, 0.70 is “acceptable,” 0.80+ “good,” but do not lean on the threshold too hard: alpha climbs with more items whether or not they are any good, so a high alpha is necessary, not sufficient.</p>
 </section>
 </section>
 <section id="why-you-should-care-attenuation" class="level2" data-number="9.5">
 <h2 data-number="9.5" class="anchored" data-anchor-id="why-you-should-care-attenuation"><span class="header-section-number">9.5</span> Why You Should Care: Attenuation</h2>
-<p>Here is the practical sting. Unreliable measures <strong>attenuate</strong> - shrink - the correlations you are trying to detect. A real relationship between two constructs looks weaker than it is, purely because your sensors are noisy:</p>
+<p>Now the practical consequence. Unreliable measures <strong>attenuate</strong> (shrink) the correlations you are trying to detect. A real relationship between two constructs looks weaker than it is, purely because your sensors are noisy:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">10</span>)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>Tx <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">1000</span>); Ty <span class="ot">&lt;-</span> <span class="fl">0.6</span> <span class="sc">*</span> Tx <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">1000</span>, <span class="dv">0</span>, <span class="fl">0.8</span>)  <span class="co"># true correlation ~ .6</span></span>
@@ -810,11 +810,11 @@ window.Quarto = {
       0.60       0.32 </code></pre>
 </div>
 </div>
-<p>The observed correlation is noticeably smaller than the true one. A real effect can hide behind a bad ruler - which means a null result might be a measurement failure, not the absence of an effect. Reliability is not bookkeeping; it is the difference between finding your effect and missing it.</p>
+<p>The observed correlation is noticeably smaller than the true one. A real effect can hide behind a bad ruler, which means a null result might be a measurement failure rather than the absence of an effect. Reliability is more than bookkeeping; it can be the difference between finding your effect and missing it.</p>
 </section>
 <section id="a-real-scale-end-to-end" class="level2" data-number="9.6">
 <h2 data-number="9.6" class="anchored" data-anchor-id="a-real-scale-end-to-end"><span class="header-section-number">9.6</span> A Real Scale, End to End</h2>
-<p>Enough simulation - let’s run the whole pipeline on real data: a 10-item scale (<code>x1</code>–<code>x10</code>) from the graduate GLM course (<code>data/moddat2.csv</code>, <span class="math inline">\(n = 30\)</span>). Three moves: <strong>key</strong> the items, <strong>estimate</strong> <span class="math inline">\(\alpha\)</span>, and check <strong>which items earn their place</strong>.</p>
+<p>Enough simulation. Let’s run the whole pipeline on real data: a 10-item scale (<code>x1</code>–<code>x10</code>) from the graduate GLM course (<code>data/moddat2.csv</code>, <span class="math inline">\(n = 30\)</span>). Three moves: <strong>key</strong> the items, <strong>estimate</strong> <span class="math inline">\(\alpha\)</span>, and check <strong>which items earn their place</strong>.</p>
 <p>Some items are worded in reverse, so a high true standing produces a <em>low</em> score - flip them first or they fight the rest of the scale and sink <span class="math inline">\(\alpha\)</span>. We spot a reverse item by its <em>negative</em> item-rest correlation (it correlates the wrong way with the sum of the others):</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/moddat2.csv"</span>)</span>
@@ -853,7 +853,7 @@ window.Quarto = {
 </section>
 <section id="why-reliability-buys-you-power" class="level2" data-number="9.7">
 <h2 data-number="9.7" class="anchored" data-anchor-id="why-reliability-buys-you-power"><span class="header-section-number">9.7</span> Why Reliability Buys You Power</h2>
-<p>Here is the payoff, and the link back to <a href="./09-statisticalpower.html">statistical power</a>. Detection is the between-group signal over the within-group noise - and unreliability <em>is</em> that noise (<span class="math inline">\(S^2_{error}\)</span>). Build the keyed scale score, then ask a real question of it - do women and men differ? - sizing the effect with Cohen’s <span class="math inline">\(d\)</span>:</p>
+<p>Now the payoff, and the link back to <a href="./09-statisticalpower.html">statistical power</a>. Detection is the between-group signal over the within-group noise, and unreliability <em>is</em> that noise (<span class="math inline">\(S^2_{error}\)</span>). Build the keyed scale score, then ask a real question of it - do women and men differ? - sizing the effect with Cohen’s <span class="math inline">\(d\)</span>:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>score <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(a<span class="sc">$</span>scored)                 <span class="co"># the keyed total score</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -867,7 +867,7 @@ window.Quarto = {
 <pre><code>[1] 2.62</code></pre>
 </div>
 </div>
-<p>A large <span class="math inline">\(d\)</span> - but the point is <em>why</em> it was detectable: because the scale was reliable. Had <span class="math inline">\(\alpha\)</span> been 0.5 instead, half the total-score variance would be pure error, the groups would blur together, and the same real difference could sink below significance. <strong>A reliable measure is the cheapest power you will ever buy</strong> - you pay once, in the design, and it pays back in every analysis that follows. (In practice you’d reach for <code>psych::alpha(X, check.keys = TRUE)</code>, which does the keying, the drop statistics, and much more in one call - but now you know exactly what it is doing under the hood.)</p>
+<p>A large <span class="math inline">\(d\)</span>. But the point is <em>why</em> it was detectable: because the scale was reliable. Had <span class="math inline">\(\alpha\)</span> been 0.5 instead, half the total-score variance would be pure error, the groups would blur together, and the same real difference could sink below significance. <strong>A reliable measure is the cheapest power you will ever buy</strong>: you pay once, in the design, and it pays back in every analysis that follows. (In practice you’d reach for <code>psych::alpha(X, check.keys = TRUE)</code>, which does the keying, the drop statistics, and much more in one call - but now you know exactly what it is doing under the hood.)</p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">

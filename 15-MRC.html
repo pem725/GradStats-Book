@@ -710,7 +710,7 @@ window.Quarto = {
 
 <p>One predictor is rarely enough. The world is multivariate: college GPA depends on high-school GPA <em>and</em> study time <em>and</em> sleep <em>and</em> a dozen other things. Multiple regression (often called <strong>MRC</strong>, for Multiple Regression/Correlation) is simply the line from the last chapter grown a dimension:</p>
 <p><span class="math display">\[y = b_1 x_1 + b_2 x_2 + \cdots + b_k x_k + a\]</span></p>
-<p>The logic does not change one bit. We still minimize the sum of squared residuals, and we still quantify our uncertainty about every coefficient. What <em>does</em> change - and what trips up almost everyone - is what a coefficient now <strong>means</strong> when the predictors are tangled up with each other. That tangle is the whole story of this chapter.</p>
+<p>The logic does not change one bit. We still minimize the sum of squared residuals, and we still quantify our uncertainty about every coefficient. What <em>does</em> change, and what trips up almost everyone, is what a coefficient now <strong>means</strong> when the predictors are tangled up with each other. That tangle is the story of this chapter.</p>
 <section id="learning-objectives" class="level2" data-number="15.1">
 <h2 data-number="15.1" class="anchored" data-anchor-id="learning-objectives"><span class="header-section-number">15.1</span> Learning Objectives</h2>
 <ol type="1">
@@ -786,7 +786,7 @@ x2 0.56 0.57 1.00</code></pre>
 <pre><code>[1] 0.284</code></pre>
 </div>
 </div>
-<p>Same number. So <strong>the coefficient <code>lm()</code> reports is a <em>partial</em> effect</strong> - it controls for the other predictors. That is the single most important sentence in multiple regression. When someone says “controlling for X,” this is the machinery they are invoking.</p>
+<p>Same number. So <strong>the coefficient <code>lm()</code> reports is a <em>partial</em> effect</strong>: it controls for the other predictors. That is the single most important sentence in multiple regression. When someone says “controlling for X,” this is the machinery they are invoking.</p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -818,7 +818,7 @@ x2 0.56 0.57 1.00</code></pre>
           0.607           0.368           0.368 </code></pre>
 </div>
 </div>
-<p>That is it: <span class="math inline">\(R^2 = \frac{\text{var}(\hat{y})}{\text{var}(y)}\)</span> - the fraction of Y’s variance the model reproduces. But <span class="math inline">\(R^2\)</span> is a <strong>greedy optimist</strong>: add any predictor, even pure noise, and it never goes down. So we penalize it for complexity to get the <strong>adjusted (or “shrunken”) <span class="math inline">\(R^2\)</span></strong>:</p>
+<p>That is it: <span class="math inline">\(R^2 = \frac{\text{var}(\hat{y})}{\text{var}(y)}\)</span>, the fraction of Y’s variance the model reproduces. But <span class="math inline">\(R^2\)</span> has a flaw: add any predictor, even pure noise, and it never goes down. So we penalize it for complexity to get the <strong>adjusted (or “shrunken”) <span class="math inline">\(R^2\)</span></strong>:</p>
 <p><span class="math display">\[R^2_{adj} = 1 - (1 - R^2)\,\frac{n - 1}{n - k - 1}\]</span></p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(y); k <span class="ot">&lt;-</span> <span class="dv">2</span></span>
@@ -829,7 +829,7 @@ x2 0.56 0.57 1.00</code></pre>
            0.355            0.355 </code></pre>
 </div>
 </div>
-<p>The adjustment is why you should <em>never</em> judge a model by raw <span class="math inline">\(R^2\)</span> alone. Throw in enough predictors and you can make <span class="math inline">\(R^2\)</span> beautiful and the model worthless.</p>
+<p>The adjustment is why you should <em>never</em> judge a model by raw <span class="math inline">\(R^2\)</span> alone. Throw in enough predictors and you can make <span class="math inline">\(R^2\)</span> look impressive while the model is worthless.</p>
 </section>
 <section id="testing-the-coefficients-rebuilding-the-table-again" class="level2" data-number="15.5">
 <h2 data-number="15.5" class="anchored" data-anchor-id="testing-the-coefficients-rebuilding-the-table-again"><span class="header-section-number">15.5</span> Testing the Coefficients (Rebuilding the Table Again)</h2>
@@ -859,7 +859,7 @@ x2 0.56 0.57 1.00</code></pre>
 <p>The by-hand values match R’s table. Two things to burn in:</p>
 <ol type="1">
 <li>The degrees of freedom for a coefficient’s <span class="math inline">\(t\)</span> test are <span class="math inline">\(n - k - 1\)</span> - we spend one df per predictor <strong>and</strong> one for the intercept. (An older version of this lecture used <span class="math inline">\(n - 1\)</span> here; that is wrong, and with several predictors it matters.)</li>
-<li>The <strong>VIF sits right inside the standard error</strong>. When predictors are collinear, VIF climbs, the SE inflates, <span class="math inline">\(t\)</span> shrinks, and your once-significant predictor goes quiet - even though nothing about the <em>relationship</em> changed. Collinearity does not bias your slopes; it makes them <strong>imprecise</strong>.</li>
+<li>The <strong>VIF sits right inside the standard error</strong>. When predictors are collinear, VIF climbs, the SE inflates, <span class="math inline">\(t\)</span> shrinks, and your once-significant predictor goes quiet, even though nothing about the <em>relationship</em> changed. Collinearity does not bias your slopes; it makes them <strong>imprecise</strong>.</li>
 </ol>
 <p>For the whole model, the omnibus test is an <span class="math inline">\(F\)</span> built from <span class="math inline">\(R^2\)</span>:</p>
 <p><span class="math display">\[F = \frac{R^2 / k}{(1 - R^2)/(n - k - 1)} \quad \text{with } df_1 = k,\ df_2 = n - k - 1\]</span></p>
@@ -880,7 +880,7 @@ x2 0.56 0.57 1.00</code></pre>
 </section>
 <section id="multicollinearity-seeing-the-damage" class="level2" data-number="15.6">
 <h2 data-number="15.6" class="anchored" data-anchor-id="multicollinearity-seeing-the-damage"><span class="header-section-number">15.6</span> Multicollinearity: Seeing the Damage</h2>
-<p>Let us watch the VIF do its dirty work directly. As two predictors become more correlated, the VIF explodes:</p>
+<p>Let us watch the VIF at work directly. As two predictors become more correlated, the VIF explodes:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">curve</span>(<span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> x<span class="sc">^</span><span class="dv">2</span>), <span class="at">from =</span> <span class="dv">0</span>, <span class="at">to =</span> <span class="fl">0.99</span>, <span class="at">n =</span> <span class="dv">500</span>,</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">xlab =</span> <span class="st">"correlation between X1 and X2"</span>, <span class="at">ylab =</span> <span class="st">"VIF"</span>,</span>
@@ -894,7 +894,7 @@ x2 0.56 0.57 1.00</code></pre>
 </div>
 </div>
 </div>
-<p>Past a correlation of about 0.95 the curve rockets skyward. A predictor that is 95% predictable from the others carries almost no <em>unique</em> information, so the model cannot pin down its slope. The red line marks a rough <span class="math inline">\(\text{VIF} = 10\)</span> rule of thumb - but treat it as a smoke alarm, not a law.</p>
+<p>Past a correlation of about 0.95 the curve rises very steeply. A predictor that is 95% predictable from the others carries almost no <em>unique</em> information, so the model cannot pin down its slope. The red line marks a rough <span class="math inline">\(\text{VIF} = 10\)</span> rule of thumb, but treat it as a warning sign, not a hard rule.</p>
 </section>
 <section id="six-ways-to-deal-with-collinearity" class="level2" data-number="15.7">
 <h2 data-number="15.7" class="anchored" data-anchor-id="six-ways-to-deal-with-collinearity"><span class="header-section-number">15.7</span> Six Ways to Deal With Collinearity</h2>

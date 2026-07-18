@@ -706,7 +706,7 @@ window.Quarto = {
 </header>
 
 
-<p>The <a href="./18-rasch.html">Rasch chapter</a> built one item response model from scratch and promised there was a wider world. Here it is. Item Response Theory (IRT) is a whole family of models for the same task - measuring people from their item responses - and <strong>generalizability theory (G-theory)</strong> is the grand generalization of <a href="./10-reliability.html">reliability</a> that asks not just “how much error?” but “error <em>from what</em>?” Both are areas where the authors have published extensively, often together in a single study.</p>
+<p>The <a href="./18-rasch.html">Rasch chapter</a> built one item response model from scratch and promised there was a wider world. Here it is. Item Response Theory (IRT) is a whole family of models for the same task - measuring people from their item responses - and <strong>generalizability theory (G-theory)</strong> is a broad extension of <a href="./10-reliability.html">reliability</a> that asks not only “how much error?” but “error <em>from what</em>?” Both are areas where the authors have published extensively, often together in a single study.</p>
 <section id="learning-objectives" class="level2" data-number="21.1">
 <h2 data-number="21.1" class="anchored" data-anchor-id="learning-objectives"><span class="header-section-number">21.1</span> Learning Objectives</h2>
 <ol type="1">
@@ -718,7 +718,7 @@ window.Quarto = {
 </section>
 <section id="beyond-rasch-items-that-discriminate-differently" class="level2" data-number="21.2">
 <h2 data-number="21.2" class="anchored" data-anchor-id="beyond-rasch-items-that-discriminate-differently"><span class="header-section-number">21.2</span> Beyond Rasch: Items That Discriminate Differently</h2>
-<p>Rasch makes a strong, beautiful assumption: every item is equally good at separating people; items differ <em>only</em> in difficulty. The <strong>2PL model</strong> relaxes it, giving each item its own <strong>discrimination</strong> <span class="math inline">\(a_i\)</span> (how sharply it distinguishes high from low) alongside its difficulty <span class="math inline">\(b_i\)</span>:</p>
+<p>Rasch makes a strong, simple assumption: every item is equally good at separating people; items differ <em>only</em> in difficulty. The <strong>2PL model</strong> relaxes it, giving each item its own <strong>discrimination</strong> <span class="math inline">\(a_i\)</span> (how sharply it distinguishes high from low) alongside its difficulty <span class="math inline">\(b_i\)</span>:</p>
 <p><span class="math display">\[P(x_{ij}=1) = \frac{1}{1 + e^{-a_i(\theta_j - b_i)}}\]</span></p>
 <p>The clearest way to feel the difference is to <em>look</em> at the items. An item’s <strong>characteristic curve</strong> plots the probability of a correct/endorsed response against ability <span class="math inline">\(\theta\)</span>. Difficulty slides the curve left-right; discrimination changes its steepness:</p>
 <div class="cell">
@@ -748,7 +748,7 @@ window.Quarto = {
 </section>
 <section id="generalizability-reliability-grown-up" class="level2" data-number="21.3">
 <h2 data-number="21.3" class="anchored" data-anchor-id="generalizability-reliability-grown-up"><span class="header-section-number">21.3</span> Generalizability: Reliability, Grown Up</h2>
-<p>Classical reliability (<a href="./10-reliability.html">Ch. 10</a>) splits observed variance into “true” and “error.” But <em>error from where</em>? The item you happened to use? The rater who happened to score you? The day you happened to show up? <strong>Generalizability theory</strong> treats each of these as a <strong>facet</strong> and estimates how much variance each contributes - turning “reliability” from a single number into an analysis of <em>sources</em>.</p>
+<p>Classical reliability (<a href="./10-reliability.html">Ch. 10</a>) splits observed variance into “true” and “error.” But error from where? It could come from the particular item you used, the rater who scored you, or the day you happened to show up. <strong>Generalizability theory</strong> treats each of these as a <strong>facet</strong> and estimates how much variance each contributes, turning “reliability” from a single number into an analysis of <em>sources</em>.</p>
 <p>The machinery is the <a href="./04-Dmeasures.html">variance-partitioning</a> you already know, run with <code>aov</code>. Simulate people crossed with items, then recover how much of the variance is real person differences versus item and residual noise:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
@@ -779,7 +779,7 @@ window.Quarto = {
 </div>
 <section id="the-d-study-designing-the-measure" class="level3" data-number="21.3.1">
 <h3 data-number="21.3.1" class="anchored" data-anchor-id="the-d-study-designing-the-measure"><span class="header-section-number">21.3.1</span> The D-study: Designing the Measure</h3>
-<p>Here is where G-theory pays for itself. Because you know the variance components, you can ask a <strong>design</strong> question - a <em>decision (D) study</em>: how many items would I need for a target reliability? It is the <a href="./09-statisticalpower.html">power analysis</a> of measurement.</p>
+<p>This is where G-theory pays for itself. Because you know the variance components, you can ask a <strong>design</strong> question - a <em>decision (D) study</em>: how many items would I need for a target reliability? It is the <a href="./09-statisticalpower.html">power analysis</a> of measurement.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>n_items <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">8</span>, <span class="dv">12</span>, <span class="dv">20</span>, <span class="dv">40</span>)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>G_by_n  <span class="ot">&lt;-</span> v_p <span class="sc">/</span> (v_p <span class="sc">+</span> v_e <span class="sc">/</span> n_items)     <span class="co"># generalizability at each test length</span></span>

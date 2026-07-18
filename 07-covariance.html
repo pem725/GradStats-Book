@@ -737,7 +737,7 @@ window.Quarto = {
 </section>
 <section id="the-units-problem-and-the-fix-correlation" class="level2" data-number="6.4">
 <h2 data-number="6.4" class="anchored" data-anchor-id="the-units-problem-and-the-fix-correlation"><span class="header-section-number">6.4</span> The Units Problem, and the Fix: Correlation</h2>
-<p>Covariance has a fatal flaw for interpretation: its size depends on the <strong>units</strong>. Measure grade in points vs.&nbsp;proportions and the covariance changes wildly, even though the relationship is identical. Sound familiar? It is the same units problem the standard deviation had - and we fix it the same way, by <strong>standardizing</strong>. Divide covariance by both standard deviations and you get the <strong>correlation coefficient</strong>, <span class="math inline">\(r\)</span>:</p>
+<p>Covariance has a serious drawback for interpretation: its size depends on the <strong>units</strong>. Measure grade in points versus proportions and the covariance changes a lot, even though the relationship is identical. This is the same units problem the standard deviation had, and we fix it the same way, by <strong>standardizing</strong>. Divide covariance by both standard deviations and you get the <strong>correlation coefficient</strong>, <span class="math inline">\(r\)</span>:</p>
 <p><span class="math display">\[r = \frac{\text{cov}(x, y)}{s_x \, s_y}\]</span></p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>r_hand <span class="ot">&lt;-</span> <span class="fu">cov</span>(study, grade) <span class="sc">/</span> (<span class="fu">sd</span>(study) <span class="sc">*</span> <span class="fu">sd</span>(grade))</span>
@@ -751,7 +751,7 @@ window.Quarto = {
 </section>
 <section id="what-correlation-will-not-tell-you" class="level2" data-number="6.5">
 <h2 data-number="6.5" class="anchored" data-anchor-id="what-correlation-will-not-tell-you"><span class="header-section-number">6.5</span> What Correlation Will Not Tell You</h2>
-<p>Two eternal warnings. First, the one on every coffee mug: <strong>correlation is not causation.</strong> Ice-cream sales and drownings correlate (both driven by summer heat), but sundaes do not drown people. Second, and less appreciated: <span class="math inline">\(r\)</span> measures only the <strong>linear</strong> part of a relationship. A strong curved relationship can produce <span class="math inline">\(r \approx 0\)</span>. This is why we told you to <em>always plot your data</em> - the single number can hide the whole story:</p>
+<p>Two lasting warnings. First, the familiar one: <strong>correlation is not causation.</strong> Ice-cream sales and drownings correlate (both driven by summer heat), but ice cream does not cause drowning. Second, and less appreciated: <span class="math inline">\(r\)</span> measures only the <strong>linear</strong> part of a relationship. A strong curved relationship can produce <span class="math inline">\(r \approx 0\)</span>. This is why we told you to <em>always plot your data</em> - the single number can hide the whole story:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># a perfect U-shape: strong relationship, ~zero correlation</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>xx <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">3</span>, <span class="dv">3</span>, <span class="at">length.out =</span> <span class="dv">100</span>)</span>
@@ -790,7 +790,7 @@ window.Quarto = {
     4.332777     4.332777 </code></pre>
 </div>
 </div>
-<p>They match exactly. Regression, correlation, and everything downstream are covariance wearing different clothes. When we say the General Linear Model “models covariance structure,” this is what we mean - and it is why this modest chapter is the true beginning of the modeling half of the book.</p>
+<p>They match exactly. Regression, correlation, and everything downstream are built from covariance. When we say the General Linear Model “models covariance structure,” this is what we mean, and it is why this chapter is the real beginning of the modeling half of the book.</p>
 </div>
 </div>
 </section>
@@ -816,7 +816,7 @@ window.Quarto = {
 </section>
 <section id="where-we-go-next" class="level2" data-number="6.7">
 <h2 data-number="6.7" class="anchored" data-anchor-id="where-we-go-next"><span class="header-section-number">6.7</span> Where We Go Next</h2>
-<p>We now hold the engine (covariance) but have not yet built the machine. Before we assemble full models, a short detour to make sure our sensors are trustworthy: are our measurements <a href="./10-reliability.html">reliable</a> and <a href="./11-validity.html">valid</a>? A model built on a broken ruler predicts nothing - no matter how strong the covariance looks.</p>
+<p>We now hold the engine (covariance) but have not yet built the machine. Before we assemble full models, a short detour to make sure our sensors are trustworthy: are our measurements <a href="./10-reliability.html">reliable</a> and <a href="./11-validity.html">valid</a>? A model built on a broken ruler predicts nothing, no matter how strong the covariance looks.</p>
 
 
 </section>

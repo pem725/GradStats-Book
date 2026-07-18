@@ -695,8 +695,8 @@ window.Quarto = {
 </header>
 
 
-<p>In the <a href="./16-ANOVAandGLM.html">ANOVA and the GLM</a> chapter we let R turn a factor into numbers for us and got on with life. That was a convenient lie. R <em>always</em> codes a categorical predictor into numbers before it fits anything - and <strong>the code you choose decides what every coefficient means.</strong> Change the code and the intercept, the slopes, the <em>t</em>-tests all change their meaning, even though the model’s fit (its <span class="math inline">\(R^2\)</span>, its <span class="math inline">\(F\)</span>, its predicted values) does not budge an inch.</p>
-<p>That last sentence is the whole chapter. The coding scheme is a lens, not a model. Pick the lens that answers your question, and the coefficients read like plain English. Pick a careless lens and you get numbers that are technically correct and completely meaningless - what we will (fondly) call <strong>nonsense coding</strong>.</p>
+<p>In the <a href="./16-ANOVAandGLM.html">ANOVA and the GLM</a> chapter we let R turn a factor into numbers for us and moved on. That was a simplification worth revisiting. R <em>always</em> codes a categorical predictor into numbers before it fits anything, and <strong>the code you choose decides what every coefficient means.</strong> Change the code and the intercept, the slopes, and the <em>t</em>-tests all change their meaning, even though the model’s fit (its <span class="math inline">\(R^2\)</span>, its <span class="math inline">\(F\)</span>, its predicted values) does not change at all.</p>
+<p>That is the whole chapter in one idea. The coding scheme is a lens, not a model. Pick the lens that answers your question, and the coefficients read like plain English. Pick a careless lens and you get numbers that are technically correct but not meaningful, what we will call <strong>nonsense coding</strong>.</p>
 <section id="learning-objectives" class="level2" data-number="18.1">
 <h2 data-number="18.1" class="anchored" data-anchor-id="learning-objectives"><span class="header-section-number">18.1</span> Learning Objectives</h2>
 <ol type="1">
@@ -708,7 +708,7 @@ window.Quarto = {
 </section>
 <section id="a-category-is-a-binned-continuum" class="level2" data-number="18.2">
 <h2 data-number="18.2" class="anchored" data-anchor-id="a-category-is-a-binned-continuum"><span class="header-section-number">18.2</span> A Category Is a Binned Continuum</h2>
-<p>Let’s build a categorical variable from scratch so we can see the seams. Take a continuous “dogness” score, chop it into four bins, and call them <code>cat</code>, <code>fish</code>, <code>pig</code>, <code>dog</code> (cat lovers are welcome to write their own course):</p>
+<p>Let’s build a categorical variable from scratch so we can see the seams. Take a continuous “dogness” score, chop it into four bins, and call them <code>cat</code>, <code>fish</code>, <code>pig</code>, <code>dog</code>:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">725</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>n   <span class="ot">&lt;-</span> <span class="dv">200</span></span>
@@ -881,7 +881,7 @@ dog    -1   -1   -1</code></pre>
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><code>contr.sum</code> on a two-level factor assigns <code>+1</code> to the <em>first</em> level and <code>-1</code> to the second - which is often the opposite of what you expect, silently flipping the sign of your effect. R’s default level ordering (alphabetical!) will burn you the same way. Print <code>contrasts(yourfactor)</code> <em>before</em> you interpret anything.</p>
+<p><code>contr.sum</code> on a two-level factor assigns <code>+1</code> to the <em>first</em> level and <code>-1</code> to the second, which is often the opposite of what you expect, and it silently flips the sign of your effect. R’s default level ordering (alphabetical) can catch you the same way. Print <code>contrasts(yourfactor)</code> <em>before</em> you interpret anything.</p>
 </div>
 </div>
 </section>
@@ -925,7 +925,7 @@ dog    -2   -3   -4</code></pre>
    1.346485    1.346485    1.390092 </code></pre>
 </div>
 </div>
-<p>The intercept tracks the raw mean. “The weights get pushed onto the comparison-group means” - unbalanced data no longer distorts your grand mean.</p>
+<p>The intercept tracks the raw mean. The weights get pushed onto the comparison-group means, so unbalanced data no longer distorts your grand mean.</p>
 </section>
 <section id="contrast-coding" class="level2" data-number="18.6">
 <h2 data-number="18.6" class="anchored" data-anchor-id="contrast-coding"><span class="header-section-number">18.6</span> Contrast Coding</h2>
@@ -1006,7 +1006,7 @@ dog              -0.5         0.0       -0.5</code></pre>
 </section>
 <section id="nonsense-coding" class="level2" data-number="18.7">
 <h2 data-number="18.7" class="anchored" data-anchor-id="nonsense-coding"><span class="header-section-number">18.7</span> Nonsense Coding</h2>
-<p>Now the capstone - and the point of the whole chapter. What if we assign <em>arbitrary</em> numbers to the groups? Not a reference, not deviations, not a meaningful comparison - just… numbers we made up:</p>
+<p>Now the capstone, and the point of the whole chapter. What if we assign <em>arbitrary</em> numbers to the groups, with no reference, no deviations, and no meaningful comparison behind them?</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>nonsense <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>( <span class="fl">3.0</span>, <span class="sc">-</span><span class="fl">7.0</span>,  <span class="fl">2.5</span>,  <span class="fl">0.1</span>,</span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>                      <span class="fl">1.0</span>,  <span class="fl">1.0</span>, <span class="sc">-</span><span class="fl">2.0</span>,  <span class="fl">4.0</span>,</span>
@@ -1021,7 +1021,7 @@ dog              -0.5         0.0       -0.5</code></pre>
      -1.734       0.158       0.834       0.422 </code></pre>
 </div>
 </div>
-<p>Those coefficients are gibberish - <code>huh</code>, <code>wat</code>, <code>lol</code>, indeed. You cannot read a single one off the group means. And yet look at what has <strong>not</strong> changed:</p>
+<p>Those coefficients are not interpretable, which is exactly why the columns are named <code>huh</code>, <code>wat</code>, and <code>lol</code>. You cannot read a single one off the group means. And yet look at what has <strong>not</strong> changed:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The model fit is byte-for-byte identical to the sensible codings:</span></span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">same_fitted =</span> <span class="fu">isTRUE</span>(<span class="fu">all.equal</span>(<span class="fu">fitted</span>(m_nonsense), <span class="fu">fitted</span>(m_dummy))),</span>
@@ -1034,7 +1034,7 @@ dog              -0.5         0.0       -0.5</code></pre>
 </div>
 </div>
 <p>All <code>TRUE</code>. <strong>Every coding scheme in this chapter fits the exact same model</strong> - same predicted values, same <span class="math inline">\(R^2\)</span>, same omnibus <span class="math inline">\(F\)</span>. Dummy, effects, weighted, contrast, and nonsense codes are five different <em>descriptions</em> of one fitted surface. The omnibus test (“does <code>pet</code> matter at all?”) is blind to coding. Only the <strong>individual coefficients</strong> - the intercept and the <span class="math inline">\(b\)</span>’s - carry the fingerprint of the code you chose.</p>
-<p>That is the lesson worth tattooing on the inside of your eyelids:</p>
+<p>That is the lesson worth holding onto:</p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1152,7 +1152,7 @@ dog              -0.5         0.0       -0.5</code></pre>
 <pre><code>[1] TRUE</code></pre>
 </div>
 </div>
-<p><code>TRUE</code>. Real data, real (unbalanced) cells - and every rule from the pet example holds without a scratch, because the arithmetic never cared whether the groups were house pets or the conditions of an actual study.</p>
+<p><code>TRUE</code>. Real data, real (unbalanced) cells, and every rule from the pet example still holds, because the arithmetic works the same whether the groups are house pets or the conditions of an actual study.</p>
 </section>
 <section id="challenge" class="level2" data-number="18.10">
 <h2 data-number="18.10" class="anchored" data-anchor-id="challenge"><span class="header-section-number">18.10</span> Challenge</h2>
@@ -1176,7 +1176,7 @@ dog              -0.5         0.0       -0.5</code></pre>
 </section>
 <section id="where-we-go-next" class="level2" data-number="18.11">
 <h2 data-number="18.11" class="anchored" data-anchor-id="where-we-go-next"><span class="header-section-number">18.11</span> Where We Go Next</h2>
-<p>Coding is where categorical data enter the linear model, and where careful thought pays off in coefficients you can actually explain. It is also the last piece of the <em>observed-variable</em> linear model. But the constructs we most want to study - depression, curiosity, intelligence - are never observed directly; we see only their noisy indicators. The <a href="./28-sem.html">next part</a> turns to <strong>latent variables</strong> and the factor and structural models built for them - and after that, to what you do when the normal curve itself starts lying to you.</p>
+<p>Coding is where categorical data enter the linear model, and where careful thought pays off in coefficients you can actually explain. It is also the last piece of the <em>observed-variable</em> linear model. But the constructs we most want to study, such as depression, curiosity, and intelligence, are never observed directly; we see only their noisy indicators. The <a href="./28-sem.html">next part</a> turns to <strong>latent variables</strong> and the factor and structural models built for them, and after that, to what you do when the normal curve no longer describes your data well.</p>
 
 
 </section>

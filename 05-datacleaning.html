@@ -678,7 +678,7 @@ div.csl-indent {
 </header>
 
 
-<p>Nobody puts this chapter on a highlight reel, and yet you will spend more of your career here than anywhere else in this book. Real data arrive dirty: typos, impossible values, blanks, dates stored as text, “999” standing in for “don’t know.” Before a single fancy model, you must clean house. Do it carelessly and every beautiful analysis downstream is built on sand.</p>
+<p>This chapter rarely gets much attention, and yet you will spend more of your career here than anywhere else in this book. Real data arrive dirty: typos, impossible values, blanks, dates stored as text, “999” standing in for “don’t know.” Before you fit a single model, you have to clean house. Do it carelessly and every analysis downstream rests on a shaky foundation.</p>
 <section id="learning-objectives" class="level2" data-number="4.1">
 <h2 data-number="4.1" class="anchored" data-anchor-id="learning-objectives"><span class="header-section-number">4.1</span> Learning Objectives</h2>
 <ol type="1">
@@ -694,7 +694,7 @@ div.csl-indent {
 </section>
 <section id="first-actually-look" class="level2" data-number="4.3">
 <h2 data-number="4.3" class="anchored" data-anchor-id="first-actually-look"><span class="header-section-number">4.3</span> First, Actually Look</h2>
-<p>The cheapest, most-skipped step is to <em>look at your data</em> before touching it. <code>str()</code>, <code>summary()</code>, and a few plots catch an astonishing share of problems:</p>
+<p>The cheapest, most-skipped step is to <em>look at your data</em> before touching it. <code>str()</code>, <code>summary()</code>, and a few plots catch a surprisingly large share of problems:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">3</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
@@ -721,7 +721,7 @@ div.csl-indent {
  NAs    :1                                     </code></pre>
 </div>
 </div>
-<p>Three problems already leap out: an age of 220, a negative income (and a suspicious 999), and a stray lowercase “b”. None of these needed a model - just a look.</p>
+<p>Three problems already stand out: an age of 220, a negative income (and a suspicious 999), and a stray lowercase “b”. None of these needed a model; a look was enough.</p>
 </section>
 <section id="impossible-values-and-sanity-checks" class="level2" data-number="4.4">
 <h2 data-number="4.4" class="anchored" data-anchor-id="impossible-values-and-sanity-checks"><span class="header-section-number">4.4</span> Impossible Values and Sanity Checks</h2>
@@ -738,7 +738,7 @@ A B
 4 3 </code></pre>
 </div>
 </div>
-<p>Note the sneaky one: <strong>999 was never a real income</strong> - it was a placeholder for “declined to answer.” Software cannot know that. If you had left it in, the mean income would have been science fiction. Always hunt for these coded-missing sentinels (999, -1, “N/A”, empty strings) and convert them to honest <code>NA</code>.</p>
+<p>Note the tricky one: <strong>999 was never a real income</strong>. It was a placeholder for “declined to answer,” and software cannot know that. If you had left it in, the mean income would have been badly wrong. Always look for these coded-missing sentinels (999, -1, “N/A”, empty strings) and convert them to a genuine <code>NA</code>.</p>
 </section>
 <section id="missing-data-the-why-matters" class="level2" data-number="4.5">
 <h2 data-number="4.5" class="anchored" data-anchor-id="missing-data-the-why-matters"><span class="header-section-number">4.5</span> Missing Data: The <em>Why</em> Matters</h2>
@@ -746,7 +746,7 @@ A B
 <ul>
 <li><strong>MCAR</strong> (Missing Completely At Random): the gap is unrelated to anything - a dropped test tube. Dropping these cases loses power but does not bias you.</li>
 <li><strong>MAR</strong> (Missing At Random): missingness depends on things you <em>observed</em> (older people skip the income item, and you recorded age). Recoverable with the right methods.</li>
-<li><strong>MNAR</strong> (Missing Not At Random): missingness depends on the <em>unobserved value itself</em> (high earners hide their income). The dangerous one - no amount of cleverness fully fixes it, and it can silently bias every result.</li>
+<li><strong>MNAR</strong> (Missing Not At Random): missingness depends on the <em>unobserved value itself</em> (high earners hide their income). The hardest case: no method fully fixes it, and it can quietly bias every result.</li>
 </ul>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colSums</span>(<span class="fu">is.na</span>(dat))     <span class="co"># how much is missing, and where?</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -759,7 +759,7 @@ A B
 </section>
 <section id="outliers-investigate-dont-reflexively-delete" class="level2" data-number="4.6">
 <h2 data-number="4.6" class="anchored" data-anchor-id="outliers-investigate-dont-reflexively-delete"><span class="header-section-number">4.6</span> Outliers: Investigate, Don’t Reflexively Delete</h2>
-<p>An outlier is not automatically an error. It might be your most important data point (the one patient who responded, the fraud you were hired to find). The rule: <strong>investigate before you act.</strong> A value can be (1) an impossible error - fix or remove it; (2) a real but extreme observation - keep it, and consider a robust method or a transformation; or (3) genuinely interesting - study it. Deleting outliers just because they are inconvenient is how honest data becomes a lie.</p>
+<p>An outlier is not automatically an error. It might be your most important data point (the one patient who responded, the fraud you were hired to find). The rule: <strong>investigate before you act.</strong> A value can be (1) an impossible error - fix or remove it; (2) a real but extreme observation - keep it, and consider a robust method or a transformation; or (3) genuinely interesting - study it. Deleting outliers just because they are inconvenient turns honest data into a misleading result.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">scale</span>(<span class="fu">c</span>(<span class="dv">52</span>, <span class="dv">61</span>, <span class="dv">48</span>, <span class="dv">55</span>, <span class="dv">60</span>, <span class="dv">58</span>, <span class="dv">300</span>))    <span class="co"># 300 stands out</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">as.vector</span>(z), <span class="dv">2</span>)                          <span class="co"># z-scores flag the extreme point</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>

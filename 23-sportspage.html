@@ -688,7 +688,7 @@ window.Quarto = {
 <p>We begin with the friendliest lab I know: <a href="https://thesportspage.net/">The Sports Page</a>, a sister project to this book - a daily newsletter that takes one strange sports number and tells the truth about what it does and does not mean. Sports is a good teacher because the data are rich, the stakes are low, and the future arrives every single day to grade your predictions. If you can be honest about a baseball number, you can be honest about a clinical one.</p>
 <section id="three-things-you-can-do-with-data" class="level2" data-number="25.1">
 <h2 data-number="25.1" class="anchored" data-anchor-id="three-things-you-can-do-with-data"><span class="header-section-number">25.1</span> Three Things You Can Do With Data</h2>
-<p>The whole discipline reduces to three verbs, and the first commandment is to <strong>always know which one you are doing</strong>:</p>
+<p>The whole discipline reduces to three verbs, and the first rule is to <strong>always know which one you are doing</strong>:</p>
 <ol type="1">
 <li><strong>Describe</strong> what happened. This is easy - the data already know the answer. A batting average, a group mean, an <span class="math inline">\(R^2\)</span>: all description.</li>
 <li><strong>Predict</strong> what will happen. This is harder, because the future is a real test you can fail. A forecast, a fitted model applied to new cases.</li>
@@ -705,13 +705,13 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Here is the idea that separates a describer from a forecaster: <strong>any model flexible enough will fit the past perfectly, and that tells you almost nothing.</strong> The past is a test with the answers printed on it. The real test - the only honest one - is predicting data you have not seen, and then <em>admitting it</em> when you were wrong. That is why The Sports Page grades every prediction it makes, on a schedule, in public. Being wrong is not failure; it is the data that improves the next model. A statistician who never publishes a falsifiable prediction never has to learn anything.</p>
+<p>Here is the idea that separates a describer from a forecaster: <strong>any model flexible enough will fit the past perfectly, and that tells you almost nothing.</strong> Fitting the past is easy because you already know how it turned out. The real test is predicting data you have not seen, and then acknowledging it when you were wrong. That is why The Sports Page grades every prediction it makes, on a schedule, in public. Being wrong is not failure; it is the information that improves the next model. If you never publish a prediction that could turn out wrong, you never give yourself a chance to learn.</p>
 </div>
 </div>
 </section>
 <section id="a-worked-judgment-the-hot-start-is-a-mirage" class="level2" data-number="25.2">
 <h2 data-number="25.2" class="anchored" data-anchor-id="a-worked-judgment-the-hot-start-is-a-mirage"><span class="header-section-number">25.2</span> A Worked Judgment: The Hot Start Is a Mirage</h2>
-<p>Every April, someone goes 6-for-9 and the papers anoint an MVP. Every April, they are wrong - and you already have the tools to know <em>why</em>. It is the same lesson as <a href="./09-statisticalpower.html">statistical power</a>: small samples are wild. Watch what happens when we plot every hitter’s performance against how many chances they have had:</p>
+<p>Every April, someone goes 6-for-9 and gets talked about as an MVP. Every April, that call turns out to be premature, and you already have the tools to know <em>why</em>. It is the same lesson as <a href="./09-statisticalpower.html">statistical power</a>: small samples are noisy. Watch what happens when we plot every hitter’s performance against how many chances they have had:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>h <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/mlb_hitters_2026.csv"</span>)   <span class="co"># a partial season, all hitters</span></span>
@@ -744,22 +744,22 @@ its_plate_appearances
                  4.00 </code></pre>
 </div>
 </div>
-<p>The best OPS in the league belongs to someone with a single-digit number of at-bats. That is not a hitter who cracked the code; that is <strong>noise wearing a crown</strong>. The honest read: a hot start is <em>description</em> of a tiny sample, and mistaking it for <em>prediction</em> is the most common error in all of sports - and all of science. The player will “regress to the mean” not because of some mystical force, but because the extreme was mostly luck, and luck does not re-sign for next season.</p>
-<p>This is the entire apprenticeship in one figure. The math was easy (a standard deviation). The judgment - <em>knowing that the April headline is describing noise and pretending it is signal</em> - is the hard part, and the valuable one.</p>
+<p>The best OPS in the league belongs to someone with a single-digit number of at-bats. That is not a hitter who has cracked the code; that is mostly <strong>sampling noise in a very small sample</strong>. The honest read: a hot start is <em>description</em> of a tiny sample, and mistaking it for <em>prediction</em> is one of the most common errors in sports, and in science more broadly. The player will “regress to the mean” not because of some mysterious force, but because the extreme value was mostly luck, and luck does not carry over to the rest of the season.</p>
+<p>This is the entire apprenticeship in one figure. The math was easy (a standard deviation). The judgment, <em>recognizing that the April headline is describing noise while treating it as signal</em>, is the hard part, and the valuable one.</p>
 </section>
 <section id="describe-predict-control---on-one-trend" class="level2" data-number="25.3">
 <h2 data-number="25.3" class="anchored" data-anchor-id="describe-predict-control---on-one-trend"><span class="header-section-number">25.3</span> Describe, Predict, Control - On One Trend</h2>
 <p>Return to the <a href="./21-graphics.html">strikeout revolution</a>. Notice how the three verbs stack:</p>
 <ul>
 <li><strong>Describe:</strong> strikeouts per nine innings rose from about 5.4 to about 8.5 since 1985. (True, easy, and <em>only</em> a description.)</li>
-<li><strong>Predict:</strong> will it keep rising? You could fit a line and extrapolate - but now you owe the reader a <em>graded</em> forecast, and a humble one, because trends bend. Extrapolation is where flexible models go to embarrass themselves.</li>
-<li><strong>Control:</strong> <em>why</em> did it rise? Harder velocity, analytics rewarding the home-run-or-strikeout trade-off, bigger bullpens. Those are causal claims, and a line through the past cannot establish a single one of them - it can only describe the shadow they cast.</li>
+<li><strong>Predict:</strong> will it keep rising? You could fit a line and extrapolate, but now you owe the reader a <em>graded</em> forecast, and a cautious one, because trends bend. Extrapolation is where flexible models most often go wrong.</li>
+<li><strong>Control:</strong> <em>why</em> did it rise? Harder velocity, analytics rewarding the home-run-or-strikeout trade-off, bigger bullpens. Those are causal claims, and a line through the past cannot establish any of them; it can only describe the pattern they leave behind.</li>
 </ul>
-<p>Same data, three completely different epistemic commitments. Keeping them straight is not pedantry; it is the difference between analysis and astrology.</p>
+<p>Same data, three very different epistemic commitments. Keeping them straight is not pedantry; it is the difference between careful analysis and guessing.</p>
 </section>
 <section id="what-comes-next" class="level2" data-number="25.4">
 <h2 data-number="25.4" class="anchored" data-anchor-id="what-comes-next"><span class="header-section-number">25.4</span> What Comes Next</h2>
-<p>With the philosophy in hand, we turn to the real thing: published research, walked through end to end, with every decision on the table. You will watch measures get built and defended, watch a total score get caught throwing away information it should have kept, and watch missing data quietly change an answer. These are not toy examples - they are real studies, real datasets, and real judgment calls, some of which we would make differently today. That honesty is the point. Welcome to the apprenticeship; let’s go to work.</p>
+<p>With the philosophy in hand, we turn to the real thing: published research, walked through end to end, with every decision on the table. You will watch measures get built and defended, watch a total score throw away information it should have kept, and watch missing data quietly change an answer. These are not toy examples; they are real studies, real datasets, and real judgment calls, some of which we would make differently today. That honesty is the point. Welcome to the apprenticeship; let’s go to work.</p>
 
 
 </section>

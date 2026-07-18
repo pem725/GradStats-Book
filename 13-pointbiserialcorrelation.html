@@ -686,7 +686,7 @@ window.Quarto = {
 </header>
 
 
-<p>The point biserial correlation is a statistical measure that quantifies the relationship between a continuous variable and a dichotomous variable. It is a special case of the Pearson product moment correlation coefficient, which is used to measure the strength and direction of the linear relationship between two continuous variables. Why is this so important? Well, the point biserial correlation (<span class="math inline">\(r_{pb}\)</span>) is the key to bridging the gap between continuous and dichotomous variables - a gap caused by the shift from one GLM model (MRC with continuous) to another (ANOVA with discrete or categorical predictors).</p>
+<p>The point biserial correlation is a statistical measure that quantifies the relationship between a continuous variable and a dichotomous variable. It is a special case of the Pearson product moment correlation coefficient, which is used to measure the strength and direction of the linear relationship between two continuous variables. Why is this so important? The point biserial correlation (<span class="math inline">\(r_{pb}\)</span>) is the key to bridging the gap between continuous and dichotomous variables - a gap caused by the shift from one GLM model (MRC with continuous) to another (ANOVA with discrete or categorical predictors).</p>
 <section id="learning-objectives" class="level2" data-number="13.1">
 <h2 data-number="13.1" class="anchored" data-anchor-id="learning-objectives"><span class="header-section-number">13.1</span> Learning Objectives</h2>
 <ol type="1">
@@ -698,7 +698,7 @@ window.Quarto = {
 </section>
 <section id="the-trick-a-dichotomy-is-just-0-and-1" class="level2" data-number="13.2">
 <h2 data-number="13.2" class="anchored" data-anchor-id="the-trick-a-dichotomy-is-just-0-and-1"><span class="header-section-number">13.2</span> The Trick: A Dichotomy Is Just 0 and 1</h2>
-<p>Here is the sleight of hand that unlocks everything. A dichotomous variable - passed/failed, treatment/control, yes/no - looks categorical, but if we simply <strong>code it 0 and 1</strong>, we can drop it straight into a Pearson correlation as if it were a number. That is <em>all</em> the point-biserial correlation is: an ordinary Pearson <span class="math inline">\(r\)</span> where one of the two variables happens to be a 0/1 indicator.</p>
+<p>Here is the idea that makes this simple. A dichotomous variable (passed/failed, treatment/control, yes/no) looks categorical, but if we simply <strong>code it 0 and 1</strong>, we can drop it straight into a Pearson correlation as if it were a number. That is <em>all</em> the point-biserial correlation is: an ordinary Pearson <span class="math inline">\(r\)</span> where one of the two variables happens to be a 0/1 indicator.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">14</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>studied <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="dv">50</span>, <span class="dv">1</span>, <span class="fl">0.5</span>)                 <span class="co"># 0 = didn't study, 1 = studied</span></span>
@@ -712,11 +712,11 @@ window.Quarto = {
          0.537          0.537 </code></pre>
 </div>
 </div>
-<p>No new formula, no new function - <code>cor()</code> did not even notice one variable was a dichotomy. The point-biserial correlation is Pearson’s <span class="math inline">\(r\)</span> that happened to meet a 0/1 variable.</p>
+<p>No new formula, no new function; <code>cor()</code> did not even notice one variable was a dichotomy. The point-biserial correlation is just Pearson’s <span class="math inline">\(r\)</span> computed with a 0/1 variable.</p>
 </section>
 <section id="the-same-thing-wearing-three-hats" class="level2" data-number="13.3">
 <h2 data-number="13.3" class="anchored" data-anchor-id="the-same-thing-wearing-three-hats"><span class="header-section-number">13.3</span> The Same Thing, Wearing Three Hats</h2>
-<p>Now the payoff. The relationship between a continuous outcome and a two-group predictor can be expressed as (a) a point-biserial correlation, (b) a two-sample t-test, or (c) a simple regression - and they are <strong>the identical analysis</strong>. Watch every road lead to the same t statistic and p-value:</p>
+<p>Now the payoff. The relationship between a continuous outcome and a two-group predictor can be expressed as (a) a point-biserial correlation, (b) a two-sample t-test, or (c) a simple regression, and they are <strong>the identical analysis</strong>. Every one gives the same t statistic and p-value:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># (a) test the point-biserial correlation</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>ct <span class="ot">&lt;-</span> <span class="fu">cor.test</span>(score, studied)</span>
@@ -735,7 +735,7 @@ window.Quarto = {
       4.4105       4.4105       4.4105 </code></pre>
 </div>
 </div>
-<p>Three “different” techniques, one t statistic. The correlation, the group comparison, and the regression are the same GLM. And the regression coefficient tells you <em>exactly</em> what the correlation was hiding - the raw difference between the two group means:</p>
+<p>Three “different” techniques, one t statistic. The correlation, the group comparison, and the regression are the same GLM. And the regression coefficient tells you something the correlation does not show directly: the raw difference between the two group means:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>means <span class="ot">&lt;-</span> <span class="fu">tapply</span>(score, studied, mean)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">regression_slope =</span> <span class="fu">coef</span>(<span class="fu">lm</span>(score <span class="sc">~</span> studied))[[<span class="st">"studied"</span>]],</span>
@@ -745,11 +745,11 @@ window.Quarto = {
         6.768483         6.768483 </code></pre>
 </div>
 </div>
-<p>The slope on a 0/1 predictor <strong>is</strong> the difference in group means. (Sound familiar? It is exactly the dummy-coding logic from the <a href="./16-ANOVAandGLM.html">ANOVA chapter</a>, previewed here with the simplest possible category.)</p>
+<p>The slope on a 0/1 predictor <strong>is</strong> the difference in group means. (This is the same dummy-coding logic from the <a href="./16-ANOVAandGLM.html">ANOVA chapter</a>, previewed here with the simplest possible category.)</p>
 </section>
 <section id="from-r-to-t-and-back" class="level2" data-number="13.4">
 <h2 data-number="13.4" class="anchored" data-anchor-id="from-r-to-t-and-back"><span class="header-section-number">13.4</span> From <span class="math inline">\(r\)</span> to <span class="math inline">\(t\)</span> and Back</h2>
-<p>Because they are the same analysis, the correlation and the t statistic are tied by a tidy formula - handy for converting between an effect <em>size</em> (<span class="math inline">\(r_{pb}\)</span>) and a <em>significance</em> test (<span class="math inline">\(t\)</span>):</p>
+<p>Because they are the same analysis, the correlation and the t statistic are tied by a simple formula, handy for converting between an effect <em>size</em> (<span class="math inline">\(r_{pb}\)</span>) and a <em>significance</em> test (<span class="math inline">\(t\)</span>):</p>
 <p><span class="math display">\[r_{pb} = \frac{t}{\sqrt{t^2 + df}}\]</span></p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>t_val <span class="ot">&lt;-</span> <span class="fu">abs</span>(tt<span class="sc">$</span>statistic); df <span class="ot">&lt;-</span> tt<span class="sc">$</span>parameter</span>
@@ -760,7 +760,7 @@ window.Quarto = {
    0.537    0.537 </code></pre>
 </div>
 </div>
-<p>They match. This little equation is why you can always recover an effect size from a reported t (and its df), and vice versa - a trick worth its weight in gold when reading other people’s papers.</p>
+<p>They match. This little equation is why you can always recover an effect size from a reported t (and its df), and vice versa, which is useful when reading other people’s papers.</p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -771,7 +771,7 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>MRC (regression with continuous predictors) and ANOVA (with categorical predictors) are taught as if they live in different countries. The point-biserial correlation is the bridge between them: it shows that the moment you code a category as numbers, a “group difference” <em>becomes</em> a correlation, a t-test <em>becomes</em> a regression, and the whole artificial border dissolves. Every categorical predictor is just a set of 0/1 indicators waiting to be correlated. Hold that thought - it is the key to the entire General Linear Model.</p>
+<p>MRC (regression with continuous predictors) and ANOVA (with categorical predictors) are often taught as if they were unrelated. The point-biserial correlation connects them: once you code a category as numbers, a group difference is a correlation and a t-test is a regression. Every categorical predictor is just a set of 0/1 indicators you can correlate. That idea is the key to the entire General Linear Model.</p>
 </div>
 </div>
 </section>

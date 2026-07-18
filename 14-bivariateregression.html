@@ -722,7 +722,7 @@ window.Quarto = {
 </section>
 <section id="a-little-history-you-can-skip-it-but-dont" class="level2" data-number="14.2">
 <h2 data-number="14.2" class="anchored" data-anchor-id="a-little-history-you-can-skip-it-but-dont"><span class="header-section-number">14.2</span> A Little History (You Can Skip It, But Don’t)</h2>
-<p>Regression is old. Really old. Adrien-Marie Legendre published the method of <strong>least squares</strong> in 1805, and Carl Friedrich Gauss claimed he had been using it since 1795 (mathematicians squabble too). But the word <em>regression</em> comes from Sir Francis Galton, who in 1885 noticed that the tall sons of tall fathers tended to be a little shorter than their fathers, and the short sons of short fathers a little taller - both <strong>regressing toward the mean</strong>. Yule (1897) and Pearson (1903) took Galton’s idea and gave us the machinery we still use today.</p>
+<p>Regression is old. Adrien-Marie Legendre published the method of <strong>least squares</strong> in 1805, and Carl Friedrich Gauss claimed he had been using it since 1795 (priority disputes like this are common in the history of mathematics). But the word <em>regression</em> comes from Sir Francis Galton, who in 1885 noticed that the tall sons of tall fathers tended to be a little shorter than their fathers, and the short sons of short fathers a little taller, both <strong>regressing toward the mean</strong>. Yule (1897) and Pearson (1903) took Galton’s idea and gave us the machinery we still use today.</p>
 <p>Why do we tell you this? Because regression was invented to answer an honest, human question: <em>if I know something about you (X), what is my best guess about something else (Y)?</em> That is the whole game. Everything below is just bookkeeping in service of that one question.</p>
 </section>
 <section id="the-model" class="level2" data-number="14.3">
@@ -731,7 +731,7 @@ window.Quarto = {
 <p><span class="math display">\[Y = f(X)\]</span></p>
 <p>For the simple linear case, that function is a straight line:</p>
 <p><span class="math display">\[y = bx + a\]</span></p>
-<p>where <span class="math inline">\(b\)</span> is the <strong>slope</strong> (how much <span class="math inline">\(y\)</span> changes for a one-unit change in <span class="math inline">\(x\)</span>) and <span class="math inline">\(a\)</span> is the <strong>intercept</strong> (the value of <span class="math inline">\(y\)</span> when <span class="math inline">\(x = 0\)</span>). You may have seen this in algebra class as <span class="math inline">\(y = mx + b\)</span>; statisticians, being contrarians, swapped the letters. Get used to it.</p>
+<p>where <span class="math inline">\(b\)</span> is the <strong>slope</strong> (how much <span class="math inline">\(y\)</span> changes for a one-unit change in <span class="math inline">\(x\)</span>) and <span class="math inline">\(a\)</span> is the <strong>intercept</strong> (the value of <span class="math inline">\(y\)</span> when <span class="math inline">\(x = 0\)</span>). You may have seen this in algebra class as <span class="math inline">\(y = mx + b\)</span>; statisticians use different letters for the same idea.</p>
 <p>Let’s make some data and look at it. We will keep it tiny - five points - so you can check every number by hand.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>)</span>
@@ -779,7 +779,7 @@ Multiple R-squared:  0.2552,    Adjusted R-squared:  0.006944
 F-statistic: 1.028 on 1 and 3 DF,  p-value: 0.3853</code></pre>
 </div>
 </div>
-<p>R just handed us a slope and an intercept. But here is the thing we care about most in this book: <strong>do not trust the machine until you can reproduce what it did.</strong> The rest of this chapter rebuilds every number in that output by hand. If you can do that, you <em>understand</em> regression. If you cannot, you are just a person who can type <code>summary()</code>.</p>
+<p>R just handed us a slope and an intercept. Here is what matters most in this book: <strong>do not trust the machine until you can reproduce what it did.</strong> The rest of this chapter rebuilds every number in that output by hand. If you can do that, you <em>understand</em> regression, rather than just knowing how to type <code>summary()</code>.</p>
 </section>
 <section id="what-best-means-residuals" class="level2" data-number="14.4">
 <h2 data-number="14.4" class="anchored" data-anchor-id="what-best-means-residuals"><span class="header-section-number">14.4</span> What “Best” Means: Residuals</h2>
@@ -814,7 +814,7 @@ F-statistic: 1.028 on 1 and 3 DF,  p-value: 0.3853</code></pre>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">resid</span>(lm1))        <span class="co"># the residuals sum to (essentially) zero</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 7.771561e-16</code></pre>
+<pre><code>[1] 1.665335e-15</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">resid</span>(lm1)<span class="sc">^</span><span class="dv">2</span>)      <span class="co"># the sum of SQUARED residuals - this is what we minimize</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -831,7 +831,7 @@ F-statistic: 1.028 on 1 and 3 DF,  p-value: 0.3853</code></pre>
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The “best” line is the one line (out of infinitely many possible lines) that makes <code>sum(resid^2)</code> as small as it can possibly be. That is <em>all</em> “least squares” means: <strong>least</strong> (smallest) <strong>squares</strong> (of the residuals). The residuals sum to zero for <em>any</em> line through the means, so we cannot minimize their plain sum - it is always zero. Squaring first solves that, and it punishes big misses more than small ones. We shall return to that squared quantity again and again; it is the beating heart of the whole enterprise.</p>
+<p>The “best” line is the one line (out of infinitely many possible lines) that makes <code>sum(resid^2)</code> as small as it can possibly be. That is <em>all</em> “least squares” means: <strong>least</strong> (smallest) <strong>squares</strong> (of the residuals). The residuals sum to zero for <em>any</em> line through the means, so we cannot minimize their plain sum - it is always zero. Squaring first solves that, and it punishes big misses more than small ones. We shall return to that squared quantity again and again; it is central to everything that follows.</p>
 </div>
 </div>
 </section>
@@ -875,7 +875,7 @@ F-statistic: 1.028 on 1 and 3 DF,  p-value: 0.3853</code></pre>
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Because <span class="math inline">\(\bar{y} = \frac{\sum y}{N}\)</span> and <span class="math inline">\(\bar{x} = \frac{\sum x}{N}\)</span>. Substitute those into <span class="math inline">\(a = \bar{y} - b\bar{x}\)</span>, put everything over the common denominator <span class="math inline">\(N\)</span>, and you land on the second formula. Try it with a pencil. We mean it - do it once and you will never be intimidated by a “scary” formula again, because you will know they are usually just a tidy version of something obvious.</p>
+<p>Because <span class="math inline">\(\bar{y} = \frac{\sum y}{N}\)</span> and <span class="math inline">\(\bar{x} = \frac{\sum x}{N}\)</span>. Substitute those into <span class="math inline">\(a = \bar{y} - b\bar{x}\)</span>, put everything over the common denominator <span class="math inline">\(N\)</span>, and you land on the second formula. Try it with a pencil. Do it once and these “scary” formulas lose their power to intimidate, because you will see they are usually just a tidy version of something simple.</p>
 </div>
 </div>
 </section>
@@ -916,7 +916,7 @@ F-statistic: 1.028 on 1 and 3 DF,  p-value: 0.3853</code></pre>
 0.7000000 0.6904105 1.0138896 0.3852987 </code></pre>
 </div>
 </div>
-<p>Look back at the <code>x</code> row of <code>summary(lm1)</code>. The estimate, the standard error, the <span class="math inline">\(t\)</span> value, the <span class="math inline">\(p\)</span> value - <strong>we just rebuilt the entire regression table from scratch.</strong> That is the whole chapter in one breath: R is a fast calculator, not an oracle, and you now own every number it produced.</p>
+<p>Look back at the <code>x</code> row of <code>summary(lm1)</code>. The estimate, the standard error, the <span class="math inline">\(t\)</span> value, the <span class="math inline">\(p\)</span> value: <strong>we just rebuilt the entire regression table from scratch.</strong> That is the main lesson of the chapter: R is a fast calculator, not an oracle, and you now understand every number it produced.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -930,7 +930,7 @@ F-statistic: 1.028 on 1 and 3 DF,  p-value: 0.3853</code></pre>
 <blockquote class="blockquote">
 <p>“When calculating the standard error of estimate and the standard error of <span class="math inline">\(b\)</span>, why are the calculations for the degrees of freedom different? (I.e., standard error of estimate <span class="math inline">\(N-2\)</span> but standard error of <span class="math inline">\(b\)</span> <span class="math inline">\(N-1\)</span>.)”</p>
 </blockquote>
-<p>Sharp catch - and the honest answer is that they should <strong>not</strong> be different. There is only one rule here: the degrees of freedom equal <span class="math inline">\(N\)</span> minus the number of parameters you estimated. In simple regression you estimate two (a slope and an intercept), so <em>every</em> standard error in this chapter - the estimate, the slope, the intercept - rests on the same <span class="math inline">\(N-2\)</span>. If a formula sheet ever shows <span class="math inline">\(N-1\)</span> for the SE of <span class="math inline">\(b\)</span>, that is a slip, not a second rule. (When we add predictors in the <a href="./15-MRC.html">next chapter</a>, that same one rule becomes <span class="math inline">\(N-k-1\)</span>.)</p>
+<p>Sharp catch, and the honest answer is that they should <strong>not</strong> be different. There is only one rule here: the degrees of freedom equal <span class="math inline">\(N\)</span> minus the number of parameters you estimated. In simple regression you estimate two (a slope and an intercept), so <em>every</em> standard error in this chapter - the estimate, the slope, the intercept - rests on the same <span class="math inline">\(N-2\)</span>. If a formula sheet ever shows <span class="math inline">\(N-1\)</span> for the SE of <span class="math inline">\(b\)</span>, that is a slip, not a second rule. (When we add predictors in the <a href="./15-MRC.html">next chapter</a>, that same one rule becomes <span class="math inline">\(N-k-1\)</span>.)</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -955,7 +955,7 @@ F-statistic: 1.028 on 1 and 3 DF,  p-value: 0.3853</code></pre>
 <li><span class="math inline">\(a\)</span> is measured in <strong>lbs</strong></li>
 <li>so the equation reads: <span class="math inline">\(y\ (\text{lbs}) = \frac{\text{lbs}}{\text{inches}} \times \text{inches} + \text{lbs}\)</span>, i.e.&nbsp;<span class="math inline">\(\text{lbs} = \text{lbs} + \text{lbs}\)</span> ✓</li>
 </ul>
-<p>The units <em>have</em> to balance, and checking them is a free error-detector. If your slope came out in the wrong units, you did something wrong. This is a trick engineers use constantly; steal it.</p>
+<p>The units <em>have</em> to balance, and checking them is a free error-detector. If your slope came out in the wrong units, you did something wrong. This is a habit engineers use constantly, and it is worth adopting.</p>
 </section>
 <section id="standardized-coefficients" class="level2" data-number="14.8">
 <h2 data-number="14.8" class="anchored" data-anchor-id="standardized-coefficients"><span class="header-section-number">14.8</span> Standardized Coefficients</h2>

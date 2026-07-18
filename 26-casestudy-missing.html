@@ -675,7 +675,7 @@ div.csl-indent {
 </header>
 
 
-<p>The last case study takes on the part of every real dataset that the textbooks pretend away: the <strong>holes</strong>. People drop out of a two-year study. Respondents skip the touchy item. A sensor fails. In the purpose-versus-happiness project - a three-wave longitudinal study tracking hundreds of people over two years - attrition was not a footnote; it was a fork in the road, because <em>how you handle the missing data can change the answer.</em></p>
+<p>The last case study takes on the part of every real dataset that textbooks often set aside: the <strong>holes</strong>. People drop out of a two-year study. Respondents skip the touchy item. A sensor fails. In the purpose-versus-happiness project - a three-wave longitudinal study tracking hundreds of people over two years - attrition was not a footnote; it was a genuine decision point, because <em>how you handle the missing data can change the answer.</em></p>
 <p>We have a slight advantage here: one of us wrote the book on it - literally <span class="citation" data-cites="McKnight2007">(<a href="#ref-McKnight2007" role="doc-biblioref">McKnight et al. 2007</a>)</span>, <em>Missing Data: A Gentle Introduction</em> (Guilford). The one-sentence version of that book is the thesis of this chapter: <strong>missing data is not a nuisance to be swept aside; it is a modeling problem, and the first question is always <em>why</em> the data are missing.</strong></p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -692,7 +692,7 @@ div.csl-indent {
 </div>
 <section id="first-ask-why-its-missing" class="level2" data-number="28.1">
 <h2 data-number="28.1" class="anchored" data-anchor-id="first-ask-why-its-missing"><span class="header-section-number">28.1</span> First Ask <em>Why</em> It’s Missing</h2>
-<p>Recall the three mechanisms from the <a href="./05-datacleaning.html">data-cleaning chapter</a> - they are the whole ballgame:</p>
+<p>Recall the three mechanisms from the <a href="./05-datacleaning.html">data-cleaning chapter</a> - they matter more than any particular technique:</p>
 <ul>
 <li><strong>MCAR</strong> (missing completely at random): the holes are unrelated to anything. Rare, and the only case where throwing away incomplete rows is merely <em>wasteful</em>, not <em>biased</em>.</li>
 <li><strong>MAR</strong> (missing at random): missingness depends on things you <em>observed</em>. Fixable - if you use the observed information.</li>
@@ -719,7 +719,7 @@ div.csl-indent {
             47.300             -0.014             -0.279 </code></pre>
 </div>
 </div>
-<p>The complete-case mean is badly <strong>biased downward</strong>. Of course it is: we systematically dropped the high-<code>z</code> people, and high <code>z</code> means high <code>y</code>, so the survivors are not representative. The hole did not just cost us sample size - it <em>moved the answer</em>.</p>
+<p>The complete-case mean is badly <strong>biased downward</strong>. That makes sense: we systematically dropped the high-<code>z</code> people, and high <code>z</code> means high <code>y</code>, so the survivors are not representative. The hole did more than cost us sample size; it <em>moved the answer</em>.</p>
 <p>Now recover it. The core idea of imputation is to <strong>use the observed information</strong> (<code>z</code>) to fill the holes in <code>y</code> - here with a stochastic regression imputation (predict the missing <code>y</code> from <code>z</code>, and add noise so we don’t fake certainty):</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>cc  <span class="ot">&lt;-</span> <span class="sc">!</span><span class="fu">is.na</span>(y_obs)</span>
@@ -736,7 +736,7 @@ div.csl-indent {
 </section>
 <section id="the-twist-it-depends-on-what-youre-estimating" class="level2" data-number="28.3">
 <h2 data-number="28.3" class="anchored" data-anchor-id="the-twist-it-depends-on-what-youre-estimating"><span class="header-section-number">28.3</span> The Twist: It Depends on What You’re Estimating</h2>
-<p>Here is the subtlety that separates a careful analyst from a careless one. The <em>marginal mean</em> of <code>y</code> was wrecked - but watch the <em>regression slope</em> of <code>y</code> on <code>z</code>:</p>
+<p>There is a subtlety here worth slowing down for. The <em>marginal mean</em> of <code>y</code> was wrecked, but watch the <em>regression slope</em> of <code>y</code> on <code>z</code>:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">slope_full          =</span> <span class="fu">round</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(y <span class="sc">~</span> z))[<span class="dv">2</span>], <span class="dv">3</span>),      <span class="co"># the truth</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">slope_complete_case =</span> <span class="fu">round</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(y_obs <span class="sc">~</span> z))[<span class="dv">2</span>], <span class="dv">3</span>))  <span class="co"># barely moved</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -749,13 +749,13 @@ div.csl-indent {
 </section>
 <section id="multiple-imputation-the-honest-tool" class="level2" data-number="28.4">
 <h2 data-number="28.4" class="anchored" data-anchor-id="multiple-imputation-the-honest-tool"><span class="header-section-number">28.4</span> Multiple Imputation: The Honest Tool</h2>
-<p>Our single imputation recovered the mean, but it quietly cheated on one thing: it treated the filled-in values as if they were real, understating our uncertainty. The fix is <strong>multiple imputation</strong> - impute the holes several times (each with fresh noise), analyze each completed dataset, and <strong>pool</strong> the results with Rubin’s rules, so the between-imputation variability is folded into the standard errors. In R that is the <code>mice</code> package:</p>
+<p>Our single imputation recovered the mean, but it glossed over one thing: it treated the filled-in values as if they were real, understating our uncertainty. The fix is <strong>multiple imputation</strong> - impute the holes several times (each with fresh noise), analyze each completed dataset, and <strong>pool</strong> the results with Rubin’s rules, so the between-imputation variability is folded into the standard errors. In R that is the <code>mice</code> package:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The real tool (needs the mice package — shown, not run on the book's server)</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mice)</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>imp  <span class="ot">&lt;-</span> <span class="fu">mice</span>(data, <span class="at">m =</span> <span class="dv">20</span>, <span class="at">method =</span> <span class="st">"pmm"</span>, <span class="at">printFlag =</span> <span class="cn">FALSE</span>)  <span class="co"># 20 imputations</span></span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>fit  <span class="ot">&lt;-</span> <span class="fu">with</span>(imp, <span class="fu">lm</span>(happiness <span class="sc">~</span> purpose <span class="sc">+</span> wave))              <span class="co"># analyze each</span></span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">pool</span>(fit)                                                       <span class="co"># pool via Rubin's rules</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The purpose-versus-happiness study did exactly this - fitting its growth models under <strong>complete-case and under multiple imputation side by side</strong> - and reported both, so a reader could see whether the two-year conclusions survived the missing data. That comparison <em>is</em> the analysis; presenting only the complete-case result and hoping would have been a choice to look away.</p>
+<p>The purpose-versus-happiness study did exactly this - fitting its growth models under <strong>complete-case and under multiple imputation side by side</strong> - and reported both, so a reader could see whether the two-year conclusions survived the missing data. That comparison <em>is</em> the analysis; reporting only the complete-case result would have meant leaving the question unanswered.</p>
 </section>
 <section id="what-this-case-teaches" class="level2" data-number="28.5">
 <h2 data-number="28.5" class="anchored" data-anchor-id="what-this-case-teaches"><span class="header-section-number">28.5</span> What This Case Teaches</h2>
@@ -765,7 +765,7 @@ div.csl-indent {
 <li><strong>Imputation works by using what you kept.</strong> Auxiliary variables that predict both the outcome and its missingness are gold.</li>
 <li><strong>Whether it changes the answer is estimand-specific.</strong> Check; don’t assume. And when you handle it, use <em>multiple</em> imputation so your uncertainty tells the truth.</li>
 </ul>
-<p>That closes our apprenticeship in the wild - four real studies, every judgment call on the table: a total score caught hiding information, a measure built and confirmed and preregistered, and a dataset’s holes bent (and not bent) an estimate. The tools were never the hard part. Knowing which one, when, and why - and admitting what you cannot know - is the whole job.</p>
+<p>That closes our tour of four real studies, with the judgment calls left in view: a total score caught hiding information, a measure built and confirmed and preregistered, and a dataset’s holes that bent one estimate and left another alone. The tools themselves were rarely the hard part. The harder work is knowing which tool to use, when, and why, and being honest about what you cannot know.</p>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" role="list">
