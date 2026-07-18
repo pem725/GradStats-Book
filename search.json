@@ -4,7 +4,7 @@
     "href": "index.html",
     "title": "Statistics by Us for You",
     "section": "",
-    "text": "Welcome\nWe welcome you to the first, freely available and freely editable online graduate statistics textbook whereby all readers may participate in the continued development of a first-rate resource. You are now on the online homepage of the book. As you will soon find out, the book is free (as in beer) and will remain that way for generations to come. Our aim is to create a single source for introductory to advanced social science statistics. Here, you will learn not just the how but the why.\nThe online version of the book is hosted at pem725.github.io/GradStats-Book and kept up-to-date on GitHub.",
+    "text": "Welcome\nThis is a free, open graduate statistics textbook for the social and behavioral sciences. “Free” in two ways: it costs nothing, and you are welcome to read it, use it, and help make it better. We wrote it because we wanted one place where a curious student could learn not just how to run an analysis, but why it works and when to trust it.\nThe book grows out of decades of teaching and research. Wherever we can, we use real data and real decisions from our own published work, so you can see how these methods behave outside a tidy example. Every analysis is written in R and runs as you read — nothing is hidden behind a curtain, and you are encouraged to change the code and see what happens.\nYou do not need to be a mathematician to follow along. You need curiosity, a little patience, and a willingness to try the code yourself. Start at the beginning if the subject is new to you, or jump straight to a chapter you need today. However you read it, our hope is the same: that statistics stops feeling like a set of rules to memorize and starts feeling like a clear way of thinking about uncertainty.\nThe book lives online at pem725.github.io/GradStats-Book and is developed openly on GitHub. Read it, run it, and tell us how to make it better.",
     "crumbs": [
       "Welcome"
     ]
@@ -599,7 +599,18 @@
     "href": "06-zdistribution.html#percentiles-where-do-you-stand",
     "title": "5  Expectation and Understanding: The Z-Distribution",
     "section": "5.5 Percentiles: Where Do You Stand?",
-    "text": "5.5 Percentiles: Where Do You Stand?\nTurn a z-score into a percentile with pnorm() and you can say exactly where an observation stands in its distribution:\n\nz_height &lt;- (74 - 68) / 4              # a 74-inch person, mean 68, sd 4\npercentile &lt;- pnorm(z_height) * 100\nc(z = z_height, percentile = percentile)\n\n         z percentile \n   1.50000   93.31928 \n\n\nA z of 1.5 places this person around the 93rd percentile - taller than about 93% of the population. Percentile ranks, growth charts, standardized-test scores: all just pnorm() wearing a costume.\n\n\n\n\n\n\nImportantWhy This Chapter Is the Hinge of the Book\n\n\n\nEverything inferential rests on one move: standardize, then read the area. When we test a hypothesis, we convert our result to a z-like statistic and ask “how far into the tail is this, if nothing were going on?” When we build a confidence interval, we walk out \\(\\pm 1.96\\) standard errors. The z-distribution is not one more topic - it is the shared machinery of the entire inferential section that follows.",
+    "text": "5.5 Percentiles: Where Do You Stand?\nTurn a z-score into a percentile with pnorm() and you can say exactly where an observation stands in its distribution:\n\nz_height &lt;- (74 - 68) / 4              # a 74-inch person, mean 68, sd 4\npercentile &lt;- pnorm(z_height) * 100\nc(z = z_height, percentile = percentile)\n\n         z percentile \n   1.50000   93.31928 \n\n\nA z of 1.5 places this person around the 93rd percentile - taller than about 93% of the population. Percentile ranks, growth charts, and standardized-test scores are all pnorm() in another form.",
+    "crumbs": [
+      "Making Inferences with Data",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Expectation and Understanding: The Z-Distribution</span>"
+    ]
+  },
+  {
+    "objectID": "06-zdistribution.html#another-ruler-percent-of-maximum-possible-pomp",
+    "href": "06-zdistribution.html#another-ruler-percent-of-maximum-possible-pomp",
+    "title": "5  Expectation and Understanding: The Z-Distribution",
+    "section": "5.6 Another Ruler: Percent of Maximum Possible (POMP)",
+    "text": "5.6 Another Ruler: Percent of Maximum Possible (POMP)\nThe z-score compares a value to its own sample - to the mean and spread of the data you happened to collect. That is exactly right for asking “how unusual is this person?” But it carries a limitation: because z depends on the sample, the same raw score turns into a different z in a different sample, and z-scores from two different measures are not truly on the same footing.\nWhen the goal is to compare measures - say, is work engagement higher than well-being in this study? - a different ruler is more honest: POMP, the Percent Of Maximum Possible. POMP rescales a score to the range the instrument could produce, from its lowest possible value to its highest:\n\\[\\text{POMP} = 100 \\times \\frac{X - \\text{min}}{\\text{max} - \\text{min}}\\]\nA POMP of 0 is the lowest possible score, 100 the highest, and 50 the exact middle of the scale. Crucially, that meaning does not depend on the sample. Two measures with completely different response formats - a 1–5 scale and a 1–7 scale - both land on a common 0–100 scale you can read and compare at a glance:\n\nmood     &lt;- 4    # answered on a 1-5 scale\nvitality &lt;- 5    # answered on a 1-7 scale\n\npomp &lt;- function(x, lo, hi) 100 * (x - lo) / (hi - lo)\nc(mood_POMP     = pomp(mood,     lo = 1, hi = 5),\n  vitality_POMP = pomp(vitality, lo = 1, hi = 7))\n\n    mood_POMP vitality_POMP \n     75.00000      66.66667 \n\n\nOn their raw scales, 4 and 5 are hard to compare. In POMP units, the mood score sits at 75% of its possible range and vitality at about 67%, so this person is, if anything, in a slightly better mood than their vitality would suggest. This is the standardization we now use in most of our own papers (PEM): it lets a reader compare outcomes across measures directly, and it has a useful side effect - if a scale’s response format changes partway through a study, the shift in POMP makes the problem hard to miss.\n\n\n\n\n\n\nImportantz or POMP: two questions, two rulers\n\n\n\nReach for a z-score to ask how unusual is this value within its distribution? - it locates a person relative to their sample. Reach for POMP to ask how high is this score on what the instrument can measure? - it places a score relative to the possible range, so different measures become comparable. Neither is better; they answer different questions.\n\n\n\n\n\n\n\n\nImportantWhy This Chapter Is the Hinge of the Book\n\n\n\nEverything inferential rests on one move: standardize, then read the area. When we test a hypothesis, we convert our result to a z-like statistic and ask “how far into the tail is this, if nothing were going on?” When we build a confidence interval, we walk out \\(\\pm 1.96\\) standard errors. The z-distribution is not one more topic - it is the shared machinery of the entire inferential section that follows.",
     "crumbs": [
       "Making Inferences with Data",
       "<span class='chapter-number'>5</span>  <span class='chapter-title'>Expectation and Understanding: The Z-Distribution</span>"
@@ -609,8 +620,8 @@
     "objectID": "06-zdistribution.html#challenge",
     "href": "06-zdistribution.html#challenge",
     "title": "5  Expectation and Understanding: The Z-Distribution",
-    "section": "5.6 Challenge",
-    "text": "5.6 Challenge\n\n\n\n\n\n\nTipDo One Yourself\n\n\n\n\nIQ has mean 100 and sd 15. Using pnorm/qnorm, find (a) the percentile of an IQ of 130, (b) the probability of an IQ above 145, and (c) the IQ that marks the top 1%.\nStandardize a variable of your own with scale() and confirm its mean is 0 and sd is 1 (to rounding).\nRecreate the shaded-tails plot, but mark \\(\\pm 1.65\\) instead of \\(\\pm 1.96\\). What test decision does 1.65 correspond to (hint: revisit the one-tailed critical value)?",
+    "section": "5.7 Challenge",
+    "text": "5.7 Challenge\n\n\n\n\n\n\nTipDo One Yourself\n\n\n\n\nIQ has mean 100 and sd 15. Using pnorm/qnorm, find (a) the percentile of an IQ of 130, (b) the probability of an IQ above 145, and (c) the IQ that marks the top 1%.\nStandardize a variable of your own with scale() and confirm its mean is 0 and sd is 1 (to rounding).\nRecreate the shaded-tails plot, but mark \\(\\pm 1.65\\) instead of \\(\\pm 1.96\\). What test decision does 1.65 correspond to (hint: revisit the one-tailed critical value)?",
     "crumbs": [
       "Making Inferences with Data",
       "<span class='chapter-number'>5</span>  <span class='chapter-title'>Expectation and Understanding: The Z-Distribution</span>"
@@ -620,8 +631,8 @@
     "objectID": "06-zdistribution.html#where-we-go-next",
     "href": "06-zdistribution.html#where-we-go-next",
     "title": "5  Expectation and Understanding: The Z-Distribution",
-    "section": "5.7 Where We Go Next",
-    "text": "5.7 Where We Go Next\nWe can now describe where a single value stands. Real science, though, asks how two variables move together. The tool that measures that shared movement - and the true engine under correlation and regression - is covariance.",
+    "section": "5.8 Where We Go Next",
+    "text": "5.8 Where We Go Next\nWe can now describe where a single value stands. Real science, though, asks how two variables move together. The tool that measures that shared movement - and the true engine under correlation and regression - is covariance.",
     "crumbs": [
       "Making Inferences with Data",
       "<span class='chapter-number'>5</span>  <span class='chapter-title'>Expectation and Understanding: The Z-Distribution</span>"

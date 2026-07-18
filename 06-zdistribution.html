@@ -659,8 +659,9 @@ window.Quarto = {
   <li><a href="#the-standard-normal-distribution" id="toc-the-standard-normal-distribution" class="nav-link" data-scroll-target="#the-standard-normal-distribution"><span class="header-section-number">5.3</span> The Standard Normal Distribution</a></li>
   <li><a href="#probability-is-area-and-r-is-your-z-table" id="toc-probability-is-area-and-r-is-your-z-table" class="nav-link" data-scroll-target="#probability-is-area-and-r-is-your-z-table"><span class="header-section-number">5.4</span> Probability Is Area (and R Is Your Z-Table)</a></li>
   <li><a href="#percentiles-where-do-you-stand" id="toc-percentiles-where-do-you-stand" class="nav-link" data-scroll-target="#percentiles-where-do-you-stand"><span class="header-section-number">5.5</span> Percentiles: Where Do You Stand?</a></li>
-  <li><a href="#challenge" id="toc-challenge" class="nav-link" data-scroll-target="#challenge"><span class="header-section-number">5.6</span> Challenge</a></li>
-  <li><a href="#where-we-go-next" id="toc-where-we-go-next" class="nav-link" data-scroll-target="#where-we-go-next"><span class="header-section-number">5.7</span> Where We Go Next</a></li>
+  <li><a href="#another-ruler-percent-of-maximum-possible-pomp" id="toc-another-ruler-percent-of-maximum-possible-pomp" class="nav-link" data-scroll-target="#another-ruler-percent-of-maximum-possible-pomp"><span class="header-section-number">5.6</span> Another Ruler: Percent of Maximum Possible (POMP)</a></li>
+  <li><a href="#challenge" id="toc-challenge" class="nav-link" data-scroll-target="#challenge"><span class="header-section-number">5.7</span> Challenge</a></li>
+  <li><a href="#where-we-go-next" id="toc-where-we-go-next" class="nav-link" data-scroll-target="#where-we-go-next"><span class="header-section-number">5.8</span> Where We Go Next</a></li>
   </ul>
 </nav>
     </div>
@@ -787,7 +788,40 @@ window.Quarto = {
    1.50000   93.31928 </code></pre>
 </div>
 </div>
-<p>A z of 1.5 places this person around the 93rd percentile - taller than about 93% of the population. Percentile ranks, growth charts, standardized-test scores: all just <code>pnorm()</code> wearing a costume.</p>
+<p>A z of 1.5 places this person around the 93rd percentile - taller than about 93% of the population. Percentile ranks, growth charts, and standardized-test scores are all <code>pnorm()</code> in another form.</p>
+</section>
+<section id="another-ruler-percent-of-maximum-possible-pomp" class="level2" data-number="5.6">
+<h2 data-number="5.6" class="anchored" data-anchor-id="another-ruler-percent-of-maximum-possible-pomp"><span class="header-section-number">5.6</span> Another Ruler: Percent of Maximum Possible (POMP)</h2>
+<p>The z-score compares a value to <em>its own sample</em> - to the mean and spread of the data you happened to collect. That is exactly right for asking “how unusual is this person?” But it carries a limitation: because z depends on the sample, the same raw score turns into a different z in a different sample, and z-scores from two different measures are not truly on the same footing.</p>
+<p>When the goal is to compare <em>measures</em> - say, is work engagement higher than well-being in this study? - a different ruler is more honest: <strong>POMP</strong>, the <strong>Percent Of Maximum Possible</strong>. POMP rescales a score to the range the instrument <em>could</em> produce, from its lowest possible value to its highest:</p>
+<p><span class="math display">\[\text{POMP} = 100 \times \frac{X - \text{min}}{\text{max} - \text{min}}\]</span></p>
+<p>A POMP of 0 is the lowest possible score, 100 the highest, and 50 the exact middle of the scale. Crucially, that meaning does not depend on the sample. Two measures with completely different response formats - a 1–5 scale and a 1–7 scale - both land on a common 0–100 scale you can read and compare at a glance:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>mood     <span class="ot">&lt;-</span> <span class="dv">4</span>    <span class="co"># answered on a 1-5 scale</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>vitality <span class="ot">&lt;-</span> <span class="dv">5</span>    <span class="co"># answered on a 1-7 scale</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>pomp <span class="ot">&lt;-</span> <span class="cf">function</span>(x, lo, hi) <span class="dv">100</span> <span class="sc">*</span> (x <span class="sc">-</span> lo) <span class="sc">/</span> (hi <span class="sc">-</span> lo)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">mood_POMP     =</span> <span class="fu">pomp</span>(mood,     <span class="at">lo =</span> <span class="dv">1</span>, <span class="at">hi =</span> <span class="dv">5</span>),</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">vitality_POMP =</span> <span class="fu">pomp</span>(vitality, <span class="at">lo =</span> <span class="dv">1</span>, <span class="at">hi =</span> <span class="dv">7</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    mood_POMP vitality_POMP 
+     75.00000      66.66667 </code></pre>
+</div>
+</div>
+<p>On their raw scales, 4 and 5 are hard to compare. In POMP units, the mood score sits at 75% of its possible range and vitality at about 67%, so this person is, if anything, in a slightly better mood than their vitality would suggest. This is the standardization we now use in most of our own papers (PEM): it lets a reader compare outcomes across measures directly, and it has a useful side effect - if a scale’s response format changes partway through a study, the shift in POMP makes the problem hard to miss.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>z or POMP: two questions, two rulers
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Reach for a <strong>z-score</strong> to ask <em>how unusual is this value within its distribution?</em> - it locates a person relative to their sample. Reach for <strong>POMP</strong> to ask <em>how high is this score on what the instrument can measure?</em> - it places a score relative to the possible range, so different measures become comparable. Neither is better; they answer different questions.</p>
+</div>
+</div>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -802,8 +836,8 @@ window.Quarto = {
 </div>
 </div>
 </section>
-<section id="challenge" class="level2" data-number="5.6">
-<h2 data-number="5.6" class="anchored" data-anchor-id="challenge"><span class="header-section-number">5.6</span> Challenge</h2>
+<section id="challenge" class="level2" data-number="5.7">
+<h2 data-number="5.7" class="anchored" data-anchor-id="challenge"><span class="header-section-number">5.7</span> Challenge</h2>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -822,8 +856,8 @@ window.Quarto = {
 </div>
 </div>
 </section>
-<section id="where-we-go-next" class="level2" data-number="5.7">
-<h2 data-number="5.7" class="anchored" data-anchor-id="where-we-go-next"><span class="header-section-number">5.7</span> Where We Go Next</h2>
+<section id="where-we-go-next" class="level2" data-number="5.8">
+<h2 data-number="5.8" class="anchored" data-anchor-id="where-we-go-next"><span class="header-section-number">5.8</span> Where We Go Next</h2>
 <p>We can now describe where a single value stands. Real science, though, asks how two variables move <em>together</em>. The tool that measures that shared movement - and the true engine under correlation and regression - is <a href="./07-covariance.html">covariance</a>.</p>
 
 
