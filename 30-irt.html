@@ -8,7 +8,7 @@
 
 <meta name="description" content="A comprehensive graduate statistics book suitable for social and behavioral sciences. Our approach is to provide interested students a gentle guide to the rudiments of statistical estimation and inference.">
 
-<title>3&nbsp; Dispersion and Uncertainty – Statistics by Us for You</title>
+<title>21&nbsp; More Item Response Theory, and Generalizability – Statistics by Us for You</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -59,7 +59,26 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -69,8 +88,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./05-datacleaning.html" rel="next">
-<link href="./03-CTmeasures.html" rel="prev">
+<link href="./20-beyond.html" rel="next">
+<link href="./29-latentclass.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -312,7 +331,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02-distributions.html">The Basics</a></li><li class="breadcrumb-item"><a href="./04-Dmeasures.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Dispersion and Uncertainty</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./28-sem.html">Latent Variable Models</a></li><li class="breadcrumb-item"><a href="./30-irt.html"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">More Item Response Theory, and Generalizability</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -388,7 +407,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./04-Dmeasures.html" class="sidebar-item-text sidebar-link active">
+  <a href="./04-Dmeasures.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Dispersion and Uncertainty</span></span></a>
   </div>
 </li>
@@ -540,7 +559,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./30-irt.html" class="sidebar-item-text sidebar-link">
+  <a href="./30-irt.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">More Item Response Theory, and Generalizability</span></span></a>
   </div>
 </li>
@@ -654,14 +673,13 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#learning-objectives" id="toc-learning-objectives" class="nav-link active" data-scroll-target="#learning-objectives"><span class="header-section-number">3.1</span> Learning Objectives</a></li>
-  <li><a href="#same-center-different-worlds" id="toc-same-center-different-worlds" class="nav-link" data-scroll-target="#same-center-different-worlds"><span class="header-section-number">3.2</span> Same Center, Different Worlds</a></li>
-  <li><a href="#the-simple-measures-range-and-iqr" id="toc-the-simple-measures-range-and-iqr" class="nav-link" data-scroll-target="#the-simple-measures-range-and-iqr"><span class="header-section-number">3.3</span> The Simple Measures: Range and IQR</a></li>
-  <li><a href="#variance-why-we-square" id="toc-variance-why-we-square" class="nav-link" data-scroll-target="#variance-why-we-square"><span class="header-section-number">3.4</span> Variance: Why We Square</a></li>
-  <li><a href="#degrees-of-freedom-why-n-1" id="toc-degrees-of-freedom-why-n-1" class="nav-link" data-scroll-target="#degrees-of-freedom-why-n-1"><span class="header-section-number">3.5</span> Degrees of Freedom: Why <span class="math inline">\(n-1\)</span></a></li>
-  <li><a href="#standard-deviation-back-to-human-units" id="toc-standard-deviation-back-to-human-units" class="nav-link" data-scroll-target="#standard-deviation-back-to-human-units"><span class="header-section-number">3.6</span> Standard Deviation: Back to Human Units</a></li>
-  <li><a href="#challenge" id="toc-challenge" class="nav-link" data-scroll-target="#challenge"><span class="header-section-number">3.7</span> Challenge</a></li>
-  <li><a href="#where-we-go-next" id="toc-where-we-go-next" class="nav-link" data-scroll-target="#where-we-go-next"><span class="header-section-number">3.8</span> Where We Go Next</a></li>
+  <li><a href="#learning-objectives" id="toc-learning-objectives" class="nav-link active" data-scroll-target="#learning-objectives"><span class="header-section-number">21.1</span> Learning Objectives</a></li>
+  <li><a href="#beyond-rasch-items-that-discriminate-differently" id="toc-beyond-rasch-items-that-discriminate-differently" class="nav-link" data-scroll-target="#beyond-rasch-items-that-discriminate-differently"><span class="header-section-number">21.2</span> Beyond Rasch: Items That Discriminate Differently</a></li>
+  <li><a href="#generalizability-reliability-grown-up" id="toc-generalizability-reliability-grown-up" class="nav-link" data-scroll-target="#generalizability-reliability-grown-up"><span class="header-section-number">21.3</span> Generalizability: Reliability, Grown Up</a>
+  <ul class="collapse">
+  <li><a href="#the-d-study-designing-the-measure" id="toc-the-d-study-designing-the-measure" class="nav-link" data-scroll-target="#the-d-study-designing-the-measure"><span class="header-section-number">21.3.1</span> The D-study: Designing the Measure</a></li>
+  </ul></li>
+  <li><a href="#what-this-chapter-teaches" id="toc-what-this-chapter-teaches" class="nav-link" data-scroll-target="#what-this-chapter-teaches"><span class="header-section-number">21.4</span> What This Chapter Teaches</a></li>
   </ul>
 </nav>
     </div>
@@ -669,9 +687,9 @@ window.Quarto = {
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02-distributions.html">The Basics</a></li><li class="breadcrumb-item"><a href="./04-Dmeasures.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Dispersion and Uncertainty</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./28-sem.html">Latent Variable Models</a></li><li class="breadcrumb-item"><a href="./30-irt.html"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">More Item Response Theory, and Generalizability</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Dispersion and Uncertainty</span></h1>
+<h1 class="title"><span id="irt" class="quarto-section-identifier"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">More Item Response Theory, and Generalizability</span></span></h1>
 </div>
 
 
@@ -688,147 +706,126 @@ window.Quarto = {
 </header>
 
 
-<p>If you remember one chapter from this book, make it this one. Back in the introduction we YELLED it: <strong>VARIANCE</strong>. Central tendency tells us where a distribution sits; <strong>dispersion</strong> tells us how much it spreads - and spread <em>is</em> uncertainty. Two groups can have identical means and tell completely opposite stories. The difference is dispersion, and dispersion is the raw material of everything we do.</p>
-<section id="learning-objectives" class="level2" data-number="3.1">
-<h2 data-number="3.1" class="anchored" data-anchor-id="learning-objectives"><span class="header-section-number">3.1</span> Learning Objectives</h2>
+<p>The <a href="./18-rasch.html">Rasch chapter</a> built one item response model from scratch and promised there was a wider world. Here it is. Item Response Theory (IRT) is a whole family of models for the same task - measuring people from their item responses - and <strong>generalizability theory (G-theory)</strong> is the grand generalization of <a href="./10-reliability.html">reliability</a> that asks not just “how much error?” but “error <em>from what</em>?” Both are areas where the authors have published extensively, often together in a single study.</p>
+<section id="learning-objectives" class="level2" data-number="21.1">
+<h2 data-number="21.1" class="anchored" data-anchor-id="learning-objectives"><span class="header-section-number">21.1</span> Learning Objectives</h2>
 <ol type="1">
-<li>Understand why spread, not center, is the quantity statistics is really about.</li>
-<li>Learn the common measures of dispersion and what each is good for.</li>
-<li>Understand variance and the standard deviation, and why we square.</li>
-<li>Understand degrees of freedom and why we divide by <span class="math inline">\(n-1\)</span>.</li>
+<li>See how the <strong>2-parameter (2PL)</strong> model generalizes Rasch by letting items differ in <em>discrimination</em>.</li>
+<li>Read an <strong>item characteristic curve</strong> and know what its slope and location mean.</li>
+<li>Decompose measurement error into <strong>facets</strong> with generalizability theory.</li>
+<li>Compute a <strong>G-coefficient</strong> and use a <strong>D-study</strong> to design a measure - the “how many items?” question.</li>
 </ol>
 </section>
-<section id="same-center-different-worlds" class="level2" data-number="3.2">
-<h2 data-number="3.2" class="anchored" data-anchor-id="same-center-different-worlds"><span class="header-section-number">3.2</span> Same Center, Different Worlds</h2>
+<section id="beyond-rasch-items-that-discriminate-differently" class="level2" data-number="21.2">
+<h2 data-number="21.2" class="anchored" data-anchor-id="beyond-rasch-items-that-discriminate-differently"><span class="header-section-number">21.2</span> Beyond Rasch: Items That Discriminate Differently</h2>
+<p>Rasch makes a strong, beautiful assumption: every item is equally good at separating people; items differ <em>only</em> in difficulty. The <strong>2PL model</strong> relaxes it, giving each item its own <strong>discrimination</strong> <span class="math inline">\(a_i\)</span> (how sharply it distinguishes high from low) alongside its difficulty <span class="math inline">\(b_i\)</span>:</p>
+<p><span class="math display">\[P(x_{ij}=1) = \frac{1}{1 + e^{-a_i(\theta_j - b_i)}}\]</span></p>
+<p>The clearest way to feel the difference is to <em>look</em> at the items. An item’s <strong>characteristic curve</strong> plots the probability of a correct/endorsed response against ability <span class="math inline">\(\theta\)</span>. Difficulty slides the curve left-right; discrimination changes its steepness:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">7</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>tight <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">500</span>, <span class="at">mean =</span> <span class="dv">100</span>, <span class="at">sd =</span> <span class="dv">3</span>)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>wide  <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">500</span>, <span class="at">mean =</span> <span class="dv">100</span>, <span class="at">sd =</span> <span class="dv">20</span>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">value =</span> <span class="fu">c</span>(tight, wide),</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">group =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"tight (sd=3)"</span>, <span class="st">"wide (sd=20)"</span>), <span class="at">each =</span> <span class="dv">500</span>))</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(value, <span class="at">fill =</span> group)) <span class="sc">+</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">40</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>, <span class="at">position =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Identical means (100), very different uncertainty"</span>,</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"value"</span>, <span class="at">y =</span> <span class="st">"count"</span>) <span class="sc">+</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">4</span>, <span class="dv">4</span>, <span class="at">length.out =</span> <span class="dv">300</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>icc <span class="ot">&lt;-</span> <span class="cf">function</span>(a, b) <span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="sc">-</span>a <span class="sc">*</span> (theta <span class="sc">-</span> b)))   <span class="co"># 2PL curve</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(theta, <span class="fu">icc</span>(<span class="fl">1.0</span>, <span class="sc">-</span><span class="dv">1</span>), <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"steelblue"</span>, <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>),</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="fu">expression</span>(theta <span class="sc">~</span> <span class="st">"(ability)"</span>), <span class="at">ylab =</span> <span class="st">"P(correct)"</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(theta, <span class="fu">icc</span>(<span class="fl">2.5</span>,  <span class="dv">0</span>), <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"firebrick"</span>)           <span class="co"># steep = high discrimination</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(theta, <span class="fu">icc</span>(<span class="fl">0.5</span>,  <span class="dv">1</span>), <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"darkgreen"</span>)           <span class="co"># flat  = low discrimination</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topleft"</span>, <span class="at">bty =</span> <span class="st">"n"</span>, <span class="at">lwd =</span> <span class="dv">2</span>,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"steelblue"</span>, <span class="st">"firebrick"</span>, <span class="st">"darkgreen"</span>),</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">legend =</span> <span class="fu">c</span>(<span class="st">"easy, moderate a"</span>, <span class="st">"medium, high a (steep)"</span>, <span class="st">"hard, low a (flat)"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div>
+<div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="04-Dmeasures_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="30-irt_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Item characteristic curves. Location = difficulty; steepness = discrimination.</figcaption>
 </figure>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">mean_tight =</span> <span class="fu">mean</span>(tight), <span class="at">mean_wide =</span> <span class="fu">mean</span>(wide))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>mean_tight  mean_wide 
- 100.13502   99.22179 </code></pre>
 </div>
-</div>
-<p>Same mean, same “best guess” - but a guess of 100 is nearly certain for the tight group and nearly worthless for the wide one. <strong>The spread is the story.</strong></p>
+<p>The steep red item is <em>discriminating</em>: over a narrow band of ability it flips from “probably wrong” to “probably right,” so it sorts people sharply there. The flat green item barely distinguishes anyone - its responses are nearly a coin flip across a wide ability range. <strong>Rasch is the special case where every curve has the same slope</strong>; the 2PL, and its polytomous cousin the <strong>Graded Response Model</strong> (which we met dissecting <a href="./24-casestudy-depression.html">depression profiles</a>), let the data say otherwise. In practice you fit these with a maintained engine:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mirt)                              <span class="co"># shown, not run on the book's server</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>fit  <span class="ot">&lt;-</span> <span class="fu">mirt</span>(data, <span class="dv">1</span>, <span class="at">itemtype =</span> <span class="st">"2PL"</span>)    <span class="co"># or "graded" for 0..k items (GRM)</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(fit, <span class="at">simplify =</span> <span class="cn">TRUE</span>)                 <span class="co"># each item's discrimination (a) and difficulty (b)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="the-simple-measures-range-and-iqr" class="level2" data-number="3.3">
-<h2 data-number="3.3" class="anchored" data-anchor-id="the-simple-measures-range-and-iqr"><span class="header-section-number">3.3</span> The Simple Measures: Range and IQR</h2>
-<p>The crudest measure is the <strong>range</strong> (max minus min), which uses only two numbers and is therefore hostage to outliers. A sturdier cousin is the <strong>interquartile range (IQR)</strong> - the width of the middle 50% of the data:</p>
+<section id="generalizability-reliability-grown-up" class="level2" data-number="21.3">
+<h2 data-number="21.3" class="anchored" data-anchor-id="generalizability-reliability-grown-up"><span class="header-section-number">21.3</span> Generalizability: Reliability, Grown Up</h2>
+<p>Classical reliability (<a href="./10-reliability.html">Ch. 10</a>) splits observed variance into “true” and “error.” But <em>error from where</em>? The item you happened to use? The rater who happened to score you? The day you happened to show up? <strong>Generalizability theory</strong> treats each of these as a <strong>facet</strong> and estimates how much variance each contributes - turning “reliability” from a single number into an analysis of <em>sources</em>.</p>
+<p>The machinery is the <a href="./04-Dmeasures.html">variance-partitioning</a> you already know, run with <code>aov</code>. Simulate people crossed with items, then recover how much of the variance is real person differences versus item and residual noise:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>, <span class="dv">12</span>, <span class="dv">40</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">range =</span> <span class="fu">diff</span>(<span class="fu">range</span>(x)), <span class="at">IQR =</span> <span class="fu">IQR</span>(x))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>np <span class="ot">&lt;-</span> <span class="dv">120</span>; ni <span class="ot">&lt;-</span> <span class="dv">12</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>person <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(np, <span class="at">sd =</span> <span class="fl">1.0</span>)              <span class="co"># real differences between people</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>item   <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(ni, <span class="at">sd =</span> <span class="fl">0.5</span>)             <span class="co"># items differ in easiness</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">p =</span> <span class="dv">1</span><span class="sc">:</span>np, <span class="at">i =</span> <span class="dv">1</span><span class="sc">:</span>ni)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>d<span class="sc">$</span>score <span class="ot">&lt;-</span> person[d<span class="sc">$</span>p] <span class="sc">+</span> item[d<span class="sc">$</span>i] <span class="sc">+</span> <span class="fu">rnorm</span>(np <span class="sc">*</span> ni, <span class="at">sd =</span> <span class="fl">0.7</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>d<span class="sc">$</span>p <span class="ot">&lt;-</span> <span class="fu">factor</span>(d<span class="sc">$</span>p); d<span class="sc">$</span>i <span class="ot">&lt;-</span> <span class="fu">factor</span>(d<span class="sc">$</span>i)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>ms  <span class="ot">&lt;-</span> <span class="fu">summary</span>(<span class="fu">aov</span>(score <span class="sc">~</span> p <span class="sc">+</span> i, <span class="at">data =</span> d))[[<span class="dv">1</span>]][, <span class="st">"Mean Sq"</span>]   <span class="co"># mean squares</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>v_e <span class="ot">&lt;-</span> ms[<span class="dv">3</span>]                               <span class="co"># residual variance</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>v_p <span class="ot">&lt;-</span> (ms[<span class="dv">1</span>] <span class="sc">-</span> v_e) <span class="sc">/</span> ni                  <span class="co"># person variance (the signal)</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>v_i <span class="ot">&lt;-</span> (ms[<span class="dv">2</span>] <span class="sc">-</span> v_e) <span class="sc">/</span> np                  <span class="co"># item variance</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">person =</span> v_p, <span class="at">item =</span> v_i, <span class="at">residual =</span> v_e), <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>range   IQR 
-37.00  4.75 </code></pre>
+<pre><code>  person     item residual 
+    1.13     0.40     0.47 </code></pre>
 </div>
 </div>
-<p>The IQR ignores the tails, so it is to spread what the median is to center: robust, honest, and unbothered by a lone extreme value.</p>
-</section>
-<section id="variance-why-we-square" class="level2" data-number="3.4">
-<h2 data-number="3.4" class="anchored" data-anchor-id="variance-why-we-square"><span class="header-section-number">3.4</span> Variance: Why We Square</h2>
-<p>The measure that runs the whole show is <strong>variance</strong> - the average squared distance from the mean. Why squared? Because the plain distances from the mean <em>always sum to zero</em> (that is what the mean does), so we could never average them. Squaring solves that and, not coincidentally, hooks us straight into least squares.</p>
-<p><span class="math display">\[s^2 = \frac{\sum (x - \bar{x})^2}{n - 1}\]</span></p>
-<p>Let’s build it by hand and check against R:</p>
+<p>Person variance is the <strong>signal</strong> - the real differences you want to measure. Item and residual variance are <strong>noise</strong>, now itemized by source. The <strong>generalizability coefficient</strong> is the same signal-share idea as reliability, but honest about the fact that you averaged over a <em>sample</em> of items:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>deviations <span class="ot">&lt;-</span> x <span class="sc">-</span> <span class="fu">mean</span>(x)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(deviations)                       <span class="co"># ~0, which is exactly the problem</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>G <span class="ot">&lt;-</span> v_p <span class="sc">/</span> (v_p <span class="sc">+</span> v_e <span class="sc">/</span> ni)                <span class="co"># G-coefficient for a test of ni items</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(G, <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>SS <span class="ot">&lt;-</span> <span class="fu">sum</span>(deviations<span class="sc">^</span><span class="dv">2</span>)               <span class="co"># sum of squares - the numerator</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>n  <span class="ot">&lt;-</span> <span class="fu">length</span>(x)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>by_hand <span class="ot">&lt;-</span> SS <span class="sc">/</span> (n <span class="sc">-</span> <span class="dv">1</span>)</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">by_hand =</span> by_hand, <span class="at">r_var =</span> <span class="fu">var</span>(x))  <span class="co"># match</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code> by_hand    r_var 
-143.8393 143.8393 </code></pre>
+<pre><code>[1] 0.966</code></pre>
 </div>
 </div>
-<p>The numerator, <span class="math inline">\(\sum(x-\bar{x})^2\)</span>, is the <strong>sum of squares</strong> - a quantity you will meet on every page from here on (it is the same SS that regression and ANOVA minimize and partition). Variance is just the sum of squares, averaged.</p>
-</section>
-<section id="degrees-of-freedom-why-n-1" class="level2" data-number="3.5">
-<h2 data-number="3.5" class="anchored" data-anchor-id="degrees-of-freedom-why-n-1"><span class="header-section-number">3.5</span> Degrees of Freedom: Why <span class="math inline">\(n-1\)</span></h2>
-<p>Notice we divided by <span class="math inline">\(n - 1\)</span>, not <span class="math inline">\(n\)</span>. Here is the honest reason. To compute the deviations we first had to estimate the mean <em>from the same data</em>. Once the mean is fixed, only <span class="math inline">\(n-1\)</span> of the deviations are free to vary - the last one is forced, because they must sum to zero. We “spent” one <strong>degree of freedom</strong> estimating the mean, so we divide by what is left. Dividing by <span class="math inline">\(n\)</span> would systematically <em>underestimate</em> the true spread; the <span class="math inline">\(n-1\)</span> correction fixes that bias.</p>
+<section id="the-d-study-designing-the-measure" class="level3" data-number="21.3.1">
+<h3 data-number="21.3.1" class="anchored" data-anchor-id="the-d-study-designing-the-measure"><span class="header-section-number">21.3.1</span> The D-study: Designing the Measure</h3>
+<p>Here is where G-theory pays for itself. Because you know the variance components, you can ask a <strong>design</strong> question - a <em>decision (D) study</em>: how many items would I need for a target reliability? It is the <a href="./09-statisticalpower.html">power analysis</a> of measurement.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># demonstrate the bias: divide by n vs n-1, averaged over many samples</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">11</span>)</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>truth <span class="ot">&lt;-</span> <span class="dv">25</span>                                  <span class="co"># true variance (sd = 5)</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>est_n   <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">5000</span>, { s <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">10</span>, <span class="dv">0</span>, <span class="dv">5</span>); <span class="fu">mean</span>((s <span class="sc">-</span> <span class="fu">mean</span>(s))<span class="sc">^</span><span class="dv">2</span>) })</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>est_nm1 <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">5000</span>, <span class="fu">var</span>(<span class="fu">rnorm</span>(<span class="dv">10</span>, <span class="dv">0</span>, <span class="dv">5</span>)))</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">divide_by_n =</span> <span class="fu">mean</span>(est_n), <span class="at">divide_by_n_minus_1 =</span> <span class="fu">mean</span>(est_nm1), <span class="at">truth =</span> truth)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>n_items <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">8</span>, <span class="dv">12</span>, <span class="dv">20</span>, <span class="dv">40</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>G_by_n  <span class="ot">&lt;-</span> v_p <span class="sc">/</span> (v_p <span class="sc">+</span> v_e <span class="sc">/</span> n_items)     <span class="co"># generalizability at each test length</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">setNames</span>(G_by_n, n_items), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>        divide_by_n divide_by_n_minus_1               truth 
-           22.54611            25.05852            25.00000 </code></pre>
+<pre><code>    4     8    12    20    40 
+0.906 0.951 0.966 0.980 0.990 </code></pre>
 </div>
 </div>
-<p>Dividing by <span class="math inline">\(n\)</span> lands low; dividing by <span class="math inline">\(n-1\)</span> lands right on the truth. That is degrees of freedom earning their keep.</p>
-</section>
-<section id="standard-deviation-back-to-human-units" class="level2" data-number="3.6">
-<h2 data-number="3.6" class="anchored" data-anchor-id="standard-deviation-back-to-human-units"><span class="header-section-number">3.6</span> Standard Deviation: Back to Human Units</h2>
-<p>Variance is in <em>squared</em> units (squared inches, squared dollars) - useful for math, useless for talking. Take its square root and you get the <strong>standard deviation</strong>, back in the original units and interpretable as “the typical distance from the mean”:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">sd_by_hand =</span> <span class="fu">sqrt</span>(<span class="fu">var</span>(x)), <span class="at">r_sd =</span> <span class="fu">sd</span>(x))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>sd_by_hand       r_sd 
-   11.9933    11.9933 </code></pre>
-</div>
-</div>
-<p>For a roughly normal variable, about 68% of values fall within one standard deviation of the mean, and about 95% within two - a rule of thumb we will lean on hard when we standardize in the <a href="./06-zdistribution.html">z-distribution</a> chapter.</p>
-<div class="callout callout-style-default callout-important callout-titled">
+<p>Reliability climbs with test length exactly as the <a href="./10-reliability.html">Spearman-Brown</a> logic predicts - and now you can pick the length that buys the reliability you need and stop, instead of guessing. Add a second facet (raters, occasions) and G-theory tells you whether your money is better spent on more items or more raters. That is measurement design as engineering.</p>
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Important</span>Variance Is Uncertainty
+<span class="screen-reader-only">Note</span>From the Field
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Every inferential tool in this book is, at heart, a way of comparing variances: the variance we can <em>explain</em> against the variance we <em>cannot</em>. Regression’s <span class="math inline">\(R^2\)</span>? A ratio of variances. ANOVA’s <span class="math inline">\(F\)</span>? A ratio of variances. The standard error? Built from variance. Master this chapter and the rest is bookkeeping. More differences to study, more variance, more to learn.</p>
+<p>This is the authors’ bread and butter. McKnight and Babcock-Parziale <span class="citation" data-cites="McKnightBabcock2007">(<a href="#ref-McKnightBabcock2007" role="doc-biblioref">McKnight and Babcock-Parziale 2007</a>)</span> combined <strong>Rasch and generalizability theory in a single study</strong> of a vision-rehabilitation outcome - exactly the two halves of this chapter, together. The Rasch analysis of the Mississippi PTSD Scale with Ben Wright <span class="citation" data-cites="ConradWrightMcKnight2004">(<a href="#ref-ConradWrightMcKnight2004" role="doc-biblioref">Conrad et al. 2004</a>)</span> showed reverse-scored items misbehaving; and Stroud, McKnight, and Jensen <span class="citation" data-cites="StroudMcKnightJensen2004">(<a href="#ref-StroudMcKnightJensen2004" role="doc-biblioref">Stroud et al. 2004</a>)</span> used IRT to <em>shorten</em> a disability scale without losing information - a D-study decision in action. The <a href="./27-methods-showcase.html">methods showcase</a> has the full list.</p>
 </div>
 </div>
 </section>
-<section id="challenge" class="level2" data-number="3.7">
-<h2 data-number="3.7" class="anchored" data-anchor-id="challenge"><span class="header-section-number">3.7</span> Challenge</h2>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Do One Yourself
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ol type="1">
-<li>Create two samples with the same mean but different spreads. Compute the variance and SD of each by hand (sum of squares over <span class="math inline">\(n-1\)</span>) and confirm against <code>var()</code> and <code>sd()</code>.</li>
-<li>Re-run the <span class="math inline">\(n\)</span> vs.&nbsp;<span class="math inline">\(n-1\)</span> simulation with sample size 3 instead of 10. Is the bias from dividing by <span class="math inline">\(n\)</span> bigger or smaller? Why does the correction matter more for tiny samples?</li>
-<li>For a right-skewed variable, report both the SD and the IQR. Which better conveys the “typical spread,” and why?</li>
-</ol>
-</div>
-</div>
 </section>
-<section id="where-we-go-next" class="level2" data-number="3.8">
-<h2 data-number="3.8" class="anchored" data-anchor-id="where-we-go-next"><span class="header-section-number">3.8</span> Where We Go Next</h2>
-<p>We now have distributions, centers, and spreads for a <em>single</em> variable. But science is about <strong>relationships</strong> - how one variable moves with another. To get there we need one more idea, and it is variance’s social twin: <a href="./07-covariance.html">covariance</a>. First, though, we take these tools inferential by standardizing everything onto one common ruler: the <a href="./06-zdistribution.html">z-distribution</a>.</p>
+<section id="what-this-chapter-teaches" class="level2" data-number="21.4">
+<h2 data-number="21.4" class="anchored" data-anchor-id="what-this-chapter-teaches"><span class="header-section-number">21.4</span> What This Chapter Teaches</h2>
+<ul>
+<li><strong>IRT is a family.</strong> Rasch fixes item discrimination; the 2PL frees it; the GRM extends it to graded items. Read the <strong>item characteristic curve</strong> - location is difficulty, slope is discrimination.</li>
+<li><strong>G-theory generalizes reliability</strong> by decomposing error into named facets (items, raters, occasions) with the same variance-partitioning you use for ANOVA.</li>
+<li><strong>The D-study is power analysis for measurement</strong>: knowing the variance components, you design the test - how many items, how many raters - to hit a target reliability.</li>
+</ul>
+<p>We have now seen latent variables from every angle the authors work in - factors, classes, and item-response continua. That completes our tour of <em>modeling</em>. The <a href="./20-beyond.html">next part</a> steps back to a different worry entirely: what to do when the normal curve, the point estimate, and the reject/accept ritual are themselves the problem.</p>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-ConradWrightMcKnight2004" class="csl-entry" role="listitem">
+Conrad, Kendon J., Benjamin D. Wright, Patrick McKnight, Miles McFall, Alan Fontana, and Robert Rosenheck. 2004. <span>“Comparing Traditional and Rasch Analyses of the Mississippi PTSD Scale: Revealing Limitations of Reverse-Scored Items.”</span> <em>Journal of Applied Measurement</em> 5 (1): 15–30.
+</div>
+<div id="ref-McKnightBabcock2007" class="csl-entry" role="listitem">
+McKnight, Patrick E., and Judith Babcock-Parziale. 2007. <span>“Respondent Impact on Functional Ability Outcome Measures in Vision Rehabilitation.”</span> <em>Optometry and Vision Science</em> 84 (8): 721–28.
+</div>
+<div id="ref-StroudMcKnightJensen2004" class="csl-entry" role="listitem">
+Stroud, Michael W., Patrick E. McKnight, and Mark P. Jensen. 2004. <span>“Assessment of Self-Reported Physical Activity in Patients with Chronic Pain: Development of an Abbreviated Roland-Morris Disability Scale.”</span> <em>The Journal of Pain</em> 5 (5): 257–63.
+</div>
+</div>
 </section>
 
 </main> <!-- /main -->
@@ -1263,13 +1260,13 @@ window.Quarto = {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./03-CTmeasures.html" class="pagination-link" aria-label="The Best Guess">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">The Best Guess</span></span>
+      <a href="./29-latentclass.html" class="pagination-link" aria-label="Latent Classes: Which Kind of Person Is This?">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Latent Classes: Which Kind of Person Is This?</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./05-datacleaning.html" class="pagination-link" aria-label="Cleaning House">
-        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Cleaning House</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./20-beyond.html" class="pagination-link" aria-label="Beyond the Normal Curve: Resampling, Robust, and Bayesian Statistics">
+        <span class="nav-page-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Beyond the Normal Curve: Resampling, Robust, and Bayesian Statistics</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

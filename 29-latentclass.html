@@ -8,7 +8,7 @@
 
 <meta name="description" content="A comprehensive graduate statistics book suitable for social and behavioral sciences. Our approach is to provide interested students a gentle guide to the rudiments of statistical estimation and inference.">
 
-<title>3&nbsp; Dispersion and Uncertainty – Statistics by Us for You</title>
+<title>20&nbsp; Latent Classes: Which Kind of Person Is This? – Statistics by Us for You</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -59,7 +59,26 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -69,8 +88,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./05-datacleaning.html" rel="next">
-<link href="./03-CTmeasures.html" rel="prev">
+<link href="./30-irt.html" rel="next">
+<link href="./28-sem.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -312,7 +331,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02-distributions.html">The Basics</a></li><li class="breadcrumb-item"><a href="./04-Dmeasures.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Dispersion and Uncertainty</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./28-sem.html">Latent Variable Models</a></li><li class="breadcrumb-item"><a href="./29-latentclass.html"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Latent Classes: Which Kind of Person Is This?</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -388,7 +407,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./04-Dmeasures.html" class="sidebar-item-text sidebar-link active">
+  <a href="./04-Dmeasures.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Dispersion and Uncertainty</span></span></a>
   </div>
 </li>
@@ -534,7 +553,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./29-latentclass.html" class="sidebar-item-text sidebar-link">
+  <a href="./29-latentclass.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Latent Classes: Which Kind of Person Is This?</span></span></a>
   </div>
 </li>
@@ -654,14 +673,11 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#learning-objectives" id="toc-learning-objectives" class="nav-link active" data-scroll-target="#learning-objectives"><span class="header-section-number">3.1</span> Learning Objectives</a></li>
-  <li><a href="#same-center-different-worlds" id="toc-same-center-different-worlds" class="nav-link" data-scroll-target="#same-center-different-worlds"><span class="header-section-number">3.2</span> Same Center, Different Worlds</a></li>
-  <li><a href="#the-simple-measures-range-and-iqr" id="toc-the-simple-measures-range-and-iqr" class="nav-link" data-scroll-target="#the-simple-measures-range-and-iqr"><span class="header-section-number">3.3</span> The Simple Measures: Range and IQR</a></li>
-  <li><a href="#variance-why-we-square" id="toc-variance-why-we-square" class="nav-link" data-scroll-target="#variance-why-we-square"><span class="header-section-number">3.4</span> Variance: Why We Square</a></li>
-  <li><a href="#degrees-of-freedom-why-n-1" id="toc-degrees-of-freedom-why-n-1" class="nav-link" data-scroll-target="#degrees-of-freedom-why-n-1"><span class="header-section-number">3.5</span> Degrees of Freedom: Why <span class="math inline">\(n-1\)</span></a></li>
-  <li><a href="#standard-deviation-back-to-human-units" id="toc-standard-deviation-back-to-human-units" class="nav-link" data-scroll-target="#standard-deviation-back-to-human-units"><span class="header-section-number">3.6</span> Standard Deviation: Back to Human Units</a></li>
-  <li><a href="#challenge" id="toc-challenge" class="nav-link" data-scroll-target="#challenge"><span class="header-section-number">3.7</span> Challenge</a></li>
-  <li><a href="#where-we-go-next" id="toc-where-we-go-next" class="nav-link" data-scroll-target="#where-we-go-next"><span class="header-section-number">3.8</span> Where We Go Next</a></li>
+  <li><a href="#learning-objectives" id="toc-learning-objectives" class="nav-link active" data-scroll-target="#learning-objectives"><span class="header-section-number">20.1</span> Learning Objectives</a></li>
+  <li><a href="#the-model-a-mixture-of-kinds" id="toc-the-model-a-mixture-of-kinds" class="nav-link" data-scroll-target="#the-model-a-mixture-of-kinds"><span class="header-section-number">20.2</span> The Model: A Mixture of Kinds</a></li>
+  <li><a href="#fitting-it-from-scratch-with-em" id="toc-fitting-it-from-scratch-with-em" class="nav-link" data-scroll-target="#fitting-it-from-scratch-with-em"><span class="header-section-number">20.3</span> Fitting It From Scratch with EM</a></li>
+  <li><a href="#how-many-classes" id="toc-how-many-classes" class="nav-link" data-scroll-target="#how-many-classes"><span class="header-section-number">20.4</span> How Many Classes?</a></li>
+  <li><a href="#what-this-chapter-teaches" id="toc-what-this-chapter-teaches" class="nav-link" data-scroll-target="#what-this-chapter-teaches"><span class="header-section-number">20.5</span> What This Chapter Teaches</a></li>
   </ul>
 </nav>
     </div>
@@ -669,9 +685,9 @@ window.Quarto = {
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02-distributions.html">The Basics</a></li><li class="breadcrumb-item"><a href="./04-Dmeasures.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Dispersion and Uncertainty</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./28-sem.html">Latent Variable Models</a></li><li class="breadcrumb-item"><a href="./29-latentclass.html"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Latent Classes: Which Kind of Person Is This?</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Dispersion and Uncertainty</span></h1>
+<h1 class="title"><span id="latentclass" class="quarto-section-identifier"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Latent Classes: Which Kind of Person Is This?</span></span></h1>
 </div>
 
 
@@ -688,147 +704,121 @@ window.Quarto = {
 </header>
 
 
-<p>If you remember one chapter from this book, make it this one. Back in the introduction we YELLED it: <strong>VARIANCE</strong>. Central tendency tells us where a distribution sits; <strong>dispersion</strong> tells us how much it spreads - and spread <em>is</em> uncertainty. Two groups can have identical means and tell completely opposite stories. The difference is dispersion, and dispersion is the raw material of everything we do.</p>
-<section id="learning-objectives" class="level2" data-number="3.1">
-<h2 data-number="3.1" class="anchored" data-anchor-id="learning-objectives"><span class="header-section-number">3.1</span> Learning Objectives</h2>
+<p>Factor analysis, in the <a href="./28-sem.html">last chapter</a>, asked a <em>dimensional</em> question: <strong>where</strong> does each person fall on a continuum of depression, or curiosity? Latent <strong>class</strong> analysis (LCA) asks a categorical one: <strong>which kind</strong> of person is this? Instead of a score along an axis, it looks for hidden <em>types</em> - subgroups that respond in qualitatively different ways. A dimension sorts people high to low; a class says they come in <em>flavors</em>.</p>
+<p>This matters because some of the most important findings in psychology are subgroups a score would blur into mush. A total symptom count cannot tell you that a slice of anxious people are also <strong>risk-prone approachers</strong> rather than shy avoiders - but a latent-class model can, and the authors’ own work found exactly that (more below).</p>
+<section id="learning-objectives" class="level2" data-number="20.1">
+<h2 data-number="20.1" class="anchored" data-anchor-id="learning-objectives"><span class="header-section-number">20.1</span> Learning Objectives</h2>
 <ol type="1">
-<li>Understand why spread, not center, is the quantity statistics is really about.</li>
-<li>Learn the common measures of dispersion and what each is good for.</li>
-<li>Understand variance and the standard deviation, and why we square.</li>
-<li>Understand degrees of freedom and why we divide by <span class="math inline">\(n-1\)</span>.</li>
+<li>Contrast a <strong>dimensional</strong> latent variable (a factor) with a <strong>categorical</strong> one (a class).</li>
+<li>State the latent-class model as a <strong>mixture</strong> of response patterns.</li>
+<li>Fit one from scratch with the <strong>EM algorithm</strong>, and read the classes off the item probabilities.</li>
+<li>Recognize that classes can differ in <em>pattern</em>, not just <em>severity</em> - which is the whole point.</li>
 </ol>
 </section>
-<section id="same-center-different-worlds" class="level2" data-number="3.2">
-<h2 data-number="3.2" class="anchored" data-anchor-id="same-center-different-worlds"><span class="header-section-number">3.2</span> Same Center, Different Worlds</h2>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">7</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>tight <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">500</span>, <span class="at">mean =</span> <span class="dv">100</span>, <span class="at">sd =</span> <span class="dv">3</span>)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>wide  <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">500</span>, <span class="at">mean =</span> <span class="dv">100</span>, <span class="at">sd =</span> <span class="dv">20</span>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">value =</span> <span class="fu">c</span>(tight, wide),</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">group =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"tight (sd=3)"</span>, <span class="st">"wide (sd=20)"</span>), <span class="at">each =</span> <span class="dv">500</span>))</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(value, <span class="at">fill =</span> group)) <span class="sc">+</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">40</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>, <span class="at">position =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Identical means (100), very different uncertainty"</span>,</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"value"</span>, <span class="at">y =</span> <span class="st">"count"</span>) <span class="sc">+</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="04-Dmeasures_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">mean_tight =</span> <span class="fu">mean</span>(tight), <span class="at">mean_wide =</span> <span class="fu">mean</span>(wide))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>mean_tight  mean_wide 
- 100.13502   99.22179 </code></pre>
-</div>
-</div>
-<p>Same mean, same “best guess” - but a guess of 100 is nearly certain for the tight group and nearly worthless for the wide one. <strong>The spread is the story.</strong></p>
+<section id="the-model-a-mixture-of-kinds" class="level2" data-number="20.2">
+<h2 data-number="20.2" class="anchored" data-anchor-id="the-model-a-mixture-of-kinds"><span class="header-section-number">20.2</span> The Model: A Mixture of Kinds</h2>
+<p>Suppose there are <span class="math inline">\(K\)</span> hidden classes. Each class <span class="math inline">\(k\)</span> has (a) a <strong>size</strong> <span class="math inline">\(\pi_k\)</span> (its share of the population) and (b) its own set of <strong>item-endorsement probabilities</strong> <span class="math inline">\(\rho_{jk}\)</span> - the chance a member of class <span class="math inline">\(k\)</span> says “yes” to item <span class="math inline">\(j\)</span>. A person belongs to one class, but we do not see which; we see only their answers. The probability of a whole response pattern is a <strong>mixture</strong> - a weighted blend across the classes:</p>
+<p><span class="math display">\[P(\mathbf{x}_i) = \sum_{k=1}^{K} \pi_k \prod_{j=1}^{J} \rho_{jk}^{x_{ij}} (1-\rho_{jk})^{1-x_{ij}}\]</span></p>
+<p>The classes are the profiles <span class="math inline">\(\rho_{\cdot k}\)</span>; membership is hidden. Our job is to recover both from the responses alone.</p>
 </section>
-<section id="the-simple-measures-range-and-iqr" class="level2" data-number="3.3">
-<h2 data-number="3.3" class="anchored" data-anchor-id="the-simple-measures-range-and-iqr"><span class="header-section-number">3.3</span> The Simple Measures: Range and IQR</h2>
-<p>The crudest measure is the <strong>range</strong> (max minus min), which uses only two numbers and is therefore hostage to outliers. A sturdier cousin is the <strong>interquartile range (IQR)</strong> - the width of the middle 50% of the data:</p>
+<section id="fitting-it-from-scratch-with-em" class="level2" data-number="20.3">
+<h2 data-number="20.3" class="anchored" data-anchor-id="fitting-it-from-scratch-with-em"><span class="header-section-number">20.3</span> Fitting It From Scratch with EM</h2>
+<p>The difficulty is a chicken-and-egg: if we knew who was in each class we could estimate the class profiles, and if we knew the profiles we could assign people to classes - but we know neither. The <strong>EM algorithm</strong> breaks the loop by alternating, exactly as <a href="./18-rasch.html">Rasch estimation</a> did:</p>
+<ul>
+<li><strong>E-step</strong> (Expectation): given current profiles, compute each person’s <em>posterior</em> probability of belonging to each class.</li>
+<li><strong>M-step</strong> (Maximization): given those soft memberships, re-estimate each class’s size and item probabilities as membership-weighted averages.</li>
+</ul>
+<p>Repeat until nothing moves. First, simulate two classes that differ in <em>pattern</em> - items 7–8 are reversed, so the classes are not simply “more” vs.&nbsp;“less” symptomatic:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>, <span class="dv">12</span>, <span class="dv">40</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">range =</span> <span class="fu">diff</span>(<span class="fu">range</span>(x)), <span class="at">IQR =</span> <span class="fu">IQR</span>(x))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">800</span>; J <span class="ot">&lt;-</span> <span class="dv">8</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>prev <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.35</span>, <span class="fl">0.65</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>rho  <span class="ot">&lt;-</span> <span class="fu">rbind</span>(<span class="fu">rep</span>(<span class="fl">0.80</span>, J), <span class="fu">rep</span>(<span class="fl">0.20</span>, J))</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>rho[<span class="dv">1</span>, <span class="fu">c</span>(<span class="dv">7</span>, <span class="dv">8</span>)] <span class="ot">&lt;-</span> <span class="fl">0.30</span>; rho[<span class="dv">2</span>, <span class="fu">c</span>(<span class="dv">7</span>, <span class="dv">8</span>)] <span class="ot">&lt;-</span> <span class="fl">0.70</span>   <span class="co"># reverse two items: pattern, not severity</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>cls  <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, N, <span class="at">replace =</span> <span class="cn">TRUE</span>, <span class="at">prob =</span> prev)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">t</span>(<span class="fu">sapply</span>(cls, <span class="cf">function</span>(k) <span class="fu">rbinom</span>(J, <span class="dv">1</span>, rho[k, ])))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Now the entire estimator - about a dozen lines:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>lca_em <span class="ot">&lt;-</span> <span class="cf">function</span>(X, <span class="at">K =</span> <span class="dv">2</span>, <span class="at">tol =</span> <span class="fl">1e-6</span>, <span class="at">maxit =</span> <span class="dv">500</span>) {</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  N <span class="ot">&lt;-</span> <span class="fu">nrow</span>(X); J <span class="ot">&lt;-</span> <span class="fu">ncol</span>(X)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">1</span>); pi <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">/</span>K, K); p <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">runif</span>(K <span class="sc">*</span> J, .<span class="dv">2</span>, .<span class="dv">8</span>), K, J)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  ll_old <span class="ot">&lt;-</span> <span class="sc">-</span><span class="cn">Inf</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (it <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>maxit) {</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># E-step: log P(x_i, class k) for every person and class, then normalize to a posterior</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    loglik <span class="ot">&lt;-</span> <span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span>K, <span class="cf">function</span>(k)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">log</span>(pi[k]) <span class="sc">+</span> X <span class="sc">%*%</span> <span class="fu">log</span>(p[k, ]) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">-</span> X) <span class="sc">%*%</span> <span class="fu">log</span>(<span class="dv">1</span> <span class="sc">-</span> p[k, ]))</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    m    <span class="ot">&lt;-</span> <span class="fu">apply</span>(loglik, <span class="dv">1</span>, max)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    post <span class="ot">&lt;-</span> <span class="fu">exp</span>(loglik <span class="sc">-</span> m); post <span class="ot">&lt;-</span> post <span class="sc">/</span> <span class="fu">rowSums</span>(post)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># M-step: re-estimate sizes and item probabilities as posterior-weighted averages</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    pi <span class="ot">&lt;-</span> <span class="fu">colMeans</span>(post)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    p  <span class="ot">&lt;-</span> <span class="fu">t</span>(post) <span class="sc">%*%</span> X <span class="sc">/</span> <span class="fu">colSums</span>(post)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    ll <span class="ot">&lt;-</span> <span class="fu">sum</span>(m <span class="sc">+</span> <span class="fu">log</span>(<span class="fu">rowSums</span>(<span class="fu">exp</span>(loglik <span class="sc">-</span> m))))</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">abs</span>(ll <span class="sc">-</span> ll_old) <span class="sc">&lt;</span> tol) <span class="cf">break</span>; ll_old <span class="ot">&lt;-</span> ll</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">prevalence =</span> pi, <span class="at">item_prob =</span> p, <span class="at">iterations =</span> it)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lca_em</span>(X, <span class="at">K =</span> <span class="dv">2</span>)</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"converged in"</span>, fit<span class="sc">$</span>iterations, <span class="st">"iterations</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>range   IQR 
-37.00  4.75 </code></pre>
+<pre><code>converged in 22 iterations</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(fit<span class="sc">$</span>prevalence, <span class="dv">2</span>)          <span class="co"># recovered class sizes (true: .35 / .65)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.64 0.36</code></pre>
 </div>
 </div>
-<p>The IQR ignores the tails, so it is to spread what the median is to center: robust, honest, and unbothered by a lone extreme value.</p>
+<p>The class sizes come back essentially exact. And the item-probability profiles - the <em>definitions</em> of the two kinds - recover the reversal we planted:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(fit<span class="sc">$</span>item_prob, <span class="dv">2</span>)           <span class="co"># rows = classes, columns = items 1..8</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8]
+[1,] 0.19 0.18 0.20 0.20 0.21 0.21 0.72 0.68
+[2,] 0.81 0.78 0.81 0.78 0.78 0.83 0.24 0.36</code></pre>
+</div>
+</div>
+<p>Read the two rows: one class endorses items 1–6 heavily but items 7–8 rarely; the other is its mirror image. <strong>These classes are not “high” and “low” depression - they are two different <em>shapes</em> of response.</strong> A sum score, which only counts yeses, would smear them together; the mixture model pulls them apart. That is what LCA is <em>for</em>.</p>
 </section>
-<section id="variance-why-we-square" class="level2" data-number="3.4">
-<h2 data-number="3.4" class="anchored" data-anchor-id="variance-why-we-square"><span class="header-section-number">3.4</span> Variance: Why We Square</h2>
-<p>The measure that runs the whole show is <strong>variance</strong> - the average squared distance from the mean. Why squared? Because the plain distances from the mean <em>always sum to zero</em> (that is what the mean does), so we could never average them. Squaring solves that and, not coincidentally, hooks us straight into least squares.</p>
-<p><span class="math display">\[s^2 = \frac{\sum (x - \bar{x})^2}{n - 1}\]</span></p>
-<p>Let’s build it by hand and check against R:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>deviations <span class="ot">&lt;-</span> x <span class="sc">-</span> <span class="fu">mean</span>(x)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(deviations)                       <span class="co"># ~0, which is exactly the problem</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>SS <span class="ot">&lt;-</span> <span class="fu">sum</span>(deviations<span class="sc">^</span><span class="dv">2</span>)               <span class="co"># sum of squares - the numerator</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>n  <span class="ot">&lt;-</span> <span class="fu">length</span>(x)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>by_hand <span class="ot">&lt;-</span> SS <span class="sc">/</span> (n <span class="sc">-</span> <span class="dv">1</span>)</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">by_hand =</span> by_hand, <span class="at">r_var =</span> <span class="fu">var</span>(x))  <span class="co"># match</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code> by_hand    r_var 
-143.8393 143.8393 </code></pre>
-</div>
-</div>
-<p>The numerator, <span class="math inline">\(\sum(x-\bar{x})^2\)</span>, is the <strong>sum of squares</strong> - a quantity you will meet on every page from here on (it is the same SS that regression and ANOVA minimize and partition). Variance is just the sum of squares, averaged.</p>
-</section>
-<section id="degrees-of-freedom-why-n-1" class="level2" data-number="3.5">
-<h2 data-number="3.5" class="anchored" data-anchor-id="degrees-of-freedom-why-n-1"><span class="header-section-number">3.5</span> Degrees of Freedom: Why <span class="math inline">\(n-1\)</span></h2>
-<p>Notice we divided by <span class="math inline">\(n - 1\)</span>, not <span class="math inline">\(n\)</span>. Here is the honest reason. To compute the deviations we first had to estimate the mean <em>from the same data</em>. Once the mean is fixed, only <span class="math inline">\(n-1\)</span> of the deviations are free to vary - the last one is forced, because they must sum to zero. We “spent” one <strong>degree of freedom</strong> estimating the mean, so we divide by what is left. Dividing by <span class="math inline">\(n\)</span> would systematically <em>underestimate</em> the true spread; the <span class="math inline">\(n-1\)</span> correction fixes that bias.</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># demonstrate the bias: divide by n vs n-1, averaged over many samples</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">11</span>)</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>truth <span class="ot">&lt;-</span> <span class="dv">25</span>                                  <span class="co"># true variance (sd = 5)</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>est_n   <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">5000</span>, { s <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">10</span>, <span class="dv">0</span>, <span class="dv">5</span>); <span class="fu">mean</span>((s <span class="sc">-</span> <span class="fu">mean</span>(s))<span class="sc">^</span><span class="dv">2</span>) })</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>est_nm1 <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">5000</span>, <span class="fu">var</span>(<span class="fu">rnorm</span>(<span class="dv">10</span>, <span class="dv">0</span>, <span class="dv">5</span>)))</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">divide_by_n =</span> <span class="fu">mean</span>(est_n), <span class="at">divide_by_n_minus_1 =</span> <span class="fu">mean</span>(est_nm1), <span class="at">truth =</span> truth)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>        divide_by_n divide_by_n_minus_1               truth 
-           22.54611            25.05852            25.00000 </code></pre>
-</div>
-</div>
-<p>Dividing by <span class="math inline">\(n\)</span> lands low; dividing by <span class="math inline">\(n-1\)</span> lands right on the truth. That is degrees of freedom earning their keep.</p>
-</section>
-<section id="standard-deviation-back-to-human-units" class="level2" data-number="3.6">
-<h2 data-number="3.6" class="anchored" data-anchor-id="standard-deviation-back-to-human-units"><span class="header-section-number">3.6</span> Standard Deviation: Back to Human Units</h2>
-<p>Variance is in <em>squared</em> units (squared inches, squared dollars) - useful for math, useless for talking. Take its square root and you get the <strong>standard deviation</strong>, back in the original units and interpretable as “the typical distance from the mean”:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">sd_by_hand =</span> <span class="fu">sqrt</span>(<span class="fu">var</span>(x)), <span class="at">r_sd =</span> <span class="fu">sd</span>(x))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>sd_by_hand       r_sd 
-   11.9933    11.9933 </code></pre>
-</div>
-</div>
-<p>For a roughly normal variable, about 68% of values fall within one standard deviation of the mean, and about 95% within two - a rule of thumb we will lean on hard when we standardize in the <a href="./06-zdistribution.html">z-distribution</a> chapter.</p>
-<div class="callout callout-style-default callout-important callout-titled">
+<section id="how-many-classes" class="level2" data-number="20.4">
+<h2 data-number="20.4" class="anchored" data-anchor-id="how-many-classes"><span class="header-section-number">20.4</span> How Many Classes?</h2>
+<p>We told the estimator <span class="math inline">\(K = 2\)</span>, but in real life the number of classes is itself unknown - and it is the crux of the analysis. You fit <span class="math inline">\(K = 1, 2, 3, \dots\)</span> and compare, usually with an information criterion (<strong>BIC</strong> or <strong>AIC</strong>) that rewards fit and penalizes complexity, plus interpretability (a class you cannot describe is probably an artifact). In practice you would use a maintained tool that also handles this:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The real tool (needs the poLCA package — shown, not run on the book's server)</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(poLCA)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>f  <span class="ot">&lt;-</span> <span class="fu">cbind</span>(i1, i2, i3, i4, i5, i6, i7, i8) <span class="sc">~</span> <span class="dv">1</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">poLCA</span>(f, data, <span class="at">nclass =</span> <span class="dv">2</span>)      <span class="co"># fit 2, 3, 4 classes ...</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>m3 <span class="ot">&lt;-</span> <span class="fu">poLCA</span>(f, data, <span class="at">nclass =</span> <span class="dv">3</span>)      <span class="co"># ... and compare</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(m2<span class="sc">$</span>bic, m3<span class="sc">$</span>bic)                     <span class="co"># lower BIC = better; also judge interpretability</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Important</span>Variance Is Uncertainty
+<span class="screen-reader-only">Note</span>From the Field
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Every inferential tool in this book is, at heart, a way of comparing variances: the variance we can <em>explain</em> against the variance we <em>cannot</em>. Regression’s <span class="math inline">\(R^2\)</span>? A ratio of variances. ANOVA’s <span class="math inline">\(F\)</span>? A ratio of variances. The standard error? Built from variance. Master this chapter and the rest is bookkeeping. More differences to study, more variance, more to learn.</p>
+<p>Kashdan, McKnight, and colleagues <span class="citation" data-cites="KashdanMcKnightRichey2009">(<a href="#ref-KashdanMcKnightRichey2009" role="doc-biblioref">Kashdan et al. 2009</a>)</span> applied latent-class analysis to the National Comorbidity Survey and found a <strong>neglected subtype</strong> of social-anxiety disorder: people who are anxious <em>and</em> risk-prone/approach-oriented, not the shy-avoidant stereotype. That subgroup is invisible to a symptom count - you can only see it once you stop asking “how much?” and start asking “what kind?” It is the same lesson as the <a href="./24-casestudy-depression.html">antitypes case study</a>: structure that a total score throws away can be the most clinically important thing in the data.</p>
 </div>
 </div>
 </section>
-<section id="challenge" class="level2" data-number="3.7">
-<h2 data-number="3.7" class="anchored" data-anchor-id="challenge"><span class="header-section-number">3.7</span> Challenge</h2>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Do One Yourself
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ol type="1">
-<li>Create two samples with the same mean but different spreads. Compute the variance and SD of each by hand (sum of squares over <span class="math inline">\(n-1\)</span>) and confirm against <code>var()</code> and <code>sd()</code>.</li>
-<li>Re-run the <span class="math inline">\(n\)</span> vs.&nbsp;<span class="math inline">\(n-1\)</span> simulation with sample size 3 instead of 10. Is the bias from dividing by <span class="math inline">\(n\)</span> bigger or smaller? Why does the correction matter more for tiny samples?</li>
-<li>For a right-skewed variable, report both the SD and the IQR. Which better conveys the “typical spread,” and why?</li>
-</ol>
-</div>
-</div>
-</section>
-<section id="where-we-go-next" class="level2" data-number="3.8">
-<h2 data-number="3.8" class="anchored" data-anchor-id="where-we-go-next"><span class="header-section-number">3.8</span> Where We Go Next</h2>
-<p>We now have distributions, centers, and spreads for a <em>single</em> variable. But science is about <strong>relationships</strong> - how one variable moves with another. To get there we need one more idea, and it is variance’s social twin: <a href="./07-covariance.html">covariance</a>. First, though, we take these tools inferential by standardizing everything onto one common ruler: the <a href="./06-zdistribution.html">z-distribution</a>.</p>
+<section id="what-this-chapter-teaches" class="level2" data-number="20.5">
+<h2 data-number="20.5" class="anchored" data-anchor-id="what-this-chapter-teaches"><span class="header-section-number">20.5</span> What This Chapter Teaches</h2>
+<ul>
+<li><strong>Dimensions vs.&nbsp;types.</strong> Factor analysis places people on continua; latent-class analysis sorts them into kinds. Ask which question your science is really asking.</li>
+<li><strong>A latent class model is a mixture</strong> of response-pattern probabilities - classes you cannot see, recovered from responses you can.</li>
+<li><strong>EM solves the chicken-and-egg</strong> by alternating soft assignment (E) and re-estimation (M), the same iterate-until-stable trick behind Rasch.</li>
+<li><strong>Classes can differ in pattern, not just level</strong> - and those pattern-defined subgroups are exactly what a sum score is built to hide.</li>
+</ul>
+<p>We have now met latent variables as <em>dimensions</em> (factors) and as <em>categories</em> (classes). The <a href="./30-irt.html">next chapter</a> returns to the dimensional view but drills deeper into it - extending the <a href="./18-rasch.html">Rasch model</a> into the wider world of item response theory and generalizability, where the authors have published extensively.</p>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-KashdanMcKnightRichey2009" class="csl-entry" role="listitem">
+Kashdan, Todd B., Patrick E. McKnight, J. Anthony Richey, and Stefan G. Hofmann. 2009. <span>“When Social Anxiety Disorder Co-Exists with Risk-Prone, Approach Behavior: Investigating a Neglected, Meaningful Subset of People in the National Comorbidity Survey–Replication.”</span> <em>Behaviour Research and Therapy</em> 47 (7): 559–68.
+</div>
+</div>
 </section>
 
 </main> <!-- /main -->
@@ -1263,13 +1253,13 @@ window.Quarto = {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./03-CTmeasures.html" class="pagination-link" aria-label="The Best Guess">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">The Best Guess</span></span>
+      <a href="./28-sem.html" class="pagination-link" aria-label="Latent Variables: Confirmatory Factor Analysis and SEM">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Latent Variables: Confirmatory Factor Analysis and SEM</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./05-datacleaning.html" class="pagination-link" aria-label="Cleaning House">
-        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Cleaning House</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./30-irt.html" class="pagination-link" aria-label="More Item Response Theory, and Generalizability">
+        <span class="nav-page-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">More Item Response Theory, and Generalizability</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
