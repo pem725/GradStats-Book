@@ -68,6 +68,60 @@ plot(xx, yy, pch = 19, col = "darkorange",
      main = "r is near zero, but the relationship is perfect (just not linear)")
 ```
 
+## Anscombe's Quartet: Same Numbers, Four Different Stories
+
+The U-shape above was one warning. Here is the most famous one, and the reason "always plot your data" belongs on the first page of every statistics course. In 1973, Francis Anscombe built four small datasets that share almost every summary statistic you would normally report - the same mean of $x$, the same mean of $y$, the same variances, the same correlation, and the same regression line - yet describe four completely different worlds. R ships them in the built-in `anscombe` data:
+
+```{r}
+a <- anscombe
+sapply(1:4, function(i) round(cor(a[[paste0("x", i)]], a[[paste0("y", i)]]), 3))
+```
+
+Four identical correlations, $r = 0.816$. Every set also has the same fitted line, $\hat{y} = 3 + 0.5\,x$. If you reported only the numbers, you would call these datasets interchangeable. Now plot them:
+
+```{r}
+#| fig-cap: "Anscombe's quartet: identical means, variances, correlation, and regression line — but four different stories."
+#| fig-height: 6
+op <- par(mfrow = c(2, 2), mar = c(4, 4, 2, 1))
+for (i in 1:4) {
+  x <- a[[paste0("x", i)]]; y <- a[[paste0("y", i)]]
+  plot(x, y, pch = 19, col = "steelblue", xlim = c(3, 20), ylim = c(2, 14),
+       main = paste("Dataset", i), xlab = "x", ylab = "y")
+  abline(lm(y ~ x), col = "firebrick", lwd = 2)   # the SAME line every time
+}
+par(op)
+```
+
+The same red line runs through all four, but only the first tells the story the line claims:
+
+- **Dataset 1** is a genuine, if noisy, straight-line relationship. The line fits.
+- **Dataset 2** is a smooth *curve*. A straight line is the wrong model here; the correlation is real, but the shape is not linear.
+- **Dataset 3** is a tight straight line spoiled by a single **outlier** that drags the fitted line off course.
+- **Dataset 4** has no relationship among most of the points (they all share one $x$ value); a single far-off point, on its own, creates the entire correlation. That lone point has enormous **leverage**.
+
+Identical statistics, four different truths. The picture told you in a moment what the correlation coefficient never could. This is why the [graphical display of data](21-graphics.qmd) is not decoration; it is often the fastest way to catch a relationship that is curved, contaminated, or driven by a single point.
+
+::: {.callout-important}
+## From the picture to the residuals
+
+Look again at what the scatter plots did: they showed you *where the straight line was wrong*. That is exactly the job of a **residual**. Recall the chain that runs through this book. We began with [dispersion](04-Dmeasures.qmd), how a variable spreads, and dispersion is the raw material of **uncertainty**. Once we start making **predictions**, that uncertainty splits into two pieces: the **predicted value** $\hat{y}$, what the model expects, and the **residual** $y - \hat{y}$, what the model missed. The residuals are where the model is wrong, and it is the residuals, not the fit, that tell you whether the model is any good and whether your assumption of a straight-line relationship holds.
+
+Fit a line to the curved Dataset 2 and plot the residuals, and the curve the correlation hid comes right back:
+
+```{r}
+#| fig-height: 3.4
+m2 <- lm(y2 ~ x2, data = anscombe)
+plot(fitted(m2), resid(m2), pch = 19, col = "steelblue",
+     xlab = "fitted (predicted) value", ylab = "residual (y minus predicted)",
+     main = "Dataset 2 residuals arch — the misfit the scatter revealed")
+abline(h = 0, lty = 2, col = "grey50")
+```
+
+The residuals bow upward at the ends and dip in the middle, the signature of a curved relationship forced through a straight line. The scatter plot and the residual plot told the same story.
+:::
+
+Here is why that matters far beyond four small datasets. With two variables you can *see* a bad linear fit directly in the scatter plot. But real models carry many predictors, and you cannot plot a relationship in five or ten dimensions. Anscombe's quartet stops being usable the moment you reach [multiple regression](15-MRC.qmd), because there is no two-dimensional picture left to draw. What survives is the **residual**. Residual analysis carries the "look at where the line is wrong" habit from the simple scatter plot into models too complex to plot. So treat Anscombe's quartet as a bridge, not a destination: it teaches, in pictures anyone can read, the very thing you will later have to check with [residuals](14-bivariateregression.qmd) once the pictures run out.
+
 ::: {.callout-important}
 ## Covariance Is the Engine of the GLM
 
