@@ -34,6 +34,8 @@ Three problems already stand out: an age of 220, a negative income (and a suspic
 
 Define what is *possible* and flag what is not. This is domain knowledge, not statistics:
 
+::: {.panel-tabset}
+### R
 ```{r}
 dat$age[dat$age > 120]  <- NA            # no one is 220
 dat$income[dat$income < 0] <- NA         # negative income is impossible here
@@ -41,6 +43,26 @@ dat$income[dat$income == 999] <- NA      # 999 was a "missing" code, not a value
 dat$group <- toupper(trimws(as.character(dat$group)))  # fix "b" and stray spaces
 table(dat$group, useNA = "ifany")
 ```
+### SPSS
+```
+* Recode impossible and coded-missing values to system-missing.
+RECODE age (121 THRU HIGHEST=SYSMIS).
+RECODE income (LOWEST THRU -0.001=SYSMIS) (999=SYSMIS).
+* Fix "b" and stray spaces in group.
+COMPUTE group = UPCASE(LTRIM(RTRIM(group))).
+EXECUTE.
+* Frequency table of the cleaned group variable (missing shown by default).
+FREQUENCIES VARIABLES=group.
+```
+### Julia
+```julia
+using DataFrames, StatsBase
+df.age    = [ismissing(x) || x > 120 ? missing : x for x in df.age]                # no one is 220
+df.income = [ismissing(x) || x < 0 || x == 999 ? missing : x for x in df.income]   # impossible; 999 a code
+df.group  = uppercase.(strip.(string.(df.group)))                                  # fix "b" and stray spaces
+countmap(df.group)
+```
+:::
 
 Note the tricky one: **999 was never a real income**. It was a placeholder for "declined to answer," and software cannot know that. If you had left it in, the mean income would have been badly wrong. Always look for these coded-missing sentinels (999, -1, "N/A", empty strings) and convert them to a genuine `NA`.
 
@@ -52,9 +74,22 @@ Once the sentinels are cleaned, you are left with genuine gaps. How you should h
 - **MAR** (Missing At Random): missingness depends on things you *observed* (older people skip the income item, and you recorded age). Recoverable with the right methods.
 - **MNAR** (Missing Not At Random): missingness depends on the *unobserved value itself* (high earners hide their income). The hardest case: no method fully fixes it, and it can quietly bias every result.
 
+::: {.panel-tabset}
+### R
 ```{r}
 colSums(is.na(dat))     # how much is missing, and where?
 ```
+### SPSS
+```
+* How much is missing, and where (missing-value analysis over all variables).
+MVA VARIABLES=ALL.
+```
+### Julia
+```julia
+using DataFrames
+describe(df, :nmissing)     # how much is missing, and where?
+```
+:::
 
 The default in most software is **listwise deletion** - throw out any row with a gap - which is fine under MCAR and quietly biasing otherwise. Modern practice prefers **multiple imputation**, but the first, non-negotiable step is simply to *report* how much is missing and think hard about which flavor you are facing.
 

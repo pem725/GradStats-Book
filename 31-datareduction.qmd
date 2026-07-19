@@ -73,19 +73,43 @@ Averaging items into a composite quietly assumes they measure *one* thing. Befor
 
 **Principal Component Analysis (PCA)** summarizes a set of variables by the directions along which they vary most. It is a quick dimensionality check and a collinearity remedy, not a measurement model. If one construct runs through your items, the first component should dominate:
 
+::: {.panel-tabset}
+### R
 ```{r}
 pc <- prcomp(items, scale. = TRUE)
 round(pc$sdev^2, 2)          # eigenvalues: one large, the rest small = one dimension
 ```
+### SPSS
+```
+FACTOR /VARIABLES x1 x2 x3 x4 x5 x6 /EXTRACTION PC /PRINT EIGEN /PLOT EIGEN.
+```
+### Julia
+```julia
+using MultivariateStats
+fit(PCA, Matrix(items)'; maxoutdim=6)
+```
+:::
 
 One eigenvalue well above the rest is the signature of a single underlying dimension. PCA also gives the orthogonal components you can regress on when you would rather dissolve collinearity than interpret individual predictors.
 
 **Exploratory Factor Analysis (EFA)** is for when you do *not* yet know the structure; you let the data suggest how many factors there are and which items load where. Base R's `factanal` fits it by maximum likelihood:
 
+::: {.panel-tabset}
+### R
 ```{r}
 fa1 <- factanal(items, factors = 1)
 round(as.numeric(fa1$loadings), 2)          # all items load on the common factor
 ```
+### SPSS
+```
+FACTOR /VARIABLES x1 x2 x3 x4 x5 x6 /EXTRACTION ML /CRITERIA FACTORS(1) /ROTATION VARIMAX.
+```
+### Julia
+```julia
+using MultivariateStats
+fit(FactorAnalysis, Matrix(items)'; maxoutdim=1)
+```
+:::
 
 In practice you would decide the number of factors more carefully. Parallel analysis is the modern standard:
 

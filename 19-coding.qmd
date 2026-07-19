@@ -234,6 +234,8 @@ c(helmert_b1 = unname(coef(m_helm)[2]),
 
 The real power is writing your own. Suppose the scientific questions are: (1) are the "usual" pets (`cat`, `fish`) different from the "unusual" ones (`pig`, `dog`)? (2) `cat` vs. `fish`? (3) `pig` vs. `dog`? Encode exactly those, and **name the columns** so the output documents itself:
 
+::: {.panel-tabset}
+### R
 ```{r}
 sgc <- matrix(c( 0.5,  0.5, -0.5, -0.5,   # usual (cat,fish) vs unusual (pig,dog)
                  0.5, -0.5,  0.0,  0.0,   # cat vs fish
@@ -246,6 +248,22 @@ contrasts(d$pet) <- sgc
 m_con <- lm(happy ~ pet, data = d)
 round(coef(m_con), 3)
 ```
+### SPSS
+```
+* Custom orthogonal contrasts:
+*   usual (cat,fish) vs unusual (pig,dog); cat vs fish; pig vs dog.
+UNIANOVA happy BY pet
+  /CONTRAST(pet)=SPECIAL(0.5 0.5 -0.5 -0.5  0.5 -0.5 0 0  0 0 0.5 -0.5)
+  /PRINT=PARAMETER.
+```
+### Julia
+```julia
+using GLM, StatsModels
+m_con = lm(@formula(happy ~ pet), df,
+           contrasts = Dict(:pet => HypothesisCoding(
+               [0.5 0.5 -0.5 -0.5; 0.5 -0.5 0 0; 0 0 0.5 -0.5])))
+```
+:::
 
 These three contrasts are **orthogonal** (each pair of columns is uncorrelated), so the three comparisons are independent - each coefficient answers its question without contamination from the others. Confirm the first one really is the usual-vs-unusual gap:
 
@@ -265,6 +283,8 @@ c(contrast_b1 = unname(coef(m_con)["petusual_vs_unusual"]),
 
 Now the capstone, and the point of the whole chapter. What if we assign *arbitrary* numbers to the groups, with no reference, no deviations, and no meaningful comparison behind them?
 
+::: {.panel-tabset}
+### R
 ```{r}
 nonsense <- matrix(c( 3.0, -7.0,  2.5,  0.1,
                       1.0,  1.0, -2.0,  4.0,
@@ -275,6 +295,21 @@ contrasts(d$pet) <- nonsense
 m_nonsense <- lm(happy ~ pet, data = d)
 round(coef(m_nonsense), 3)
 ```
+### SPSS
+```
+* Nonsense coding: arbitrary contrast coefficients with no meaning.
+UNIANOVA happy BY pet
+  /CONTRAST(pet)=SPECIAL(3 -7 2.5 0.1  1 1 -2 4  -5 2 8 -1)
+  /PRINT=PARAMETER.
+```
+### Julia
+```julia
+using GLM, StatsModels
+m_nonsense = lm(@formula(happy ~ pet), df,
+                contrasts = Dict(:pet => HypothesisCoding(
+                    [3 -7 2.5 0.1; 1 1 -2 4; -5 2 8 -1])))
+```
+:::
 
 Those coefficients are not interpretable, which is exactly why the columns are named `huh`, `wat`, and `lol`. You cannot read a single one off the group means. And yet look at what has **not** changed:
 
@@ -311,6 +346,8 @@ Across every row the $R^2$, $F$, and fitted values are identical. The columns "I
 
 Simulated pets are friendly, but let's prove the machinery on real data - the Module 3 dataset from the graduate GLM course (`data/mod3data.csv`). It has an outcome `y1` and a genuine four-level grouping factor, `f3`, with unequal cells (real data is always lumpy):
 
+::: {.panel-tabset}
+### R
 ```{r}
 d3 <- read.csv("data/mod3data.csv")
 d3$grp <- factor(d3$f3, labels = c("A", "B", "C", "D"))
@@ -318,9 +355,23 @@ mu3 <- tapply(d3$y1, d3$grp, mean)
 round(mu3, 3)          # the four real group means
 table(d3$grp)          # unequal cell sizes
 ```
+### SPSS
+```
+* Group means and cell sizes of y1 by grp.
+MEANS TABLES=y1 BY grp
+  /CELLS=MEAN STDDEV COUNT.
+```
+### Julia
+```julia
+using Statistics, DataFrames
+combine(groupby(df, :grp), :y1 => mean)
+```
+:::
 
 Dummy-code it (reference = group A) and read the coefficients straight off those means, exactly as we did for the pets:
 
+::: {.panel-tabset}
+### R
 ```{r}
 contrasts(d3$grp) <- contr.treatment(4, base = 1)
 m_real <- lm(y1 ~ grp, data = d3)
@@ -328,14 +379,44 @@ round(coef(m_real), 3)
 c(intercept_is_A    = all.equal(unname(coef(m_real)[1]), unname(mu3["A"])),
   grp2_is_B_minus_A = all.equal(unname(coef(m_real)["grp2"]), unname(mu3["B"] - mu3["A"])))
 ```
+### SPSS
+```
+* Dummy / reference coding, reference = group A (1st category).
+UNIANOVA y1 BY grp
+  /CONTRAST(grp)=SIMPLE(1)
+  /PRINT=PARAMETER.
+```
+### Julia
+```julia
+using GLM, StatsModels
+m_real = lm(@formula(y1 ~ grp), df,
+            contrasts = Dict(:grp => DummyCoding(base = "A")))
+```
+:::
 
 Both `TRUE` - the intercept is group A's mean, each slope a group's mean minus A's. Switch to effects coding and the intercept becomes the grand mean of the four group means, unequal cells and all:
 
+::: {.panel-tabset}
+### R
 ```{r}
 contrasts(d3$grp) <- contr.sum(4)
 m_real_eff <- lm(y1 ~ grp, data = d3)
 all.equal(unname(coef(m_real_eff)[1]), mean(mu3))
 ```
+### SPSS
+```
+* Effects / deviation coding (each group vs the grand mean).
+UNIANOVA y1 BY grp
+  /CONTRAST(grp)=DEVIATION
+  /PRINT=PARAMETER.
+```
+### Julia
+```julia
+using GLM, StatsModels
+m_real_eff = lm(@formula(y1 ~ grp), df,
+                contrasts = Dict(:grp => EffectsCoding()))
+```
+:::
 
 `TRUE`. Real data, real (unbalanced) cells, and every rule from the pet example still holds, because the arithmetic works the same whether the groups are house pets or the conditions of an actual study.
 

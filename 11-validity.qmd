@@ -22,6 +22,8 @@ The first family of validity questions is about the measure itself - does this i
     - **Convergent validity** - it correlates with things it *should* (a new anxiety scale agrees with established anxiety scales).
     - **Discriminant validity** - it does *not* correlate with things it should not (that anxiety scale is not just re-measuring general negative mood or verbal ability).
 
+::: {.panel-tabset}
+### R
 ```{r}
 # A cartoon of convergent vs discriminant validity as a correlation matrix
 set.seed(4)
@@ -31,6 +33,21 @@ old_scale <- anxiety_true + rnorm(300, 0, 0.5)          # established anxiety me
 verbal    <- rnorm(300)                                  # unrelated construct
 round(cor(data.frame(new_scale, old_scale, verbal)), 2)
 ```
+
+### SPSS
+```
+* Convergent vs discriminant validity as a correlation matrix.
+CORRELATIONS
+  /VARIABLES=new_scale old_scale verbal.
+```
+
+### Julia
+```julia
+using Statistics
+# correlation matrix of the three measures
+cor(Matrix(df[:, [:new_scale, :old_scale, :verbal]]))
+```
+:::
 
 We *want* the top-left block (new vs. old anxiety) to be high - **convergent** - and the correlations with `verbal` to be near zero - **discriminant**. A measure earns construct validity by passing both tests at once.
 
