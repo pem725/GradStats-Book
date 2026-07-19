@@ -154,6 +154,54 @@ abline(h = 10, col = "red", lty = 2)   # a common (rough) rule-of-thumb threshol
 
 Past a correlation of about 0.95 the curve rises very steeply. A predictor that is 95% predictable from the others carries almost no *unique* information, so the model cannot pin down its slope. The red line marks a rough $\text{VIF} = 10$ rule of thumb, but treat it as a warning sign, not a hard rule.
 
+## Partitioning Variance: Types of Sums of Squares
+
+The VIF told us that collinearity inflates our uncertainty. Here is the deeper reason, and it is a matter of *bookkeeping*: when predictors overlap, the variance they jointly explain cannot be cleanly assigned to one or the other. How you divide it up is a choice, and there are three main conventions, the **types of sums of squares**.
+
+**Type I (sequential).** Each predictor is credited with the variance it explains *after* the predictors entered before it. It is order-dependent, and the pieces add up to the model total. Watch the credit shift when we swap the order:
+
+```{r}
+set.seed(42); n <- 200
+x1 <- rnorm(n); x2 <- 0.7 * x1 + rnorm(n, sd = sqrt(1 - 0.49))   # x1 and x2 correlate ~ .7
+y  <- 0.5 * x1 + 0.4 * x2 + rnorm(n)
+
+anova(lm(y ~ x1 + x2))[1:2, "Sum Sq"]     # x1 first, then x2
+anova(lm(y ~ x2 + x1))[1:2, "Sum Sq"]     # x2 first, then x1 — same data, different split
+```
+
+Same data, same model, but x1 is credited with far more variance when it enters first. Whoever goes first gets the shared variance. Sequential sums of squares reward order, which is appropriate when theory dictates an order and misleading when it does not.
+
+**Type III (unique, or "each last").** Each predictor is credited only with the variance that is *uniquely* its own, the part no other predictor can account for. This is order-free: every predictor is evaluated as if it had entered last. It is exactly the **squared semipartial correlation** from earlier in this chapter, and you can read it off as the drop in fit when you remove that one predictor from the full model:
+
+```{r}
+full <- lm(y ~ x1 + x2)
+c(x1_unique = anova(lm(y ~ x2), full)[["Sum of Sq"]][2],   # what x1 adds, controlling x2
+  x2_unique = anova(lm(y ~ x1), full)[["Sum of Sq"]][2])   # what x2 adds, controlling x1
+```
+
+These do not depend on order, but they do **not** add up to the model total:
+
+```{r}
+c(unique_sum = anova(lm(y ~ x2), full)[["Sum of Sq"]][2] +
+               anova(lm(y ~ x1), full)[["Sum of Sq"]][2],
+  model_SS   = sum(anova(full)[1:2, "Sum Sq"]))
+```
+
+The gap is the **shared variance** - the part both predictors could explain, which Type III refuses to award to either. With collinear predictors that shared piece can be large (here it is most of the model), and that is the collinearity problem stated exactly: much of the explained variance cannot be attributed to one predictor over the other.
+
+**Type II** sits between the two: like Type III it credits each term controlling for the others, but it respects *marginality* (a main effect is tested controlling for other main effects, but not for the interactions that contain it). For a model without interactions, Type II and Type III agree.
+
+::: {.callout-important}
+## Which type to report is an interpretive choice
+
+There is no universally correct type; there is the type that answers your question.
+
+- Use **Type I** when the predictors have a genuine, theory-given order: enter the control variable first and the variable of interest last, then read its sequential contribution.
+- Use **Type III** (the default in much of psychology, and what standardized coefficients and semipartial correlations report) when you want each predictor's *unique* contribution, controlling for all the others.
+
+The point to carry away is this: whenever predictors are correlated, some of the explained variance is **shared and unattributable**, and different conventions handle it differently. Reporting a single "variance explained by X" without saying how you partitioned it is incomplete. Collinearity is not only a nuisance to diagnose with a VIF; it is a real limit on what the data can say about any one predictor, and *how you partition the variance* is part of the answer.
+:::
+
 ## Six Ways to Deal With Collinearity
 
 There is no single fix; there are trade-offs. In rough order of how often they are the *right* call:
