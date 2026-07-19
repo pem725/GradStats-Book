@@ -77,6 +77,32 @@ c(cronbach_alpha = round(alpha, 3))
 
 An alpha around 0.85 says the six items hang together well; they are largely reading the same underlying construct. By rough convention, 0.70 is "acceptable," 0.80+ "good," but do not lean on the threshold too hard: alpha climbs with more items whether or not they are any good, so a high alpha is necessary, not sufficient.
 
+## Measurement Models: How Equal Are Your Items?
+
+Cronbach's alpha, which we just computed, quietly assumes something about the items, and whether that assumption holds decides whether alpha is right or too low. There is a small hierarchy of **measurement models**, each making a stronger claim about how the items relate to the true score.
+
+- **Parallel** - every item measures the true score with the *same* loading *and* the *same* error variance. All items are interchangeable, equally good rulers, with equal observed variances. This is the strictest model, and it is what test-retest and alternate-forms reliability assume.
+- **Tau-equivalent** - every item has the same loading (a one-unit change in the true score moves each item equally), but the error variances may differ. This is the assumption **Cronbach's alpha depends on**: alpha is exact only when the items are (essentially) tau-equivalent.
+- **Congeneric** - items may have *different* loadings *and* different error variances; they share one latent factor but on their own scales. This is the most realistic model, and it describes most real scales, where some items are simply better indicators than others.
+
+Why it matters: when items are congeneric (unequal loadings), **alpha underestimates reliability**, and **McDonald's omega** ($\omega$) is the right coefficient. Omega is computed from a factor model, so it can weight items by how well they actually measure the construct. Watch alpha fall short of omega when the loadings differ:
+
+```{r}
+set.seed(3); N <- 500
+Tval   <- rnorm(N)
+lambda <- c(0.9, 0.8, 0.7, 0.5, 0.4)                       # congeneric: unequal item quality
+items  <- sapply(lambda, function(l) l * Tval + rnorm(N, sd = sqrt(1 - l^2)))
+
+k     <- ncol(items)
+alpha <- (k / (k - 1)) * (1 - sum(apply(items, 2, var)) / var(rowSums(items)))  # assumes tau-equiv.
+fa    <- factanal(items, 1)                                # a one-factor model gives the loadings
+lam   <- as.numeric(fa$loadings); psi <- fa$uniquenesses
+omega <- sum(lam)^2 / (sum(lam)^2 + sum(psi))              # McDonald's omega
+c(cronbach_alpha = round(alpha, 3), mcdonald_omega = round(omega, 3))
+```
+
+Omega is the larger, and more honest, number. When the items are truly tau-equivalent (equal loadings), the two coincide; the more the loadings differ, the more alpha understates the reliability. The rule the authors follow: **report omega, because it does not assume tau-equivalence.** Alpha is a fine quick check, but it is a lower bound, not the last word.
+
 ## Why You Should Care: Attenuation
 
 Now the practical consequence. Unreliable measures **attenuate** (shrink) the correlations you are trying to detect. A real relationship between two constructs looks weaker than it is, purely because your sensors are noisy:
@@ -148,6 +174,12 @@ A large $d$. But the point is *why* it was detectable: because the scale was rel
 
 Picture throwing darts. **Reliability** is how *tightly grouped* your throws are - consistency. A tight cluster is reliable *even if it is nowhere near the bullseye*. That "near the bullseye" part - accuracy, being on target - is **validity**, and it is a completely separate question. A bathroom scale that always reads five pounds heavy is perfectly reliable and perfectly wrong. Reliability is *necessary* for validity (you cannot hit the bullseye if your throws scatter randomly) but nowhere near *sufficient*. That is the whole reason the next chapter exists.
 :::
+
+## Sources of Variance: A Glimpse of Generalizability Theory
+
+Classical test theory splits observed variance into just two pieces, true and error: $S^2_{obs} = S^2_{true} + S^2_{error}$. But "error" is a bucket, and often we want to know *what is in it*. Is the noise coming from the particular *items* we chose? The *rater* who scored the responses? The *day* the person happened to show up? Each of these is a **source of variance**, and lumping them all into one "error" term hides exactly the information you would need to improve the measure.
+
+**Generalizability theory** (G-theory) opens the bucket. It treats each of these as a **facet** and estimates how much of the total variance each one contributes, so you can see which sources matter most and where to spend your effort. As the authors put it, the whole basis of G-theory is to estimate the sources of variability and determine which ones affect your results most. Reliability stops being one number and becomes an analysis of *where the noise comes from* - and, in the follow-up "decision study," of how many items or raters you would need to pin the true score down. We build that machinery (variance components, the generalizability coefficient, the D-study) in the [item response and generalizability chapter](30-irt.qmd). For now, carry the idea: the $O = T + E$ split is the first step; naming the facets hidden inside that error is the next.
 
 ::: {.callout-note}
 ## Beyond Classical Test Theory
