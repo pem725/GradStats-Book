@@ -803,6 +803,10 @@ window.Quarto = {
 <section id="some-deliberately-tangled-data" class="level2" data-number="16.2">
 <h2 data-number="16.2" class="anchored" data-anchor-id="some-deliberately-tangled-data"><span class="header-section-number">16.2</span> Some Deliberately Tangled Data</h2>
 <p>To see the interesting behavior, we need predictors that are correlated with each other. The cleanest way to <em>manufacture</em> that is to build them from a shared source, then add noise - so we know the truth going in.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="" aria-current="page">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">SPSS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Julia</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1936</span>)  <span class="co"># Fisher's "The Design of Experiments"</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>base <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">100</span>)</span>
@@ -820,13 +824,37 @@ x1 0.51 1.00 0.57
 x2 0.56 0.57 1.00</code></pre>
 </div>
 </div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<pre><code>CORRELATIONS /VARIABLES=y x1 x2.</code></pre>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Statistics</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(<span class="fu">Matrix</span>(df))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 <p>Now fit the two-predictor model:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">SPSS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">Julia</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>lm3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2, <span class="at">data =</span> dat)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(lm3)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>lm3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2, <span class="at">data =</span> dat)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(lm3)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>(Intercept)          x1          x2 
 -0.06525968  0.27246178  0.38880552 </code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<pre><code>REGRESSION /STATISTICS COEFF R ANOVA /DEPENDENT y /METHOD=ENTER x1 x2.</code></pre>
+</div>
+<div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">GLM</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftable</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(y <span class="op">~</span> x1 <span class="op">+</span> x2), df))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </div>
 </div>
 <p>Here is the puzzle that drives the chapter. If you regress <code>y</code> on <code>x1</code> <em>alone</em>, you get one slope. In the joint model above you get a <strong>different</strong> slope. Why? Because in the joint model, <code>b1</code> is the effect of <code>x1</code> <em>with <code>x2</code> held constant</em> - it has been <strong>partialled</strong>. R did not lie to you in either model; the two slopes answer two different questions.</p>
@@ -841,29 +869,47 @@ x2 0.56 0.57 1.00</code></pre>
 </ul>
 <p>All three are built from the same three correlations, but they are <strong>not</strong> the same number. Here they are, by formula:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>r_y1 <span class="ot">&lt;-</span> <span class="fu">cor</span>(x1, y); r_y2 <span class="ot">&lt;-</span> <span class="fu">cor</span>(x2, y); r_12 <span class="ot">&lt;-</span> <span class="fu">cor</span>(x1, x2)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># semipartial correlation of x1 (unique slice = area a)</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>sr1 <span class="ot">&lt;-</span> (r_y1 <span class="sc">-</span> r_y2 <span class="sc">*</span> r_12) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="dv">1</span> <span class="sc">-</span> r_12<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># partial correlation of x1 (a / (a + e))</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>pr1 <span class="ot">&lt;-</span> (r_y1 <span class="sc">-</span> r_y2 <span class="sc">*</span> r_12) <span class="sc">/</span> <span class="fu">sqrt</span>((<span class="dv">1</span> <span class="sc">-</span> r_y2<span class="sc">^</span><span class="dv">2</span>) <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> r_12<span class="sc">^</span><span class="dv">2</span>))</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co"># standardized regression coefficient (beta) for x1</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>beta1 <span class="ot">&lt;-</span> (r_y1 <span class="sc">-</span> r_y2 <span class="sc">*</span> r_12) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> r_12<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">semipartial =</span> sr1, <span class="at">partial =</span> pr1, <span class="at">beta =</span> beta1), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>r_y1 <span class="ot">&lt;-</span> <span class="fu">cor</span>(x1, y); r_y2 <span class="ot">&lt;-</span> <span class="fu">cor</span>(x2, y); r_12 <span class="ot">&lt;-</span> <span class="fu">cor</span>(x1, x2)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># semipartial correlation of x1 (unique slice = area a)</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>sr1 <span class="ot">&lt;-</span> (r_y1 <span class="sc">-</span> r_y2 <span class="sc">*</span> r_12) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="dv">1</span> <span class="sc">-</span> r_12<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co"># partial correlation of x1 (a / (a + e))</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>pr1 <span class="ot">&lt;-</span> (r_y1 <span class="sc">-</span> r_y2 <span class="sc">*</span> r_12) <span class="sc">/</span> <span class="fu">sqrt</span>((<span class="dv">1</span> <span class="sc">-</span> r_y2<span class="sc">^</span><span class="dv">2</span>) <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> r_12<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co"># standardized regression coefficient (beta) for x1</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>beta1 <span class="ot">&lt;-</span> (r_y1 <span class="sc">-</span> r_y2 <span class="sc">*</span> r_12) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> r_12<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">semipartial =</span> sr1, <span class="at">partial =</span> pr1, <span class="at">beta =</span> beta1), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>semipartial     partial        beta 
       0.234       0.282       0.284 </code></pre>
 </div>
 </div>
 <p>Notice they share the same numerator and differ only in the denominator - which is exactly why they get muddled. Let us confirm that <span class="math inline">\(\beta_1\)</span> is really the standardized slope R reports:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href="">SPSS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-3" role="tab" aria-controls="tabset-3-3" aria-selected="false" href="">Julia</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>lm3z <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">scale</span>(y) <span class="sc">~</span> <span class="fu">scale</span>(x1) <span class="sc">+</span> <span class="fu">scale</span>(x2), <span class="at">data =</span> dat)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">coef</span>(lm3z)[[<span class="st">"scale(x1)"</span>]], <span class="dv">3</span>)   <span class="co"># compare to beta1 above</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>lm3z <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">scale</span>(y) <span class="sc">~</span> <span class="fu">scale</span>(x1) <span class="sc">+</span> <span class="fu">scale</span>(x2), <span class="at">data =</span> dat)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">coef</span>(lm3z)[[<span class="st">"scale(x1)"</span>]], <span class="dv">3</span>)   <span class="co"># compare to beta1 above</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.284</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<pre><code>* REGRESSION prints the standardized Beta by default.
+REGRESSION /STATISTICS COEFF R ANOVA /DEPENDENT y /METHOD=ENTER x1 x2.</code></pre>
+</div>
+<div id="tabset-3-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">GLM</span>, <span class="bu">Statistics</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>df.zy  <span class="op">=</span> (df.y  <span class="op">.-</span> <span class="fu">mean</span>(df.y))  <span class="op">./</span> <span class="fu">std</span>(df.y)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>df.zx1 <span class="op">=</span> (df.x1 <span class="op">.-</span> <span class="fu">mean</span>(df.x1)) <span class="op">./</span> <span class="fu">std</span>(df.x1)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>df.zx2 <span class="op">=</span> (df.x2 <span class="op">.-</span> <span class="fu">mean</span>(df.x2)) <span class="op">./</span> <span class="fu">std</span>(df.x2)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftable</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(zy <span class="op">~</span> zx1 <span class="op">+</span> zx2), df))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </div>
 </div>
 <p>Same number. So <strong>the coefficient <code>lm()</code> reports is a <em>partial</em> effect</strong>: it controls for the other predictors. That is the single most important sentence in multiple regression. When someone says “controlling for X,” this is the machinery they are invoking.</p>
@@ -890,9 +936,9 @@ x2 0.56 0.57 1.00</code></pre>
 <h2 data-number="16.4" class="anchored" data-anchor-id="r-r2-and-the-shrunken-r2"><span class="header-section-number">16.4</span> <span class="math inline">\(R\)</span>, <span class="math inline">\(R^2\)</span>, and the “Shrunken” <span class="math inline">\(R^2\)</span></h2>
 <p>Statistics is about variance, and <span class="math inline">\(R^2\)</span> is the cleanest variance story we have. <strong><span class="math inline">\(R\)</span></strong> is just the correlation between what we observed and what the model predicts; <strong><span class="math inline">\(R^2\)</span></strong> is the ratio of predicted-to-total variance:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>R  <span class="ot">&lt;-</span> <span class="fu">cor</span>(y, <span class="fu">predict</span>(lm3))</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>R2 <span class="ot">&lt;-</span> <span class="fu">var</span>(<span class="fu">predict</span>(lm3)) <span class="sc">/</span> <span class="fu">var</span>(y)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">R =</span> R, <span class="at">R2 =</span> R2, <span class="at">R2_from_summary =</span> <span class="fu">summary</span>(lm3)<span class="sc">$</span>r.squared), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>R  <span class="ot">&lt;-</span> <span class="fu">cor</span>(y, <span class="fu">predict</span>(lm3))</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>R2 <span class="ot">&lt;-</span> <span class="fu">var</span>(<span class="fu">predict</span>(lm3)) <span class="sc">/</span> <span class="fu">var</span>(y)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">R =</span> R, <span class="at">R2 =</span> R2, <span class="at">R2_from_summary =</span> <span class="fu">summary</span>(lm3)<span class="sc">$</span>r.squared), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>              R              R2 R2_from_summary 
           0.607           0.368           0.368 </code></pre>
@@ -901,9 +947,9 @@ x2 0.56 0.57 1.00</code></pre>
 <p>That is it: <span class="math inline">\(R^2 = \frac{\text{var}(\hat{y})}{\text{var}(y)}\)</span>, the fraction of Y’s variance the model reproduces. But <span class="math inline">\(R^2\)</span> has a flaw: add any predictor, even pure noise, and it never goes down. So we penalize it for complexity to get the <strong>adjusted (or “shrunken”) <span class="math inline">\(R^2\)</span></strong>:</p>
 <p><span class="math display">\[R^2_{adj} = 1 - (1 - R^2)\,\frac{n - 1}{n - k - 1}\]</span></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(y); k <span class="ot">&lt;-</span> <span class="dv">2</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>R2_adj <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> (<span class="dv">1</span> <span class="sc">-</span> R2) <span class="sc">*</span> (n <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">/</span> (n <span class="sc">-</span> k <span class="sc">-</span> <span class="dv">1</span>)</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">R2_adj =</span> R2_adj, <span class="at">adj_from_summary =</span> <span class="fu">summary</span>(lm3)<span class="sc">$</span>adj.r.squared), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(y); k <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>R2_adj <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> (<span class="dv">1</span> <span class="sc">-</span> R2) <span class="sc">*</span> (n <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">/</span> (n <span class="sc">-</span> k <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">R2_adj =</span> R2_adj, <span class="at">adj_from_summary =</span> <span class="fu">summary</span>(lm3)<span class="sc">$</span>adj.r.squared), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>          R2_adj adj_from_summary 
            0.355            0.355 </code></pre>
@@ -917,20 +963,20 @@ x2 0.56 0.57 1.00</code></pre>
 <p><span class="math display">\[SE_{b_1} = \frac{s_y}{s_{x_1}} \cdot \sqrt{\text{VIF}_1} \cdot \sqrt{\frac{1 - R^2}{n - k - 1}}\]</span></p>
 <p>where the <strong>variance inflation factor</strong> <span class="math inline">\(\text{VIF}_1 = \frac{1}{1 - R^2_1}\)</span>, and <span class="math inline">\(R^2_1\)</span> comes from regressing <span class="math inline">\(x_1\)</span> on all the <em>other</em> predictors. Watch:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>R2_1  <span class="ot">&lt;-</span> <span class="fu">summary</span>(<span class="fu">lm</span>(x1 <span class="sc">~</span> x2, <span class="at">data =</span> dat))<span class="sc">$</span>r.squared   <span class="co"># x1 explained by x2</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>VIF1  <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> R2_1)</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>SEb1 <span class="ot">&lt;-</span> (<span class="fu">sd</span>(y) <span class="sc">/</span> <span class="fu">sd</span>(x1)) <span class="sc">*</span> <span class="fu">sqrt</span>(VIF1) <span class="sc">*</span> <span class="fu">sqrt</span>((<span class="dv">1</span> <span class="sc">-</span> R2) <span class="sc">/</span> (n <span class="sc">-</span> k <span class="sc">-</span> <span class="dv">1</span>))</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>b1   <span class="ot">&lt;-</span> <span class="fu">coef</span>(lm3)[[<span class="st">"x1"</span>]]</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>t1   <span class="ot">&lt;-</span> b1 <span class="sc">/</span> SEb1</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>p1   <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">pt</span>(<span class="sc">-</span><span class="fu">abs</span>(t1), <span class="at">df =</span> n <span class="sc">-</span> k <span class="sc">-</span> <span class="dv">1</span>)      <span class="co"># df = n - k - 1, NOT n - 1</span></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">SE =</span> SEb1, <span class="at">t =</span> t1, <span class="at">p =</span> p1), <span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>R2_1  <span class="ot">&lt;-</span> <span class="fu">summary</span>(<span class="fu">lm</span>(x1 <span class="sc">~</span> x2, <span class="at">data =</span> dat))<span class="sc">$</span>r.squared   <span class="co"># x1 explained by x2</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>VIF1  <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> R2_1)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>SEb1 <span class="ot">&lt;-</span> (<span class="fu">sd</span>(y) <span class="sc">/</span> <span class="fu">sd</span>(x1)) <span class="sc">*</span> <span class="fu">sqrt</span>(VIF1) <span class="sc">*</span> <span class="fu">sqrt</span>((<span class="dv">1</span> <span class="sc">-</span> R2) <span class="sc">/</span> (n <span class="sc">-</span> k <span class="sc">-</span> <span class="dv">1</span>))</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>b1   <span class="ot">&lt;-</span> <span class="fu">coef</span>(lm3)[[<span class="st">"x1"</span>]]</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>t1   <span class="ot">&lt;-</span> b1 <span class="sc">/</span> SEb1</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>p1   <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">pt</span>(<span class="sc">-</span><span class="fu">abs</span>(t1), <span class="at">df =</span> n <span class="sc">-</span> k <span class="sc">-</span> <span class="dv">1</span>)      <span class="co"># df = n - k - 1, NOT n - 1</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">SE =</span> SEb1, <span class="at">t =</span> t1, <span class="at">p =</span> p1), <span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    SE      t      p 
 0.0941 2.8941 0.0047 </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm3)<span class="sc">$</span>coefficients[<span class="st">"x1"</span>, ]              <span class="co"># compare</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm3)<span class="sc">$</span>coefficients[<span class="st">"x1"</span>, ]              <span class="co"># compare</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   Estimate  Std. Error     t value    Pr(&gt;|t|) 
 0.272461785 0.094143554 2.894109837 0.004696413 </code></pre>
@@ -944,14 +990,14 @@ x2 0.56 0.57 1.00</code></pre>
 <p>For the whole model, the omnibus test is an <span class="math inline">\(F\)</span> built from <span class="math inline">\(R^2\)</span>:</p>
 <p><span class="math display">\[F = \frac{R^2 / k}{(1 - R^2)/(n - k - 1)} \quad \text{with } df_1 = k,\ df_2 = n - k - 1\]</span></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>Fmodel <span class="ot">&lt;-</span> (R2 <span class="sc">/</span> k) <span class="sc">/</span> ((<span class="dv">1</span> <span class="sc">-</span> R2) <span class="sc">/</span> (n <span class="sc">-</span> k <span class="sc">-</span> <span class="dv">1</span>))</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>pF     <span class="ot">&lt;-</span> <span class="fu">pf</span>(Fmodel, <span class="at">df1 =</span> k, <span class="at">df2 =</span> n <span class="sc">-</span> k <span class="sc">-</span> <span class="dv">1</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">F =</span> Fmodel, <span class="at">p =</span> pF), <span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>Fmodel <span class="ot">&lt;-</span> (R2 <span class="sc">/</span> k) <span class="sc">/</span> ((<span class="dv">1</span> <span class="sc">-</span> R2) <span class="sc">/</span> (n <span class="sc">-</span> k <span class="sc">-</span> <span class="dv">1</span>))</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>pF     <span class="ot">&lt;-</span> <span class="fu">pf</span>(Fmodel, <span class="at">df1 =</span> k, <span class="at">df2 =</span> n <span class="sc">-</span> k <span class="sc">-</span> <span class="dv">1</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">F =</span> Fmodel, <span class="at">p =</span> pF), <span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      F       p 
 28.2781  0.0000 </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm3)<span class="sc">$</span>fstatistic          <span class="co"># compare F and its df</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm3)<span class="sc">$</span>fstatistic          <span class="co"># compare F and its df</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  value   numdf   dendf 
 28.2781  2.0000 97.0000 </code></pre>
@@ -962,10 +1008,10 @@ x2 0.56 0.57 1.00</code></pre>
 <h2 data-number="16.6" class="anchored" data-anchor-id="multicollinearity-seeing-the-damage"><span class="header-section-number">16.6</span> Multicollinearity: Seeing the Damage</h2>
 <p>Let us watch the VIF at work directly. As two predictors become more correlated, the VIF explodes:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">curve</span>(<span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> x<span class="sc">^</span><span class="dv">2</span>), <span class="at">from =</span> <span class="dv">0</span>, <span class="at">to =</span> <span class="fl">0.99</span>, <span class="at">n =</span> <span class="dv">500</span>,</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">xlab =</span> <span class="st">"correlation between X1 and X2"</span>, <span class="at">ylab =</span> <span class="st">"VIF"</span>,</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">main =</span> <span class="st">"Collinearity inflates the variance of your estimates"</span>)</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">10</span>, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">lty =</span> <span class="dv">2</span>)   <span class="co"># a common (rough) rule-of-thumb threshold</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">curve</span>(<span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> x<span class="sc">^</span><span class="dv">2</span>), <span class="at">from =</span> <span class="dv">0</span>, <span class="at">to =</span> <span class="fl">0.99</span>, <span class="at">n =</span> <span class="dv">500</span>,</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">xlab =</span> <span class="st">"correlation between X1 and X2"</span>, <span class="at">ylab =</span> <span class="st">"VIF"</span>,</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">main =</span> <span class="st">"Collinearity inflates the variance of your estimates"</span>)</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">10</span>, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">lty =</span> <span class="dv">2</span>)   <span class="co"># a common (rough) rule-of-thumb threshold</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -980,36 +1026,73 @@ x2 0.56 0.57 1.00</code></pre>
 <h2 data-number="16.7" class="anchored" data-anchor-id="partitioning-variance-types-of-sums-of-squares"><span class="header-section-number">16.7</span> Partitioning Variance: Types of Sums of Squares</h2>
 <p>The VIF told us that collinearity inflates our uncertainty. Here is the deeper reason, and it is a matter of <em>bookkeeping</em>: when predictors overlap, the variance they jointly explain cannot be cleanly assigned to one or the other. How you divide it up is a choice, and there are three main conventions, the <strong>types of sums of squares</strong>.</p>
 <p><strong>Type I (sequential).</strong> Each predictor is credited with the variance it explains <em>after</em> the predictors entered before it. It is order-dependent, and the pieces add up to the model total. Watch the credit shift when we swap the order:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false" href="">SPSS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-3" role="tab" aria-controls="tabset-4-3" aria-selected="false" href="">Julia</a></li></ul>
+<div class="tab-content">
+<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>); n <span class="ot">&lt;-</span> <span class="dv">200</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>x1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n); x2 <span class="ot">&lt;-</span> <span class="fl">0.7</span> <span class="sc">*</span> x1 <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">sd =</span> <span class="fu">sqrt</span>(<span class="dv">1</span> <span class="sc">-</span> <span class="fl">0.49</span>))   <span class="co"># x1 and x2 correlate ~ .7</span></span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>y  <span class="ot">&lt;-</span> <span class="fl">0.5</span> <span class="sc">*</span> x1 <span class="sc">+</span> <span class="fl">0.4</span> <span class="sc">*</span> x2 <span class="sc">+</span> <span class="fu">rnorm</span>(n)</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2))[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="st">"Sum Sq"</span>]     <span class="co"># x1 first, then x2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>); n <span class="ot">&lt;-</span> <span class="dv">200</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>x1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n); x2 <span class="ot">&lt;-</span> <span class="fl">0.7</span> <span class="sc">*</span> x1 <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">sd =</span> <span class="fu">sqrt</span>(<span class="dv">1</span> <span class="sc">-</span> <span class="fl">0.49</span>))   <span class="co"># x1 and x2 correlate ~ .7</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>y  <span class="ot">&lt;-</span> <span class="fl">0.5</span> <span class="sc">*</span> x1 <span class="sc">+</span> <span class="fl">0.4</span> <span class="sc">*</span> x2 <span class="sc">+</span> <span class="fu">rnorm</span>(n)</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2))[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="st">"Sum Sq"</span>]     <span class="co"># x1 first, then x2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 92.77167 22.07744</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x2 <span class="sc">+</span> x1))[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="st">"Sum Sq"</span>]     <span class="co"># x2 first, then x1 — same data, different split</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x2 <span class="sc">+</span> x1))[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="st">"Sum Sq"</span>]     <span class="co"># x2 first, then x1 — same data, different split</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 100.0556  14.7935</code></pre>
 </div>
 </div>
+</div>
+<div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
+<pre><code>* Type I (sequential) sums of squares; DESIGN order sets the entry order.
+UNIANOVA y WITH x1 x2 /METHOD=SSTYPE(1) /DESIGN=x1 x2.
+UNIANOVA y WITH x1 x2 /METHOD=SSTYPE(1) /DESIGN=x2 x1.</code></pre>
+</div>
+<div id="tabset-4-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">GLM</span>, <span class="bu">StatsModels</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="co"># R's anova() gives Type I (sequential) sums of squares, so the split</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="co"># depends on term order; swap the formula terms to change the credit.</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(y <span class="op">~</span> x1 <span class="op">+</span> x2), df))</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(y <span class="op">~</span> x2 <span class="op">+</span> x1), df))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 <p>Same data, same model, but x1 is credited with far more variance when it enters first. Whoever goes first gets the shared variance. Sequential sums of squares reward order, which is appropriate when theory dictates an order and misleading when it does not.</p>
 <p><strong>Type III (unique, or “each last”).</strong> Each predictor is credited only with the variance that is <em>uniquely</em> its own, the part no other predictor can account for. This is order-free: every predictor is evaluated as if it had entered last. It is exactly the <strong>squared semipartial correlation</strong> from earlier in this chapter, and you can read it off as the drop in fit when you remove that one predictor from the full model:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" role="tab" aria-controls="tabset-5-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-2" role="tab" aria-controls="tabset-5-2" aria-selected="false" href="">SPSS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-3" role="tab" aria-controls="tabset-5-3" aria-selected="false" href="">Julia</a></li></ul>
+<div class="tab-content">
+<div id="tabset-5-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-5-1-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>full <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2)</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">x1_unique =</span> <span class="fu">anova</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x2), full)[[<span class="st">"Sum of Sq"</span>]][<span class="dv">2</span>],   <span class="co"># what x1 adds, controlling x2</span></span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x2_unique =</span> <span class="fu">anova</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x1), full)[[<span class="st">"Sum of Sq"</span>]][<span class="dv">2</span>])   <span class="co"># what x2 adds, controlling x1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>full <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">x1_unique =</span> <span class="fu">anova</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x2), full)[[<span class="st">"Sum of Sq"</span>]][<span class="dv">2</span>],   <span class="co"># what x1 adds, controlling x2</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x2_unique =</span> <span class="fu">anova</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x1), full)[[<span class="st">"Sum of Sq"</span>]][<span class="dv">2</span>])   <span class="co"># what x2 adds, controlling x1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>x1_unique x2_unique 
  14.79350  22.07744 </code></pre>
 </div>
 </div>
+</div>
+<div id="tabset-5-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-2-tab">
+<pre><code>* Type III (unique / "each last") sums of squares; SPSS's default.
+UNIANOVA y WITH x1 x2 /METHOD=SSTYPE(3) /DESIGN=x1 x2.</code></pre>
+</div>
+<div id="tabset-5-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">GLM</span>, <span class="bu">StatsModels</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Type III (unique) sums of squares: each term controlling for all others.</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="co"># SPSS defaults to Type III; R's anova() gives Type I, so build it from</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="co"># the full model down (drop one term at a time), as the R tab does.</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(y <span class="op">~</span> x1 <span class="op">+</span> x2), df))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 <p>These do not depend on order, but they do <strong>not</strong> add up to the model total:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">unique_sum =</span> <span class="fu">anova</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x2), full)[[<span class="st">"Sum of Sq"</span>]][<span class="dv">2</span>] <span class="sc">+</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>               <span class="fu">anova</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x1), full)[[<span class="st">"Sum of Sq"</span>]][<span class="dv">2</span>],</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">model_SS   =</span> <span class="fu">sum</span>(<span class="fu">anova</span>(full)[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="st">"Sum Sq"</span>]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">unique_sum =</span> <span class="fu">anova</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x2), full)[[<span class="st">"Sum of Sq"</span>]][<span class="dv">2</span>] <span class="sc">+</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>               <span class="fu">anova</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x1), full)[[<span class="st">"Sum of Sq"</span>]][<span class="dv">2</span>],</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">model_SS   =</span> <span class="fu">sum</span>(<span class="fu">anova</span>(full)[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="st">"Sum Sq"</span>]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>unique_sum   model_SS 
   36.87093  114.84910 </code></pre>
@@ -1058,8 +1141,8 @@ x2 0.56 0.57 1.00</code></pre>
 </div>
 <div class="callout-body-container callout-body">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>composite <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(<span class="fu">data.frame</span>(<span class="at">x1z =</span> <span class="fu">scale</span>(x1), <span class="at">x2z =</span> <span class="fu">scale</span>(x2)))</span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">summary</span>(<span class="fu">lm</span>(y <span class="sc">~</span> composite))<span class="sc">$</span>coefficients, <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>composite <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(<span class="fu">data.frame</span>(<span class="at">x1z =</span> <span class="fu">scale</span>(x1), <span class="at">x2z =</span> <span class="fu">scale</span>(x2)))</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">summary</span>(<span class="fu">lm</span>(y <span class="sc">~</span> composite))<span class="sc">$</span>coefficients, <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>            Estimate Std. Error t value Pr(&gt;|t|)
 (Intercept)   -0.076      0.074  -1.032    0.303
@@ -1073,10 +1156,14 @@ composite      0.828      0.080  10.288    0.000</code></pre>
 <section id="a-real-example-predicting-college-gpa" class="level2" data-number="16.9">
 <h2 data-number="16.9" class="anchored" data-anchor-id="a-real-example-predicting-college-gpa"><span class="header-section-number">16.9</span> A Real Example: Predicting College GPA</h2>
 <p>Let’s leave the simulated world and put all of this to work on the real GPA dataset from the <a href="./14-bivariateregression.html">last chapter</a>. There we predicted college GPA from high-school GPA alone. Now we add the other things an admissions office actually has: SAT total and the quality of the applicant’s letters of recommendation.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-6-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-1" role="tab" aria-controls="tabset-6-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-2" role="tab" aria-controls="tabset-6-2" aria-selected="false" href="">SPSS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-3" role="tab" aria-controls="tabset-6-3" aria-selected="false" href="">Julia</a></li></ul>
+<div class="tab-content">
+<div id="tabset-6-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-6-1-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>gpa <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/gpa.csv"</span>)</span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(CollegeGPA <span class="sc">~</span> HSGPA <span class="sc">+</span> SATtotal <span class="sc">+</span> QLOR, <span class="at">data =</span> gpa)</span>
-<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">summary</span>(fit)<span class="sc">$</span>coefficients, <span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>gpa <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/gpa.csv"</span>)</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(CollegeGPA <span class="sc">~</span> HSGPA <span class="sc">+</span> SATtotal <span class="sc">+</span> QLOR, <span class="at">data =</span> gpa)</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">summary</span>(fit)<span class="sc">$</span>coefficients, <span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>            Estimate Std. Error t value Pr(&gt;|t|)
 (Intercept)  -0.1533     0.3229 -0.4746   0.6362
@@ -1084,22 +1171,33 @@ HSGPA         0.3764     0.1143  3.2938   0.0014
 SATtotal      0.0012     0.0003  4.0464   0.0001
 QLOR          0.0227     0.0510  0.4449   0.6574</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">R2 =</span> <span class="fu">summary</span>(fit)<span class="sc">$</span>r.squared, <span class="at">adj_R2 =</span> <span class="fu">summary</span>(fit)<span class="sc">$</span>adj.r.squared)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">R2 =</span> <span class="fu">summary</span>(fit)<span class="sc">$</span>r.squared, <span class="at">adj_R2 =</span> <span class="fu">summary</span>(fit)<span class="sc">$</span>adj.r.squared)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       R2    adj_R2 
 0.3997354 0.3809771 </code></pre>
 </div>
 </div>
+</div>
+<div id="tabset-6-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-2-tab">
+<pre><code>REGRESSION /STATISTICS COEFF R ANOVA
+  /DEPENDENT CollegeGPA /METHOD=ENTER HSGPA SATtotal QLOR.</code></pre>
+</div>
+<div id="tabset-6-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb47"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">GLM</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftable</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(CollegeGPA <span class="op">~</span> HSGPA <span class="op">+</span> SATtotal <span class="op">+</span> QLOR), df))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 <p>Every coefficient here is a <strong>partial</strong> effect - the pull of that predictor with the other two held constant. Notice HSGPA’s slope <em>shrank</em> from its bivariate value: some of what looked like “high-school GPA” was really SAT and letter quality traveling alongside it. That is partialling doing its job.</p>
 <p>Now check for collinearity by hand, exactly as we defined it - each VIF is <span class="math inline">\(1/(1-R^2_j)\)</span> where <span class="math inline">\(R^2_j\)</span> regresses that predictor on the others:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>preds <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"HSGPA"</span>, <span class="st">"SATtotal"</span>, <span class="st">"QLOR"</span>)</span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>vif <span class="ot">&lt;-</span> <span class="fu">sapply</span>(preds, <span class="cf">function</span>(p) {</span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  others <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(preds, p)</span>
-<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  r2 <span class="ot">&lt;-</span> <span class="fu">summary</span>(<span class="fu">lm</span>(<span class="fu">as.formula</span>(<span class="fu">paste</span>(p, <span class="st">"~"</span>, <span class="fu">paste</span>(others, <span class="at">collapse =</span> <span class="st">"+"</span>))), <span class="at">data =</span> gpa))<span class="sc">$</span>r.squared</span>
-<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> r2)</span>
-<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(vif, <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>preds <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"HSGPA"</span>, <span class="st">"SATtotal"</span>, <span class="st">"QLOR"</span>)</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>vif <span class="ot">&lt;-</span> <span class="fu">sapply</span>(preds, <span class="cf">function</span>(p) {</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>  others <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(preds, p)</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>  r2 <span class="ot">&lt;-</span> <span class="fu">summary</span>(<span class="fu">lm</span>(<span class="fu">as.formula</span>(<span class="fu">paste</span>(p, <span class="st">"~"</span>, <span class="fu">paste</span>(others, <span class="at">collapse =</span> <span class="st">"+"</span>))), <span class="at">data =</span> gpa))<span class="sc">$</span>r.squared</span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> r2)</span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(vif, <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   HSGPA SATtotal     QLOR 
     1.94     1.24     1.66 </code></pre>

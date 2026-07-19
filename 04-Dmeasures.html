@@ -861,11 +861,26 @@ window.Quarto = {
 <section id="standard-deviation-back-to-human-units" class="level2" data-number="3.6">
 <h2 data-number="3.6" class="anchored" data-anchor-id="standard-deviation-back-to-human-units"><span class="header-section-number">3.6</span> Standard Deviation: Back to Human Units</h2>
 <p>Variance is in <em>squared</em> units (squared inches, squared dollars) - useful for math, useless for talking. Take its square root and you get the <strong>standard deviation</strong>, back in the original units and interpretable as “the typical distance from the mean”:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="" aria-current="page">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">SPSS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Julia</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">sd_by_hand =</span> <span class="fu">sqrt</span>(<span class="fu">var</span>(x)), <span class="at">r_sd =</span> <span class="fu">sd</span>(x))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>sd_by_hand       r_sd 
    11.9933    11.9933 </code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<pre><code>DESCRIPTIVES VARIABLES=x
+  /STATISTICS=STDDEV VARIANCE.</code></pre>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Statistics</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">std</span>(df.x), <span class="fu">var</span>(df.x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </div>
 </div>
 <p>For a roughly normal variable, about 68% of values fall within one standard deviation of the mean, and about 95% within two - a rule of thumb we will lean on hard when we standardize in the <a href="./06-zdistribution.html">z-distribution</a> chapter.</p>

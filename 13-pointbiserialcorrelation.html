@@ -778,6 +778,10 @@ window.Quarto = {
 <section id="the-trick-a-dichotomy-is-just-0-and-1" class="level2" data-number="14.2">
 <h2 data-number="14.2" class="anchored" data-anchor-id="the-trick-a-dichotomy-is-just-0-and-1"><span class="header-section-number">14.2</span> The Trick: A Dichotomy Is Just 0 and 1</h2>
 <p>Here is the idea that makes this simple. A dichotomous variable (passed/failed, treatment/control, yes/no) looks categorical, but if we simply <strong>code it 0 and 1</strong>, we can drop it straight into a Pearson correlation as if it were a number. That is <em>all</em> the point-biserial correlation is: an ordinary Pearson <span class="math inline">\(r\)</span> where one of the two variables happens to be a 0/1 indicator.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="" aria-current="page">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">SPSS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Julia</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">14</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>studied <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="dv">50</span>, <span class="dv">1</span>, <span class="fl">0.5</span>)                 <span class="co"># 0 = didn't study, 1 = studied</span></span>
@@ -791,34 +795,69 @@ window.Quarto = {
          0.537          0.537 </code></pre>
 </div>
 </div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<pre><code>* point-biserial correlation: just Pearson r with a 0/1 variable.
+CORRELATIONS /VARIABLES=score studied.</code></pre>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Statistics</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(df.score, df.studied)   <span class="co"># point-biserial: just Pearson r!</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 <p>No new formula, no new function; <code>cor()</code> did not even notice one variable was a dichotomy. The point-biserial correlation is just Pearson’s <span class="math inline">\(r\)</span> computed with a 0/1 variable.</p>
 </section>
 <section id="the-same-thing-wearing-three-hats" class="level2" data-number="14.3">
 <h2 data-number="14.3" class="anchored" data-anchor-id="the-same-thing-wearing-three-hats"><span class="header-section-number">14.3</span> The Same Thing, Wearing Three Hats</h2>
 <p>Now the payoff. The relationship between a continuous outcome and a two-group predictor can be expressed as (a) a point-biserial correlation, (b) a two-sample t-test, or (c) a simple regression, and they are <strong>the identical analysis</strong>. Every one gives the same t statistic and p-value:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">SPSS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">Julia</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># (a) test the point-biserial correlation</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>ct <span class="ot">&lt;-</span> <span class="fu">cor.test</span>(score, studied)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># (b) the classic two-sample t-test (pooled variance)</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>tt <span class="ot">&lt;-</span> <span class="fu">t.test</span>(score <span class="sc">~</span> studied, <span class="at">var.equal =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># (c) regression with the 0/1 predictor</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>rg <span class="ot">&lt;-</span> <span class="fu">summary</span>(<span class="fu">lm</span>(score <span class="sc">~</span> studied))</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">cor_test_t =</span> ct<span class="sc">$</span>statistic,</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">t_test_t   =</span> <span class="fu">abs</span>(tt<span class="sc">$</span>statistic),</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">regression_t =</span> <span class="fu">abs</span>(rg<span class="sc">$</span>coefficients[<span class="dv">2</span>, <span class="st">"t value"</span>])), <span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># (a) test the point-biserial correlation</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>ct <span class="ot">&lt;-</span> <span class="fu">cor.test</span>(score, studied)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># (b) the classic two-sample t-test (pooled variance)</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>tt <span class="ot">&lt;-</span> <span class="fu">t.test</span>(score <span class="sc">~</span> studied, <span class="at">var.equal =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># (c) regression with the 0/1 predictor</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>rg <span class="ot">&lt;-</span> <span class="fu">summary</span>(<span class="fu">lm</span>(score <span class="sc">~</span> studied))</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">cor_test_t =</span> ct<span class="sc">$</span>statistic,</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">t_test_t   =</span> <span class="fu">abs</span>(tt<span class="sc">$</span>statistic),</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">regression_t =</span> <span class="fu">abs</span>(rg<span class="sc">$</span>coefficients[<span class="dv">2</span>, <span class="st">"t value"</span>])), <span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>cor_test_t.t   t_test_t.t regression_t 
       4.4105       4.4105       4.4105 </code></pre>
 </div>
 </div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<pre><code>* (a) test the point-biserial correlation.
+CORRELATIONS /VARIABLES=score studied.
+* (b) the classic two-sample t-test (pooled variance).
+T-TEST GROUPS=studied(0 1) /VARIABLES=score.
+* (c) regression with the 0/1 predictor.
+REGRESSION /STATISTICS COEFF R ANOVA /DEPENDENT score /METHOD=ENTER studied.</code></pre>
+</div>
+<div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">HypothesisTests</span>, <span class="bu">GLM</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># (a) test the point-biserial correlation</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">CorrelationTest</span>(df.score, df.studied)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># (b) the classic two-sample t-test (pooled variance)</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">EqualVarianceTTest</span>(df.score[df.studied <span class="op">.==</span> <span class="fl">0</span>], df.score[df.studied <span class="op">.==</span> <span class="fl">1</span>])</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co"># (c) regression with the 0/1 predictor</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftable</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(score <span class="op">~</span> studied), df))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 <p>Three “different” techniques, one t statistic. The correlation, the group comparison, and the regression are the same GLM. And the regression coefficient tells you something the correlation does not show directly: the raw difference between the two group means:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>means <span class="ot">&lt;-</span> <span class="fu">tapply</span>(score, studied, mean)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">regression_slope =</span> <span class="fu">coef</span>(<span class="fu">lm</span>(score <span class="sc">~</span> studied))[[<span class="st">"studied"</span>]],</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">mean_difference  =</span> <span class="fu">as.numeric</span>(means[<span class="st">"1"</span>] <span class="sc">-</span> means[<span class="st">"0"</span>]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>means <span class="ot">&lt;-</span> <span class="fu">tapply</span>(score, studied, mean)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">regression_slope =</span> <span class="fu">coef</span>(<span class="fu">lm</span>(score <span class="sc">~</span> studied))[[<span class="st">"studied"</span>]],</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">mean_difference  =</span> <span class="fu">as.numeric</span>(means[<span class="st">"1"</span>] <span class="sc">-</span> means[<span class="st">"0"</span>]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>regression_slope  mean_difference 
         6.768483         6.768483 </code></pre>
@@ -831,9 +870,9 @@ window.Quarto = {
 <p>Because they are the same analysis, the correlation and the t statistic are tied by a simple formula, handy for converting between an effect <em>size</em> (<span class="math inline">\(r_{pb}\)</span>) and a <em>significance</em> test (<span class="math inline">\(t\)</span>):</p>
 <p><span class="math display">\[r_{pb} = \frac{t}{\sqrt{t^2 + df}}\]</span></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>t_val <span class="ot">&lt;-</span> <span class="fu">abs</span>(tt<span class="sc">$</span>statistic); df <span class="ot">&lt;-</span> tt<span class="sc">$</span>parameter</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>r_from_t <span class="ot">&lt;-</span> t_val <span class="sc">/</span> <span class="fu">sqrt</span>(t_val<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> df)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">r_pb =</span> <span class="fu">round</span>(<span class="fu">as.numeric</span>(r_pb), <span class="dv">3</span>), <span class="at">r_from_t =</span> <span class="fu">round</span>(<span class="fu">as.numeric</span>(r_from_t), <span class="dv">3</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>t_val <span class="ot">&lt;-</span> <span class="fu">abs</span>(tt<span class="sc">$</span>statistic); df <span class="ot">&lt;-</span> tt<span class="sc">$</span>parameter</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>r_from_t <span class="ot">&lt;-</span> t_val <span class="sc">/</span> <span class="fu">sqrt</span>(t_val<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> df)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">r_pb =</span> <span class="fu">round</span>(<span class="fu">as.numeric</span>(r_pb), <span class="dv">3</span>), <span class="at">r_from_t =</span> <span class="fu">round</span>(<span class="fu">as.numeric</span>(r_from_t), <span class="dv">3</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    r_pb r_from_t 
    0.537    0.537 </code></pre>
