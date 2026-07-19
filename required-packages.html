@@ -743,26 +743,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="to-reproduce-the-walkthrough-examples" class="level2">
 <h2 class="anchored" data-anchor-id="to-reproduce-the-walkthrough-examples">To reproduce the walkthrough examples</h2>
-<p>Several chapters show the <em>production</em> tool for a job as static code (for example, <code>lavaan</code> for SEM, <code>mirt</code> for IRT, <code>brms</code> for Bayesian models). To run those yourself, install:</p>
+<p>Several chapters show the <em>production</em> tool for a job as static code (for example, <code>lavaan</code> for SEM, <code>mirt</code> for IRT, <code>brms</code> for Bayesian models). These are the packages the book actually names; all are on CRAN, so a single call installs them:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="fu">c</span>(</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"psych"</span>,       <span class="co"># reliability (alpha, omega), EFA, describe()</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"lavaan"</span>,      <span class="co"># confirmatory factor analysis, SEM, measurement invariance</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"semTools"</span>,    <span class="co"># omega and invariance helpers for lavaan</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"GPArotation"</span>, <span class="co"># factor rotations used with psych::fa()</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"mirt"</span>,        <span class="co"># item response theory (2PL, graded response)</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"poLCA"</span>,       <span class="co"># latent class analysis</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"mice"</span>,        <span class="co"># multiple imputation for missing data</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">"car"</span>,         <span class="co"># VIF and Type II/III sums of squares (Anova)</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">"MASS"</span>,        <span class="co"># robust regression (rlm) and utilities</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="st">"WRS2"</span>,        <span class="co"># Wilcox robust methods (trimmed-means tests)</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="st">"boot"</span>,        <span class="co"># the bootstrap</span></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="st">"mediation"</span>,   <span class="co"># mediation analysis with sensitivity checks</span></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="st">"dagitty"</span>,     <span class="co"># directed acyclic graphs (adjustment sets)</span></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="st">"GGally"</span>       <span class="co"># pair plots</span></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>For the Bayesian chapters, McElreath’s <code>rethinking</code> and <code>brms</code> both compile models to <strong>Stan</strong>, which needs a working C++ toolchain:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="fu">c</span>(<span class="st">"brms"</span>, <span class="st">"rethinking"</span>, <span class="st">"bayestestR"</span>, <span class="st">"TOSTER"</span>))</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># rethinking: see https://github.com/rmcelreath/rethinking for the Stan setup steps</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"psych"</span>,    <span class="co"># reliability (alpha, omega), EFA, describe()</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"lavaan"</span>,   <span class="co"># confirmatory factor analysis, SEM, measurement invariance</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"mirt"</span>,     <span class="co"># item response theory (2PL, graded response)</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"poLCA"</span>,    <span class="co"># latent class analysis</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"mice"</span>,     <span class="co"># multiple imputation for missing data</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"dagitty"</span>,  <span class="co"># directed acyclic graphs (adjustment sets, implied independencies)</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"WRS2"</span>,     <span class="co"># Wilcox robust methods (trimmed-means tests)</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">"MASS"</span>      <span class="co"># robust regression (rlm); ships with R, listed here for completeness</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>For the Bayesian chapters, <code>brms</code> and <code>bayestestR</code> are on CRAN, but McElreath’s <code>rethinking</code> is <strong>not</strong> - it is distributed on GitHub. Both <code>brms</code> and <code>rethinking</code> compile models to <strong>Stan</strong>, which needs a working C++ toolchain:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="fu">c</span>(<span class="st">"brms"</span>, <span class="st">"bayestestR"</span>))   <span class="co"># on CRAN</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># rethinking is GitHub-only, so install it from there:</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"remotes"</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"rmcelreath/rethinking"</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Stan toolchain setup: https://github.com/rmcelreath/rethinking</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="spss-and-julia" class="level2">
 <h2 class="anchored" data-anchor-id="spss-and-julia">SPSS and Julia</h2>
