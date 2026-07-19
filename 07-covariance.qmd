@@ -122,6 +122,23 @@ The residuals bow upward at the ends and dip in the middle, the signature of a c
 
 Here is why that matters far beyond four small datasets. With two variables you can *see* a bad linear fit directly in the scatter plot. But real models carry many predictors, and you cannot plot a relationship in five or ten dimensions. Anscombe's quartet stops being usable the moment you reach [multiple regression](15-MRC.qmd), because there is no two-dimensional picture left to draw. What survives is the **residual**. Residual analysis carries the "look at where the line is wrong" habit from the simple scatter plot into models too complex to plot. So treat Anscombe's quartet as a bridge, not a destination: it teaches, in pictures anyone can read, the very thing you will later have to check with [residuals](14-bivariateregression.qmd) once the pictures run out.
 
+## Variance Is the Fuel
+
+One more idea deserves its own heading, because it runs underneath everything in this book: **to covary, two variables must first vary.** Covariance is built from deviations, $(x - \bar{x})(y - \bar{y})$, so if $x$ barely moves there is nothing to multiply and no covariance to find, however strong the true relationship. A blunt but useful heuristic follows: the best predictors are usually the ones with the *most* variance, because a predictor pinned near a single value cannot explain anything.
+
+The practical consequence is **restriction of range**: sample only a narrow slice of a variable and you shrink its variance and, with it, the correlation you can observe, even though the real relationship is unchanged. Watch a genuine correlation collapse when we keep only the middle of $x$:
+
+```{r}
+set.seed(2); n <- 1000
+x <- rnorm(n)
+y <- 0.6 * x + rnorm(n, sd = 0.8)                  # a real relationship
+mid <- x > -0.5 & x < 0.5                           # keep only a narrow band of x
+c(full_range       = round(cor(x, y), 2),
+  restricted_range = round(cor(x[mid], y[mid]), 2))
+```
+
+Same data-generating process, same underlying relationship, but the restricted-range correlation is a fraction of the full one. This is why a study of only high-scoring students finds weak predictors of success (everyone is already high), and why a lab that tests a narrow slice of the population can miss an effect that is real in the wider world. It cuts the other way too: [unreliable measures](10-reliability.qmd) add error variance that dilutes the true signal, attenuating relationships for the same underlying reason. So a recurring question in careful analysis is simply *where is the variance, and how much of it is there?* Variance is the fuel every relationship in this book runs on.
+
 ::: {.callout-important}
 ## Covariance Is the Engine of the GLM
 
