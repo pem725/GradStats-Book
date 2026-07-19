@@ -8,7 +8,7 @@
 
 <meta name="description" content="A comprehensive graduate statistics book suitable for social and behavioral sciences. Our approach is to provide interested students a gentle guide to the rudiments of statistical estimation and inference.">
 
-<title>17&nbsp; ANOVA and the General Linear Model – Statistics by Us for You</title>
+<title>21&nbsp; Measurement Invariance: Does the Ruler Mean the Same Thing for Everyone? – Statistics by Us for You</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -59,26 +59,7 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-/* CSS for citations */
-div.csl-bib-body { }
-div.csl-entry {
-  clear: both;
-}
-.hanging-indent div.csl-entry {
-  margin-left:2em;
-  text-indent:-2em;
-}
-div.csl-left-margin {
-  min-width:2em;
-  float:left;
-}
-div.csl-right-inline {
-  margin-left:2em;
-  padding-left:1em;
-}
-div.csl-indent {
-  margin-left: 2em;
-}</style>
+</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -88,8 +69,8 @@ div.csl-indent {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./17-basicANOVA.html" rel="next">
-<link href="./15-MRC.html" rel="prev">
+<link href="./29-latentclass.html" rel="next">
+<link href="./28-sem.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -132,35 +113,6 @@ div.csl-indent {
   }
 }</script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 </head>
 
@@ -335,7 +287,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./12-GLMcovariance.html">Using Models</a></li><li class="breadcrumb-item"><a href="./16-ANOVAandGLM.html"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">ANOVA and the General Linear Model</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./28-sem.html">Latent Variable Models</a></li><li class="breadcrumb-item"><a href="./32-invariance.html"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Measurement Invariance: Does the Ruler Mean the Same Thing for Everyone?</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -545,7 +497,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./16-ANOVAandGLM.html" class="sidebar-item-text sidebar-link active">
+  <a href="./16-ANOVAandGLM.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">ANOVA and the General Linear Model</span></span></a>
   </div>
 </li>
@@ -580,7 +532,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./32-invariance.html" class="sidebar-item-text sidebar-link">
+  <a href="./32-invariance.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Measurement Invariance: Does the Ruler Mean the Same Thing for Everyone?</span></span></a>
   </div>
 </li>
@@ -706,15 +658,13 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#learning-objectives" id="toc-learning-objectives" class="nav-link active" data-scroll-target="#learning-objectives"><span class="header-section-number">17.1</span> Learning Objectives</a></li>
-  <li><a href="#a-categorical-predictor-is-a-sliced-up-continuous-one" id="toc-a-categorical-predictor-is-a-sliced-up-continuous-one" class="nav-link" data-scroll-target="#a-categorical-predictor-is-a-sliced-up-continuous-one"><span class="header-section-number">17.2</span> A Categorical Predictor Is a Sliced-Up Continuous One</a></li>
-  <li><a href="#dummy-coding-differences-from-a-reference" id="toc-dummy-coding-differences-from-a-reference" class="nav-link" data-scroll-target="#dummy-coding-differences-from-a-reference"><span class="header-section-number">17.3</span> Dummy Coding: Differences From a Reference</a></li>
-  <li><a href="#effects-coding-differences-from-the-grand-mean" id="toc-effects-coding-differences-from-the-grand-mean" class="nav-link" data-scroll-target="#effects-coding-differences-from-the-grand-mean"><span class="header-section-number">17.4</span> Effects Coding: Differences From the Grand Mean</a></li>
-  <li><a href="#the-punchline-this-is-anova" id="toc-the-punchline-this-is-anova" class="nav-link" data-scroll-target="#the-punchline-this-is-anova"><span class="header-section-number">17.5</span> The Punchline: This <em>Is</em> ANOVA</a></li>
-  <li><a href="#two-categorical-predictors-and-their-interaction" id="toc-two-categorical-predictors-and-their-interaction" class="nav-link" data-scroll-target="#two-categorical-predictors-and-their-interaction"><span class="header-section-number">17.6</span> Two Categorical Predictors and Their Interaction</a></li>
-  <li><a href="#beyond-the-straight-line-the-generalized-linear-model" id="toc-beyond-the-straight-line-the-generalized-linear-model" class="nav-link" data-scroll-target="#beyond-the-straight-line-the-generalized-linear-model"><span class="header-section-number">17.7</span> Beyond the Straight Line: The <em>Generalized</em> Linear Model</a></li>
-  <li><a href="#challenge" id="toc-challenge" class="nav-link" data-scroll-target="#challenge"><span class="header-section-number">17.8</span> Challenge</a></li>
-  <li><a href="#where-we-go-next" id="toc-where-we-go-next" class="nav-link" data-scroll-target="#where-we-go-next"><span class="header-section-number">17.9</span> Where We Go Next</a></li>
+  <li><a href="#learning-objectives" id="toc-learning-objectives" class="nav-link active" data-scroll-target="#learning-objectives"><span class="header-section-number">21.1</span> Learning Objectives</a></li>
+  <li><a href="#the-artifact-you-are-guarding-against" id="toc-the-artifact-you-are-guarding-against" class="nav-link" data-scroll-target="#the-artifact-you-are-guarding-against"><span class="header-section-number">21.2</span> The Artifact You Are Guarding Against</a></li>
+  <li><a href="#invariance-is-a-ladder-not-a-verdict" id="toc-invariance-is-a-ladder-not-a-verdict" class="nav-link" data-scroll-target="#invariance-is-a-ladder-not-a-verdict"><span class="header-section-number">21.3</span> Invariance Is a Ladder, Not a Verdict</a></li>
+  <li><a href="#how-you-test-it" id="toc-how-you-test-it" class="nav-link" data-scroll-target="#how-you-test-it"><span class="header-section-number">21.4</span> How You Test It</a></li>
+  <li><a href="#when-it-fails-it-tells-you-something" id="toc-when-it-fails-it-tells-you-something" class="nav-link" data-scroll-target="#when-it-fails-it-tells-you-something"><span class="header-section-number">21.5</span> When It Fails, It Tells You Something</a></li>
+  <li><a href="#what-this-chapter-teaches" id="toc-what-this-chapter-teaches" class="nav-link" data-scroll-target="#what-this-chapter-teaches"><span class="header-section-number">21.6</span> What This Chapter Teaches</a></li>
+  <li><a href="#where-we-go-next" id="toc-where-we-go-next" class="nav-link" data-scroll-target="#where-we-go-next"><span class="header-section-number">21.7</span> Where We Go Next</a></li>
   </ul>
 </nav>
     </div>
@@ -722,9 +672,9 @@ window.Quarto = {
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./12-GLMcovariance.html">Using Models</a></li><li class="breadcrumb-item"><a href="./16-ANOVAandGLM.html"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">ANOVA and the General Linear Model</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./28-sem.html">Latent Variable Models</a></li><li class="breadcrumb-item"><a href="./32-invariance.html"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Measurement Invariance: Does the Ruler Mean the Same Thing for Everyone?</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">ANOVA and the General Linear Model</span></h1>
+<h1 class="title"><span id="invariance" class="quarto-section-identifier"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Measurement Invariance: Does the Ruler Mean the Same Thing for Everyone?</span></span></h1>
 </div>
 
 
@@ -741,268 +691,106 @@ window.Quarto = {
 </header>
 
 
-<p>The way statistics is usually taught tends to hide something important: <strong>ANOVA is not a different technique from regression.</strong> It is regression, the very same least-squares machinery from the last two chapters, applied to <em>categorical</em> predictors. Analysis of variance, t-tests, regression: they are all special cases of one thing, the <strong>General Linear Model (GLM)</strong>. Once you see the unification, a large part of your statistics education collapses into a single idea.</p>
-<p>The only new skill you need is <strong>coding</strong>: how to turn a category (“cat,” “dog”) into numbers a regression can chew on. That is the whole chapter.</p>
-<section id="learning-objectives" class="level2" data-number="17.1">
-<h2 data-number="17.1" class="anchored" data-anchor-id="learning-objectives"><span class="header-section-number">17.1</span> Learning Objectives</h2>
+<p>Before you compare two groups on a measure - do women and men differ in curiosity? do cultures differ in reflectiveness? - you have to answer a prior question: does the measure mean the <em>same thing</em> in both groups? If the items behave differently across groups, a difference in scores can be an artifact of the <strong>ruler</strong>, not a real difference in the trait. Checking that the ruler is the same is <strong>measurement invariance</strong>, and it is one of the most consequential, and most skipped, steps in group research.</p>
+<section id="learning-objectives" class="level2" data-number="21.1">
+<h2 data-number="21.1" class="anchored" data-anchor-id="learning-objectives"><span class="header-section-number">21.1</span> Learning Objectives</h2>
 <ol type="1">
-<li>See that a categorical predictor is just a set of coded numbers in a regression.</li>
-<li>Interpret <strong>dummy-coded</strong> coefficients as differences from a reference group.</li>
-<li>Interpret <strong>effects-coded</strong> coefficients as differences from the grand mean.</li>
-<li>Recognize the ANOVA <span class="math inline">\(F\)</span> as the same omnibus test regression already gave you.</li>
+<li>Explain why a group difference in scores can be a measurement artifact.</li>
+<li>State the four rungs of invariance (configural, metric, scalar, strict) and what each one licenses.</li>
+<li>Test invariance with a sequence of multi-group CFAs, judged by the change in fit.</li>
+<li>Read a partial-invariance result and know when a comparison is still worth making.</li>
 </ol>
 </section>
-<section id="a-categorical-predictor-is-a-sliced-up-continuous-one" class="level2" data-number="17.2">
-<h2 data-number="17.2" class="anchored" data-anchor-id="a-categorical-predictor-is-a-sliced-up-continuous-one"><span class="header-section-number">17.2</span> A Categorical Predictor Is a Sliced-Up Continuous One</h2>
-<p>Let us start with a continuous relationship. Suppose some trait <span class="math inline">\(x\)</span> makes people happy:</p>
+<section id="the-artifact-you-are-guarding-against" class="level2" data-number="21.2">
+<h2 data-number="21.2" class="anchored" data-anchor-id="the-artifact-you-are-guarding-against"><span class="header-section-number">21.2</span> The Artifact You Are Guarding Against</h2>
+<p>Suppose two groups have exactly the same true level of a trait, but one group tends to answer every item a little higher at the same trait level, because of a translation, a cultural norm, a response style, anything at all. Their composite scores will differ even though the trait does not. Watch it happen:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1925</span>)  <span class="co"># Fisher's "Statistical Methods for Research Workers"</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">rnorm</span>(<span class="dv">100</span>))</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>happy <span class="ot">&lt;-</span> x <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">100</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<p>Now imagine <span class="math inline">\(x\)</span> measures something like “dogness,” where higher values mean more dog-like. We rarely measure dogness on a continuum; instead we lump animals into categories. Let us chop the continuum into four pet types:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>pet <span class="ot">&lt;-</span> <span class="fu">cut</span>(x, <span class="dv">4</span>, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"cat"</span>, <span class="st">"fish"</span>, <span class="st">"pig"</span>, <span class="st">"dog"</span>))</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(pet)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>); N <span class="ot">&lt;-</span> <span class="dv">300</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>grp   <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>), <span class="at">each =</span> N)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>trait <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">2</span> <span class="sc">*</span> N)                          <span class="co"># SAME true trait distribution in both groups</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>bias  <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(grp <span class="sc">==</span> <span class="st">"B"</span>, <span class="fl">0.5</span>, <span class="dv">0</span>)            <span class="co"># group B answers 0.5 higher at the same trait level</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>items <span class="ot">&lt;-</span> <span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>, <span class="cf">function</span>(i) trait <span class="sc">+</span> bias <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">2</span> <span class="sc">*</span> N, <span class="at">sd =</span> <span class="fl">0.8</span>))</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>composite <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(items)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">true_mean_A     =</span> <span class="fu">mean</span>(trait[grp <span class="sc">==</span> <span class="st">"A"</span>]),   <span class="co"># equal by construction</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">true_mean_B     =</span> <span class="fu">mean</span>(trait[grp <span class="sc">==</span> <span class="st">"B"</span>]),</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">observed_mean_A =</span> <span class="fu">mean</span>(composite[grp <span class="sc">==</span> <span class="st">"A"</span>]),</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">observed_mean_B =</span> <span class="fu">mean</span>(composite[grp <span class="sc">==</span> <span class="st">"B"</span>]),</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">t_test_p        =</span> <span class="fu">t.test</span>(composite <span class="sc">~</span> grp)<span class="sc">$</span>p.value)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>pet
- cat fish  pig  dog 
-  17   47   29    7 </code></pre>
+<pre><code>    true_mean_A     true_mean_B observed_mean_A observed_mean_B        t_test_p 
+   3.358428e-02   -1.068391e-02    3.101531e-02    4.877684e-01    2.936478e-07 </code></pre>
 </div>
 </div>
-<p>Does pet type relate to happiness? A regression will happily tell us, even though <code>pet</code> is a <em>factor</em>:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>lm_pet <span class="ot">&lt;-</span> <span class="fu">lm</span>(happy <span class="sc">~</span> pet)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">coef</span>(lm_pet), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>(Intercept)     petfish      petpig      petdog 
-     -1.323       1.185       2.052       2.820 </code></pre>
-</div>
-</div>
-<p>R fit it without complaint. But look at those coefficient names - <code>petfish</code>, <code>petpig</code>, <code>petdog</code>. Where did they come from, and what do they <em>mean</em>? That is the coding question, and there is more than one answer.</p>
+<p>The true trait was identical in both groups, yet the observed difference is large and strongly “significant.” It is entirely a property of the measurement, not the people. Report it as a group difference and you have published an artifact. Measurement invariance is the check that catches this before it reaches print.</p>
 </section>
-<section id="dummy-coding-differences-from-a-reference" class="level2" data-number="17.3">
-<h2 data-number="17.3" class="anchored" data-anchor-id="dummy-coding-differences-from-a-reference"><span class="header-section-number">17.3</span> Dummy Coding: Differences From a Reference</h2>
-<p>By default, R uses <strong>dummy coding</strong> (<code>contr.treatment</code>): it picks the first level (“cat”) as the <strong>reference</strong>, and each coefficient is the difference between that group’s mean and the reference group’s mean. Let us prove it by pulling the group means directly:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>means <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(happy, <span class="at">by =</span> <span class="fu">list</span>(<span class="at">pet =</span> pet), <span class="at">FUN =</span> mean)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>means</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div class="kable-table">
-<table class="caption-top table table-sm table-striped small">
-<thead>
-<tr class="header">
-<th style="text-align: left;">pet</th>
-<th style="text-align: right;">x</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">cat</td>
-<td style="text-align: right;">-1.3234082</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">fish</td>
-<td style="text-align: right;">-0.1385552</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">pig</td>
-<td style="text-align: right;">0.7284205</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">dog</td>
-<td style="text-align: right;">1.4965846</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<p>Now rebuild every coefficient from those means:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># intercept should be the reference (cat) mean:</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">intercept =</span> <span class="fu">coef</span>(lm_pet)[[<span class="dv">1</span>]], <span class="at">cat_mean =</span> means<span class="sc">$</span>x[<span class="dv">1</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>intercept  cat_mean 
--1.323408 -1.323408 </code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># petfish should be (fish mean - cat mean):</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">petfish_coef =</span> <span class="fu">coef</span>(lm_pet)[[<span class="st">"petfish"</span>]], <span class="at">fish_minus_cat =</span> means<span class="sc">$</span>x[<span class="dv">2</span>] <span class="sc">-</span> means<span class="sc">$</span>x[<span class="dv">1</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>  petfish_coef fish_minus_cat 
-      1.184853       1.184853 </code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># petdog should be (dog mean - cat mean):</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">petdog_coef =</span> <span class="fu">coef</span>(lm_pet)[[<span class="st">"petdog"</span>]], <span class="at">dog_minus_cat =</span> means<span class="sc">$</span>x[<span class="dv">4</span>] <span class="sc">-</span> means<span class="sc">$</span>x[<span class="dv">1</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>  petdog_coef dog_minus_cat 
-     2.819993      2.819993 </code></pre>
-</div>
-</div>
-<p>There is no magic in the box. <strong>A dummy-coded coefficient is a difference between two group means</strong>, and the intercept is the reference group’s mean. That is exactly what a t-test between two groups reports, which is your first hint that t-tests, too, are just this same model.</p>
+<section id="invariance-is-a-ladder-not-a-verdict" class="level2" data-number="21.3">
+<h2 data-number="21.3" class="anchored" data-anchor-id="invariance-is-a-ladder-not-a-verdict"><span class="header-section-number">21.3</span> Invariance Is a Ladder, Not a Verdict</h2>
+<p>The instinct is to ask “is the scale invariant, yes or no?” That is the wrong question. As the authors put it in their cross-cultural work, comparability across groups is not one property but <strong>a ladder of increasingly demanding rungs</strong>, and a scale can stand on a lower rung without reaching a higher one. The most useful result is usually not whether a scale passes or fails overall, but <em>exactly where it begins to break down</em>, because that tells you which comparisons you are allowed to make. There are four rungs.</p>
+<ul>
+<li><strong>Configural</strong> - do the same items form the same dimensions in each group? If people do not even organize the items into the same pattern, the scale is measuring different things, and comparison stops here. <em>Required for any comparison.</em></li>
+<li><strong>Metric (equal loadings)</strong> - is each item tied to its construct with the same strength across groups? This is what lets you compare how the construct <em>relates to other variables</em>. <em>Permits comparing correlations and relationships.</em></li>
+<li><strong>Scalar (equal intercepts)</strong> - do people at the same trait level give the same average answer, regardless of group? Only here can <em>mean scores</em> be compared without ambiguity. <em>Permits comparing means.</em></li>
+<li><strong>Strict (equal residuals)</strong> - additionally, is the leftover measurement noise equal across groups? Rarely necessary for a substantive comparison. <em>Usually reported only for completeness.</em></li>
+</ul>
+<p>The rung you reach decides the comparison you have earned. In the authors’ words, a scale that reaches metric but not scalar invariance is not a failure: it can still be used to study how a trait relates to other things in each group; it simply cannot be used to rank the groups by their average level. Knowing which rung you are on is the whole point.</p>
 </section>
-<section id="effects-coding-differences-from-the-grand-mean" class="level2" data-number="17.4">
-<h2 data-number="17.4" class="anchored" data-anchor-id="effects-coding-differences-from-the-grand-mean"><span class="header-section-number">17.4</span> Effects Coding: Differences From the Grand Mean</h2>
-<p>Dummy coding answers “how does each group differ from the reference?” Often we would rather ask “how does each group differ from the <em>overall average</em>?” For that we switch to <strong>effects coding</strong> (<code>contr.sum</code>):</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>pet_e <span class="ot">&lt;-</span> pet</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">contrasts</span>(pet_e) <span class="ot">&lt;-</span> <span class="fu">contr.sum</span>(<span class="dv">4</span>)</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>lm_pet_e <span class="ot">&lt;-</span> <span class="fu">lm</span>(happy <span class="sc">~</span> pet_e)</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">coef</span>(lm_pet_e), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>(Intercept)      pet_e1      pet_e2      pet_e3 
-      0.191      -1.514      -0.329       0.538 </code></pre>
-</div>
-</div>
-<p>The coefficients changed, because the <em>question</em> changed. Now the intercept is the <strong>grand mean</strong> - and here is a subtlety worth stopping for: the grand mean of effects coding is the <strong>mean of the group means</strong> (each group weighted equally), <em>not</em> the mean of the raw scores. With unequal group sizes those two differ, and confusing them is a classic error.</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>GM <span class="ot">&lt;-</span> <span class="fu">mean</span>(means<span class="sc">$</span>x)                       <span class="co"># mean of the group means (unweighted)</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">intercept =</span> <span class="fu">coef</span>(lm_pet_e)[[<span class="dv">1</span>]], <span class="at">grand_mean =</span> GM)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code> intercept grand_mean 
- 0.1907604  0.1907604 </code></pre>
-</div>
-</div>
-<p>Each effects coefficient is then that group’s mean minus the grand mean:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># first coefficient = cat mean - grand mean:</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">coef1 =</span> <span class="fu">coef</span>(lm_pet_e)[[<span class="dv">2</span>]], <span class="at">cat_minus_GM =</span> means<span class="sc">$</span>x[<span class="dv">1</span>] <span class="sc">-</span> GM)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>       coef1 cat_minus_GM 
-   -1.514169    -1.514169 </code></pre>
-</div>
-</div>
+<section id="how-you-test-it" class="level2" data-number="21.4">
+<h2 data-number="21.4" class="anchored" data-anchor-id="how-you-test-it"><span class="header-section-number">21.4</span> How You Test It</h2>
+<p>Invariance is tested with <strong>multi-group confirmatory factor analysis</strong> (<a href="./28-sem.html">CFA</a>): fit the same factor model to every group, then progressively <em>constrain</em> parameters to be equal, one rung at a time. The idiom is <code>lavaan</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Multi-group CFA invariance sequence (needs lavaan — shown, not run on the book's server)</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lavaan)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="st">'curiosity =~ x1 + x2 + x3 + x4 + x5 + x6'</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>configural <span class="ot">&lt;-</span> <span class="fu">cfa</span>(model, <span class="at">data =</span> d, <span class="at">group =</span> <span class="st">"group"</span>)                             <span class="co"># same shape</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>metric     <span class="ot">&lt;-</span> <span class="fu">cfa</span>(model, <span class="at">data =</span> d, <span class="at">group =</span> <span class="st">"group"</span>, <span class="at">group.equal =</span> <span class="st">"loadings"</span>)   <span class="co"># + equal loadings</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>scalar     <span class="ot">&lt;-</span> <span class="fu">cfa</span>(model, <span class="at">data =</span> d, <span class="at">group =</span> <span class="st">"group"</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>                  <span class="at">group.equal =</span> <span class="fu">c</span>(<span class="st">"loadings"</span>, <span class="st">"intercepts"</span>))                    <span class="co"># + equal intercepts</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>strict     <span class="ot">&lt;-</span> <span class="fu">cfa</span>(model, <span class="at">data =</span> d, <span class="at">group =</span> <span class="st">"group"</span>,</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>                  <span class="at">group.equal =</span> <span class="fu">c</span>(<span class="st">"loadings"</span>, <span class="st">"intercepts"</span>, <span class="st">"residuals"</span>))       <span class="co"># + equal residuals</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Each step adds constraints. The question at each rung is simple: <em>does forcing this equality make the fit meaningfully worse?</em> If constraining the loadings barely changes fit, metric invariance holds; if constraining the intercepts barely changes fit, scalar holds. “Barely” is judged by the <strong>change in fit indices</strong>, not the chi-square difference test, which is oversensitive in large samples. The common thresholds:</p>
+<ul>
+<li><strong>ΔCFI &lt; .010</strong> (Cheung &amp; Rensvold, 2002) is the workhorse rule.</li>
+<li>Chen (2007) adds ΔRMSEA ≤ .015 and ΔSRMR ≤ .030 for the metric step, or ≤ .010 for the scalar and stricter steps.</li>
+</ul>
+<p>A practical note on the estimator: treat binary or few-category items as categorical (<code>estimator = "WLSMV"</code>); treat six-or-more-point items as continuous with robust ML (<code>estimator = "MLR"</code>), and keep every case with full-information maximum likelihood rather than dropping incomplete rows.</p>
+</section>
+<section id="when-it-fails-it-tells-you-something" class="level2" data-number="21.5">
+<h2 data-number="21.5" class="anchored" data-anchor-id="when-it-fails-it-tells-you-something"><span class="header-section-number">21.5</span> When It Fails, It Tells You Something</h2>
+<p>Failure is not the end of the analysis; it is a finding. The authors’ study of four “epistemic virtue” scales across the United States, India, and Japan is a clean illustration, because each scale landed on a <em>different</em> rung:</p>
+<ul>
+<li>One scale reached only <strong>metric</strong> invariance: the trait behaves as one ability everywhere, but at a given level people in different cultures still answer differently, so <strong>average scores cannot be compared</strong> - traced to item exposure and translation, not to a real difference in the ability.</li>
+<li>One reached <strong>partial scalar</strong> invariance, with a few intercepts freed in exactly the content (social and stress-related items) where cultural norms around inquiry and self-disclosure are known to differ.</li>
+<li>Two failed <strong>configural</strong> invariance outright: their proposed factor structure did not hold even within a single country, revealing a problem with the scale’s structure itself rather than with the cultures.</li>
+</ul>
+<p>Each failure points somewhere specific - a biased item, a culture-bound norm, a broken factor structure - which is why <em>where</em> a scale breaks down is more useful than a pass or fail stamp.</p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Important</span>Where Did the Last Group Go?
+<span class="screen-reader-only">Important</span>Partial invariance, and when a comparison is still worth making
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Count the coefficients: with four groups, effects coding gives you an intercept plus only <strong>three</strong> effects. The fourth group (“dog”) seems to have vanished. It has not - it is <em>implied</em>. Because the effects are deviations from the grand mean, they must sum to zero, so the last group’s effect is minus the sum of the others:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>dog_effect_implied <span class="ot">&lt;-</span> <span class="sc">-</span>(<span class="fu">coef</span>(lm_pet_e)[[<span class="dv">2</span>]] <span class="sc">+</span> <span class="fu">coef</span>(lm_pet_e)[[<span class="dv">3</span>]] <span class="sc">+</span> <span class="fu">coef</span>(lm_pet_e)[[<span class="dv">4</span>]])</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">implied_dog_effect =</span> dog_effect_implied, <span class="at">dog_minus_GM =</span> means<span class="sc">$</span>x[<span class="dv">4</span>] <span class="sc">-</span> GM)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>implied_dog_effect       dog_minus_GM 
-          1.305824           1.305824 </code></pre>
-</div>
-</div>
-<p>They match. The “missing” group is never missing; it is the one the constraint solves for. (Work the algebra once and reference levels stop being confusing.)</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>From the Mailbag (a real question from PSYC 754)
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<blockquote class="blockquote">
-<p>“I don’t see the difference between dummy coding and contrast coding. Why would labeling a 0 vs.&nbsp;-1 be a big change? … How is effects coding different from regular contrast coding?”</p>
-</blockquote>
-<p>A perennial knot, so let’s cut it. <strong>Dummy coding</strong> uses 0s and 1s and compares each group to a single <em>reference</em> group (the one coded 0). <strong>Effects coding</strong> swaps that reference 0 for a <span class="math inline">\(-1\)</span>, and that small change quietly rewrites the question: each coefficient now compares a group to the <em>grand mean</em> rather than to a reference group. <strong>Contrast coding</strong> is the general family both belong to - any set of codes chosen to test a specific comparison - and effects coding is simply the member that yields deviations from the grand mean. So the “big change” from <span class="math inline">\(0\)</span> to <span class="math inline">\(-1\)</span> is really a change in <em>what you compare against</em>: one baseline group, or the average of them all.</p>
+<p>Full scalar invariance is a high bar, and real scales often miss it on a few items. <strong>Partial invariance</strong> relaxes the requirement: you hold most items to the equal-intercept standard and let a few differ, identifying which ones with modification indices. The convention (Byrne, Shavelson, &amp; Muthén, 1989) is that at least <em>two</em> items per dimension must behave identically across groups for a comparison to remain meaningful. But there is a cost, and the authors state it plainly: the more items you must set free, the less the remaining comparison is worth. Report how many you freed; do not bury it.</p>
 </div>
 </div>
 </section>
-<section id="the-punchline-this-is-anova" class="level2" data-number="17.5">
-<h2 data-number="17.5" class="anchored" data-anchor-id="the-punchline-this-is-anova"><span class="header-section-number">17.5</span> The Punchline: This <em>Is</em> ANOVA</h2>
-<p>Whether you dummy-code or effects-code, the <em>overall</em> test - “do the group means differ at all?” - is identical, and it is identical to what analysis of variance calls the omnibus <span class="math inline">\(F\)</span>. Watch the same number fall out three ways:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) the regression's own F test</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm_pet)<span class="sc">$</span>fstatistic[<span class="dv">1</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>   value 
-20.99332 </code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) run it as an ANOVA on the regression object</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(lm_pet)[<span class="st">"pet"</span>, <span class="st">"F value"</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 20.99332</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 3) the classic aov() function</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">aov</span>(happy <span class="sc">~</span> pet))[[<span class="dv">1</span>]][<span class="st">"pet"</span>, <span class="st">"F value"</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 20.99332</code></pre>
-</div>
-</div>
-<p>One model, one <span class="math inline">\(F\)</span>, three names. <strong>ANOVA is regression with categorical predictors</strong>: the coding scheme only changes how we <em>slice up and label</em> the group differences, never the overall test. This is the General Linear Model: pick your predictors (continuous, categorical, or both), pick your coding, and it is all least squares underneath.</p>
+<section id="what-this-chapter-teaches" class="level2" data-number="21.6">
+<h2 data-number="21.6" class="anchored" data-anchor-id="what-this-chapter-teaches"><span class="header-section-number">21.6</span> What This Chapter Teaches</h2>
+<ul>
+<li>A group difference in scores can be a <strong>measurement artifact</strong>; invariance is the check that catches it.</li>
+<li>Invariance is a <strong>ladder</strong> - configural, metric, scalar, strict - and each rung licenses a different comparison (relationships at metric, means at scalar).</li>
+<li>Test it with a sequence of <strong>multi-group CFAs</strong>, judging each step by the <em>change</em> in fit (ΔCFI &lt; .010).</li>
+<li><strong>Failure is diagnostic</strong>: where a scale breaks down tells you about the items, the groups, or the construct.</li>
+</ul>
 </section>
-<section id="two-categorical-predictors-and-their-interaction" class="level2" data-number="17.6">
-<h2 data-number="17.6" class="anchored" data-anchor-id="two-categorical-predictors-and-their-interaction"><span class="header-section-number">17.6</span> Two Categorical Predictors and Their Interaction</h2>
-<p>Add a second factor and you get a factorial design - still just regression. Suppose messiness also matters:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>mess  <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">ifelse</span>(<span class="fu">rnorm</span>(<span class="dv">100</span>) <span class="sc">&gt;</span> <span class="dv">0</span>, <span class="st">"messy"</span>, <span class="st">"tidy"</span>))</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>sad   <span class="ot">&lt;-</span> <span class="sc">-</span>x <span class="sc">+</span> <span class="fu">as.numeric</span>(mess) <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">100</span>)</span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>lm_fac <span class="ot">&lt;-</span> <span class="fu">lm</span>(sad <span class="sc">~</span> pet <span class="sc">*</span> mess)</span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">coef</span>(lm_fac), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>     (Intercept)          petfish           petpig           petdog 
-           2.079           -1.139           -1.609           -2.789 
-        messtidy petfish:messtidy  petpig:messtidy  petdog:messtidy 
-           0.849            0.614            0.117           -0.403 </code></pre>
-</div>
-</div>
-<p>The <code>pet:messmessy</code> terms are the <strong>interaction</strong>, and the same logic applies here. An interaction coefficient is a <em>difference of differences</em>: how the effect of pet <strong>changes</strong> across levels of mess. It is the cross-product of the two predictors’ codes. A “significant interaction” is nothing to worry about; it just means the group-mean pattern is not purely additive.</p>
-</section>
-<section id="beyond-the-straight-line-the-generalized-linear-model" class="level2" data-number="17.7">
-<h2 data-number="17.7" class="anchored" data-anchor-id="beyond-the-straight-line-the-generalized-linear-model"><span class="header-section-number">17.7</span> Beyond the Straight Line: The <em>Generalized</em> Linear Model</h2>
-<p>Everything so far assumes a continuous outcome with roughly normal residuals. But plenty of outcomes are not like that - a yes/no, a count, a rare event. The <strong>generalized</strong> linear model extends the same framework by letting the outcome follow a different distribution through a <em>link function</em>. The most common case is a binary outcome via <strong>logistic regression</strong>:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>passed <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="dv">100</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fu">plogis</span>(x))   <span class="co"># 0/1 outcome driven by x</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>glm_fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(passed <span class="sc">~</span> x, <span class="at">family =</span> binomial)</span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">coef</span>(glm_fit), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>(Intercept)           x 
-     -0.181       0.728 </code></pre>
-</div>
-</div>
-<p>Same formula syntax, same partialling logic, same goal of quantifying the uncertainty. We have just swapped <code>lm()</code> for <code>glm()</code> and told it the outcome is binomial. Linear model, general linear model, generalized linear model: it is the same core idea extended step by step.</p>
-</section>
-<section id="challenge" class="level2" data-number="17.8">
-<h2 data-number="17.8" class="anchored" data-anchor-id="challenge"><span class="header-section-number">17.8</span> Challenge</h2>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Do One Yourself
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Using the <code>pet</code> factor and <code>happy</code> from this chapter:</p>
-<ol type="1">
-<li>Fit the model with <strong>dummy</strong> coding and, <em>without reading the coefficients off the summary</em>, reproduce all four coefficients (intercept + three) from the group means.</li>
-<li>Refit with <strong>effects</strong> coding and reproduce the intercept (grand mean) and all four group effects - including the implied “dog” effect - from the group means.</li>
-<li>Confirm the omnibus <span class="math inline">\(F\)</span> is identical under both coding schemes, and identical to <code>summary(aov(happy ~ pet))</code>.</li>
-<li>In one sentence each, state what the intercept means under dummy coding versus effects coding. If you can do that cleanly, you understand why “ANOVA vs.&nbsp;regression” was always a false choice.</li>
-</ol>
-</div>
-</div>
-</section>
-<section id="where-we-go-next" class="level2" data-number="17.9">
-<h2 data-number="17.9" class="anchored" data-anchor-id="where-we-go-next"><span class="header-section-number">17.9</span> Where We Go Next</h2>
-<p>You now hold the unifying idea of the whole enterprise: the General Linear Model. Correlation, t-tests, regression, ANOVA, ANCOVA - all one model wearing different outfits. We build these coding schemes by hand in the <a href="./19-coding.html">dedicated coding chapter</a>; for the definitive treatment, see Cohen, Cohen, West, and Aiken <span class="citation" data-cites="aiken_applied_2002">(<a href="#ref-aiken_applied_2002" role="doc-biblioref">Aiken 2002</a>)</span> and the accessible comparison of dummy and effects coding in Alkharusi <span class="citation" data-cites="alkharusi_categorical_2012">(<a href="#ref-alkharusi_categorical_2012" role="doc-biblioref">Alkharusi 2012</a>)</span>; for analysis of variance specifically, Iversen and Norpoth <span class="citation" data-cites="iversen_analysis_1987">(<a href="#ref-iversen_analysis_1987" role="doc-biblioref">Iversen and Norpoth 1987</a>)</span> remains a compact classic. From here, the road leads into the specific ANOVA designs (one-way, factorial, repeated measures), each of which is just another coded regression.</p>
+<section id="where-we-go-next" class="level2" data-number="21.7">
+<h2 data-number="21.7" class="anchored" data-anchor-id="where-we-go-next"><span class="header-section-number">21.7</span> Where We Go Next</h2>
+<p>Factors and invariance describe people along continuous dimensions. The <a href="./29-latentclass.html">next chapter</a> turns to a different question - not “where does each person fall?” but “which <em>kind</em> of person is this?” - and the latent-class family of models.</p>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="list">
-<div id="ref-aiken_applied_2002" class="csl-entry" role="listitem">
-Aiken, Stephen G. West, Patricia Cohen. 2002. <em>Applied <span>Multiple</span> <span>Regression</span>/<span>Correlation</span> <span>Analysis</span> for the <span>Behavioral</span> <span>Sciences</span></em>. 3rd ed. Routledge. <a href="https://doi.org/10.4324/9780203774441">https://doi.org/10.4324/9780203774441</a>.
-</div>
-<div id="ref-alkharusi_categorical_2012" class="csl-entry" role="listitem">
-Alkharusi, Hussain. 2012. <span>“Categorical <span>Variables</span> in <span>Regression</span> <span>Analysis</span>: <span>A</span> <span>Comparison</span> of <span>Dummy</span> and <span>Effect</span> <span>Coding</span>.”</span> <em>International Journal of Education</em> 4 (April): 202–10. <a href="https://doi.org/10.5296/ije.v4i2.1962">https://doi.org/10.5296/ije.v4i2.1962</a>.
-</div>
-<div id="ref-iversen_analysis_1987" class="csl-entry" role="listitem">
-Iversen, Gudmund R., and Helmut Norpoth. 1987. <em>Analysis of Variance</em>. 2nd ed. Sage University Papers. <span>Quantitative</span> Applications in the Social Sciences, no. 07-001. Sage Publications.
-</div>
-</div>
 </section>
 
 </main> <!-- /main -->
@@ -1437,13 +1225,13 @@ Iversen, Gudmund R., and Helmut Norpoth. 1987. <em>Analysis of Variance</em>. 2n
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./15-MRC.html" class="pagination-link" aria-label="Multiple Regression">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Multiple Regression</span></span>
+      <a href="./28-sem.html" class="pagination-link" aria-label="Latent Variables: Confirmatory Factor Analysis and SEM">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Latent Variables: Confirmatory Factor Analysis and SEM</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./17-basicANOVA.html" class="pagination-link" aria-label="Basic ANOVA">
-        <span class="nav-page-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Basic ANOVA</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./29-latentclass.html" class="pagination-link" aria-label="Latent Classes: Which Kind of Person Is This?">
+        <span class="nav-page-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Latent Classes: Which Kind of Person Is This?</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
