@@ -693,8 +693,9 @@ window.Quarto = {
   <li><a href="#the-units-problem-and-the-fix-correlation" id="toc-the-units-problem-and-the-fix-correlation" class="nav-link" data-scroll-target="#the-units-problem-and-the-fix-correlation"><span class="header-section-number">6.4</span> The Units Problem, and the Fix: Correlation</a></li>
   <li><a href="#what-correlation-will-not-tell-you" id="toc-what-correlation-will-not-tell-you" class="nav-link" data-scroll-target="#what-correlation-will-not-tell-you"><span class="header-section-number">6.5</span> What Correlation Will Not Tell You</a></li>
   <li><a href="#anscombes-quartet-same-numbers-four-different-stories" id="toc-anscombes-quartet-same-numbers-four-different-stories" class="nav-link" data-scroll-target="#anscombes-quartet-same-numbers-four-different-stories"><span class="header-section-number">6.6</span> Anscombe’s Quartet: Same Numbers, Four Different Stories</a></li>
-  <li><a href="#challenge" id="toc-challenge" class="nav-link" data-scroll-target="#challenge"><span class="header-section-number">6.7</span> Challenge</a></li>
-  <li><a href="#where-we-go-next" id="toc-where-we-go-next" class="nav-link" data-scroll-target="#where-we-go-next"><span class="header-section-number">6.8</span> Where We Go Next</a></li>
+  <li><a href="#variance-is-the-fuel" id="toc-variance-is-the-fuel" class="nav-link" data-scroll-target="#variance-is-the-fuel"><span class="header-section-number">6.7</span> Variance Is the Fuel</a></li>
+  <li><a href="#challenge" id="toc-challenge" class="nav-link" data-scroll-target="#challenge"><span class="header-section-number">6.8</span> Challenge</a></li>
+  <li><a href="#where-we-go-next" id="toc-where-we-go-next" class="nav-link" data-scroll-target="#where-we-go-next"><span class="header-section-number">6.9</span> Where We Go Next</a></li>
   </ul>
 </nav>
     </div>
@@ -873,6 +874,24 @@ window.Quarto = {
 </div>
 </div>
 <p>Here is why that matters far beyond four small datasets. With two variables you can <em>see</em> a bad linear fit directly in the scatter plot. But real models carry many predictors, and you cannot plot a relationship in five or ten dimensions. Anscombe’s quartet stops being usable the moment you reach <a href="./15-MRC.html">multiple regression</a>, because there is no two-dimensional picture left to draw. What survives is the <strong>residual</strong>. Residual analysis carries the “look at where the line is wrong” habit from the simple scatter plot into models too complex to plot. So treat Anscombe’s quartet as a bridge, not a destination: it teaches, in pictures anyone can read, the very thing you will later have to check with <a href="./14-bivariateregression.html">residuals</a> once the pictures run out.</p>
+</section>
+<section id="variance-is-the-fuel" class="level2" data-number="6.7">
+<h2 data-number="6.7" class="anchored" data-anchor-id="variance-is-the-fuel"><span class="header-section-number">6.7</span> Variance Is the Fuel</h2>
+<p>One more idea deserves its own heading, because it runs underneath everything in this book: <strong>to covary, two variables must first vary.</strong> Covariance is built from deviations, <span class="math inline">\((x - \bar{x})(y - \bar{y})\)</span>, so if <span class="math inline">\(x\)</span> barely moves there is nothing to multiply and no covariance to find, however strong the true relationship. A blunt but useful heuristic follows: the best predictors are usually the ones with the <em>most</em> variance, because a predictor pinned near a single value cannot explain anything.</p>
+<p>The practical consequence is <strong>restriction of range</strong>: sample only a narrow slice of a variable and you shrink its variance and, with it, the correlation you can observe, even though the real relationship is unchanged. Watch a genuine correlation collapse when we keep only the middle of <span class="math inline">\(x\)</span>:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2</span>); n <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fl">0.6</span> <span class="sc">*</span> x <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">sd =</span> <span class="fl">0.8</span>)                  <span class="co"># a real relationship</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>mid <span class="ot">&lt;-</span> x <span class="sc">&gt;</span> <span class="sc">-</span><span class="fl">0.5</span> <span class="sc">&amp;</span> x <span class="sc">&lt;</span> <span class="fl">0.5</span>                           <span class="co"># keep only a narrow band of x</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">full_range       =</span> <span class="fu">round</span>(<span class="fu">cor</span>(x, y), <span class="dv">2</span>),</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">restricted_range =</span> <span class="fu">round</span>(<span class="fu">cor</span>(x[mid], y[mid]), <span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      full_range restricted_range 
+            0.62             0.23 </code></pre>
+</div>
+</div>
+<p>Same data-generating process, same underlying relationship, but the restricted-range correlation is a fraction of the full one. This is why a study of only high-scoring students finds weak predictors of success (everyone is already high), and why a lab that tests a narrow slice of the population can miss an effect that is real in the wider world. It cuts the other way too: <a href="./10-reliability.html">unreliable measures</a> add error variance that dilutes the true signal, attenuating relationships for the same underlying reason. So a recurring question in careful analysis is simply <em>where is the variance, and how much of it is there?</em> Variance is the fuel every relationship in this book runs on.</p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -885,8 +904,8 @@ window.Quarto = {
 <div class="callout-body-container callout-body">
 <p>Here is the payoff that carries into the rest of the book. The slope of a simple regression is <em>literally</em> covariance divided by variance:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>b_from_cov <span class="ot">&lt;-</span> <span class="fu">cov</span>(study, grade) <span class="sc">/</span> <span class="fu">var</span>(study)</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">cov_over_var =</span> b_from_cov, <span class="at">lm_slope =</span> <span class="fu">coef</span>(<span class="fu">lm</span>(grade <span class="sc">~</span> study))[[<span class="st">"study"</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>b_from_cov <span class="ot">&lt;-</span> <span class="fu">cov</span>(study, grade) <span class="sc">/</span> <span class="fu">var</span>(study)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">cov_over_var =</span> b_from_cov, <span class="at">lm_slope =</span> <span class="fu">coef</span>(<span class="fu">lm</span>(grade <span class="sc">~</span> study))[[<span class="st">"study"</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>cov_over_var     lm_slope 
     4.332777     4.332777 </code></pre>
@@ -896,8 +915,8 @@ window.Quarto = {
 </div>
 </div>
 </section>
-<section id="challenge" class="level2" data-number="6.7">
-<h2 data-number="6.7" class="anchored" data-anchor-id="challenge"><span class="header-section-number">6.7</span> Challenge</h2>
+<section id="challenge" class="level2" data-number="6.8">
+<h2 data-number="6.8" class="anchored" data-anchor-id="challenge"><span class="header-section-number">6.8</span> Challenge</h2>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -916,8 +935,8 @@ window.Quarto = {
 </div>
 </div>
 </section>
-<section id="where-we-go-next" class="level2" data-number="6.8">
-<h2 data-number="6.8" class="anchored" data-anchor-id="where-we-go-next"><span class="header-section-number">6.8</span> Where We Go Next</h2>
+<section id="where-we-go-next" class="level2" data-number="6.9">
+<h2 data-number="6.9" class="anchored" data-anchor-id="where-we-go-next"><span class="header-section-number">6.9</span> Where We Go Next</h2>
 <p>We now hold the engine (covariance) but have not yet built the machine. Before we assemble full models, a short detour to make sure our sensors are trustworthy: are our measurements <a href="./10-reliability.html">reliable</a> and <a href="./11-validity.html">valid</a>? A model built on a broken ruler predicts nothing, no matter how strong the covariance looks.</p>
 
 
