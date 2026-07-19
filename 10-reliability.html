@@ -713,11 +713,13 @@ window.Quarto = {
   <ul class="collapse">
   <li><a href="#cronbachs-alpha-by-hand" id="toc-cronbachs-alpha-by-hand" class="nav-link" data-scroll-target="#cronbachs-alpha-by-hand"><span class="header-section-number">9.4.1</span> Cronbach’s Alpha, By Hand</a></li>
   </ul></li>
-  <li><a href="#why-you-should-care-attenuation" id="toc-why-you-should-care-attenuation" class="nav-link" data-scroll-target="#why-you-should-care-attenuation"><span class="header-section-number">9.5</span> Why You Should Care: Attenuation</a></li>
-  <li><a href="#a-real-scale-end-to-end" id="toc-a-real-scale-end-to-end" class="nav-link" data-scroll-target="#a-real-scale-end-to-end"><span class="header-section-number">9.6</span> A Real Scale, End to End</a></li>
-  <li><a href="#why-reliability-buys-you-power" id="toc-why-reliability-buys-you-power" class="nav-link" data-scroll-target="#why-reliability-buys-you-power"><span class="header-section-number">9.7</span> Why Reliability Buys You Power</a></li>
-  <li><a href="#challenge" id="toc-challenge" class="nav-link" data-scroll-target="#challenge"><span class="header-section-number">9.8</span> Challenge</a></li>
-  <li><a href="#where-we-go-next" id="toc-where-we-go-next" class="nav-link" data-scroll-target="#where-we-go-next"><span class="header-section-number">9.9</span> Where We Go Next</a></li>
+  <li><a href="#measurement-models-how-equal-are-your-items" id="toc-measurement-models-how-equal-are-your-items" class="nav-link" data-scroll-target="#measurement-models-how-equal-are-your-items"><span class="header-section-number">9.5</span> Measurement Models: How Equal Are Your Items?</a></li>
+  <li><a href="#why-you-should-care-attenuation" id="toc-why-you-should-care-attenuation" class="nav-link" data-scroll-target="#why-you-should-care-attenuation"><span class="header-section-number">9.6</span> Why You Should Care: Attenuation</a></li>
+  <li><a href="#a-real-scale-end-to-end" id="toc-a-real-scale-end-to-end" class="nav-link" data-scroll-target="#a-real-scale-end-to-end"><span class="header-section-number">9.7</span> A Real Scale, End to End</a></li>
+  <li><a href="#why-reliability-buys-you-power" id="toc-why-reliability-buys-you-power" class="nav-link" data-scroll-target="#why-reliability-buys-you-power"><span class="header-section-number">9.8</span> Why Reliability Buys You Power</a></li>
+  <li><a href="#sources-of-variance-a-glimpse-of-generalizability-theory" id="toc-sources-of-variance-a-glimpse-of-generalizability-theory" class="nav-link" data-scroll-target="#sources-of-variance-a-glimpse-of-generalizability-theory"><span class="header-section-number">9.9</span> Sources of Variance: A Glimpse of Generalizability Theory</a></li>
+  <li><a href="#challenge" id="toc-challenge" class="nav-link" data-scroll-target="#challenge"><span class="header-section-number">9.10</span> Challenge</a></li>
+  <li><a href="#where-we-go-next" id="toc-where-we-go-next" class="nav-link" data-scroll-target="#where-we-go-next"><span class="header-section-number">9.11</span> Where We Go Next</a></li>
   </ul>
 </nav>
     </div>
@@ -828,16 +830,44 @@ window.Quarto = {
 <p>An alpha around 0.85 says the six items hang together well; they are largely reading the same underlying construct. By rough convention, 0.70 is “acceptable,” 0.80+ “good,” but do not lean on the threshold too hard: alpha climbs with more items whether or not they are any good, so a high alpha is necessary, not sufficient.</p>
 </section>
 </section>
-<section id="why-you-should-care-attenuation" class="level2" data-number="9.5">
-<h2 data-number="9.5" class="anchored" data-anchor-id="why-you-should-care-attenuation"><span class="header-section-number">9.5</span> Why You Should Care: Attenuation</h2>
+<section id="measurement-models-how-equal-are-your-items" class="level2" data-number="9.5">
+<h2 data-number="9.5" class="anchored" data-anchor-id="measurement-models-how-equal-are-your-items"><span class="header-section-number">9.5</span> Measurement Models: How Equal Are Your Items?</h2>
+<p>Cronbach’s alpha, which we just computed, quietly assumes something about the items, and whether that assumption holds decides whether alpha is right or too low. There is a small hierarchy of <strong>measurement models</strong>, each making a stronger claim about how the items relate to the true score.</p>
+<ul>
+<li><strong>Parallel</strong> - every item measures the true score with the <em>same</em> loading <em>and</em> the <em>same</em> error variance. All items are interchangeable, equally good rulers, with equal observed variances. This is the strictest model, and it is what test-retest and alternate-forms reliability assume.</li>
+<li><strong>Tau-equivalent</strong> - every item has the same loading (a one-unit change in the true score moves each item equally), but the error variances may differ. This is the assumption <strong>Cronbach’s alpha depends on</strong>: alpha is exact only when the items are (essentially) tau-equivalent.</li>
+<li><strong>Congeneric</strong> - items may have <em>different</em> loadings <em>and</em> different error variances; they share one latent factor but on their own scales. This is the most realistic model, and it describes most real scales, where some items are simply better indicators than others.</li>
+</ul>
+<p>Why it matters: when items are congeneric (unequal loadings), <strong>alpha underestimates reliability</strong>, and <strong>McDonald’s omega</strong> (<span class="math inline">\(\omega\)</span>) is the right coefficient. Omega is computed from a factor model, so it can weight items by how well they actually measure the construct. Watch alpha fall short of omega when the loadings differ:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">3</span>); N <span class="ot">&lt;-</span> <span class="dv">500</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>Tval   <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>lambda <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.9</span>, <span class="fl">0.8</span>, <span class="fl">0.7</span>, <span class="fl">0.5</span>, <span class="fl">0.4</span>)                       <span class="co"># congeneric: unequal item quality</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>items  <span class="ot">&lt;-</span> <span class="fu">sapply</span>(lambda, <span class="cf">function</span>(l) l <span class="sc">*</span> Tval <span class="sc">+</span> <span class="fu">rnorm</span>(N, <span class="at">sd =</span> <span class="fu">sqrt</span>(<span class="dv">1</span> <span class="sc">-</span> l<span class="sc">^</span><span class="dv">2</span>)))</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>k     <span class="ot">&lt;-</span> <span class="fu">ncol</span>(items)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> (k <span class="sc">/</span> (k <span class="sc">-</span> <span class="dv">1</span>)) <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">sum</span>(<span class="fu">apply</span>(items, <span class="dv">2</span>, var)) <span class="sc">/</span> <span class="fu">var</span>(<span class="fu">rowSums</span>(items)))  <span class="co"># assumes tau-equiv.</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>fa    <span class="ot">&lt;-</span> <span class="fu">factanal</span>(items, <span class="dv">1</span>)                                <span class="co"># a one-factor model gives the loadings</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>lam   <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(fa<span class="sc">$</span>loadings); psi <span class="ot">&lt;-</span> fa<span class="sc">$</span>uniquenesses</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>omega <span class="ot">&lt;-</span> <span class="fu">sum</span>(lam)<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> (<span class="fu">sum</span>(lam)<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="fu">sum</span>(psi))              <span class="co"># McDonald's omega</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">cronbach_alpha =</span> <span class="fu">round</span>(alpha, <span class="dv">3</span>), <span class="at">mcdonald_omega =</span> <span class="fu">round</span>(omega, <span class="dv">3</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>cronbach_alpha mcdonald_omega 
+         0.798          0.815 </code></pre>
+</div>
+</div>
+<p>Omega is the larger, and more honest, number. When the items are truly tau-equivalent (equal loadings), the two coincide; the more the loadings differ, the more alpha understates the reliability. The rule the authors follow: <strong>report omega, because it does not assume tau-equivalence.</strong> Alpha is a fine quick check, but it is a lower bound, not the last word.</p>
+</section>
+<section id="why-you-should-care-attenuation" class="level2" data-number="9.6">
+<h2 data-number="9.6" class="anchored" data-anchor-id="why-you-should-care-attenuation"><span class="header-section-number">9.6</span> Why You Should Care: Attenuation</h2>
 <p>Now the practical consequence. Unreliable measures <strong>attenuate</strong> (shrink) the correlations you are trying to detect. A real relationship between two constructs looks weaker than it is, purely because your sensors are noisy:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">10</span>)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>Tx <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">1000</span>); Ty <span class="ot">&lt;-</span> <span class="fl">0.6</span> <span class="sc">*</span> Tx <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">1000</span>, <span class="dv">0</span>, <span class="fl">0.8</span>)  <span class="co"># true correlation ~ .6</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># now observe each through a noisy sensor:</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>Ox <span class="ot">&lt;-</span> Tx <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">1000</span>, <span class="dv">0</span>, <span class="dv">1</span>)</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>Oy <span class="ot">&lt;-</span> Ty <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">1000</span>, <span class="dv">0</span>, <span class="dv">1</span>)</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">true_r =</span> <span class="fu">round</span>(<span class="fu">cor</span>(Tx, Ty), <span class="dv">2</span>), <span class="at">observed_r =</span> <span class="fu">round</span>(<span class="fu">cor</span>(Ox, Oy), <span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">10</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>Tx <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">1000</span>); Ty <span class="ot">&lt;-</span> <span class="fl">0.6</span> <span class="sc">*</span> Tx <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">1000</span>, <span class="dv">0</span>, <span class="fl">0.8</span>)  <span class="co"># true correlation ~ .6</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># now observe each through a noisy sensor:</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>Ox <span class="ot">&lt;-</span> Tx <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">1000</span>, <span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>Oy <span class="ot">&lt;-</span> Ty <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">1000</span>, <span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">true_r =</span> <span class="fu">round</span>(<span class="fu">cor</span>(Tx, Ty), <span class="dv">2</span>), <span class="at">observed_r =</span> <span class="fu">round</span>(<span class="fu">cor</span>(Ox, Oy), <span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    true_r observed_r 
       0.60       0.32 </code></pre>
@@ -845,38 +875,38 @@ window.Quarto = {
 </div>
 <p>The observed correlation is noticeably smaller than the true one. A real effect can hide behind a bad ruler, which means a null result might be a measurement failure rather than the absence of an effect. Reliability is more than bookkeeping; it can be the difference between finding your effect and missing it.</p>
 </section>
-<section id="a-real-scale-end-to-end" class="level2" data-number="9.6">
-<h2 data-number="9.6" class="anchored" data-anchor-id="a-real-scale-end-to-end"><span class="header-section-number">9.6</span> A Real Scale, End to End</h2>
+<section id="a-real-scale-end-to-end" class="level2" data-number="9.7">
+<h2 data-number="9.7" class="anchored" data-anchor-id="a-real-scale-end-to-end"><span class="header-section-number">9.7</span> A Real Scale, End to End</h2>
 <p>Enough simulation. Let’s run the whole pipeline on real data: a 10-item scale (<code>x1</code>–<code>x10</code>) from the graduate GLM course (<code>data/moddat2.csv</code>, <span class="math inline">\(n = 30\)</span>). Three moves: <strong>key</strong> the items, <strong>estimate</strong> <span class="math inline">\(\alpha\)</span>, and check <strong>which items earn their place</strong>.</p>
 <p>Some items are worded in reverse, so a high true standing produces a <em>low</em> score - flip them first or they fight the rest of the scale and sink <span class="math inline">\(\alpha\)</span>. We spot a reverse item by its <em>negative</em> item-rest correlation (it correlates the wrong way with the sum of the others):</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/moddat2.csv"</span>)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(d[, <span class="fu">paste0</span>(<span class="st">"x"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)])</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>alpha_keyed <span class="ot">&lt;-</span> <span class="cf">function</span>(X) {</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  r     <span class="ot">&lt;-</span> <span class="fu">sapply</span>(<span class="fu">seq_len</span>(<span class="fu">ncol</span>(X)),                         <span class="co"># item-rest correlations</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>                  <span class="cf">function</span>(j) <span class="fu">cor</span>(X[, j], <span class="fu">rowSums</span>(X[, <span class="sc">-</span>j, <span class="at">drop =</span> <span class="cn">FALSE</span>])))</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  keys  <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(r <span class="sc">&lt;</span> <span class="dv">0</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>)                             <span class="co"># flip the reverse-worded items</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  Xk    <span class="ot">&lt;-</span> <span class="fu">sweep</span>(X, <span class="dv">2</span>, keys, <span class="st">`</span><span class="at">*</span><span class="st">`</span>)</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  k     <span class="ot">&lt;-</span> <span class="fu">ncol</span>(Xk)</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  alpha <span class="ot">&lt;-</span> (k <span class="sc">/</span> (k <span class="sc">-</span> <span class="dv">1</span>)) <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">sum</span>(<span class="fu">apply</span>(Xk, <span class="dv">2</span>, var)) <span class="sc">/</span> <span class="fu">var</span>(<span class="fu">rowSums</span>(Xk)))</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">alpha =</span> alpha, <span class="at">keys =</span> keys, <span class="at">scored =</span> Xk)</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fu">alpha_keyed</span>(X)</span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>a<span class="sc">$</span>keys              <span class="co"># -1 marks a reverse-scored item</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/moddat2.csv"</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(d[, <span class="fu">paste0</span>(<span class="st">"x"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)])</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>alpha_keyed <span class="ot">&lt;-</span> <span class="cf">function</span>(X) {</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  r     <span class="ot">&lt;-</span> <span class="fu">sapply</span>(<span class="fu">seq_len</span>(<span class="fu">ncol</span>(X)),                         <span class="co"># item-rest correlations</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>                  <span class="cf">function</span>(j) <span class="fu">cor</span>(X[, j], <span class="fu">rowSums</span>(X[, <span class="sc">-</span>j, <span class="at">drop =</span> <span class="cn">FALSE</span>])))</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  keys  <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(r <span class="sc">&lt;</span> <span class="dv">0</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>)                             <span class="co"># flip the reverse-worded items</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  Xk    <span class="ot">&lt;-</span> <span class="fu">sweep</span>(X, <span class="dv">2</span>, keys, <span class="st">`</span><span class="at">*</span><span class="st">`</span>)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  k     <span class="ot">&lt;-</span> <span class="fu">ncol</span>(Xk)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  alpha <span class="ot">&lt;-</span> (k <span class="sc">/</span> (k <span class="sc">-</span> <span class="dv">1</span>)) <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">sum</span>(<span class="fu">apply</span>(Xk, <span class="dv">2</span>, var)) <span class="sc">/</span> <span class="fu">var</span>(<span class="fu">rowSums</span>(Xk)))</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">alpha =</span> alpha, <span class="at">keys =</span> keys, <span class="at">scored =</span> Xk)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fu">alpha_keyed</span>(X)</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>a<span class="sc">$</span>keys              <span class="co"># -1 marks a reverse-scored item</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1]  1 -1  1  1 -1  1  1 -1  1  1</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(a<span class="sc">$</span>alpha, <span class="dv">3</span>)   <span class="co"># Cronbach's alpha for the keyed scale</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(a<span class="sc">$</span>alpha, <span class="dv">3</span>)   <span class="co"># Cronbach's alpha for the keyed scale</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.92</code></pre>
 </div>
 </div>
 <p>A healthy <span class="math inline">\(\alpha\)</span>. Now the classic “should I cut this item?” diagnostic - recompute <span class="math inline">\(\alpha\)</span> with each item <em>deleted</em>:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>drop <span class="ot">&lt;-</span> <span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="cf">function</span>(j) <span class="fu">alpha_keyed</span>(X[, <span class="sc">-</span>j, <span class="at">drop =</span> <span class="cn">FALSE</span>])<span class="sc">$</span>alpha)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(drop) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(X)</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(drop, <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>drop <span class="ot">&lt;-</span> <span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="cf">function</span>(j) <span class="fu">alpha_keyed</span>(X[, <span class="sc">-</span>j, <span class="at">drop =</span> <span class="cn">FALSE</span>])<span class="sc">$</span>alpha)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(drop) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(X)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(drop, <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   x1    x2    x3    x4    x5    x6    x7    x8    x9   x10 
 0.911 0.910 0.908 0.914 0.911 0.912 0.907 0.912 0.914 0.919 </code></pre>
@@ -884,18 +914,18 @@ window.Quarto = {
 </div>
 <p>Every “alpha-if-deleted” value sits <em>below</em> the full-scale <span class="math inline">\(\alpha\)</span>, so no item is dead weight - each one, even the weakest, adds more signal than noise. (Had any value come out <em>above</em> the full <span class="math inline">\(\alpha\)</span>, that item would be a candidate for the chopping block: removing it would make the scale <em>more</em> reliable.)</p>
 </section>
-<section id="why-reliability-buys-you-power" class="level2" data-number="9.7">
-<h2 data-number="9.7" class="anchored" data-anchor-id="why-reliability-buys-you-power"><span class="header-section-number">9.7</span> Why Reliability Buys You Power</h2>
+<section id="why-reliability-buys-you-power" class="level2" data-number="9.8">
+<h2 data-number="9.8" class="anchored" data-anchor-id="why-reliability-buys-you-power"><span class="header-section-number">9.8</span> Why Reliability Buys You Power</h2>
 <p>Now the payoff, and the link back to <a href="./09-statisticalpower.html">statistical power</a>. Detection is the between-group signal over the within-group noise, and unreliability <em>is</em> that noise (<span class="math inline">\(S^2_{error}\)</span>). Build the keyed scale score, then ask a real question of it - do women and men differ? - sizing the effect with Cohen’s <span class="math inline">\(d\)</span>:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>score <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(a<span class="sc">$</span>scored)                 <span class="co"># the keyed total score</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>EScalc <span class="ot">&lt;-</span> <span class="cf">function</span>(dv, cond) {             <span class="co"># McKnight's teaching function for Cohen's d</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  lv <span class="ot">&lt;-</span> <span class="fu">levels</span>(<span class="fu">factor</span>(cond))</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  x1 <span class="ot">&lt;-</span> dv[cond <span class="sc">==</span> lv[<span class="dv">1</span>]]; x2 <span class="ot">&lt;-</span> dv[cond <span class="sc">==</span> lv[<span class="dv">2</span>]]</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  (<span class="fu">mean</span>(x1) <span class="sc">-</span> <span class="fu">mean</span>(x2)) <span class="sc">/</span> <span class="fu">sqrt</span>((<span class="fu">var</span>(x1) <span class="sc">+</span> <span class="fu">var</span>(x2)) <span class="sc">/</span> <span class="dv">2</span>)</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">EScalc</span>(score, d<span class="sc">$</span>sex), <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>score <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(a<span class="sc">$</span>scored)                 <span class="co"># the keyed total score</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>EScalc <span class="ot">&lt;-</span> <span class="cf">function</span>(dv, cond) {             <span class="co"># McKnight's teaching function for Cohen's d</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  lv <span class="ot">&lt;-</span> <span class="fu">levels</span>(<span class="fu">factor</span>(cond))</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  x1 <span class="ot">&lt;-</span> dv[cond <span class="sc">==</span> lv[<span class="dv">1</span>]]; x2 <span class="ot">&lt;-</span> dv[cond <span class="sc">==</span> lv[<span class="dv">2</span>]]</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  (<span class="fu">mean</span>(x1) <span class="sc">-</span> <span class="fu">mean</span>(x2)) <span class="sc">/</span> <span class="fu">sqrt</span>((<span class="fu">var</span>(x1) <span class="sc">+</span> <span class="fu">var</span>(x2)) <span class="sc">/</span> <span class="dv">2</span>)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">EScalc</span>(score, d<span class="sc">$</span>sex), <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 2.62</code></pre>
 </div>
@@ -914,6 +944,11 @@ window.Quarto = {
 <p>Picture throwing darts. <strong>Reliability</strong> is how <em>tightly grouped</em> your throws are - consistency. A tight cluster is reliable <em>even if it is nowhere near the bullseye</em>. That “near the bullseye” part - accuracy, being on target - is <strong>validity</strong>, and it is a completely separate question. A bathroom scale that always reads five pounds heavy is perfectly reliable and perfectly wrong. Reliability is <em>necessary</em> for validity (you cannot hit the bullseye if your throws scatter randomly) but nowhere near <em>sufficient</em>. That is the whole reason the next chapter exists.</p>
 </div>
 </div>
+</section>
+<section id="sources-of-variance-a-glimpse-of-generalizability-theory" class="level2" data-number="9.9">
+<h2 data-number="9.9" class="anchored" data-anchor-id="sources-of-variance-a-glimpse-of-generalizability-theory"><span class="header-section-number">9.9</span> Sources of Variance: A Glimpse of Generalizability Theory</h2>
+<p>Classical test theory splits observed variance into just two pieces, true and error: <span class="math inline">\(S^2_{obs} = S^2_{true} + S^2_{error}\)</span>. But “error” is a bucket, and often we want to know <em>what is in it</em>. Is the noise coming from the particular <em>items</em> we chose? The <em>rater</em> who scored the responses? The <em>day</em> the person happened to show up? Each of these is a <strong>source of variance</strong>, and lumping them all into one “error” term hides exactly the information you would need to improve the measure.</p>
+<p><strong>Generalizability theory</strong> (G-theory) opens the bucket. It treats each of these as a <strong>facet</strong> and estimates how much of the total variance each one contributes, so you can see which sources matter most and where to spend your effort. As the authors put it, the whole basis of G-theory is to estimate the sources of variability and determine which ones affect your results most. Reliability stops being one number and becomes an analysis of <em>where the noise comes from</em> - and, in the follow-up “decision study,” of how many items or raters you would need to pin the true score down. We build that machinery (variance components, the generalizability coefficient, the D-study) in the <a href="./30-irt.html">item response and generalizability chapter</a>. For now, carry the idea: the <span class="math inline">\(O = T + E\)</span> split is the first step; naming the facets hidden inside that error is the next.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -928,8 +963,8 @@ window.Quarto = {
 </div>
 </div>
 </section>
-<section id="challenge" class="level2" data-number="9.8">
-<h2 data-number="9.8" class="anchored" data-anchor-id="challenge"><span class="header-section-number">9.8</span> Challenge</h2>
+<section id="challenge" class="level2" data-number="9.10">
+<h2 data-number="9.10" class="anchored" data-anchor-id="challenge"><span class="header-section-number">9.10</span> Challenge</h2>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -948,8 +983,8 @@ window.Quarto = {
 </div>
 </div>
 </section>
-<section id="where-we-go-next" class="level2" data-number="9.9">
-<h2 data-number="9.9" class="anchored" data-anchor-id="where-we-go-next"><span class="header-section-number">9.9</span> Where We Go Next</h2>
+<section id="where-we-go-next" class="level2" data-number="9.11">
+<h2 data-number="9.11" class="anchored" data-anchor-id="where-we-go-next"><span class="header-section-number">9.11</span> Where We Go Next</h2>
 <p>A reliable sensor is consistent, but consistency is worthless if it is consistently measuring the <em>wrong thing</em>. That is the bullseye question - are we measuring what we intend? - and it is the subject of <a href="./11-validity.html">validity</a>.</p>
 
 
