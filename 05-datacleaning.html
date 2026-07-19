@@ -805,6 +805,10 @@ div.csl-indent {
 <section id="impossible-values-and-sanity-checks" class="level2" data-number="4.4">
 <h2 data-number="4.4" class="anchored" data-anchor-id="impossible-values-and-sanity-checks"><span class="header-section-number">4.4</span> Impossible Values and Sanity Checks</h2>
 <p>Define what is <em>possible</em> and flag what is not. This is domain knowledge, not statistics:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="" aria-current="page">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">SPSS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Julia</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>age[dat<span class="sc">$</span>age <span class="sc">&gt;</span> <span class="dv">120</span>]  <span class="ot">&lt;-</span> <span class="cn">NA</span>            <span class="co"># no one is 220</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>income[dat<span class="sc">$</span>income <span class="sc">&lt;</span> <span class="dv">0</span>] <span class="ot">&lt;-</span> <span class="cn">NA</span>         <span class="co"># negative income is impossible here</span></span>
@@ -817,6 +821,26 @@ A B
 4 3 </code></pre>
 </div>
 </div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<pre><code>* Recode impossible and coded-missing values to system-missing.
+RECODE age (121 THRU HIGHEST=SYSMIS).
+RECODE income (LOWEST THRU -0.001=SYSMIS) (999=SYSMIS).
+* Fix "b" and stray spaces in group.
+COMPUTE group = UPCASE(LTRIM(RTRIM(group))).
+EXECUTE.
+* Frequency table of the cleaned group variable (missing shown by default).
+FREQUENCIES VARIABLES=group.</code></pre>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">DataFrames</span>, <span class="bu">StatsBase</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>df.age    <span class="op">=</span> [<span class="fu">ismissing</span>(x) <span class="op">||</span> x <span class="op">&gt;</span> <span class="fl">120</span> ? <span class="cn">missing</span> <span class="op">:</span> x for x <span class="kw">in</span> df.age]                <span class="co"># no one is 220</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>df.income <span class="op">=</span> [<span class="fu">ismissing</span>(x) <span class="op">||</span> x <span class="op">&lt;</span> <span class="fl">0</span> <span class="op">||</span> x <span class="op">==</span> <span class="fl">999</span> ? <span class="cn">missing</span> <span class="op">:</span> x for x <span class="kw">in</span> df.income]   <span class="co"># impossible; 999 a code</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>df.group  <span class="op">=</span> <span class="fu">uppercase</span>.(<span class="fu">strip</span>.(<span class="fu">string</span>.(df.group)))                                  <span class="co"># fix "b" and stray spaces</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">countmap</span>(df.group)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 <p>Note the tricky one: <strong>999 was never a real income</strong>. It was a placeholder for “declined to answer,” and software cannot know that. If you had left it in, the mean income would have been badly wrong. Always look for these coded-missing sentinels (999, -1, “N/A”, empty strings) and convert them to a genuine <code>NA</code>.</p>
 </section>
 <section id="missing-data-the-why-matters" class="level2" data-number="4.5">
@@ -827,11 +851,26 @@ A B
 <li><strong>MAR</strong> (Missing At Random): missingness depends on things you <em>observed</em> (older people skip the income item, and you recorded age). Recoverable with the right methods.</li>
 <li><strong>MNAR</strong> (Missing Not At Random): missingness depends on the <em>unobserved value itself</em> (high earners hide their income). The hardest case: no method fully fixes it, and it can quietly bias every result.</li>
 </ul>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">SPSS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">Julia</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colSums</span>(<span class="fu">is.na</span>(dat))     <span class="co"># how much is missing, and where?</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colSums</span>(<span class="fu">is.na</span>(dat))     <span class="co"># how much is missing, and where?</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   age income  group 
      2      2      0 </code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<pre><code>* How much is missing, and where (missing-value analysis over all variables).
+MVA VARIABLES=ALL.</code></pre>
+</div>
+<div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">DataFrames</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">describe</span>(df, <span class="op">:</span>nmissing)     <span class="co"># how much is missing, and where?</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </div>
 </div>
 <p>The default in most software is <strong>listwise deletion</strong> - throw out any row with a gap - which is fine under MCAR and quietly biasing otherwise. Modern practice prefers <strong>multiple imputation</strong>, but the first, non-negotiable step is simply to <em>report</em> how much is missing and think hard about which flavor you are facing.</p>
@@ -840,8 +879,8 @@ A B
 <h2 data-number="4.6" class="anchored" data-anchor-id="outliers-investigate-dont-reflexively-delete"><span class="header-section-number">4.6</span> Outliers: Investigate, Don’t Reflexively Delete</h2>
 <p>An outlier is not automatically an error. It might be your most important data point (the one patient who responded, the fraud you were hired to find). The rule: <strong>investigate before you act.</strong> A value can be (1) an impossible error - fix or remove it; (2) a real but extreme observation - keep it, and consider a robust method or a transformation; or (3) genuinely interesting - study it. Deleting outliers just because they are inconvenient turns honest data into a misleading result.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">scale</span>(<span class="fu">c</span>(<span class="dv">52</span>, <span class="dv">61</span>, <span class="dv">48</span>, <span class="dv">55</span>, <span class="dv">60</span>, <span class="dv">58</span>, <span class="dv">300</span>))    <span class="co"># 300 stands out</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">as.vector</span>(z), <span class="dv">2</span>)                          <span class="co"># z-scores flag the extreme point</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">scale</span>(<span class="fu">c</span>(<span class="dv">52</span>, <span class="dv">61</span>, <span class="dv">48</span>, <span class="dv">55</span>, <span class="dv">60</span>, <span class="dv">58</span>, <span class="dv">300</span>))    <span class="co"># 300 stands out</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">as.vector</span>(z), <span class="dv">2</span>)                          <span class="co"># z-scores flag the extreme point</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] -0.42 -0.32 -0.46 -0.38 -0.33 -0.35  2.27</code></pre>
 </div>
