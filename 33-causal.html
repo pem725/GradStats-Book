@@ -8,7 +8,7 @@
 
 <meta name="description" content="A comprehensive graduate statistics book suitable for social and behavioral sciences. Our approach is to provide interested students a gentle guide to the rudiments of statistical estimation and inference.">
 
-<title>7&nbsp; Testing Hypotheses with Data – Statistics by Us for You</title>
+<title>24&nbsp; Causal Inference with DAGs – Statistics by Us for You</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -59,26 +59,7 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-/* CSS for citations */
-div.csl-bib-body { }
-div.csl-entry {
-  clear: both;
-}
-.hanging-indent div.csl-entry {
-  margin-left:2em;
-  text-indent:-2em;
-}
-div.csl-left-margin {
-  min-width:2em;
-  float:left;
-}
-div.csl-right-inline {
-  margin-left:2em;
-  padding-left:1em;
-}
-div.csl-indent {
-  margin-left: 2em;
-}</style>
+</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -88,8 +69,8 @@ div.csl-indent {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./09-statisticalpower.html" rel="next">
-<link href="./07-covariance.html" rel="prev">
+<link href="./20-beyond.html" rel="next">
+<link href="./30-irt.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -335,7 +316,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./06-zdistribution.html">Making Inferences with Data</a></li><li class="breadcrumb-item"><a href="./08-hypothesistesting.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Testing Hypotheses with Data</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./33-causal.html">Causal Inference</a></li><li class="breadcrumb-item"><a href="./33-causal.html"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Causal Inference with DAGs</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -452,7 +433,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./08-hypothesistesting.html" class="sidebar-item-text sidebar-link active">
+  <a href="./08-hypothesistesting.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Testing Hypotheses with Data</span></span></a>
   </div>
 </li>
@@ -609,7 +590,7 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./33-causal.html" class="sidebar-item-text sidebar-link">
+  <a href="./33-causal.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Causal Inference with DAGs</span></span></a>
   </div>
 </li>
@@ -723,16 +704,14 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#learning-objectives" id="toc-learning-objectives" class="nav-link active" data-scroll-target="#learning-objectives"><span class="header-section-number">7.1</span> Learning Objectives</a></li>
-  <li><a href="#first-why-we-test-anything-at-all" id="toc-first-why-we-test-anything-at-all" class="nav-link" data-scroll-target="#first-why-we-test-anything-at-all"><span class="header-section-number">7.2</span> First, Why We Test Anything at All</a></li>
-  <li><a href="#what-a-null-hypothesis-really-says" id="toc-what-a-null-hypothesis-really-says" class="nav-link" data-scroll-target="#what-a-null-hypothesis-really-says"><span class="header-section-number">7.3</span> What a Null Hypothesis Really Says</a></li>
-  <li><a href="#the-machinery-a-worked-example" id="toc-the-machinery-a-worked-example" class="nav-link" data-scroll-target="#the-machinery-a-worked-example"><span class="header-section-number">7.4</span> The Machinery: A Worked Example</a></li>
-  <li><a href="#the-decision-rule-alpha-critical-regions-and-four-steps" id="toc-the-decision-rule-alpha-critical-regions-and-four-steps" class="nav-link" data-scroll-target="#the-decision-rule-alpha-critical-regions-and-four-steps"><span class="header-section-number">7.5</span> The Decision Rule: <span class="math inline">\(\alpha\)</span>, Critical Regions, and Four Steps</a></li>
-  <li><a href="#two-ways-to-be-wrong" id="toc-two-ways-to-be-wrong" class="nav-link" data-scroll-target="#two-ways-to-be-wrong"><span class="header-section-number">7.6</span> Two Ways to Be Wrong</a></li>
-  <li><a href="#now-the-uncomfortable-part" id="toc-now-the-uncomfortable-part" class="nav-link" data-scroll-target="#now-the-uncomfortable-part"><span class="header-section-number">7.7</span> Now the Uncomfortable Part</a></li>
-  <li><a href="#so-why-do-we-still-do-it" id="toc-so-why-do-we-still-do-it" class="nav-link" data-scroll-target="#so-why-do-we-still-do-it"><span class="header-section-number">7.8</span> So Why Do We Still Do It?</a></li>
-  <li><a href="#challenge" id="toc-challenge" class="nav-link" data-scroll-target="#challenge"><span class="header-section-number">7.9</span> Challenge</a></li>
-  <li><a href="#where-we-go-next" id="toc-where-we-go-next" class="nav-link" data-scroll-target="#where-we-go-next"><span class="header-section-number">7.10</span> Where We Go Next</a></li>
+  <li><a href="#learning-objectives" id="toc-learning-objectives" class="nav-link active" data-scroll-target="#learning-objectives"><span class="header-section-number">24.1</span> Learning Objectives</a></li>
+  <li><a href="#a-dag-is-your-causal-theory-drawn" id="toc-a-dag-is-your-causal-theory-drawn" class="nav-link" data-scroll-target="#a-dag-is-your-causal-theory-drawn"><span class="header-section-number">24.2</span> A DAG Is Your Causal Theory, Drawn</a></li>
+  <li><a href="#the-four-elemental-confounds" id="toc-the-four-elemental-confounds" class="nav-link" data-scroll-target="#the-four-elemental-confounds"><span class="header-section-number">24.3</span> The Four Elemental Confounds</a></li>
+  <li><a href="#the-back-door-criterion" id="toc-the-back-door-criterion" class="nav-link" data-scroll-target="#the-back-door-criterion"><span class="header-section-number">24.4</span> The Back-Door Criterion</a></li>
+  <li><a href="#a-dag-makes-testable-predictions" id="toc-a-dag-makes-testable-predictions" class="nav-link" data-scroll-target="#a-dag-makes-testable-predictions"><span class="header-section-number">24.5</span> A DAG Makes Testable Predictions</a></li>
+  <li><a href="#dags-and-sem-two-notations-one-idea" id="toc-dags-and-sem-two-notations-one-idea" class="nav-link" data-scroll-target="#dags-and-sem-two-notations-one-idea"><span class="header-section-number">24.6</span> DAGs and SEM: Two Notations, One Idea</a></li>
+  <li><a href="#what-this-chapter-teaches" id="toc-what-this-chapter-teaches" class="nav-link" data-scroll-target="#what-this-chapter-teaches"><span class="header-section-number">24.7</span> What This Chapter Teaches</a></li>
+  <li><a href="#where-we-go-next" id="toc-where-we-go-next" class="nav-link" data-scroll-target="#where-we-go-next"><span class="header-section-number">24.8</span> Where We Go Next</a></li>
   </ul>
 </nav>
     </div>
@@ -740,9 +719,9 @@ window.Quarto = {
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./06-zdistribution.html">Making Inferences with Data</a></li><li class="breadcrumb-item"><a href="./08-hypothesistesting.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Testing Hypotheses with Data</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./33-causal.html">Causal Inference</a></li><li class="breadcrumb-item"><a href="./33-causal.html"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Causal Inference with DAGs</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Testing Hypotheses with Data</span></h1>
+<h1 class="title"><span id="causal" class="quarto-section-identifier"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Causal Inference with DAGs</span></span></h1>
 </div>
 
 
@@ -759,222 +738,113 @@ window.Quarto = {
 </header>
 
 
-<p>We often label our efforts “hypothesis testing.” Here we dispel that myth and talk about what we are <em>actually</em> doing. Let us be clear from the first sentence, because this is one of the most misunderstood ideas in statistics:</p>
-<div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Important</span>The Whole Chapter in One Sentence
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>The so-called “null hypothesis significance test” (<span class="math inline">\(H_0\)</span>) is <strong>not</strong> a test of your hypothesis. It is merely a way to check whether your data are consistent with a world in which <strong>nothing is going on</strong> - no effect, no difference, no relationship. Rejecting the null does not prove your idea is right. It only says the data would be surprising if nothing were going on.</p>
-<p>Everything else in this chapter is commentary on that one sentence.</p>
-</div>
-</div>
-<section id="learning-objectives" class="level2" data-number="7.1">
-<h2 data-number="7.1" class="anchored" data-anchor-id="learning-objectives"><span class="header-section-number">7.1</span> Learning Objectives</h2>
+<p>Regression can tell you that two variables are associated. It cannot, on its own, tell you whether one <em>causes</em> the other, or which variables you should control for to find out. Those are causal questions, and causal questions need a causal model. The clearest way to state one is the <strong>directed acyclic graph (DAG)</strong>: a diagram of what you assume causes what. This is the framework Richard McElreath builds his <em>Statistical Rethinking</em> around, and the one we teach in our own Bayesian course. It pairs naturally with everything you have learned about <a href="./15-MRC.html">regression</a> and <a href="./28-sem.html">structural models</a>, because it answers the question those tools cannot: <em>which variables belong in the model?</em></p>
+<section id="learning-objectives" class="level2" data-number="24.1">
+<h2 data-number="24.1" class="anchored" data-anchor-id="learning-objectives"><span class="header-section-number">24.1</span> Learning Objectives</h2>
 <ol type="1">
-<li>Understand what a null hypothesis actually states - and what it does not.</li>
-<li>Learn the mechanics of a significance test so you can compute and read one.</li>
-<li>Distinguish Type I from Type II error, and understand what <span class="math inline">\(\alpha\)</span> buys you.</li>
-<li>Appreciate why rejecting the null is weak evidence for your theory - and why we do it anyway.</li>
+<li>Read a DAG as a set of causal assumptions, and see why it decides what you control for.</li>
+<li>Recognize the four elemental confounds: the fork, the pipe, the collider, and the descendant.</li>
+<li>Use the back-door criterion to choose an adjustment set.</li>
+<li>Know that a DAG makes <em>testable</em> predictions.</li>
 </ol>
 </section>
-<section id="first-why-we-test-anything-at-all" class="level2" data-number="7.2">
-<h2 data-number="7.2" class="anchored" data-anchor-id="first-why-we-test-anything-at-all"><span class="header-section-number">7.2</span> First, Why We Test Anything at All</h2>
-<p>Recall the through-line of this whole book: we care about <strong>populations</strong>, but we only ever have access to <strong>samples</strong>. We make inferences about populations from samples, and we use <strong>probability</strong> to make educated guesses about what a sample tells us given some assumption about the population. Hold onto that sentence; the entire logic of testing hangs from it.</p>
-<p>Here is the move. We do not know the truth about the population. So we <em>assume</em> something specific about it - almost always that there is <strong>no effect</strong> - and then we ask: <em>if that assumption were true, how surprising would my data be?</em> If the data are surprising enough, we doubt the assumption. That assumption is the null hypothesis.</p>
+<section id="a-dag-is-your-causal-theory-drawn" class="level2" data-number="24.2">
+<h2 data-number="24.2" class="anchored" data-anchor-id="a-dag-is-your-causal-theory-drawn"><span class="header-section-number">24.2</span> A DAG Is Your Causal Theory, Drawn</h2>
+<p>A DAG is variables (nodes) joined by arrows. An arrow <span class="math inline">\(X \rightarrow Y\)</span> means “<span class="math inline">\(X\)</span> is a direct cause of <span class="math inline">\(Y\)</span>.” <em>Acyclic</em> means no loops: nothing causes itself, directly or through a chain. The graph has no numbers; it is the causal <em>theory</em>, and it does something a regression cannot: it tells you which variables to include and which to leave out. Two analysts with identical data but different DAGs will, correctly, control for different things.</p>
+<p>Take McElreath’s running example. Does a state’s marriage rate (<span class="math inline">\(M\)</span>) <em>cause</em> its divorce rate (<span class="math inline">\(D\)</span>)? Both are correlated with the median age at marriage (<span class="math inline">\(A\)</span>). One plausible DAG is <span class="math inline">\(A \rightarrow M\)</span>, <span class="math inline">\(A \rightarrow D\)</span>, and <span class="math inline">\(M \rightarrow D\)</span>. Is the <span class="math inline">\(M\)</span>–<span class="math inline">\(D\)</span> association a real causal effect, or just a shadow cast by <span class="math inline">\(A\)</span>? A regression of <span class="math inline">\(D\)</span> on both <span class="math inline">\(M\)</span> and <span class="math inline">\(A\)</span> can separate them, but <em>only because the DAG told you to include <span class="math inline">\(A\)</span></em>. Without the causal picture, you would not know which variable to condition on, and the data alone will never tell you.</p>
 </section>
-<section id="what-a-null-hypothesis-really-says" class="level2" data-number="7.3">
-<h2 data-number="7.3" class="anchored" data-anchor-id="what-a-null-hypothesis-really-says"><span class="header-section-number">7.3</span> What a Null Hypothesis Really Says</h2>
-<p>A null hypothesis, <span class="math inline">\(H_0\)</span>, is a statement of <strong>no effect, no difference, or no relationship</strong>, written in the language of population parameters. It is deliberately boring. Watch what happens when we translate real questions into null statements:</p>
-<ul>
-<li>A weight-loss program? <span class="math inline">\(H_0\)</span>: dieters “would not be different” from people who did no program.</li>
-<li>A new medication or vaccine? <span class="math inline">\(H_0\)</span>: treated people show “no different outcomes” compared to untreated people.</li>
-<li>A natural disaster’s effect on mental health? <span class="math inline">\(H_0\)</span>: the disaster “produces no effects.”</li>
-</ul>
-<p>Notice that in every case, <span class="math inline">\(H_0\)</span> says <em>nothing is happening</em>. The alternative hypothesis, <span class="math inline">\(H_1\)</span>, takes the more optimistic stance that <em>something</em> is happening. We collect data and then - and this is the crux - <strong>we use the data to evaluate the credibility of the null</strong>. The question we are really asking is:</p>
-<blockquote class="blockquote">
-<p>How far away from the null do we need to be before the observed value is considered unlikely <em>if the null were true</em>?</p>
-</blockquote>
-<p>That is a question about <strong>data consistency with a no-effect world</strong>. It is emphatically <em>not</em> the question “is my theory true?” Keep those two apart and you have grasped the key distinction.</p>
-</section>
-<section id="the-machinery-a-worked-example" class="level2" data-number="7.4">
-<h2 data-number="7.4" class="anchored" data-anchor-id="the-machinery-a-worked-example"><span class="header-section-number">7.4</span> The Machinery: A Worked Example</h2>
-<p>Let us make this concrete with the simplest test there is. Suppose a population has a mean <span class="math inline">\(\mu = 20\)</span> and standard deviation <span class="math inline">\(\sigma = 4\)</span>. We draw a sample of <span class="math inline">\(n = 4\)</span> and observe a sample mean of <span class="math inline">\(\bar{x} = 22\)</span>. Is that surprising if the population mean really is 20?</p>
-<p>The key idea is the <strong>sampling distribution of the mean</strong>: if we drew sample after sample, the means would themselves form a distribution, centered on <span class="math inline">\(\mu\)</span>, with a standard deviation - the <strong>standard error of the mean</strong> - of <span class="math inline">\(\sigma_{\bar{x}} = \sigma / \sqrt{n}\)</span>.</p>
+<section id="the-four-elemental-confounds" class="level2" data-number="24.3">
+<h2 data-number="24.3" class="anchored" data-anchor-id="the-four-elemental-confounds"><span class="header-section-number">24.3</span> The Four Elemental Confounds</h2>
+<p>Every DAG, however complicated, is built from four elementary pieces. Knowing how each behaves is most of causal inference (McElreath). Three of them we can watch directly.</p>
+<p><strong>The Fork</strong> (<span class="math inline">\(X \leftarrow Z \rightarrow Y\)</span>). <span class="math inline">\(Z\)</span> is a common cause, a <strong>confounder</strong>. <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> become correlated even with no arrow between them. <strong>Control <span class="math inline">\(Z\)</span></strong> to close the path:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>mu    <span class="ot">&lt;-</span> <span class="dv">20</span>      <span class="co"># population mean under H0</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">&lt;-</span> <span class="dv">4</span>       <span class="co"># population standard deviation</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>n     <span class="ot">&lt;-</span> <span class="dv">4</span>       <span class="co"># sample size</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>xbar  <span class="ot">&lt;-</span> <span class="dv">22</span>      <span class="co"># our observed sample mean</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>se <span class="ot">&lt;-</span> sigma <span class="sc">/</span> <span class="fu">sqrt</span>(n)          <span class="co"># standard error of the mean</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>z  <span class="ot">&lt;-</span> (xbar <span class="sc">-</span> mu) <span class="sc">/</span> se         <span class="co"># how many SEs above the null?</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>p  <span class="ot">&lt;-</span> <span class="fu">pnorm</span>(z, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)  <span class="co"># P(mean &gt; 22) if H0 is true</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">standard_error =</span> se, <span class="at">z =</span> z, <span class="at">p_value =</span> p)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">4</span>); n <span class="ot">&lt;-</span> <span class="dv">2000</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>Z <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n); X <span class="ot">&lt;-</span> Z <span class="sc">+</span> <span class="fu">rnorm</span>(n); Y <span class="ot">&lt;-</span> Z <span class="sc">+</span> <span class="fu">rnorm</span>(n)          <span class="co"># Z causes both; no X-&gt;Y arrow</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">fork_naive   =</span> <span class="fu">round</span>(<span class="fu">cor</span>(X, Y), <span class="dv">2</span>),                        <span class="co"># spurious association</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">fork_control =</span> <span class="fu">round</span>(<span class="fu">cor</span>(<span class="fu">resid</span>(<span class="fu">lm</span>(X<span class="sc">~</span>Z)), <span class="fu">resid</span>(<span class="fu">lm</span>(Y<span class="sc">~</span>Z))), <span class="dv">2</span>))  <span class="co"># control Z: it vanishes</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>standard_error              z        p_value 
-     2.0000000      1.0000000      0.1586553 </code></pre>
+<pre><code>  fork_naive fork_control 
+        0.49        -0.02 </code></pre>
 </div>
 </div>
-<p>So a sample mean of 22 sits exactly one standard error above the null value, and the probability of getting a mean that large (or larger) <em>if the null is true</em> is about 0.159. Let us see it:</p>
+<p><strong>The Pipe</strong> (<span class="math inline">\(X \rightarrow M \rightarrow Y\)</span>). <span class="math inline">\(M\)</span> is a <strong>mediator</strong>; <span class="math inline">\(X\)</span> affects <span class="math inline">\(Y\)</span> <em>through</em> <span class="math inline">\(M\)</span>. Control <span class="math inline">\(M\)</span> and you block the very effect you were trying to measure (this is <em>post-treatment bias</em>):</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulate 10,000 sample means from the H0 world and see where 22 lands</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1908</span>)  <span class="co"># the year Gosset published "Student's" t</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>means <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">10000</span>, <span class="fu">mean</span>(<span class="fu">rnorm</span>(n, <span class="at">mean =</span> mu, <span class="at">sd =</span> sigma)))</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(means, <span class="at">breaks =</span> <span class="dv">40</span>, <span class="at">col =</span> <span class="st">"grey85"</span>, <span class="at">border =</span> <span class="st">"white"</span>,</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Sampling distribution of the mean IF the null is true"</span>,</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"sample mean"</span>)</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> xbar, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">lwd =</span> <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="08-hypothesistesting_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">5</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n); M <span class="ot">&lt;-</span> X <span class="sc">+</span> <span class="fu">rnorm</span>(n); Y <span class="ot">&lt;-</span> M <span class="sc">+</span> <span class="fu">rnorm</span>(n)          <span class="co"># effect runs X -&gt; M -&gt; Y</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">pipe_naive   =</span> <span class="fu">round</span>(<span class="fu">cor</span>(X, Y), <span class="dv">2</span>),                        <span class="co"># the real, total effect</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">pipe_control =</span> <span class="fu">round</span>(<span class="fu">cor</span>(<span class="fu">resid</span>(<span class="fu">lm</span>(X<span class="sc">~</span>M)), <span class="fu">resid</span>(<span class="fu">lm</span>(Y<span class="sc">~</span>M))), <span class="dv">2</span>))   <span class="co"># control M: effect blocked</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  pipe_naive pipe_control 
+        0.58        -0.01 </code></pre>
 </div>
 </div>
-</div>
-<p>The red line is our result. It is on the high side, sure, but plenty of the null world’s own samples land out there too. This is what “the data are (or are not) surprising under <span class="math inline">\(H_0\)</span>” looks like, drawn to scale.</p>
-</section>
-<section id="the-decision-rule-alpha-critical-regions-and-four-steps" class="level2" data-number="7.5">
-<h2 data-number="7.5" class="anchored" data-anchor-id="the-decision-rule-alpha-critical-regions-and-four-steps"><span class="header-section-number">7.5</span> The Decision Rule: <span class="math inline">\(\alpha\)</span>, Critical Regions, and Four Steps</h2>
-<p>We need a rule for “surprising enough.” By long (and arbitrary) convention, we draw the line at 5%: we set a <strong>significance level</strong> <span class="math inline">\(\alpha = .05\)</span> and declare a result “statistically significant” if it falls in the most extreme 5% of the null distribution - the <strong>critical region</strong>.</p>
-<ul>
-<li>For a <strong>two-tailed</strong> test (we would care about a difference in either direction), the critical values are <span class="math inline">\(z = \pm 1.96\)</span>.</li>
-<li>For a <strong>one-tailed</strong> test (we only care about one direction), the critical value is <span class="math inline">\(z = 1.65\)</span>.</li>
-</ul>
-<p>Every significance test, no matter how fancy, follows the same four steps:</p>
-<ol type="1">
-<li><strong>State the hypotheses</strong> and choose <span class="math inline">\(\alpha\)</span>.</li>
-<li><strong>Set the decision criterion</strong> - locate the critical region.</li>
-<li><strong>Collect data</strong> and compute the test statistic.</li>
-<li><strong>Decide</strong>: if the statistic falls in the critical region, reject <span class="math inline">\(H_0\)</span>; otherwise, fail to reject it.</li>
-</ol>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>We Never <em>Accept</em> the Null
+<p><strong>The Collider</strong> (<span class="math inline">\(X \rightarrow Z \leftarrow Y\)</span>). <span class="math inline">\(Z\)</span> is a common <em>effect</em>. Here <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are genuinely unrelated, but conditioning on <span class="math inline">\(Z\)</span> <strong>creates</strong> an association that was never there:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">6</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n); Y <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n); Z <span class="ot">&lt;-</span> X <span class="sc">+</span> Y <span class="sc">+</span> <span class="fu">rnorm</span>(n)          <span class="co"># X and Y both cause Z</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">collider_naive   =</span> <span class="fu">round</span>(<span class="fu">cor</span>(X, Y), <span class="dv">2</span>),                    <span class="co"># correctly ~ 0</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">collider_control =</span> <span class="fu">round</span>(<span class="fu">cor</span>(<span class="fu">resid</span>(<span class="fu">lm</span>(X<span class="sc">~</span>Z)), <span class="fu">resid</span>(<span class="fu">lm</span>(Y<span class="sc">~</span>Z))), <span class="dv">2</span>))  <span class="co"># control Z: spurious!</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  collider_naive collider_control 
+           -0.04            -0.51 </code></pre>
 </div>
 </div>
-<div class="callout-body-container callout-body">
-<p>Before you try your hand, be crystal clear about something: <strong>we never accept the null. We only reject the null or fail to reject it.</strong> Failing to reject <span class="math inline">\(H_0\)</span> is not evidence that nothing is happening. It may just mean our sample was too small, too noisy, or too crude to detect what is there. Absence of evidence is not evidence of absence.</p>
-</div>
-</div>
-</section>
-<section id="two-ways-to-be-wrong" class="level2" data-number="7.6">
-<h2 data-number="7.6" class="anchored" data-anchor-id="two-ways-to-be-wrong"><span class="header-section-number">7.6</span> Two Ways to Be Wrong</h2>
-<p>Because we are guessing about a population from a sample, we can guess wrong in two distinct ways:</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 32%">
-<col style="width: 32%">
-<col style="width: 34%">
-</colgroup>
-<thead>
-<tr class="header">
-<th></th>
-<th><span class="math inline">\(H_0\)</span> is really <strong>true</strong></th>
-<th><span class="math inline">\(H_0\)</span> is really <strong>false</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>We reject <span class="math inline">\(H_0\)</span></strong></td>
-<td>Type I error (<span class="math inline">\(\alpha\)</span>)</td>
-<td>Correct ✓ (power, <span class="math inline">\(1-\beta\)</span>)</td>
-</tr>
-<tr class="even">
-<td><strong>We fail to reject <span class="math inline">\(H_0\)</span></strong></td>
-<td>Correct ✓ (<span class="math inline">\(1-\alpha\)</span>)</td>
-<td>Type II error (<span class="math inline">\(\beta\)</span>)</td>
-</tr>
-</tbody>
-</table>
-<p>A <strong>Type I error</strong> is a false alarm: we shout “effect!” when nothing is there. Its rate is exactly the <span class="math inline">\(\alpha\)</span> we chose - that is what <span class="math inline">\(\alpha = .05\)</span> <em>means</em>. A <strong>Type II error</strong> is a miss: we shrug “nothing here” when something really is. Three things push a test toward the correct-rejection cell: a <strong>bigger true difference</strong>, <strong>less variability</strong>, and a <strong>larger sample</strong>. That correct-rejection probability, <span class="math inline">\(1-\beta\)</span>, is called <strong>power</strong>, and it gets its own chapter (<a href="./09-statisticalpower.html">Statistical Power</a>).</p>
-</section>
-<section id="now-the-uncomfortable-part" class="level2" data-number="7.7">
-<h2 data-number="7.7" class="anchored" data-anchor-id="now-the-uncomfortable-part"><span class="header-section-number">7.7</span> Now the Uncomfortable Part</h2>
-<p>You could stop here, pass most stats exams, and go on to (mis)use significance tests for the rest of your career like everyone else. But we promised you the <em>why</em>, so buckle up. There are many detractors of null hypothesis significance testing (NHST), but none more insightful or knowledgeable than <strong>Paul Meehl</strong> <span class="citation" data-cites="Meehl1967">(<a href="#ref-Meehl1967" role="doc-biblioref">Meehl 1967</a>)</span>. His critique deserves your full attention.</p>
-<p><strong>1. The test answers the wrong question.</strong> What you <em>want</em> to know is the probability that your hypothesis is true given your data, <span class="math inline">\(P(H \mid D)\)</span>. What the p-value gives you is the probability of your data given the null, <span class="math inline">\(P(D \mid H_0)\)</span>. These are not the same thing, and one is not a stand-in for the other. Confusing <span class="math inline">\(P(D \mid H_0)\)</span> with <span class="math inline">\(P(H \mid D)\)</span> is one of the most common mistakes in applied statistics.</p>
-<p><strong>2. The null is almost certainly false before you collect a single datum.</strong> In the social sciences, two groups are essentially <em>never</em> exactly equal down to infinite decimal places. So <span class="math inline">\(P(H_0) \approx 0\)</span> from the start; the null is a straw man. With a big enough sample you can reject <em>any</em> nil null, which means a “significant” result can be a statement about your sample size rather than about the world.</p>
-<p><strong>3. Rejecting <span class="math inline">\(H_0\)</span> is not evidence for <span class="math inline">\(H\)</span>.</strong> This is the logical heart of it. Even granting the test, rejecting “nothing is happening” does not establish <em>your particular explanation</em> for why something is happening. Logically, NHST commits the fallacy of <strong>affirming the consequent</strong>: “if my theory is true, then I’ll see an effect; I see an effect; therefore my theory is true.” That reasoning is invalid, and no amount of <span class="math inline">\(p &lt; .05\)</span> repairs it.</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Why One Failed Prediction Doesn’t Sink a Theory (or One Success Save It)
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Meehl pointed out that a theoretical prediction never rides alone. To derive a testable observation you must bolt your substantive theory <span class="math inline">\(T\)</span> together with a raft of <strong>auxiliary assumptions</strong> - other theories <span class="math inline">\(A_x\)</span>, a “all else equal” clause <span class="math inline">\(C_p\)</span>, assumptions about your instruments <span class="math inline">\(A_i\)</span>, and the particular conditions you actually realized <span class="math inline">\(C_n\)</span>:</p>
-<p><span class="math display">\[(T \cdot A_x \cdot C_p \cdot A_i \cdot C_n) \vdash (O_1 \supset O_2)\]</span></p>
-<p>Because the whole bundle is on trial, a rejected null can’t tell you <em>which</em> piece failed - maybe your theory, maybe your thermometer. This is why “we ran a significance test” is a thin foundation for a scientific claim.</p>
-</div>
-</div>
-<p><strong>4. Significant is not the same as important.</strong> A result can be statistically significant and utterly trivial, or non-significant and enormously important. An effect “may be significantly different from the null but that effect may still be very small” - you just had a big sample or a tiny standard error. This is why we report <strong>effect sizes</strong> (like Cohen’s <span class="math inline">\(d\)</span>) alongside p-values. As McKnight is fond of noting, a correlation below .5 can flag a hugely important effect, while a correlation above .9 can be a trivial finding. The p-value alone cannot tell the difference; only you and your judgment can.</p>
-</section>
-<section id="so-why-do-we-still-do-it" class="level2" data-number="7.8">
-<h2 data-number="7.8" class="anchored" data-anchor-id="so-why-do-we-still-do-it"><span class="header-section-number">7.8</span> So Why Do We Still Do It?</h2>
-<p>Fair question. Because, as Sir Ronald Fisher himself insisted (and as we noted back in the <a href="./intro.html">introduction</a>), a significant test is best read as a <strong>reason for optimism</strong>, a hint that something here is worth a closer look, and <em>nothing more</em>. It is a screening tool, not a verdict.</p>
-<p>And pragmatically: since NHST tends to be the <strong>gate-keeper of social-science findings</strong>, you might find some comfort in knowing how the tests are computed, even as you hold them at arm’s length. You have to speak the language to change the conversation. So learn it well, then use it wisely: report your effect sizes, quantify your uncertainty honestly, and never confuse a small p-value with the truth of your theory.</p>
+<p><strong>The Descendant.</strong> Conditioning on a variable <em>caused by</em> another partly conditions on that other variable. A descendant of a collider re-opens the collider a little; a descendant of a confounder closes the fork a little. The rule of thumb: a descendant behaves like a weak version of its parent.</p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Important</span>Estimation vs.&nbsp;testing - and the alternatives to the ritual
+<span class="screen-reader-only">Important</span>The one table to remember
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Notice that this whole chapter answered a <strong>testing</strong> question (“is it different from the null?”) and never really an <strong>estimation</strong> one (“what <em>is</em> the effect, and how sure am I?”). Those are different questions, and modern practice increasingly leads with estimation. You are not stuck with the normal-curve <span class="math inline">\(p\)</span>-value, either: a <strong>permutation test</strong> gets you a <span class="math inline">\(p\)</span>-value with no distributional assumption, a <strong>bootstrap</strong> interval tests by simply excluding the null, and a <strong>Bayesian</strong> analysis reports the posterior probability of your hypothesis directly (via a credible interval or a ROPE). We build all three - and draw the estimation-vs-testing line sharply - in <a href="./20-beyond.html">Beyond the Normal Curve</a>.</p>
+<p>Whether controlling for a variable <em>helps or hurts</em> depends entirely on its role in the DAG, not on anything in the data:</p>
+<ul>
+<li><strong>Confounder (fork):</strong> control it. Not controlling it leaves a spurious association.</li>
+<li><strong>Mediator (pipe):</strong> do <em>not</em> control it if you want the total effect. Controlling it blocks the effect.</li>
+<li><strong>Collider:</strong> <em>never</em> control it. Controlling it manufactures a spurious association.</li>
+<li><strong>Descendant:</strong> treat it as a weaker version of whatever it descends from.</li>
+</ul>
+<p>No fit statistic can tell these apart. The difference is entirely in the direction of the arrows, which the data cannot reveal. That is why you need the DAG.</p>
 </div>
 </div>
 </section>
-<section id="challenge" class="level2" data-number="7.9">
-<h2 data-number="7.9" class="anchored" data-anchor-id="challenge"><span class="header-section-number">7.9</span> Challenge</h2>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Do One Yourself
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>A commuter claims her average drive is 24.3 minutes. You suspect it is longer. Over <span class="math inline">\(n = 9\)</span> independent days you record a mean of <span class="math inline">\(\bar{x} = 27\)</span> minutes; assume the population standard deviation is <span class="math inline">\(\sigma = 6\)</span> minutes.</p>
-<ol type="1">
-<li>State <span class="math inline">\(H_0\)</span> and <span class="math inline">\(H_1\)</span> in words and as parameter statements. Is this one-tailed or two-tailed?</li>
-<li>Compute the standard error of the mean, the <span class="math inline">\(z\)</span> statistic, and the p-value (do it in R with <code>pnorm()</code>).</li>
-<li>At <span class="math inline">\(\alpha = .05\)</span>, what do you decide - and state the decision using the correct language (reject / fail to reject).</li>
-<li>Now the hard part: write one sentence explaining what your p-value <strong>does</strong> mean, and one sentence explaining what a naive reader would <strong>wrongly</strong> think it means.</li>
-</ol>
-<p>If you can do step 4 cleanly, you understand hypothesis testing better than many working researchers.</p>
-</div>
-</div>
+<section id="the-back-door-criterion" class="level2" data-number="24.4">
+<h2 data-number="24.4" class="anchored" data-anchor-id="the-back-door-criterion"><span class="header-section-number">24.4</span> The Back-Door Criterion</h2>
+<p>Given a DAG, <em>which</em> variables must you control to estimate the causal effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span>? The <strong>back-door criterion</strong> answers it: block every “back-door path” - every non-causal path from <span class="math inline">\(X\)</span> to <span class="math inline">\(Y\)</span> that begins with an arrow <em>into</em> <span class="math inline">\(X\)</span> - by controlling confounders, while being careful not to open any colliders. For anything but the simplest graph this is easy to get wrong by hand, so the <code>dagitty</code> package (which the course uses) computes the adjustment set for you:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The real tool (needs dagitty — shown, not run on the book's server)</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dagitty)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>dag <span class="ot">&lt;-</span> <span class="fu">dagitty</span>(<span class="st">"dag{ X -&gt; Y ; X &lt;- Z -&gt; Y }"</span>)     <span class="co"># a fork: Z confounds X and Y</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">adjustmentSets</span>(dag, <span class="at">exposure =</span> <span class="st">"X"</span>, <span class="at">outcome =</span> <span class="st">"Y"</span>)   <span class="co"># -&gt; { Z }: control Z, nothing else</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The output is the set of variables to put in your regression. Sometimes it is empty (no adjustment needed); sometimes there is more than one valid set; sometimes it warns you that the effect is <em>not identifiable</em> from the data you have. All of that is causal information you cannot get from the numbers alone.</p>
 </section>
-<section id="where-we-go-next" class="level2" data-number="7.10">
-<h2 data-number="7.10" class="anchored" data-anchor-id="where-we-go-next"><span class="header-section-number">7.10</span> Where We Go Next</h2>
-<p>We deliberately set aside one cell of the error table - the correct-rejection probability, <span class="math inline">\(1-\beta\)</span>, or <strong>power</strong>. Power is where you take back some control: it is the part of testing you can plan for <em>before</em> you collect a single observation. That is the subject of the next chapter, <a href="./09-statisticalpower.html">Statistical Power</a>.</p>
+<section id="a-dag-makes-testable-predictions" class="level2" data-number="24.5">
+<h2 data-number="24.5" class="anchored" data-anchor-id="a-dag-makes-testable-predictions"><span class="header-section-number">24.5</span> A DAG Makes Testable Predictions</h2>
+<p>A DAG is an assumption, but not an untestable one. Every DAG implies a set of <strong>conditional independencies</strong> - statements like “<span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> should be independent once we account for <span class="math inline">\(C\)</span>” - that the data can confirm or refute:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">impliedConditionalIndependencies</span>(dag)   <span class="co"># the testable implications of your DAG</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>If the data violate an independence your DAG predicts, the DAG is wrong and needs revising. This is how a causal model earns trust: not by fitting the data (any flexible model can do that), but by surviving the specific predictions it makes. It is the same discipline the <a href="./23-sportspage.html">Sports Page chapter</a> preached, applied to causal structure.</p>
+</section>
+<section id="dags-and-sem-two-notations-one-idea" class="level2" data-number="24.6">
+<h2 data-number="24.6" class="anchored" data-anchor-id="dags-and-sem-two-notations-one-idea"><span class="header-section-number">24.6</span> DAGs and SEM: Two Notations, One Idea</h2>
+<p>Coming from psychology, we will let you in on something: a DAG is the <em>same causal object</em> as a <a href="./28-sem.html">structural equation model</a>. The arrows are identical; only the notation differs. One of us cheerfully admits to being more fluent in standard SEM path-diagram notation than in “the rather sparse DAG notation” - but the causal logic underneath is one and the same. An SEM is a DAG with its arrows <em>estimated</em>; a DAG is an SEM <em>before</em> you attach the numbers. So the workflow is always the same two steps: <strong>draw the DAG</strong> to decide the structure (which paths exist, which variables to control), then <strong>fit the model</strong> to put numbers on it. And carry the caution from the mediation work: fitting never <em>verifies</em> the causal story. The perennial temptation, in the authors’ own words, is to “assume causality but rely on correlation.” The DAG is what keeps you honest about the difference.</p>
+</section>
+<section id="what-this-chapter-teaches" class="level2" data-number="24.7">
+<h2 data-number="24.7" class="anchored" data-anchor-id="what-this-chapter-teaches"><span class="header-section-number">24.7</span> What This Chapter Teaches</h2>
+<ul>
+<li>A <strong>DAG</strong> states your causal assumptions and, from them, tells you which variables to control - something no regression can decide on its own.</li>
+<li>The <strong>four elemental confounds</strong>: control a fork, leave a pipe alone (for the total effect), never control a collider, and treat a descendant as a weak version of its parent.</li>
+<li>The <strong>back-door criterion</strong> (via <code>dagitty::adjustmentSets</code>) picks the variables to adjust for.</li>
+<li>A DAG makes <strong>testable conditional-independence predictions</strong>; a good causal model survives them.</li>
+<li>A DAG and an SEM are the <strong>same causal object</strong> in different notation: draw the graph, then fit the model.</li>
+</ul>
+</section>
+<section id="where-we-go-next" class="level2" data-number="24.8">
+<h2 data-number="24.8" class="anchored" data-anchor-id="where-we-go-next"><span class="header-section-number">24.8</span> Where We Go Next</h2>
+<p>DAGs are one half of the <em>Statistical Rethinking</em> worldview the authors teach; the other half is Bayesian. Having drawn our causal assumptions, we turn to a different way of quantifying uncertainty about them. The <a href="./20-beyond.html">next part</a> steps beyond the normal-curve, point-estimate, reject-or-accept world into resampling, robust methods, and Bayesian inference - the framework in which McElreath’s DAGs are usually put to work.</p>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="list">
-<div id="ref-Meehl1967" class="csl-entry" role="listitem">
-Meehl, P. E. 1967. <span>“Theory-Testing in Psychology and Physics: A Methodological Paradox.”</span> <em>Philosophy of Science</em> 34 (2): 103–15.
-</div>
-</div>
 </section>
 
 </main> <!-- /main -->
@@ -1409,13 +1279,13 @@ Meehl, P. E. 1967. <span>“Theory-Testing in Psychology and Physics: A Methodol
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./07-covariance.html" class="pagination-link" aria-label="Covariance and Association">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Covariance and Association</span></span>
+      <a href="./30-irt.html" class="pagination-link" aria-label="More Item Response Theory, and Generalizability">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">More Item Response Theory, and Generalizability</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./09-statisticalpower.html" class="pagination-link" aria-label="Statistical Power: How to Find Things That May Not Be There">
-        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Statistical Power: How to Find Things That May Not Be There</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./20-beyond.html" class="pagination-link" aria-label="Beyond the Normal Curve: Resampling, Robust, and Bayesian Statistics">
+        <span class="nav-page-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Beyond the Normal Curve: Resampling, Robust, and Bayesian Statistics</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
