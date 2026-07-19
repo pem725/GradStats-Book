@@ -1,0 +1,92 @@
+# Measurement Invariance: Does the Ruler Mean the Same Thing for Everyone? {#invariance}
+
+Before you compare two groups on a measure - do women and men differ in curiosity? do cultures differ in reflectiveness? - you have to answer a prior question: does the measure mean the *same thing* in both groups? If the items behave differently across groups, a difference in scores can be an artifact of the **ruler**, not a real difference in the trait. Checking that the ruler is the same is **measurement invariance**, and it is one of the most consequential, and most skipped, steps in group research.
+
+## Learning Objectives
+
+1.  Explain why a group difference in scores can be a measurement artifact.
+2.  State the four rungs of invariance (configural, metric, scalar, strict) and what each one licenses.
+3.  Test invariance with a sequence of multi-group CFAs, judged by the change in fit.
+4.  Read a partial-invariance result and know when a comparison is still worth making.
+
+## The Artifact You Are Guarding Against
+
+Suppose two groups have exactly the same true level of a trait, but one group tends to answer every item a little higher at the same trait level, because of a translation, a cultural norm, a response style, anything at all. Their composite scores will differ even though the trait does not. Watch it happen:
+
+```{r}
+set.seed(1); N <- 300
+grp   <- rep(c("A", "B"), each = N)
+trait <- rnorm(2 * N)                          # SAME true trait distribution in both groups
+bias  <- ifelse(grp == "B", 0.5, 0)            # group B answers 0.5 higher at the same trait level
+items <- sapply(1:6, function(i) trait + bias + rnorm(2 * N, sd = 0.8))
+composite <- rowMeans(items)
+
+c(true_mean_A     = mean(trait[grp == "A"]),   # equal by construction
+  true_mean_B     = mean(trait[grp == "B"]),
+  observed_mean_A = mean(composite[grp == "A"]),
+  observed_mean_B = mean(composite[grp == "B"]),
+  t_test_p        = t.test(composite ~ grp)$p.value)
+```
+
+The true trait was identical in both groups, yet the observed difference is large and strongly "significant." It is entirely a property of the measurement, not the people. Report it as a group difference and you have published an artifact. Measurement invariance is the check that catches this before it reaches print.
+
+## Invariance Is a Ladder, Not a Verdict
+
+The instinct is to ask "is the scale invariant, yes or no?" That is the wrong question. As the authors put it in their cross-cultural work, comparability across groups is not one property but **a ladder of increasingly demanding rungs**, and a scale can stand on a lower rung without reaching a higher one. The most useful result is usually not whether a scale passes or fails overall, but *exactly where it begins to break down*, because that tells you which comparisons you are allowed to make. There are four rungs.
+
+- **Configural** - do the same items form the same dimensions in each group? If people do not even organize the items into the same pattern, the scale is measuring different things, and comparison stops here. *Required for any comparison.*
+- **Metric (equal loadings)** - is each item tied to its construct with the same strength across groups? This is what lets you compare how the construct *relates to other variables*. *Permits comparing correlations and relationships.*
+- **Scalar (equal intercepts)** - do people at the same trait level give the same average answer, regardless of group? Only here can *mean scores* be compared without ambiguity. *Permits comparing means.*
+- **Strict (equal residuals)** - additionally, is the leftover measurement noise equal across groups? Rarely necessary for a substantive comparison. *Usually reported only for completeness.*
+
+The rung you reach decides the comparison you have earned. In the authors' words, a scale that reaches metric but not scalar invariance is not a failure: it can still be used to study how a trait relates to other things in each group; it simply cannot be used to rank the groups by their average level. Knowing which rung you are on is the whole point.
+
+## How You Test It
+
+Invariance is tested with **multi-group confirmatory factor analysis** ([CFA](28-sem.qmd)): fit the same factor model to every group, then progressively *constrain* parameters to be equal, one rung at a time. The idiom is `lavaan`:
+
+```r
+# Multi-group CFA invariance sequence (needs lavaan — shown, not run on the book's server)
+library(lavaan)
+model <- 'curiosity =~ x1 + x2 + x3 + x4 + x5 + x6'
+configural <- cfa(model, data = d, group = "group")                             # same shape
+metric     <- cfa(model, data = d, group = "group", group.equal = "loadings")   # + equal loadings
+scalar     <- cfa(model, data = d, group = "group",
+                  group.equal = c("loadings", "intercepts"))                    # + equal intercepts
+strict     <- cfa(model, data = d, group = "group",
+                  group.equal = c("loadings", "intercepts", "residuals"))       # + equal residuals
+```
+
+Each step adds constraints. The question at each rung is simple: *does forcing this equality make the fit meaningfully worse?* If constraining the loadings barely changes fit, metric invariance holds; if constraining the intercepts barely changes fit, scalar holds. "Barely" is judged by the **change in fit indices**, not the chi-square difference test, which is oversensitive in large samples. The common thresholds:
+
+- **ΔCFI < .010** (Cheung & Rensvold, 2002) is the workhorse rule.
+- Chen (2007) adds ΔRMSEA ≤ .015 and ΔSRMR ≤ .030 for the metric step, or ≤ .010 for the scalar and stricter steps.
+
+A practical note on the estimator: treat binary or few-category items as categorical (`estimator = "WLSMV"`); treat six-or-more-point items as continuous with robust ML (`estimator = "MLR"`), and keep every case with full-information maximum likelihood rather than dropping incomplete rows.
+
+## When It Fails, It Tells You Something
+
+Failure is not the end of the analysis; it is a finding. The authors' study of four "epistemic virtue" scales across the United States, India, and Japan is a clean illustration, because each scale landed on a *different* rung:
+
+- One scale reached only **metric** invariance: the trait behaves as one ability everywhere, but at a given level people in different cultures still answer differently, so **average scores cannot be compared** - traced to item exposure and translation, not to a real difference in the ability.
+- One reached **partial scalar** invariance, with a few intercepts freed in exactly the content (social and stress-related items) where cultural norms around inquiry and self-disclosure are known to differ.
+- Two failed **configural** invariance outright: their proposed factor structure did not hold even within a single country, revealing a problem with the scale's structure itself rather than with the cultures.
+
+Each failure points somewhere specific - a biased item, a culture-bound norm, a broken factor structure - which is why *where* a scale breaks down is more useful than a pass or fail stamp.
+
+::: {.callout-important}
+## Partial invariance, and when a comparison is still worth making
+
+Full scalar invariance is a high bar, and real scales often miss it on a few items. **Partial invariance** relaxes the requirement: you hold most items to the equal-intercept standard and let a few differ, identifying which ones with modification indices. The convention (Byrne, Shavelson, & Muthén, 1989) is that at least *two* items per dimension must behave identically across groups for a comparison to remain meaningful. But there is a cost, and the authors state it plainly: the more items you must set free, the less the remaining comparison is worth. Report how many you freed; do not bury it.
+:::
+
+## What This Chapter Teaches
+
+- A group difference in scores can be a **measurement artifact**; invariance is the check that catches it.
+- Invariance is a **ladder** - configural, metric, scalar, strict - and each rung licenses a different comparison (relationships at metric, means at scalar).
+- Test it with a sequence of **multi-group CFAs**, judging each step by the *change* in fit (ΔCFI < .010).
+- **Failure is diagnostic**: where a scale breaks down tells you about the items, the groups, or the construct.
+
+## Where We Go Next
+
+Factors and invariance describe people along continuous dimensions. The [next chapter](29-latentclass.qmd) turns to a different question - not "where does each person fall?" but "which *kind* of person is this?" - and the latent-class family of models.
