@@ -14,32 +14,30 @@ Everything else the running code needs - regression and ANOVA (`lm`, `aov`), fac
 
 ## To reproduce the walkthrough examples
 
-Several chapters show the *production* tool for a job as static code (for example, `lavaan` for SEM, `mirt` for IRT, `brms` for Bayesian models). To run those yourself, install:
+Several chapters show the *production* tool for a job as static code (for example, `lavaan` for SEM, `mirt` for IRT, `brms` for Bayesian models). These are the packages the book actually names; all are on CRAN, so a single call installs them:
 
 ```r
 install.packages(c(
-  "psych",       # reliability (alpha, omega), EFA, describe()
-  "lavaan",      # confirmatory factor analysis, SEM, measurement invariance
-  "semTools",    # omega and invariance helpers for lavaan
-  "GPArotation", # factor rotations used with psych::fa()
-  "mirt",        # item response theory (2PL, graded response)
-  "poLCA",       # latent class analysis
-  "mice",        # multiple imputation for missing data
-  "car",         # VIF and Type II/III sums of squares (Anova)
-  "MASS",        # robust regression (rlm) and utilities
-  "WRS2",        # Wilcox robust methods (trimmed-means tests)
-  "boot",        # the bootstrap
-  "mediation",   # mediation analysis with sensitivity checks
-  "dagitty",     # directed acyclic graphs (adjustment sets)
-  "GGally"       # pair plots
+  "psych",    # reliability (alpha, omega), EFA, describe()
+  "lavaan",   # confirmatory factor analysis, SEM, measurement invariance
+  "mirt",     # item response theory (2PL, graded response)
+  "poLCA",    # latent class analysis
+  "mice",     # multiple imputation for missing data
+  "dagitty",  # directed acyclic graphs (adjustment sets, implied independencies)
+  "WRS2",     # Wilcox robust methods (trimmed-means tests)
+  "MASS"      # robust regression (rlm); ships with R, listed here for completeness
 ))
 ```
 
-For the Bayesian chapters, McElreath's `rethinking` and `brms` both compile models to **Stan**, which needs a working C++ toolchain:
+For the Bayesian chapters, `brms` and `bayestestR` are on CRAN, but McElreath's `rethinking` is **not** - it is distributed on GitHub. Both `brms` and `rethinking` compile models to **Stan**, which needs a working C++ toolchain:
 
 ```r
-install.packages(c("brms", "rethinking", "bayestestR", "TOSTER"))
-# rethinking: see https://github.com/rmcelreath/rethinking for the Stan setup steps
+install.packages(c("brms", "bayestestR"))   # on CRAN
+
+# rethinking is GitHub-only, so install it from there:
+install.packages("remotes")
+remotes::install_github("rmcelreath/rethinking")
+# Stan toolchain setup: https://github.com/rmcelreath/rethinking
 ```
 
 ## SPSS and Julia
