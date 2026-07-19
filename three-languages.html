@@ -8,7 +8,7 @@
 
 <meta name="description" content="A comprehensive graduate statistics book suitable for social and behavioral sciences. Our approach is to provide interested students a gentle guide to the rudiments of statistical estimation and inference.">
 
-<title>2&nbsp; The Best Guess – Statistics by Us for You</title>
+<title>The Same Analysis in R, SPSS, and Julia – Statistics by Us for You</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -69,8 +69,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./04-Dmeasures.html" rel="next">
-<link href="./02-distributions.html" rel="prev">
+<link href="./required-packages.html" rel="next">
+<link href="./27-methods-showcase.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -113,35 +113,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 </head>
 
@@ -316,7 +287,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02-distributions.html">The Basics</a></li><li class="breadcrumb-item"><a href="./03-CTmeasures.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">The Best Guess</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./three-languages.html">Appendices</a></li><li class="breadcrumb-item"><a href="./three-languages.html">The Same Analysis in R, SPSS, and Julia</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -392,7 +363,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./03-CTmeasures.html" class="sidebar-item-text sidebar-link active">
+  <a href="./03-CTmeasures.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">The Best Guess</span></span></a>
   </div>
 </li>
@@ -699,7 +670,7 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-12" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./three-languages.html" class="sidebar-item-text sidebar-link">
+  <a href="./three-languages.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">The Same Analysis in R, SPSS, and Julia</span></a>
   </div>
 </li>
@@ -733,12 +704,13 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#learning-objectives" id="toc-learning-objectives" class="nav-link active" data-scroll-target="#learning-objectives"><span class="header-section-number">2.1</span> Learning Objectives</a></li>
-  <li><a href="#three-ways-to-say-typical" id="toc-three-ways-to-say-typical" class="nav-link" data-scroll-target="#three-ways-to-say-typical"><span class="header-section-number">2.2</span> Three Ways to Say “Typical”</a></li>
-  <li><a href="#why-the-mean-is-best-and-when-it-isnt" id="toc-why-the-mean-is-best-and-when-it-isnt" class="nav-link" data-scroll-target="#why-the-mean-is-best-and-when-it-isnt"><span class="header-section-number">2.3</span> Why the Mean Is “Best” (and When It Isn’t)</a></li>
-  <li><a href="#when-the-mean-lies" id="toc-when-the-mean-lies" class="nav-link" data-scroll-target="#when-the-mean-lies"><span class="header-section-number">2.4</span> When the Mean Lies</a></li>
-  <li><a href="#challenge" id="toc-challenge" class="nav-link" data-scroll-target="#challenge"><span class="header-section-number">2.5</span> Challenge</a></li>
-  <li><a href="#where-we-go-next" id="toc-where-we-go-next" class="nav-link" data-scroll-target="#where-we-go-next"><span class="header-section-number">2.6</span> Where We Go Next</a></li>
+  <li><a href="#descriptive-statistics" id="toc-descriptive-statistics" class="nav-link active" data-scroll-target="#descriptive-statistics">Descriptive Statistics</a></li>
+  <li><a href="#correlation" id="toc-correlation" class="nav-link" data-scroll-target="#correlation">Correlation</a></li>
+  <li><a href="#comparing-two-groups-t-test" id="toc-comparing-two-groups-t-test" class="nav-link" data-scroll-target="#comparing-two-groups-t-test">Comparing Two Groups (t-test)</a></li>
+  <li><a href="#linear-regression" id="toc-linear-regression" class="nav-link" data-scroll-target="#linear-regression">Linear Regression</a></li>
+  <li><a href="#one-way-anova" id="toc-one-way-anova" class="nav-link" data-scroll-target="#one-way-anova">One-Way ANOVA</a></li>
+  <li><a href="#principal-components" id="toc-principal-components" class="nav-link" data-scroll-target="#principal-components">Principal Components</a></li>
+  <li><a href="#a-note-on-the-three-environments" id="toc-a-note-on-the-three-environments" class="nav-link" data-scroll-target="#a-note-on-the-three-environments">A Note on the Three Environments</a></li>
   </ul>
 </nav>
     </div>
@@ -746,9 +718,9 @@ window.Quarto = {
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02-distributions.html">The Basics</a></li><li class="breadcrumb-item"><a href="./03-CTmeasures.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">The Best Guess</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./three-languages.html">Appendices</a></li><li class="breadcrumb-item"><a href="./three-languages.html">The Same Analysis in R, SPSS, and Julia</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">The Best Guess</span></h1>
+<h1 class="title"><span id="three-languages" class="quarto-section-identifier">The Same Analysis in R, SPSS, and Julia</span></h1>
 </div>
 
 
@@ -765,134 +737,225 @@ window.Quarto = {
 </header>
 
 
-<p>Measures of central tendency are a way to summarize a distribution of values with a single value. This single value is the “best guess” for future, unknown values that may be observed. In this section, you will learn about the most common measures of central tendency and how to use them to make sense of your data.</p>
-<section id="learning-objectives" class="level2" data-number="2.1">
-<h2 data-number="2.1" class="anchored" data-anchor-id="learning-objectives"><span class="header-section-number">2.1</span> Learning Objectives</h2>
-<ol type="1">
-<li>Learn why a single value can be useful for summarizing a distribution.</li>
-<li>Understand the concept of a measure of central tendency.</li>
-<li>Learn about the most common measures of central tendency.</li>
-<li>Understand how to use measures of central tendency to make sense of your data.</li>
-</ol>
-</section>
-<section id="three-ways-to-say-typical" class="level2" data-number="2.2">
-<h2 data-number="2.2" class="anchored" data-anchor-id="three-ways-to-say-typical"><span class="header-section-number">2.2</span> Three Ways to Say “Typical”</h2>
-<p>Back in the introduction we asked you to guess a family member’s weight, and claimed your best guess was the arithmetic mean. Here we make good on that claim. There are three classic summaries of “the middle,” and each is the best guess under a <em>different</em> definition of “best.”</p>
+<p>This book runs on <strong>R</strong>, but the ideas are not R’s property. A correlation is a correlation, a regression is a regression, whatever software you type it into. This appendix shows the core procedures from the book side by side in three environments: <strong>R</strong>, <strong>SPSS</strong>, and <strong>Julia</strong>. Click the tabs to switch languages. The R code is <em>live</em> - it runs here and produces the output you see - and the SPSS and Julia versions produce the same result, written the way each language likes to write it.</p>
+<p>We use one small dataset throughout: 80 people in two groups, with a predictor <code>x</code> and an outcome <code>y</code>.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">7</span>, <span class="dv">20</span>)        <span class="co"># note the outlier</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">mean =</span> <span class="fu">mean</span>(x), <span class="at">median =</span> <span class="fu">median</span>(x))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>  mean median 
-     8      5 </code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R has no built-in mode; here is the quick one:</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>mode_val <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">names</span>(<span class="fu">which.max</span>(<span class="fu">table</span>(x))))</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">mode =</span> mode_val)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>mode 
-   5 </code></pre>
-</div>
-</div>
-<ul>
-<li><strong>Mean</strong> - the arithmetic average, the balance point of the distribution.</li>
-<li><strong>Median</strong> - the middle value when the data are sorted; half fall below, half above.</li>
-<li><strong>Mode</strong> - the most frequent value.</li>
-</ul>
-</section>
-<section id="why-the-mean-is-best-and-when-it-isnt" class="level2" data-number="2.3">
-<h2 data-number="2.3" class="anchored" data-anchor-id="why-the-mean-is-best-and-when-it-isnt"><span class="header-section-number">2.3</span> Why the Mean Is “Best” (and When It Isn’t)</h2>
-<p>Here is the deep idea that ties this chapter to the entire rest of the book. Suppose you must pick a single number <span class="math inline">\(c\)</span> to guess every value, and you will be penalized by the <strong>squared</strong> error of each guess. Which <span class="math inline">\(c\)</span> minimizes your total penalty? Let’s just try every candidate and see:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>guesses <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">20</span>, <span class="at">by =</span> <span class="fl">0.1</span>)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>sse <span class="ot">&lt;-</span> <span class="fu">sapply</span>(guesses, <span class="cf">function</span>(c) <span class="fu">sum</span>((x <span class="sc">-</span> c)<span class="sc">^</span><span class="dv">2</span>))   <span class="co"># sum of squared errors</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>best <span class="ot">&lt;-</span> guesses[<span class="fu">which.min</span>(sse)]</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(guesses, sse, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"steelblue"</span>,</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"guess (c)"</span>, <span class="at">ylab =</span> <span class="st">"sum of squared errors"</span>,</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"The mean minimizes squared error"</span>)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="fu">mean</span>(x), <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">group =</span> <span class="fu">factor</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>), <span class="at">each =</span> <span class="dv">40</span>)),</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">x     =</span> <span class="fu">rnorm</span>(<span class="dv">80</span>, <span class="at">mean =</span> <span class="dv">50</span>, <span class="at">sd =</span> <span class="dv">10</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>d<span class="sc">$</span>y <span class="ot">&lt;-</span> <span class="dv">100</span> <span class="sc">+</span> <span class="fl">0.8</span> <span class="sc">*</span> d<span class="sc">$</span>x <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">80</span>, <span class="at">sd =</span> <span class="dv">12</span>)   <span class="co"># y depends on x</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(d, <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="03-CTmeasures_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">group</th>
+<th style="text-align: right;">x</th>
+<th style="text-align: right;">y</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">A</td>
+<td style="text-align: right;">43.73546</td>
+<td style="text-align: right;">128.1643</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">A</td>
+<td style="text-align: right;">51.83643</td>
+<td style="text-align: right;">139.8470</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">A</td>
+<td style="text-align: right;">41.64371</td>
+<td style="text-align: right;">147.4520</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">best_guess =</span> best, <span class="at">the_mean =</span> <span class="fu">mean</span>(x))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>best_guess   the_mean 
-         8          8 </code></pre>
 </div>
-</div>
-<p>The valley of that curve sits <strong>exactly</strong> at the mean. That is not a coincidence - it is <em>the reason the mean matters</em>. When we do regression later and “minimize the sum of squared residuals,” we are doing this same thing in more dimensions. The mean is least-squares estimation with no predictors.</p>
-<p>The median has its own claim to fame: it minimizes the sum of <strong>absolute</strong> errors, <span class="math inline">\(\sum |x - c|\)</span>. Different penalty, different winner. And the mode simply asks “what shows up most?” - the only one of the three that makes sense for a categorical variable like ice-cream flavor.</p>
-</section>
-<section id="when-the-mean-lies" class="level2" data-number="2.4">
-<h2 data-number="2.4" class="anchored" data-anchor-id="when-the-mean-lies"><span class="header-section-number">2.4</span> When the Mean Lies</h2>
-<p>Look again at that outlier (20). Squaring errors makes the mean very sensitive to extreme values; one billionaire walks into the room and the “average” net worth becomes absurd. The median shrugs it off:</p>
+<p>In SPSS, imagine this same table loaded as the active dataset with variables <code>group</code>, <code>x</code>, and <code>y</code>. In Julia, imagine it as a <code>DataFrame</code> called <code>d</code>.</p>
+<section id="descriptive-statistics" class="level2">
+<h2 class="anchored" data-anchor-id="descriptive-statistics">Descriptive Statistics</h2>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="" aria-current="page">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">SPSS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Julia</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>income <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">30</span>, <span class="dv">35</span>, <span class="dv">40</span>, <span class="dv">42</span>, <span class="dv">45</span>, <span class="dv">48</span>, <span class="dv">5000</span>)   <span class="co"># thousands; one very rich person</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">mean =</span> <span class="fu">mean</span>(income), <span class="at">median =</span> <span class="fu">median</span>(income))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sapply</span>(d[<span class="fu">c</span>(<span class="st">"x"</span>, <span class="st">"y"</span>)], <span class="cf">function</span>(v) <span class="fu">c</span>(<span class="at">mean =</span> <span class="fu">mean</span>(v), <span class="at">sd =</span> <span class="fu">sd</span>(v)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>    mean   median 
-748.5714  42.0000 </code></pre>
+<pre><code>             x         y
+mean 51.061465 139.68786
+sd    9.008166  11.32289</code></pre>
 </div>
 </div>
-<p>The median (about 42) describes a typical person; the mean (about 749) describes nobody in the room. This is why you should reach for the <strong>median</strong> whenever a distribution is skewed or outlier-ridden, and the <strong>mean</strong> when it is roughly symmetric.</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
 </div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>The robust middle ground (a look ahead)
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<pre><code>DESCRIPTIVES VARIABLES=x y
+  /STATISTICS=MEAN STDDEV MIN MAX.</code></pre>
 </div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Median or mean isn’t the only choice. <strong>Robust</strong> estimators - the <strong>trimmed mean</strong> (drop a fixed fraction of each tail, average the rest) and the <strong>MAD</strong> (a median-based cousin of the SD) - keep most of the mean’s efficiency while resisting the outliers that wreck it. The mean’s <em>breakdown point</em> is essentially 0% (one bad value can move it anywhere); the median’s is 50%. We develop this fully in <a href="./20-beyond.html">Beyond the Normal Curve</a>.</p>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Statistics</span>, <span class="bu">DataFrames</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">describe</span>(d[<span class="op">:</span>, [<span class="op">:</span>x, <span class="op">:</span>y]], <span class="op">:</span>mean, <span class="op">:</span>std, <span class="op">:</span>min, <span class="op">:</span>max)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
-<div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
 </div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Important</span>Pick Your “Best Guess” On Purpose
+</section>
+<section id="correlation" class="level2">
+<h2 class="anchored" data-anchor-id="correlation">Correlation</h2>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">SPSS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">Julia</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(d<span class="sc">$</span>x, d<span class="sc">$</span>y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.350339</code></pre>
 </div>
 </div>
-<div class="callout-body-container callout-body">
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<pre><code>CORRELATIONS
+  /VARIABLES=x y.</code></pre>
+</div>
+<div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Statistics</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(d.x, d.y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</section>
+<section id="comparing-two-groups-t-test" class="level2">
+<h2 class="anchored" data-anchor-id="comparing-two-groups-t-test">Comparing Two Groups (t-test)</h2>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href="">SPSS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-3" role="tab" aria-controls="tabset-3-3" aria-selected="false" href="">Julia</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(y <span class="sc">~</span> group, <span class="at">data =</span> d)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Welch Two Sample t-test
+
+data:  y by group
+t = 1.9707, df = 77.864, p-value = 0.05232
+alternative hypothesis: true difference in means between group A and group B is not equal to 0
+95 percent confidence interval:
+ -0.05031191  9.85201585
+sample estimates:
+mean in group A mean in group B 
+       142.1383        137.2374 </code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<pre><code>T-TEST GROUPS=group('A' 'B')
+  /VARIABLES=y.</code></pre>
+</div>
+<div id="tabset-3-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">HypothesisTests</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">UnequalVarianceTTest</span>(d.y[d.group <span class="op">.==</span> <span class="st">"A"</span>], d.y[d.group <span class="op">.==</span> <span class="st">"B"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</section>
+<section id="linear-regression" class="level2">
+<h2 class="anchored" data-anchor-id="linear-regression">Linear Regression</h2>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false" href="">SPSS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-3" role="tab" aria-controls="tabset-4-3" aria-selected="false" href="">Julia</a></li></ul>
+<div class="tab-content">
+<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x, <span class="at">data =</span> d))<span class="sc">$</span>coefficients</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>               Estimate Std. Error   t value     Pr(&gt;|t|)
+(Intercept) 117.2023564  6.9104281 16.960216 6.875787e-28
+x             0.4403615  0.1333025  3.303475 1.443429e-03</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
+<pre><code>REGRESSION
+  /DEPENDENT y
+  /METHOD=ENTER x.</code></pre>
+</div>
+<div id="tabset-4-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">GLM</span>, <span class="bu">DataFrames</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftable</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(y <span class="op">~</span> x), d))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</section>
+<section id="one-way-anova" class="level2">
+<h2 class="anchored" data-anchor-id="one-way-anova">One-Way ANOVA</h2>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" role="tab" aria-controls="tabset-5-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-2" role="tab" aria-controls="tabset-5-2" aria-selected="false" href="">SPSS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-3" role="tab" aria-controls="tabset-5-3" aria-selected="false" href="">Julia</a></li></ul>
+<div class="tab-content">
+<div id="tabset-5-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-5-1-tab">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">aov</span>(y <span class="sc">~</span> group, <span class="at">data =</span> d))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Df Sum Sq Mean Sq F value Pr(&gt;F)  
+group        1    480   480.4   3.884 0.0523 .
+Residuals   78   9648   123.7                 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-5-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-2-tab">
+<pre><code>ONEWAY y BY group
+  /STATISTICS DESCRIPTIVES.</code></pre>
+</div>
+<div id="tabset-5-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">GLM</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> <span class="fu">lm</span>(<span class="pp">@formula</span>(y <span class="op">~</span> group), d)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ftest</span>(m.model)          <span class="co"># overall F test for the group effect</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</section>
+<section id="principal-components" class="level2">
+<h2 class="anchored" data-anchor-id="principal-components">Principal Components</h2>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-6-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-1" role="tab" aria-controls="tabset-6-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-2" role="tab" aria-controls="tabset-6-2" aria-selected="false" href="">SPSS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-3" role="tab" aria-controls="tabset-6-3" aria-selected="false" href="">Julia</a></li></ul>
+<div class="tab-content">
+<div id="tabset-6-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-6-1-tab">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># a small item matrix for the reduction example</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2</span>); it <span class="ot">&lt;-</span> <span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="cf">function</span>(i) <span class="fu">rnorm</span>(<span class="dv">80</span>) <span class="sc">+</span> d<span class="sc">$</span>x<span class="sc">/</span><span class="dv">10</span>)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">prcomp</span>(it, <span class="at">scale. =</span> <span class="cn">TRUE</span>)<span class="sc">$</span>sdev<span class="sc">^</span><span class="dv">2</span>, <span class="dv">2</span>)   <span class="co"># eigenvalues</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2.20 0.79 0.59 0.42</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-6-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-2-tab">
+<pre><code>FACTOR
+  /VARIABLES x1 x2 x3 x4
+  /EXTRACTION PC
+  /ROTATION VARIMAX.</code></pre>
+</div>
+<div id="tabset-6-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">MultivariateStats</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>M <span class="op">=</span> <span class="fu">fit</span>(PCA, <span class="fu">Matrix</span>(it)<span class="ch">'; maxoutdim = 4)</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="fu">principalvars</span>(M)        <span class="co"># variance along each component</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</section>
+<section id="a-note-on-the-three-environments" class="level2">
+<h2 class="anchored" data-anchor-id="a-note-on-the-three-environments">A Note on the Three Environments</h2>
 <ul>
-<li><strong>Mean</strong> - symmetric, well-behaved data; and whenever you plan to do anything least-squares (which is most of this book).</li>
-<li><strong>Median</strong> - skewed data, outliers, incomes, reaction times, home prices.</li>
-<li><strong>Mode</strong> - categorical data, or when you literally care about the most common category.</li>
+<li><strong>R</strong> is free, open source, and the language this book runs in. Everything you see executes.</li>
+<li><strong>SPSS</strong> is menu-driven, but every menu click also writes <em>syntax</em> - the code shown above. Pasting that syntax into a Syntax window and running it is the reproducible way to use SPSS, and it reads much like the R.</li>
+<li><strong>Julia</strong> is free and open source, fast, and increasingly used for heavy Bayesian and simulation work. Its statistics live in packages (<code>Statistics</code>, <code>DataFrames</code>, <code>GLM</code>, <code>HypothesisTests</code>, <code>MultivariateStats</code>), loaded with <code>using</code>.</li>
 </ul>
-<p>There is no universally “correct” measure of center. There is only the one that answers <em>your</em> question honestly.</p>
-</div>
-</div>
-</section>
-<section id="challenge" class="level2" data-number="2.5">
-<h2 data-number="2.5" class="anchored" data-anchor-id="challenge"><span class="header-section-number">2.5</span> Challenge</h2>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Do One Yourself
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ol type="1">
-<li>Generate a right-skewed variable, e.g.&nbsp;<code>y &lt;- rexp(200)</code>. Compute its mean and median. Which is larger, and why?</li>
-<li>Reproduce the “mean minimizes squared error” plot for <code>y</code>, then make a second plot of <span class="math inline">\(\sum|y - c|\)</span> and confirm <em>its</em> minimum sits at the median.</li>
-<li>Add one wild outlier to <code>y</code> (say, <code>c(y, 500)</code>) and recompute both. Which summary barely moved? State the lesson in one sentence.</li>
-</ol>
-</div>
-</div>
-</section>
-<section id="where-we-go-next" class="level2" data-number="2.6">
-<h2 data-number="2.6" class="anchored" data-anchor-id="where-we-go-next"><span class="header-section-number">2.6</span> Where We Go Next</h2>
-<p>A center is only half the story. Two distributions can share the same mean and be wildly different - one tightly packed, one spread all over. That spread <em>is</em> our uncertainty, and it is the single most important quantity in statistics. On to <a href="./04-Dmeasures.html">dispersion</a>.</p>
+<p>The point is not that one is best. It is that a procedure you understand in one language you can carry to any of them, because the statistics were never about the software.</p>
 
 
 </section>
@@ -1329,13 +1392,13 @@ window.Quarto = {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./02-distributions.html" class="pagination-link" aria-label="Variables and Distributions">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Variables and Distributions</span></span>
+      <a href="./27-methods-showcase.html" class="pagination-link" aria-label="The Methods in Practice: The Authors at Work">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">The Methods in Practice: The Authors at Work</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./04-Dmeasures.html" class="pagination-link" aria-label="Dispersion and Uncertainty">
-        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Dispersion and Uncertainty</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./required-packages.html" class="pagination-link" aria-label="Setup and Required Packages">
+        <span class="nav-page-text">Setup and Required Packages</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

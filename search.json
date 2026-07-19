@@ -3189,5 +3189,181 @@
       "The Methods in Practice",
       "<span class='chapter-number'>32</span>  <span class='chapter-title'>The Methods in Practice: The Authors at Work</span>"
     ]
+  },
+  {
+    "objectID": "three-languages.html",
+    "href": "three-languages.html",
+    "title": "The Same Analysis in R, SPSS, and Julia",
+    "section": "",
+    "text": "Descriptive Statistics\nThis book runs on R, but the ideas are not R’s property. A correlation is a correlation, a regression is a regression, whatever software you type it into. This appendix shows the core procedures from the book side by side in three environments: R, SPSS, and Julia. Click the tabs to switch languages. The R code is live - it runs here and produces the output you see - and the SPSS and Julia versions produce the same result, written the way each language likes to write it.\nWe use one small dataset throughout: 80 people in two groups, with a predictor x and an outcome y.\nIn SPSS, imagine this same table loaded as the active dataset with variables group, x, and y. In Julia, imagine it as a DataFrame called d.",
+    "crumbs": [
+      "Appendices",
+      "The Same Analysis in R, SPSS, and Julia"
+    ]
+  },
+  {
+    "objectID": "three-languages.html#descriptive-statistics",
+    "href": "three-languages.html#descriptive-statistics",
+    "title": "The Same Analysis in R, SPSS, and Julia",
+    "section": "",
+    "text": "RSPSSJulia\n\n\n\nsapply(d[c(\"x\", \"y\")], function(v) c(mean = mean(v), sd = sd(v)))\n\n             x         y\nmean 51.061465 139.68786\nsd    9.008166  11.32289\n\n\n\n\nDESCRIPTIVES VARIABLES=x y\n  /STATISTICS=MEAN STDDEV MIN MAX.\n\n\nusing Statistics, DataFrames\ndescribe(d[:, [:x, :y]], :mean, :std, :min, :max)",
+    "crumbs": [
+      "Appendices",
+      "The Same Analysis in R, SPSS, and Julia"
+    ]
+  },
+  {
+    "objectID": "three-languages.html#correlation",
+    "href": "three-languages.html#correlation",
+    "title": "The Same Analysis in R, SPSS, and Julia",
+    "section": "Correlation",
+    "text": "Correlation\n\nRSPSSJulia\n\n\n\ncor(d$x, d$y)\n\n[1] 0.350339\n\n\n\n\nCORRELATIONS\n  /VARIABLES=x y.\n\n\nusing Statistics\ncor(d.x, d.y)",
+    "crumbs": [
+      "Appendices",
+      "The Same Analysis in R, SPSS, and Julia"
+    ]
+  },
+  {
+    "objectID": "three-languages.html#comparing-two-groups-t-test",
+    "href": "three-languages.html#comparing-two-groups-t-test",
+    "title": "The Same Analysis in R, SPSS, and Julia",
+    "section": "Comparing Two Groups (t-test)",
+    "text": "Comparing Two Groups (t-test)\n\nRSPSSJulia\n\n\n\nt.test(y ~ group, data = d)\n\n\n    Welch Two Sample t-test\n\ndata:  y by group\nt = 1.9707, df = 77.864, p-value = 0.05232\nalternative hypothesis: true difference in means between group A and group B is not equal to 0\n95 percent confidence interval:\n -0.05031191  9.85201585\nsample estimates:\nmean in group A mean in group B \n       142.1383        137.2374 \n\n\n\n\nT-TEST GROUPS=group('A' 'B')\n  /VARIABLES=y.\n\n\nusing HypothesisTests\nUnequalVarianceTTest(d.y[d.group .== \"A\"], d.y[d.group .== \"B\"])",
+    "crumbs": [
+      "Appendices",
+      "The Same Analysis in R, SPSS, and Julia"
+    ]
+  },
+  {
+    "objectID": "three-languages.html#linear-regression",
+    "href": "three-languages.html#linear-regression",
+    "title": "The Same Analysis in R, SPSS, and Julia",
+    "section": "Linear Regression",
+    "text": "Linear Regression\n\nRSPSSJulia\n\n\n\nsummary(lm(y ~ x, data = d))$coefficients\n\n               Estimate Std. Error   t value     Pr(&gt;|t|)\n(Intercept) 117.2023564  6.9104281 16.960216 6.875787e-28\nx             0.4403615  0.1333025  3.303475 1.443429e-03\n\n\n\n\nREGRESSION\n  /DEPENDENT y\n  /METHOD=ENTER x.\n\n\nusing GLM, DataFrames\ncoeftable(lm(@formula(y ~ x), d))",
+    "crumbs": [
+      "Appendices",
+      "The Same Analysis in R, SPSS, and Julia"
+    ]
+  },
+  {
+    "objectID": "three-languages.html#one-way-anova",
+    "href": "three-languages.html#one-way-anova",
+    "title": "The Same Analysis in R, SPSS, and Julia",
+    "section": "One-Way ANOVA",
+    "text": "One-Way ANOVA\n\nRSPSSJulia\n\n\n\nsummary(aov(y ~ group, data = d))\n\n            Df Sum Sq Mean Sq F value Pr(&gt;F)  \ngroup        1    480   480.4   3.884 0.0523 .\nResiduals   78   9648   123.7                 \n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\n\n\n\nONEWAY y BY group\n  /STATISTICS DESCRIPTIVES.\n\n\nusing GLM\nm = lm(@formula(y ~ group), d)\nftest(m.model)          # overall F test for the group effect",
+    "crumbs": [
+      "Appendices",
+      "The Same Analysis in R, SPSS, and Julia"
+    ]
+  },
+  {
+    "objectID": "three-languages.html#principal-components",
+    "href": "three-languages.html#principal-components",
+    "title": "The Same Analysis in R, SPSS, and Julia",
+    "section": "Principal Components",
+    "text": "Principal Components\n\nRSPSSJulia\n\n\n\n# a small item matrix for the reduction example\nset.seed(2); it &lt;- sapply(1:4, function(i) rnorm(80) + d$x/10)\nround(prcomp(it, scale. = TRUE)$sdev^2, 2)   # eigenvalues\n\n[1] 2.20 0.79 0.59 0.42\n\n\n\n\nFACTOR\n  /VARIABLES x1 x2 x3 x4\n  /EXTRACTION PC\n  /ROTATION VARIMAX.\n\n\nusing MultivariateStats\nM = fit(PCA, Matrix(it)'; maxoutdim = 4)\nprincipalvars(M)        # variance along each component",
+    "crumbs": [
+      "Appendices",
+      "The Same Analysis in R, SPSS, and Julia"
+    ]
+  },
+  {
+    "objectID": "three-languages.html#a-note-on-the-three-environments",
+    "href": "three-languages.html#a-note-on-the-three-environments",
+    "title": "The Same Analysis in R, SPSS, and Julia",
+    "section": "A Note on the Three Environments",
+    "text": "A Note on the Three Environments\n\nR is free, open source, and the language this book runs in. Everything you see executes.\nSPSS is menu-driven, but every menu click also writes syntax - the code shown above. Pasting that syntax into a Syntax window and running it is the reproducible way to use SPSS, and it reads much like the R.\nJulia is free and open source, fast, and increasingly used for heavy Bayesian and simulation work. Its statistics live in packages (Statistics, DataFrames, GLM, HypothesisTests, MultivariateStats), loaded with using.\n\nThe point is not that one is best. It is that a procedure you understand in one language you can carry to any of them, because the statistics were never about the software.",
+    "crumbs": [
+      "Appendices",
+      "The Same Analysis in R, SPSS, and Julia"
+    ]
+  },
+  {
+    "objectID": "required-packages.html",
+    "href": "required-packages.html",
+    "title": "Setup and Required Packages",
+    "section": "",
+    "text": "To run the book’s live code\nTo run the live code in this book you need R and a small handful of packages. To reproduce the walkthrough examples - the ones shown but not executed here, because they need heavier tools - you need a few more. This page lists both, with one-line installers, so you can pull the requirements immediately.\nThe executable code throughout the book uses base R plus a few graphics and publishing packages:\nEverything else the running code needs - regression and ANOVA (lm, aov), factor analysis (factanal), principal components (prcomp), reliability from scratch, the bootstrap and permutation tests written by hand - lives in base R and is already installed. That is deliberate: the core ideas are demonstrated with tools everyone already has.",
+    "crumbs": [
+      "Appendices",
+      "Setup and Required Packages"
+    ]
+  },
+  {
+    "objectID": "required-packages.html#to-run-the-books-live-code",
+    "href": "required-packages.html#to-run-the-books-live-code",
+    "title": "Setup and Required Packages",
+    "section": "",
+    "text": "install.packages(c(\"ggplot2\", \"plotly\", \"knitr\", \"rmarkdown\"))",
+    "crumbs": [
+      "Appendices",
+      "Setup and Required Packages"
+    ]
+  },
+  {
+    "objectID": "required-packages.html#to-reproduce-the-walkthrough-examples",
+    "href": "required-packages.html#to-reproduce-the-walkthrough-examples",
+    "title": "Setup and Required Packages",
+    "section": "To reproduce the walkthrough examples",
+    "text": "To reproduce the walkthrough examples\nSeveral chapters show the production tool for a job as static code (for example, lavaan for SEM, mirt for IRT, brms for Bayesian models). To run those yourself, install:\ninstall.packages(c(\n  \"psych\",       # reliability (alpha, omega), EFA, describe()\n  \"lavaan\",      # confirmatory factor analysis, SEM, measurement invariance\n  \"semTools\",    # omega and invariance helpers for lavaan\n  \"GPArotation\", # factor rotations used with psych::fa()\n  \"mirt\",        # item response theory (2PL, graded response)\n  \"poLCA\",       # latent class analysis\n  \"mice\",        # multiple imputation for missing data\n  \"car\",         # VIF and Type II/III sums of squares (Anova)\n  \"MASS\",        # robust regression (rlm) and utilities\n  \"WRS2\",        # Wilcox robust methods (trimmed-means tests)\n  \"boot\",        # the bootstrap\n  \"mediation\",   # mediation analysis with sensitivity checks\n  \"dagitty\",     # directed acyclic graphs (adjustment sets)\n  \"GGally\"       # pair plots\n))\nFor the Bayesian chapters, McElreath’s rethinking and brms both compile models to Stan, which needs a working C++ toolchain:\ninstall.packages(c(\"brms\", \"rethinking\", \"bayestestR\", \"TOSTER\"))\n# rethinking: see https://github.com/rmcelreath/rethinking for the Stan setup steps",
+    "crumbs": [
+      "Appendices",
+      "Setup and Required Packages"
+    ]
+  },
+  {
+    "objectID": "required-packages.html#spss-and-julia",
+    "href": "required-packages.html#spss-and-julia",
+    "title": "Setup and Required Packages",
+    "section": "SPSS and Julia",
+    "text": "SPSS and Julia\n\nSPSS is commercial software. If your institution provides it, the three-languages appendix gives the syntax for the book’s core procedures.\nJulia is free and open source (julialang.org). Its statistics live in packages you add once:\n\nusing Pkg\nPkg.add([\"DataFrames\", \"Statistics\", \"GLM\", \"HypothesisTests\", \"MultivariateStats\"])",
+    "crumbs": [
+      "Appendices",
+      "Setup and Required Packages"
+    ]
+  },
+  {
+    "objectID": "required-packages.html#reproducibility",
+    "href": "required-packages.html#reproducibility",
+    "title": "Setup and Required Packages",
+    "section": "Reproducibility",
+    "text": "Reproducibility\nEvery running example in this book sets a random seed, so re-running the same code returns the same numbers. If a result ever differs, check your package versions first; sessionInfo() in R prints exactly what you have loaded.",
+    "crumbs": [
+      "Appendices",
+      "Setup and Required Packages"
+    ]
+  },
+  {
+    "objectID": "changelog.html",
+    "href": "changelog.html",
+    "title": "Changelog",
+    "section": "",
+    "text": "2026\nThis book is a living document. Major additions and changes are recorded here so returning readers can see what is new. It is developed openly on GitHub, where the full commit history lives in detail; this page is the readable summary.",
+    "crumbs": [
+      "Appendices",
+      "Changelog"
+    ]
+  },
+  {
+    "objectID": "changelog.html#section",
+    "href": "changelog.html#section",
+    "title": "Changelog",
+    "section": "",
+    "text": "New parts and chapters\n\nPreparing Our Data part added - the Data Reduction chapter (fewer, better measures; reliability to power).\nLatent Variable Models part added - CFA/SEM, Measurement Invariance, Latent Class, and IRT & Generalizability.\nCausal Inference part added - DAGs and the back-door criterion, from the Statistical Rethinking course.\nBeyond the Normal Curve part added - resampling, robust methods, and Bayesian inference.\nDisplaying Data part added - Graphics and Tables.\nStatistics in the Wild apprenticeship part added - The Sports Page and four case studies (depression profiles, building a measure, missing data).\nThe Methods in Practice showcase added - the authors’ published work, organized by method.\nThe Coding Categorical Predictors chapter and the Rasch chapter (honoring Ben Wright, using his Knox Cube Test data).\n\n\n\nEnrichments to existing chapters\n\nAnscombe’s quartet and the residual bridge added to the covariance chapter.\nTypes of sums of squares (variance partitioning) added to multiple regression.\nMeasurement models (parallel, tau-equivalent, congeneric), a generalizability-theory framing, and “Variance Is the Fuel” (restriction of range) added to the reliability chapter.\nPOMP scoring added to the z-distribution chapter.\nThe replication-crisis Bayes calculation and estimation-versus-testing asides woven through the inference chapters.\n\n\n\nPresentation and back matter\n\nLight and dark reading modes with a navbar toggle (defaulting to light), framed figure cards, tidy tables, and larger key-term callouts with a 🔑 marker.\nA voice pass across the whole book for clear, supportive prose.\nInviting cover, author biographies, and a to-be-written foreword.\nThis back matter added: the changelog, the required-packages setup page, and the R / SPSS / Julia code-tabs appendix.",
+    "crumbs": [
+      "Appendices",
+      "Changelog"
+    ]
+  },
+  {
+    "objectID": "changelog.html#origins",
+    "href": "changelog.html#origins",
+    "title": "Changelog",
+    "section": "Origins",
+    "text": "Origins\nThe book began as a set of chapter drafts and an introduction, and grew into a full graduate methods text drawn from the authors’ decades of teaching and research in the social and behavioral sciences.",
+    "crumbs": [
+      "Appendices",
+      "Changelog"
+    ]
   }
 ]
