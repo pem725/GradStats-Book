@@ -1,0 +1,101 @@
+# Causal Inference with DAGs {#causal}
+
+Regression can tell you that two variables are associated. It cannot, on its own, tell you whether one *causes* the other, or which variables you should control for to find out. Those are causal questions, and causal questions need a causal model. The clearest way to state one is the **directed acyclic graph (DAG)**: a diagram of what you assume causes what. This is the framework Richard McElreath builds his *Statistical Rethinking* around, and the one we teach in our own Bayesian course. It pairs naturally with everything you have learned about [regression](15-MRC.qmd) and [structural models](28-sem.qmd), because it answers the question those tools cannot: *which variables belong in the model?*
+
+## Learning Objectives
+
+1.  Read a DAG as a set of causal assumptions, and see why it decides what you control for.
+2.  Recognize the four elemental confounds: the fork, the pipe, the collider, and the descendant.
+3.  Use the back-door criterion to choose an adjustment set.
+4.  Know that a DAG makes *testable* predictions.
+
+## A DAG Is Your Causal Theory, Drawn
+
+A DAG is variables (nodes) joined by arrows. An arrow $X \rightarrow Y$ means "$X$ is a direct cause of $Y$." *Acyclic* means no loops: nothing causes itself, directly or through a chain. The graph has no numbers; it is the causal *theory*, and it does something a regression cannot: it tells you which variables to include and which to leave out. Two analysts with identical data but different DAGs will, correctly, control for different things.
+
+Take McElreath's running example. Does a state's marriage rate ($M$) *cause* its divorce rate ($D$)? Both are correlated with the median age at marriage ($A$). One plausible DAG is $A \rightarrow M$, $A \rightarrow D$, and $M \rightarrow D$. Is the $M$–$D$ association a real causal effect, or just a shadow cast by $A$? A regression of $D$ on both $M$ and $A$ can separate them, but *only because the DAG told you to include $A$*. Without the causal picture, you would not know which variable to condition on, and the data alone will never tell you.
+
+## The Four Elemental Confounds
+
+Every DAG, however complicated, is built from four elementary pieces. Knowing how each behaves is most of causal inference (McElreath). Three of them we can watch directly.
+
+**The Fork** ($X \leftarrow Z \rightarrow Y$). $Z$ is a common cause, a **confounder**. $X$ and $Y$ become correlated even with no arrow between them. **Control $Z$** to close the path:
+
+```{r}
+set.seed(4); n <- 2000
+Z <- rnorm(n); X <- Z + rnorm(n); Y <- Z + rnorm(n)          # Z causes both; no X->Y arrow
+c(fork_naive   = round(cor(X, Y), 2),                        # spurious association
+  fork_control = round(cor(resid(lm(X~Z)), resid(lm(Y~Z))), 2))  # control Z: it vanishes
+```
+
+**The Pipe** ($X \rightarrow M \rightarrow Y$). $M$ is a **mediator**; $X$ affects $Y$ *through* $M$. Control $M$ and you block the very effect you were trying to measure (this is *post-treatment bias*):
+
+```{r}
+set.seed(5)
+X <- rnorm(n); M <- X + rnorm(n); Y <- M + rnorm(n)          # effect runs X -> M -> Y
+c(pipe_naive   = round(cor(X, Y), 2),                        # the real, total effect
+  pipe_control = round(cor(resid(lm(X~M)), resid(lm(Y~M))), 2))   # control M: effect blocked
+```
+
+**The Collider** ($X \rightarrow Z \leftarrow Y$). $Z$ is a common *effect*. Here $X$ and $Y$ are genuinely unrelated, but conditioning on $Z$ **creates** an association that was never there:
+
+```{r}
+set.seed(6)
+X <- rnorm(n); Y <- rnorm(n); Z <- X + Y + rnorm(n)          # X and Y both cause Z
+c(collider_naive   = round(cor(X, Y), 2),                    # correctly ~ 0
+  collider_control = round(cor(resid(lm(X~Z)), resid(lm(Y~Z))), 2))  # control Z: spurious!
+```
+
+**The Descendant.** Conditioning on a variable *caused by* another partly conditions on that other variable. A descendant of a collider re-opens the collider a little; a descendant of a confounder closes the fork a little. The rule of thumb: a descendant behaves like a weak version of its parent.
+
+::: {.callout-important}
+## The one table to remember
+
+Whether controlling for a variable *helps or hurts* depends entirely on its role in the DAG, not on anything in the data:
+
+- **Confounder (fork):** control it. Not controlling it leaves a spurious association.
+- **Mediator (pipe):** do *not* control it if you want the total effect. Controlling it blocks the effect.
+- **Collider:** *never* control it. Controlling it manufactures a spurious association.
+- **Descendant:** treat it as a weaker version of whatever it descends from.
+
+No fit statistic can tell these apart. The difference is entirely in the direction of the arrows, which the data cannot reveal. That is why you need the DAG.
+:::
+
+## The Back-Door Criterion
+
+Given a DAG, *which* variables must you control to estimate the causal effect of $X$ on $Y$? The **back-door criterion** answers it: block every "back-door path" - every non-causal path from $X$ to $Y$ that begins with an arrow *into* $X$ - by controlling confounders, while being careful not to open any colliders. For anything but the simplest graph this is easy to get wrong by hand, so the `dagitty` package (which the course uses) computes the adjustment set for you:
+
+```r
+# The real tool (needs dagitty — shown, not run on the book's server)
+library(dagitty)
+dag <- dagitty("dag{ X -> Y ; X <- Z -> Y }")     # a fork: Z confounds X and Y
+adjustmentSets(dag, exposure = "X", outcome = "Y")   # -> { Z }: control Z, nothing else
+```
+
+The output is the set of variables to put in your regression. Sometimes it is empty (no adjustment needed); sometimes there is more than one valid set; sometimes it warns you that the effect is *not identifiable* from the data you have. All of that is causal information you cannot get from the numbers alone.
+
+## A DAG Makes Testable Predictions
+
+A DAG is an assumption, but not an untestable one. Every DAG implies a set of **conditional independencies** - statements like "$A$ and $B$ should be independent once we account for $C$" - that the data can confirm or refute:
+
+```r
+impliedConditionalIndependencies(dag)   # the testable implications of your DAG
+```
+
+If the data violate an independence your DAG predicts, the DAG is wrong and needs revising. This is how a causal model earns trust: not by fitting the data (any flexible model can do that), but by surviving the specific predictions it makes. It is the same discipline the [Sports Page chapter](23-sportspage.qmd) preached, applied to causal structure.
+
+## DAGs and SEM: Two Notations, One Idea
+
+Coming from psychology, we will let you in on something: a DAG is the *same causal object* as a [structural equation model](28-sem.qmd). The arrows are identical; only the notation differs. One of us cheerfully admits to being more fluent in standard SEM path-diagram notation than in "the rather sparse DAG notation" - but the causal logic underneath is one and the same. An SEM is a DAG with its arrows *estimated*; a DAG is an SEM *before* you attach the numbers. So the workflow is always the same two steps: **draw the DAG** to decide the structure (which paths exist, which variables to control), then **fit the model** to put numbers on it. And carry the caution from the mediation work: fitting never *verifies* the causal story. The perennial temptation, in the authors' own words, is to "assume causality but rely on correlation." The DAG is what keeps you honest about the difference.
+
+## What This Chapter Teaches
+
+- A **DAG** states your causal assumptions and, from them, tells you which variables to control - something no regression can decide on its own.
+- The **four elemental confounds**: control a fork, leave a pipe alone (for the total effect), never control a collider, and treat a descendant as a weak version of its parent.
+- The **back-door criterion** (via `dagitty::adjustmentSets`) picks the variables to adjust for.
+- A DAG makes **testable conditional-independence predictions**; a good causal model survives them.
+- A DAG and an SEM are the **same causal object** in different notation: draw the graph, then fit the model.
+
+## Where We Go Next
+
+DAGs are one half of the *Statistical Rethinking* worldview the authors teach; the other half is Bayesian. Having drawn our causal assumptions, we turn to a different way of quantifying uncertainty about them. The [next part](20-beyond.qmd) steps beyond the normal-curve, point-estimate, reject-or-accept world into resampling, robust methods, and Bayesian inference - the framework in which McElreath's DAGs are usually put to work.

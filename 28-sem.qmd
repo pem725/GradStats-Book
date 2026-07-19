@@ -91,28 +91,9 @@ Recall from the [reliability chapter](10-reliability.qmd) that unreliable measur
 The authors' factor-analytic and covariance-structure work runs throughout their research - the [political-curiosity measure](25-casestudy-curiosity.qmd) was built with exactly this EFA→CFA→invariance pipeline. And Voelkle and McKnight [@VoelkleMcKnight2012] showed by Monte-Carlo simulation that classic repeated-measures (M)ANOVA is itself a **latent curve model** in disguise - the same "everything is one model" lesson from the [GLM chapter](16-ANOVAandGLM.qmd), pushed all the way into structural models. The [methods showcase](27-methods-showcase.qmd) lists more.
 :::
 
-## Causal Structure: DAGs and SEM
+## Causal Structure: SEM Is a DAG With Numbers
 
-SEM is often used to make *causal* claims. A structural path from curiosity to well-being looks like an arrow of cause. But a path model is only as causal as the assumptions behind its arrows, and those assumptions deserve to be made explicit. The clearest tool for that is the **directed acyclic graph (DAG)**: a diagram whose arrows encode which variables you assume cause which. A DAG has no numbers; it is the *theory*, drawn, and it tells you which variables to control for and, just as importantly, which to leave alone.
-
-Three basic structures cover most of the trouble. A **confounder** is a common cause of two variables ($X \leftarrow Z \rightarrow Y$); it makes $X$ and $Y$ correlate even with no direct link, and you must **control** it. A **mediator** lies on the path ($X \rightarrow M \rightarrow Y$); controlling it removes the very effect you are studying. A **collider** is a common *effect* ($X \rightarrow Z \leftarrow Y$); it is the trap, because conditioning on a collider **creates** an association that was not there. Watch both the fix and the trap:
-
-```{r}
-set.seed(4); n <- 2000
-# Confounder: Z causes both X and Y, which have no direct link
-Z <- rnorm(n); X <- Z + rnorm(n); Y <- Z + rnorm(n)
-c(confounder_naive   = round(cor(X, Y), 2),                        # spurious positive
-  confounder_control = round(cor(resid(lm(X~Z)), resid(lm(Y~Z))), 2))  # controlling Z: gone
-
-# Collider: X and Y are independent, but both cause Z
-X2 <- rnorm(n); Y2 <- rnorm(n); Zc <- X2 + Y2 + rnorm(n)
-c(collider_naive   = round(cor(X2, Y2), 2),                        # correctly ~ 0
-  collider_control = round(cor(resid(lm(X2~Zc)), resid(lm(Y2~Zc))), 2))  # controlling Z: spurious!
-```
-
-Controlling the confounder erases a spurious correlation; controlling the collider *manufactures* one. No fit statistic can tell these apart. Only the causal diagram can, because the difference is entirely in the direction of the arrows, which the data alone cannot reveal.
-
-This is exactly where DAGs and SEM meet. **An SEM is a DAG with its arrows estimated** - the measurement model plus the structural paths *are* a causal diagram fit to data. But fitting it does not verify the causal story; it estimates coefficients *given* the structure you assumed. A well-fitting SEM is consistent with your causal claim, not proof of it. As the authors put it in their own critique of mediation analysis, the danger is to "assume causality but rely on correlation." Draw the DAG first, decide which paths belong and which variables to control (confounders yes, colliders never), and only then fit the SEM. The graph disciplines the story; the model puts numbers on it.
+SEM is often used to make *causal* claims: a structural path from curiosity to well-being looks like an arrow of cause. But an SEM is only as causal as the assumptions behind its arrows, and those assumptions deserve to be made explicit. That is exactly what a **directed acyclic graph (DAG)** does. A DAG is the same causal object as an SEM path diagram, drawn before you attach any numbers - the arrows are identical, only the notation differs. **An SEM is a DAG with its arrows estimated.** Drawing the DAG first is how you decide which variables to control (confounders) and which to leave alone (mediators, and above all *colliders*, which create spurious associations the moment you condition on them). Fitting the SEM never *verifies* the causal story; it estimates coefficients *given* the structure you assumed. We develop DAGs, the four elemental confounds, and the back-door criterion in the [causal inference chapter](33-causal.qmd). The workflow is always the same two steps: draw the graph to choose the structure, then fit the model to put numbers on it.
 
 ## What This Chapter Teaches
 
