@@ -669,8 +669,9 @@ window.Quarto = {
   <li><a href="#from-variance-to-covariance" id="toc-from-variance-to-covariance" class="nav-link" data-scroll-target="#from-variance-to-covariance"><span class="header-section-number">6.3</span> From Variance to Covariance</a></li>
   <li><a href="#the-units-problem-and-the-fix-correlation" id="toc-the-units-problem-and-the-fix-correlation" class="nav-link" data-scroll-target="#the-units-problem-and-the-fix-correlation"><span class="header-section-number">6.4</span> The Units Problem, and the Fix: Correlation</a></li>
   <li><a href="#what-correlation-will-not-tell-you" id="toc-what-correlation-will-not-tell-you" class="nav-link" data-scroll-target="#what-correlation-will-not-tell-you"><span class="header-section-number">6.5</span> What Correlation Will Not Tell You</a></li>
-  <li><a href="#challenge" id="toc-challenge" class="nav-link" data-scroll-target="#challenge"><span class="header-section-number">6.6</span> Challenge</a></li>
-  <li><a href="#where-we-go-next" id="toc-where-we-go-next" class="nav-link" data-scroll-target="#where-we-go-next"><span class="header-section-number">6.7</span> Where We Go Next</a></li>
+  <li><a href="#anscombes-quartet-same-numbers-four-different-stories" id="toc-anscombes-quartet-same-numbers-four-different-stories" class="nav-link" data-scroll-target="#anscombes-quartet-same-numbers-four-different-stories"><span class="header-section-number">6.6</span> Anscombe’s Quartet: Same Numbers, Four Different Stories</a></li>
+  <li><a href="#challenge" id="toc-challenge" class="nav-link" data-scroll-target="#challenge"><span class="header-section-number">6.7</span> Challenge</a></li>
+  <li><a href="#where-we-go-next" id="toc-where-we-go-next" class="nav-link" data-scroll-target="#where-we-go-next"><span class="header-section-number">6.8</span> Where We Go Next</a></li>
   </ul>
 </nav>
     </div>
@@ -781,6 +782,74 @@ window.Quarto = {
 </div>
 </div>
 </div>
+</section>
+<section id="anscombes-quartet-same-numbers-four-different-stories" class="level2" data-number="6.6">
+<h2 data-number="6.6" class="anchored" data-anchor-id="anscombes-quartet-same-numbers-four-different-stories"><span class="header-section-number">6.6</span> Anscombe’s Quartet: Same Numbers, Four Different Stories</h2>
+<p>The U-shape above was one warning. Here is the most famous one, and the reason “always plot your data” belongs on the first page of every statistics course. In 1973, Francis Anscombe built four small datasets that share almost every summary statistic you would normally report - the same mean of <span class="math inline">\(x\)</span>, the same mean of <span class="math inline">\(y\)</span>, the same variances, the same correlation, and the same regression line - yet describe four completely different worlds. R ships them in the built-in <code>anscombe</code> data:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> anscombe</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="cf">function</span>(i) <span class="fu">round</span>(<span class="fu">cor</span>(a[[<span class="fu">paste0</span>(<span class="st">"x"</span>, i)]], a[[<span class="fu">paste0</span>(<span class="st">"y"</span>, i)]]), <span class="dv">3</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.816 0.816 0.816 0.817</code></pre>
+</div>
+</div>
+<p>Four identical correlations, <span class="math inline">\(r = 0.816\)</span>. Every set also has the same fitted line, <span class="math inline">\(\hat{y} = 3 + 0.5\,x\)</span>. If you reported only the numbers, you would call these datasets interchangeable. Now plot them:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>op <span class="ot">&lt;-</span> <span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">2</span>, <span class="dv">1</span>))</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>) {</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> a[[<span class="fu">paste0</span>(<span class="st">"x"</span>, i)]]; y <span class="ot">&lt;-</span> a[[<span class="fu">paste0</span>(<span class="st">"y"</span>, i)]]</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(x, y, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">col =</span> <span class="st">"steelblue"</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">20</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">14</span>),</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">"Dataset"</span>, i), <span class="at">xlab =</span> <span class="st">"x"</span>, <span class="at">ylab =</span> <span class="st">"y"</span>)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">abline</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x), <span class="at">col =</span> <span class="st">"firebrick"</span>, <span class="at">lwd =</span> <span class="dv">2</span>)   <span class="co"># the SAME line every time</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="07-covariance_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Anscombe’s quartet: identical means, variances, correlation, and regression line — but four different stories.</figcaption>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(op)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The same red line runs through all four, but only the first tells the story the line claims:</p>
+<ul>
+<li><strong>Dataset 1</strong> is a genuine, if noisy, straight-line relationship. The line fits.</li>
+<li><strong>Dataset 2</strong> is a smooth <em>curve</em>. A straight line is the wrong model here; the correlation is real, but the shape is not linear.</li>
+<li><strong>Dataset 3</strong> is a tight straight line spoiled by a single <strong>outlier</strong> that drags the fitted line off course.</li>
+<li><strong>Dataset 4</strong> has no relationship among most of the points (they all share one <span class="math inline">\(x\)</span> value); a single far-off point, on its own, creates the entire correlation. That lone point has enormous <strong>leverage</strong>.</li>
+</ul>
+<p>Identical statistics, four different truths. The picture told you in a moment what the correlation coefficient never could. This is why the <a href="./21-graphics.html">graphical display of data</a> is not decoration; it is often the fastest way to catch a relationship that is curved, contaminated, or driven by a single point.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>From the picture to the residuals
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Look again at what the scatter plots did: they showed you <em>where the straight line was wrong</em>. That is exactly the job of a <strong>residual</strong>. Recall the chain that runs through this book. We began with <a href="./04-Dmeasures.html">dispersion</a>, how a variable spreads, and dispersion is the raw material of <strong>uncertainty</strong>. Once we start making <strong>predictions</strong>, that uncertainty splits into two pieces: the <strong>predicted value</strong> <span class="math inline">\(\hat{y}\)</span>, what the model expects, and the <strong>residual</strong> <span class="math inline">\(y - \hat{y}\)</span>, what the model missed. The residuals are where the model is wrong, and it is the residuals, not the fit, that tell you whether the model is any good and whether your assumption of a straight-line relationship holds.</p>
+<p>Fit a line to the curved Dataset 2 and plot the residuals, and the curve the correlation hid comes right back:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y2 <span class="sc">~</span> x2, <span class="at">data =</span> anscombe)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">fitted</span>(m2), <span class="fu">resid</span>(m2), <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">col =</span> <span class="st">"steelblue"</span>,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"fitted (predicted) value"</span>, <span class="at">ylab =</span> <span class="st">"residual (y minus predicted)"</span>,</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Dataset 2 residuals arch — the misfit the scatter revealed"</span>)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>, <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"grey50"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="07-covariance_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The residuals bow upward at the ends and dip in the middle, the signature of a curved relationship forced through a straight line. The scatter plot and the residual plot told the same story.</p>
+</div>
+</div>
+<p>Here is why that matters far beyond four small datasets. With two variables you can <em>see</em> a bad linear fit directly in the scatter plot. But real models carry many predictors, and you cannot plot a relationship in five or ten dimensions. Anscombe’s quartet stops being usable the moment you reach <a href="./15-MRC.html">multiple regression</a>, because there is no two-dimensional picture left to draw. What survives is the <strong>residual</strong>. Residual analysis carries the “look at where the line is wrong” habit from the simple scatter plot into models too complex to plot. So treat Anscombe’s quartet as a bridge, not a destination: it teaches, in pictures anyone can read, the very thing you will later have to check with <a href="./14-bivariateregression.html">residuals</a> once the pictures run out.</p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -793,8 +862,8 @@ window.Quarto = {
 <div class="callout-body-container callout-body">
 <p>Here is the payoff that carries into the rest of the book. The slope of a simple regression is <em>literally</em> covariance divided by variance:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>b_from_cov <span class="ot">&lt;-</span> <span class="fu">cov</span>(study, grade) <span class="sc">/</span> <span class="fu">var</span>(study)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">cov_over_var =</span> b_from_cov, <span class="at">lm_slope =</span> <span class="fu">coef</span>(<span class="fu">lm</span>(grade <span class="sc">~</span> study))[[<span class="st">"study"</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>b_from_cov <span class="ot">&lt;-</span> <span class="fu">cov</span>(study, grade) <span class="sc">/</span> <span class="fu">var</span>(study)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">cov_over_var =</span> b_from_cov, <span class="at">lm_slope =</span> <span class="fu">coef</span>(<span class="fu">lm</span>(grade <span class="sc">~</span> study))[[<span class="st">"study"</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>cov_over_var     lm_slope 
     4.332777     4.332777 </code></pre>
@@ -804,8 +873,8 @@ window.Quarto = {
 </div>
 </div>
 </section>
-<section id="challenge" class="level2" data-number="6.6">
-<h2 data-number="6.6" class="anchored" data-anchor-id="challenge"><span class="header-section-number">6.6</span> Challenge</h2>
+<section id="challenge" class="level2" data-number="6.7">
+<h2 data-number="6.7" class="anchored" data-anchor-id="challenge"><span class="header-section-number">6.7</span> Challenge</h2>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -824,8 +893,8 @@ window.Quarto = {
 </div>
 </div>
 </section>
-<section id="where-we-go-next" class="level2" data-number="6.7">
-<h2 data-number="6.7" class="anchored" data-anchor-id="where-we-go-next"><span class="header-section-number">6.7</span> Where We Go Next</h2>
+<section id="where-we-go-next" class="level2" data-number="6.8">
+<h2 data-number="6.8" class="anchored" data-anchor-id="where-we-go-next"><span class="header-section-number">6.8</span> Where We Go Next</h2>
 <p>We now hold the engine (covariance) but have not yet built the machine. Before we assemble full models, a short detour to make sure our sensors are trustworthy: are our measurements <a href="./10-reliability.html">reliable</a> and <a href="./11-validity.html">valid</a>? A model built on a broken ruler predicts nothing, no matter how strong the covariance looks.</p>
 
 
