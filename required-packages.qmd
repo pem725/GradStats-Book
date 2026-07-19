@@ -1,0 +1,57 @@
+# Setup and Required Packages {#required-packages .unnumbered}
+
+To run the live code in this book you need R and a small handful of packages. To reproduce the *walkthrough* examples - the ones shown but not executed here, because they need heavier tools - you need a few more. This page lists both, with one-line installers, so you can pull the requirements immediately.
+
+## To run the book's live code
+
+The executable code throughout the book uses base R plus a few graphics and publishing packages:
+
+```r
+install.packages(c("ggplot2", "plotly", "knitr", "rmarkdown"))
+```
+
+Everything else the running code needs - regression and ANOVA (`lm`, `aov`), factor analysis (`factanal`), principal components (`prcomp`), reliability from scratch, the bootstrap and permutation tests written by hand - lives in **base R** and is already installed. That is deliberate: the core ideas are demonstrated with tools everyone already has.
+
+## To reproduce the walkthrough examples
+
+Several chapters show the *production* tool for a job as static code (for example, `lavaan` for SEM, `mirt` for IRT, `brms` for Bayesian models). To run those yourself, install:
+
+```r
+install.packages(c(
+  "psych",       # reliability (alpha, omega), EFA, describe()
+  "lavaan",      # confirmatory factor analysis, SEM, measurement invariance
+  "semTools",    # omega and invariance helpers for lavaan
+  "GPArotation", # factor rotations used with psych::fa()
+  "mirt",        # item response theory (2PL, graded response)
+  "poLCA",       # latent class analysis
+  "mice",        # multiple imputation for missing data
+  "car",         # VIF and Type II/III sums of squares (Anova)
+  "MASS",        # robust regression (rlm) and utilities
+  "WRS2",        # Wilcox robust methods (trimmed-means tests)
+  "boot",        # the bootstrap
+  "mediation",   # mediation analysis with sensitivity checks
+  "dagitty",     # directed acyclic graphs (adjustment sets)
+  "GGally"       # pair plots
+))
+```
+
+For the Bayesian chapters, McElreath's `rethinking` and `brms` both compile models to **Stan**, which needs a working C++ toolchain:
+
+```r
+install.packages(c("brms", "rethinking", "bayestestR", "TOSTER"))
+# rethinking: see https://github.com/rmcelreath/rethinking for the Stan setup steps
+```
+
+## SPSS and Julia
+
+- **SPSS** is commercial software. If your institution provides it, the [three-languages appendix](three-languages.qmd) gives the syntax for the book's core procedures.
+- **Julia** is free and open source (julialang.org). Its statistics live in packages you add once:
+
+```julia
+using Pkg
+Pkg.add(["DataFrames", "Statistics", "GLM", "HypothesisTests", "MultivariateStats"])
+```
+
+## Reproducibility
+
+Every running example in this book sets a random seed, so re-running the same code returns the same numbers. If a result ever differs, check your package versions first; `sessionInfo()` in R prints exactly what you have loaded.

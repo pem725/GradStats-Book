@@ -1,0 +1,146 @@
+# The Same Analysis in R, SPSS, and Julia {#three-languages .unnumbered}
+
+This book runs on **R**, but the ideas are not R's property. A correlation is a correlation, a regression is a regression, whatever software you type it into. This appendix shows the core procedures from the book side by side in three environments: **R**, **SPSS**, and **Julia**. Click the tabs to switch languages. The R code is *live* - it runs here and produces the output you see - and the SPSS and Julia versions produce the same result, written the way each language likes to write it.
+
+We use one small dataset throughout: 80 people in two groups, with a predictor `x` and an outcome `y`.
+
+```{r}
+set.seed(1)
+d <- data.frame(
+  group = factor(rep(c("A", "B"), each = 40)),
+  x     = rnorm(80, mean = 50, sd = 10)
+)
+d$y <- 100 + 0.8 * d$x + rnorm(80, sd = 12)   # y depends on x
+head(d, 3)
+```
+
+In SPSS, imagine this same table loaded as the active dataset with variables `group`, `x`, and `y`. In Julia, imagine it as a `DataFrame` called `d`.
+
+## Descriptive Statistics
+
+::: {.panel-tabset}
+### R
+```{r}
+sapply(d[c("x", "y")], function(v) c(mean = mean(v), sd = sd(v)))
+```
+### SPSS
+```
+DESCRIPTIVES VARIABLES=x y
+  /STATISTICS=MEAN STDDEV MIN MAX.
+```
+### Julia
+```julia
+using Statistics, DataFrames
+describe(d[:, [:x, :y]], :mean, :std, :min, :max)
+```
+:::
+
+## Correlation
+
+::: {.panel-tabset}
+### R
+```{r}
+cor(d$x, d$y)
+```
+### SPSS
+```
+CORRELATIONS
+  /VARIABLES=x y.
+```
+### Julia
+```julia
+using Statistics
+cor(d.x, d.y)
+```
+:::
+
+## Comparing Two Groups (t-test)
+
+::: {.panel-tabset}
+### R
+```{r}
+t.test(y ~ group, data = d)
+```
+### SPSS
+```
+T-TEST GROUPS=group('A' 'B')
+  /VARIABLES=y.
+```
+### Julia
+```julia
+using HypothesisTests
+UnequalVarianceTTest(d.y[d.group .== "A"], d.y[d.group .== "B"])
+```
+:::
+
+## Linear Regression
+
+::: {.panel-tabset}
+### R
+```{r}
+summary(lm(y ~ x, data = d))$coefficients
+```
+### SPSS
+```
+REGRESSION
+  /DEPENDENT y
+  /METHOD=ENTER x.
+```
+### Julia
+```julia
+using GLM, DataFrames
+coeftable(lm(@formula(y ~ x), d))
+```
+:::
+
+## One-Way ANOVA
+
+::: {.panel-tabset}
+### R
+```{r}
+summary(aov(y ~ group, data = d))
+```
+### SPSS
+```
+ONEWAY y BY group
+  /STATISTICS DESCRIPTIVES.
+```
+### Julia
+```julia
+using GLM
+m = lm(@formula(y ~ group), d)
+ftest(m.model)          # overall F test for the group effect
+```
+:::
+
+## Principal Components
+
+::: {.panel-tabset}
+### R
+```{r}
+# a small item matrix for the reduction example
+set.seed(2); it <- sapply(1:4, function(i) rnorm(80) + d$x/10)
+round(prcomp(it, scale. = TRUE)$sdev^2, 2)   # eigenvalues
+```
+### SPSS
+```
+FACTOR
+  /VARIABLES x1 x2 x3 x4
+  /EXTRACTION PC
+  /ROTATION VARIMAX.
+```
+### Julia
+```julia
+using MultivariateStats
+M = fit(PCA, Matrix(it)'; maxoutdim = 4)
+principalvars(M)        # variance along each component
+```
+:::
+
+## A Note on the Three Environments
+
+- **R** is free, open source, and the language this book runs in. Everything you see executes.
+- **SPSS** is menu-driven, but every menu click also writes *syntax* - the code shown above. Pasting that syntax into a Syntax window and running it is the reproducible way to use SPSS, and it reads much like the R.
+- **Julia** is free and open source, fast, and increasingly used for heavy Bayesian and simulation work. Its statistics live in packages (`Statistics`, `DataFrames`, `GLM`, `HypothesisTests`, `MultivariateStats`), loaded with `using`.
+
+The point is not that one is best. It is that a procedure you understand in one language you can carry to any of them, because the statistics were never about the software.
