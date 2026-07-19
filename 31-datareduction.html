@@ -8,7 +8,7 @@
 
 <meta name="description" content="A comprehensive graduate statistics book suitable for social and behavioral sciences. Our approach is to provide interested students a gentle guide to the rudiments of statistical estimation and inference.">
 
-<title>18&nbsp; Basic ANOVA – Statistics by Us for You</title>
+<title>12&nbsp; Data Reduction: Fewer, Better Measures – Statistics by Us for You</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -69,8 +69,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./19-coding.html" rel="next">
-<link href="./16-ANOVAandGLM.html" rel="prev">
+<link href="./12-GLMcovariance.html" rel="next">
+<link href="./18-rasch.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -316,7 +316,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./12-GLMcovariance.html">Using Models</a></li><li class="breadcrumb-item"><a href="./17-basicANOVA.html"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Basic ANOVA</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./31-datareduction.html">Preparing Our Data</a></li><li class="breadcrumb-item"><a href="./31-datareduction.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Data Reduction: Fewer, Better Measures</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -485,7 +485,7 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./31-datareduction.html" class="sidebar-item-text sidebar-link">
+  <a href="./31-datareduction.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Data Reduction: Fewer, Better Measures</span></span></a>
   </div>
 </li>
@@ -532,7 +532,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./17-basicANOVA.html" class="sidebar-item-text sidebar-link active">
+  <a href="./17-basicANOVA.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Basic ANOVA</span></span></a>
   </div>
 </li>
@@ -681,14 +681,14 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#learning-objectives" id="toc-learning-objectives" class="nav-link active" data-scroll-target="#learning-objectives"><span class="header-section-number">18.1</span> Learning Objectives</a></li>
-  <li><a href="#the-question-and-the-data" id="toc-the-question-and-the-data" class="nav-link" data-scroll-target="#the-question-and-the-data"><span class="header-section-number">18.2</span> The Question and the Data</a></li>
-  <li><a href="#partitioning-the-variance" id="toc-partitioning-the-variance" class="nav-link" data-scroll-target="#partitioning-the-variance"><span class="header-section-number">18.3</span> Partitioning the Variance</a></li>
-  <li><a href="#the-f-ratio" id="toc-the-f-ratio" class="nav-link" data-scroll-target="#the-f-ratio"><span class="header-section-number">18.4</span> The F Ratio</a></li>
-  <li><a href="#it-really-is-the-same-as-regression" id="toc-it-really-is-the-same-as-regression" class="nav-link" data-scroll-target="#it-really-is-the-same-as-regression"><span class="header-section-number">18.5</span> It Really Is the Same as Regression</a></li>
-  <li><a href="#after-a-significant-f-post-hoc-comparisons" id="toc-after-a-significant-f-post-hoc-comparisons" class="nav-link" data-scroll-target="#after-a-significant-f-post-hoc-comparisons"><span class="header-section-number">18.6</span> After a Significant F: Post-Hoc Comparisons</a></li>
-  <li><a href="#challenge" id="toc-challenge" class="nav-link" data-scroll-target="#challenge"><span class="header-section-number">18.7</span> Challenge</a></li>
-  <li><a href="#where-we-go-next" id="toc-where-we-go-next" class="nav-link" data-scroll-target="#where-we-go-next"><span class="header-section-number">18.8</span> Where We Go Next</a></li>
+  <li><a href="#learning-objectives" id="toc-learning-objectives" class="nav-link active" data-scroll-target="#learning-objectives"><span class="header-section-number">12.1</span> Learning Objectives</a></li>
+  <li><a href="#reliability-buys-power" id="toc-reliability-buys-power" class="nav-link" data-scroll-target="#reliability-buys-power"><span class="header-section-number">12.2</span> Reliability Buys Power</a></li>
+  <li><a href="#building-a-composite" id="toc-building-a-composite" class="nav-link" data-scroll-target="#building-a-composite"><span class="header-section-number">12.3</span> Building a Composite</a></li>
+  <li><a href="#test-the-structure-before-you-combine" id="toc-test-the-structure-before-you-combine" class="nav-link" data-scroll-target="#test-the-structure-before-you-combine"><span class="header-section-number">12.4</span> Test the Structure Before You Combine</a></li>
+  <li><a href="#when-not-to-reduce-reflective-vs.-formative" id="toc-when-not-to-reduce-reflective-vs.-formative" class="nav-link" data-scroll-target="#when-not-to-reduce-reflective-vs.-formative"><span class="header-section-number">12.5</span> When Not to Reduce: Reflective vs.&nbsp;Formative</a></li>
+  <li><a href="#multiple-measures-and-triangulation" id="toc-multiple-measures-and-triangulation" class="nav-link" data-scroll-target="#multiple-measures-and-triangulation"><span class="header-section-number">12.6</span> Multiple Measures and Triangulation</a></li>
+  <li><a href="#what-this-chapter-teaches" id="toc-what-this-chapter-teaches" class="nav-link" data-scroll-target="#what-this-chapter-teaches"><span class="header-section-number">12.7</span> What This Chapter Teaches</a></li>
+  <li><a href="#where-we-go-next" id="toc-where-we-go-next" class="nav-link" data-scroll-target="#where-we-go-next"><span class="header-section-number">12.8</span> Where We Go Next</a></li>
   </ul>
 </nav>
     </div>
@@ -696,9 +696,9 @@ window.Quarto = {
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./12-GLMcovariance.html">Using Models</a></li><li class="breadcrumb-item"><a href="./17-basicANOVA.html"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Basic ANOVA</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./31-datareduction.html">Preparing Our Data</a></li><li class="breadcrumb-item"><a href="./31-datareduction.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Data Reduction: Fewer, Better Measures</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Basic ANOVA</span></h1>
+<h1 class="title"><span id="datareduction" class="quarto-section-identifier"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Data Reduction: Fewer, Better Measures</span></span></h1>
 </div>
 
 
@@ -715,194 +715,125 @@ window.Quarto = {
 </header>
 
 
-<p>We closed the last chapter with a slogan: <strong>ANOVA is regression with categorical predictors.</strong> That is true, and it is the deep view. But ANOVA also has a classical view, one built entirely out of the variance ideas from early in the book, and seeing that view makes the machinery click. Analysis of variance earns its name honestly: it works by <em>partitioning variance</em> into the part explained by group membership and the part left over. Let’s take it apart.</p>
-<section id="learning-objectives" class="level2" data-number="18.1">
-<h2 data-number="18.1" class="anchored" data-anchor-id="learning-objectives"><span class="header-section-number">18.1</span> Learning Objectives</h2>
+<p>Most of the work in real research is not modeling; it is <em>preparing</em> the data so that a model has a chance. One of the most valuable preparation steps is <strong>data reduction</strong>: taking many imperfect measures and combining them into fewer, more dependable ones. This is not housekeeping. Done well, it is one of the most direct ways to get more out of a sample you have already paid to collect.</p>
+<p>The argument is short. A composite of several items measures a construct more <strong>reliably</strong> than any single item. More reliability means less measurement error, which means less <a href="./10-reliability.html">attenuation</a> of the effects you care about, which means more <a href="./09-statisticalpower.html">statistical power</a> - from the same participants. As we put it in the reliability chapter, a reliable measure is the cheapest power you will ever buy. Data reduction is how you buy it.</p>
+<section id="learning-objectives" class="level2" data-number="12.1">
+<h2 data-number="12.1" class="anchored" data-anchor-id="learning-objectives"><span class="header-section-number">12.1</span> Learning Objectives</h2>
 <ol type="1">
-<li>Partition the total sum of squares into between-group and within-group pieces.</li>
-<li>Build the ANOVA <span class="math inline">\(F\)</span> ratio from those pieces and understand what it compares.</li>
-<li>Confirm that the classical ANOVA and the regression GLM give the identical test.</li>
-<li>Follow a significant omnibus test with appropriate post-hoc comparisons.</li>
+<li>Explain why combining measures into reliable composites raises statistical power.</li>
+<li>Build a composite (sum, mean, or POMP) after checking that its items cohere.</li>
+<li>Distinguish PCA, EFA, and CFA, and follow the rule: test the structure before you combine.</li>
+<li>Recognize when <em>not</em> to reduce (formative constructs), and why multiple measures and triangulation matter.</li>
 </ol>
 </section>
-<section id="the-question-and-the-data" class="level2" data-number="18.2">
-<h2 data-number="18.2" class="anchored" data-anchor-id="the-question-and-the-data"><span class="header-section-number">18.2</span> The Question and the Data</h2>
-<p>One-way ANOVA asks: <strong>do three or more groups differ on a continuous outcome?</strong> Say we test a plant fertilizer at three doses:</p>
+<section id="reliability-buys-power" class="level2" data-number="12.2">
+<h2 data-number="12.2" class="anchored" data-anchor-id="reliability-buys-power"><span class="header-section-number">12.2</span> Reliability Buys Power</h2>
+<p>Recall from <a href="./03-CTmeasures.html">central tendency</a> and <a href="./10-reliability.html">reliability</a> that any observed score splits into a true part and an error part, <span class="math inline">\(O = T + E\)</span>, and reliability is the true-score share of the variance, <span class="math inline">\(\rho = \text{var}(T)/\text{var}(O)\)</span>. A single questionnaire item is a noisy sensor; its reliability is low because it carries its own idiosyncratic error. Average several items that tap the same construct and those idiosyncratic errors partly cancel, so the composite tracks the true score far better than any item alone.</p>
+<p>Here is why that matters for detecting effects. Watch power climb as we build a composite from more items measuring the same construct. The true effect and the sample size never change; only the reliability of the measure does:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">17</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>dose  <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"none"</span>, <span class="st">"low"</span>, <span class="st">"high"</span>), <span class="at">each =</span> <span class="dv">30</span>),</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"none"</span>, <span class="st">"low"</span>, <span class="st">"high"</span>))</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>growth <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">90</span>, <span class="at">mean =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">12</span>, <span class="dv">15</span>), <span class="at">each =</span> <span class="dv">30</span>), <span class="at">sd =</span> <span class="dv">3</span>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tapply</span>(growth, dose, mean)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>sim_power <span class="ot">&lt;-</span> <span class="cf">function</span>(n_items, <span class="at">reps =</span> <span class="dv">400</span>, <span class="at">N =</span> <span class="dv">120</span>) {</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mean</span>(<span class="fu">replicate</span>(reps, {</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    Tval  <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)                        <span class="co"># the true construct</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    Y     <span class="ot">&lt;-</span> <span class="fl">0.35</span> <span class="sc">*</span> Tval <span class="sc">+</span> <span class="fu">rnorm</span>(N)          <span class="co"># a real effect of T on Y</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    items <span class="ot">&lt;-</span> <span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span>n_items, <span class="cf">function</span>(i) Tval <span class="sc">+</span> <span class="fu">rnorm</span>(N, <span class="at">sd =</span> <span class="fl">1.6</span>))  <span class="co"># noisy items</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    composite <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(items)             <span class="co"># data reduction: average them</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summary</span>(<span class="fu">lm</span>(Y <span class="sc">~</span> composite))<span class="sc">$</span>coefficients[<span class="dv">2</span>, <span class="dv">4</span>] <span class="sc">&lt;</span> <span class="fl">0.05</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  }))</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">one_item =</span> <span class="fu">sim_power</span>(<span class="dv">1</span>), <span class="at">four_items =</span> <span class="fu">sim_power</span>(<span class="dv">4</span>), <span class="at">twelve_items =</span> <span class="fu">sim_power</span>(<span class="dv">12</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>    none      low     high 
-11.04343 11.85207 14.23987 </code></pre>
+<pre><code>    one_item   four_items twelve_items 
+      0.4825       0.8300       0.9200 </code></pre>
 </div>
 </div>
-<p>The group means differ in our sample - but is that real, or just sampling noise? ANOVA answers by comparing two kinds of variation.</p>
+<p>One item catches the effect less than half the time; a twelve-item composite catches it roughly nine times in ten. Nothing changed but the reliability of the ruler. This is the whole case for data reduction in one line: <em>you already collected the items, and combining them recovers power you would otherwise throw away.</em></p>
 </section>
-<section id="partitioning-the-variance" class="level2" data-number="18.3">
-<h2 data-number="18.3" class="anchored" data-anchor-id="partitioning-the-variance"><span class="header-section-number">18.3</span> Partitioning the Variance</h2>
-<p>Here is the whole idea in one line: the <strong>total</strong> spread of every observation around the grand mean can be split cleanly into spread <em>between</em> groups and spread <em>within</em> groups.</p>
-<p><span class="math display">\[SS_{total} = SS_{between} + SS_{within}\]</span></p>
+<section id="building-a-composite" class="level2" data-number="12.3">
+<h2 data-number="12.3" class="anchored" data-anchor-id="building-a-composite"><span class="header-section-number">12.3</span> Building a Composite</h2>
+<p>The workhorse recipe is deliberately simple: <strong>check that the items cohere, then collapse them into one score.</strong> First the coherence check, <a href="./10-reliability.html">Cronbach’s alpha</a>, which also flags reverse-worded items:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The everyday tool (psych — shown here; the reliability chapter computes alpha from scratch)</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(psych)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fu">alpha</span>(items, <span class="at">check.keys =</span> <span class="cn">TRUE</span>)   <span class="co"># coherence, auto reverse-keying, alpha-if-dropped</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>a<span class="sc">$</span>total<span class="sc">$</span>raw_alpha</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Then the composite. A few common choices:</p>
 <ul>
-<li><span class="math inline">\(SS_{total}\)</span>: how far each observation is from the overall (grand) mean.</li>
-<li><span class="math inline">\(SS_{between}\)</span>: how far each <em>group mean</em> is from the grand mean - the variation our grouping <em>explains</em> (the signal).</li>
-<li><span class="math inline">\(SS_{within}\)</span>: how far each observation is from <em>its own group’s</em> mean - the leftover variation (the noise).</li>
+<li><strong>Sum score</strong> - <code>rowSums(items)</code>. Transparent and reproducible.</li>
+<li><strong>Mean score</strong> - <code>rowMeans(items, na.rm = TRUE)</code>. Like the sum, but tolerant of a missing item.</li>
+<li><strong>POMP</strong> - the <a href="./06-zdistribution.html">percent-of-maximum-possible</a> score, which puts differently-scaled measures on a common 0-100 metric.</li>
+<li><strong>Factor scores</strong> weight each item by how strongly it loads on the construct. They are elegant but sample-dependent and hard to carry to a new study, so they belong in measurement papers more than in applied modeling.</li>
 </ul>
-<p>Let’s build all three by hand and confirm they add up:</p>
+<p>A composite also solves a problem you met in <a href="./15-MRC.html">multiple regression</a>. Throw a set of correlated items into a model as <em>separate</em> predictors and they fight each other; each one’s variance is mostly shared, so <a href="./15-MRC.html">collinearity</a> inflates every standard error:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>grand <span class="ot">&lt;-</span> <span class="fu">mean</span>(growth)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>group_means <span class="ot">&lt;-</span> <span class="fu">tapply</span>(growth, dose, mean)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>SS_total   <span class="ot">&lt;-</span> <span class="fu">sum</span>((growth <span class="sc">-</span> grand)<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>SS_between <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">table</span>(dose) <span class="sc">*</span> (group_means <span class="sc">-</span> grand)<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>SS_within  <span class="ot">&lt;-</span> <span class="fu">sum</span>((growth <span class="sc">-</span> group_means[dose])<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">SS_total =</span> SS_total,</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">between_plus_within =</span> SS_between <span class="sc">+</span> SS_within)   <span class="co"># they match</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">7</span>); N <span class="ot">&lt;-</span> <span class="dv">200</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>Tval  <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>items <span class="ot">&lt;-</span> <span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>, <span class="cf">function</span>(i) Tval <span class="sc">+</span> <span class="fu">rnorm</span>(N, <span class="at">sd =</span> <span class="fl">0.8</span>))   <span class="co"># six views of one construct</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(items) <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"x"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>); d <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(items)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># each item's variance-inflation factor when all six enter as separate predictors:</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>vif <span class="ot">&lt;-</span> <span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>, <span class="cf">function</span>(j)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">summary</span>(<span class="fu">lm</span>(d[[j]] <span class="sc">~</span> ., <span class="at">data =</span> d[<span class="sc">-</span>j]))<span class="sc">$</span>r.squared))</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(vif, <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>           SS_total between_plus_within 
-           1060.502            1060.502 </code></pre>
+<pre><code>[1] 2.0 1.9 2.5 2.3 2.6 2.1</code></pre>
 </div>
 </div>
-<p>The total variance really does split exactly into “explained by group” plus “unexplained.” That partition <em>is</em> analysis of variance.</p>
+<p>Those inflated factors are the model telling you the items are redundant. Replace the six with a single composite and the collinearity disappears: one dependable predictor in place of six quarrelling ones. That is data reduction doing double duty, more reliability <em>and</em> a cleaner model.</p>
 </section>
-<section id="the-f-ratio" class="level2" data-number="18.4">
-<h2 data-number="18.4" class="anchored" data-anchor-id="the-f-ratio"><span class="header-section-number">18.4</span> The F Ratio</h2>
-<p>We cannot compare sums of squares directly - they depend on how many things went into each. We convert each to a <strong>mean square</strong> by dividing by its degrees of freedom, then take their ratio:</p>
-<p><span class="math display">\[F = \frac{MS_{between}}{MS_{within}} = \frac{SS_{between}/(k-1)}{SS_{within}/(N-k)}\]</span></p>
-<p>with <span class="math inline">\(k\)</span> groups and <span class="math inline">\(N\)</span> observations. <span class="math inline">\(F\)</span> asks a simple question: <strong>is the variation between groups bigger than the variation within them?</strong> If groups matter, the between-group spread is large relative to the within-group noise and <span class="math inline">\(F\)</span> climbs well above 1.</p>
+<section id="test-the-structure-before-you-combine" class="level2" data-number="12.4">
+<h2 data-number="12.4" class="anchored" data-anchor-id="test-the-structure-before-you-combine"><span class="header-section-number">12.4</span> Test the Structure Before You Combine</h2>
+<p>Averaging items into a composite quietly assumes they measure <em>one</em> thing. Before you make that assumption, test it. Three tools, for three situations.</p>
+<p><strong>Principal Component Analysis (PCA)</strong> summarizes a set of variables by the directions along which they vary most. It is a quick dimensionality check and a collinearity remedy, not a measurement model. If one construct runs through your items, the first component should dominate:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>k <span class="ot">&lt;-</span> <span class="dv">3</span>; N <span class="ot">&lt;-</span> <span class="dv">90</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>MS_between <span class="ot">&lt;-</span> SS_between <span class="sc">/</span> (k <span class="sc">-</span> <span class="dv">1</span>)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>MS_within  <span class="ot">&lt;-</span> SS_within  <span class="sc">/</span> (N <span class="sc">-</span> k)</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>F_stat <span class="ot">&lt;-</span> MS_between <span class="sc">/</span> MS_within</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>p_val  <span class="ot">&lt;-</span> <span class="fu">pf</span>(F_stat, <span class="at">df1 =</span> k <span class="sc">-</span> <span class="dv">1</span>, <span class="at">df2 =</span> N <span class="sc">-</span> k, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">F =</span> F_stat, <span class="at">p =</span> p_val), <span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>pc <span class="ot">&lt;-</span> <span class="fu">prcomp</span>(items, <span class="at">scale. =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(pc<span class="sc">$</span>sdev<span class="sc">^</span><span class="dv">2</span>, <span class="dv">2</span>)          <span class="co"># eigenvalues: one large, the rest small = one dimension</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>      F       p 
-8.05691 0.00062 </code></pre>
+<pre><code>[1] 4.05 0.47 0.43 0.42 0.32 0.30</code></pre>
 </div>
 </div>
-<p>And of course, R will do the bookkeeping for us with <code>aov()</code> - confirm it matches our by-hand work:</p>
+<p>One eigenvalue well above the rest is the signature of a single underlying dimension. PCA also gives the orthogonal components you can regress on when you would rather dissolve collinearity than interpret individual predictors.</p>
+<p><strong>Exploratory Factor Analysis (EFA)</strong> is for when you do <em>not</em> yet know the structure; you let the data suggest how many factors there are and which items load where. Base R’s <code>factanal</code> fits it by maximum likelihood:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">aov</span>(growth <span class="sc">~</span> dose))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fa1 <span class="ot">&lt;-</span> <span class="fu">factanal</span>(items, <span class="at">factors =</span> <span class="dv">1</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">as.numeric</span>(fa1<span class="sc">$</span>loadings), <span class="dv">2</span>)          <span class="co"># all items load on the common factor</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>            Df Sum Sq Mean Sq F value   Pr(&gt;F)    
-dose         2  165.7   82.86   8.057 0.000616 ***
-Residuals   87  894.8   10.28                     
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+<pre><code>[1] 0.75 0.73 0.82 0.80 0.82 0.76</code></pre>
 </div>
 </div>
-<p>Same <span class="math inline">\(F\)</span>, same p, exactly as we computed by hand.</p>
+<p>In practice you would decide the number of factors more carefully. Parallel analysis is the modern standard:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(psych)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fa.parallel</span>(items, <span class="at">fa =</span> <span class="st">"fa"</span>)               <span class="co"># how many factors? compare to random data</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">fa</span>(items, <span class="at">nfactors =</span> <span class="dv">2</span>, <span class="at">rotate =</span> <span class="st">"oblimin"</span>, <span class="at">fm =</span> <span class="st">"ml"</span>)   <span class="co"># extract and rotate to interpret</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Confirmatory Factor Analysis (CFA)</strong> is for when theory or a prior EFA has already <em>specified</em> the structure. You fit that structure as a fixed hypothesis to fresh data and ask whether it holds before trusting the subscale scores. This is the <a href="./28-sem.html">factor-analysis chapter’s</a> territory; the idiom is <code>lavaan</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lavaan)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="st">'construct =~ x1 + x2 + x3 + x4 + x5 + x6'</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">cfa</span>(model, <span class="at">data =</span> d)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">fitMeasures</span>(fit, <span class="fu">c</span>(<span class="st">"cfi"</span>, <span class="st">"tli"</span>, <span class="st">"rmsea"</span>, <span class="st">"srmr"</span>))   <span class="co"># does the one-factor model fit?</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The rule that ties the three together: <strong>explore first, confirm on fresh data, and only then aggregate.</strong> PCA and EFA help you discover the structure; CFA earns you the right to treat a composite as measuring one thing.</p>
 </section>
-<section id="it-really-is-the-same-as-regression" class="level2" data-number="18.5">
-<h2 data-number="18.5" class="anchored" data-anchor-id="it-really-is-the-same-as-regression"><span class="header-section-number">18.5</span> It Really Is the Same as Regression</h2>
-<p>To honor the slogan from the last chapter, let’s prove the classical ANOVA and the regression GLM are one and the same by pulling the identical <span class="math inline">\(F\)</span> out of <code>lm()</code>:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(growth <span class="sc">~</span> dose)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(fit)              <span class="co"># the regression's F test == the ANOVA</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div class="kable-table">
-<table class="caption-top table table-sm table-striped small">
-<thead>
-<tr class="header">
-<th style="text-align: left;"></th>
-<th style="text-align: right;">Df</th>
-<th style="text-align: right;">Sum Sq</th>
-<th style="text-align: right;">Mean Sq</th>
-<th style="text-align: right;">F value</th>
-<th style="text-align: right;">Pr(&gt;F)</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">dose</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">165.7271</td>
-<td style="text-align: right;">82.86353</td>
-<td style="text-align: right;">8.056913</td>
-<td style="text-align: right;">0.0006163</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Residuals</td>
-<td style="text-align: right;">87</td>
-<td style="text-align: right;">894.7753</td>
-<td style="text-align: right;">10.28477</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">regression_F =</span> <span class="fu">summary</span>(fit)<span class="sc">$</span>fstatistic[<span class="dv">1</span>],</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">aov_F        =</span> <span class="fu">summary</span>(<span class="fu">aov</span>(growth <span class="sc">~</span> dose))[[<span class="dv">1</span>]][[<span class="st">"F value"</span>]][<span class="dv">1</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>regression_F.value              aov_F 
-          8.056913           8.056913 </code></pre>
-</div>
-</div>
-<p>Identical. The “two techniques” were always one. ANOVA is just the variance-partitioning <em>story</em> told about a regression on categorical predictors.</p>
+<section id="when-not-to-reduce-reflective-vs.-formative" class="level2" data-number="12.5">
+<h2 data-number="12.5" class="anchored" data-anchor-id="when-not-to-reduce-reflective-vs.-formative"><span class="header-section-number">12.5</span> When Not to Reduce: Reflective vs.&nbsp;Formative</h2>
+<p>Data reduction is powerful, but it rests on an assumption you should make on purpose. Factor analysis and SEM are built for <strong>reflective</strong> measurement: the construct is a common <em>cause</em> of its indicators (depression makes you sad <em>and</em> tired <em>and</em> pessimistic, so those items correlate). Averaging reflective indicators is exactly right.</p>
+<p>Some constructs, though, are <strong>formative</strong>, or emergent: the indicators <em>compose</em> the construct rather than reflect it. Trust, in the authors’ own research, is better understood as a combination of good intentions, understanding, and reliability. Those three need not correlate, and a person can be high on one and low on another. Force a single reflective factor onto a formative construct and the tool becomes misleading, because it assumes the wrong causal direction. The question is not whether a latent model <em>can</em> fit, but whether it is the right model at all. So before you reduce, ask which kind of construct you have. Reduce reflective constructs; model formative ones as what they are.</p>
 </section>
-<section id="after-a-significant-f-post-hoc-comparisons" class="level2" data-number="18.6">
-<h2 data-number="18.6" class="anchored" data-anchor-id="after-a-significant-f-post-hoc-comparisons"><span class="header-section-number">18.6</span> After a Significant F: Post-Hoc Comparisons</h2>
-<p>The omnibus <span class="math inline">\(F\)</span> only says “<em>somewhere</em> among these groups there is a difference.” It does not say <em>which</em> groups differ. For that we run <strong>post-hoc</strong> comparisons - and because we are now making several comparisons at once, we must control the inflated false-alarm rate (recall Type I error from the <a href="./08-hypothesistesting.html">hypothesis-testing chapter</a>). Tukey’s Honest Significant Difference does exactly that:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">TukeyHSD</span>(<span class="fu">aov</span>(growth <span class="sc">~</span> dose))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>  Tukey multiple comparisons of means
-    95% family-wise confidence level
-
-Fit: aov(formula = growth ~ dose)
-
-$dose
-               diff        lwr      upr     p adj
-low-none  0.8086412 -1.1658052 2.783088 0.5935699
-high-none 3.1964393  1.2219930 5.170886 0.0006306
-high-low  2.3877981  0.4133518 4.362245 0.0135958</code></pre>
-</div>
-</div>
-<p>Each row is a pairwise comparison with a confidence interval already adjusted for the fact that we peeked at all of them. Any interval that excludes zero is a real difference; any that includes zero is not.</p>
-<div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Important</span>Do Not Skip Straight to the Pairwise Tests
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>The two-step procedure, omnibus <span class="math inline">\(F\)</span> first and post-hoc comparisons only if it is significant, is not just a formality. Running every pairwise t-test without the omnibus gate (and without correction) is how you manufacture false positives, one comparison at a time. The <span class="math inline">\(F\)</span> is the gatekeeper, and Tukey (or a similar correction) keeps the gate honest.</p>
-</div>
-</div>
+<section id="multiple-measures-and-triangulation" class="level2" data-number="12.6">
+<h2 data-number="12.6" class="anchored" data-anchor-id="multiple-measures-and-triangulation"><span class="header-section-number">12.6</span> Multiple Measures and Triangulation</h2>
+<p>A construct is something you cannot see directly. You approach it through several imperfect windows, and the strongest inference comes from <strong>triangulation</strong>: several measures that agree despite their different flaws. For social scientists this is not a luxury; it is the heart of the work, because our subject matter - purpose, curiosity, trust, anxiety - is unobservable by definition.</p>
+<p>Two practical consequences follow. First, prefer several measures to one, and combine them (as above) into more dependable estimates. Second, before you compare two constructs, check that they are measured <em>equally well</em>. As the authors argue in their purpose-and-happiness work, if one of two constructs is more reliable than the other, any comparison between them is confounded by measurement quality before the substance is even in play. Vet the rulers before you trust the differences they report. For the study of the unobservable, measurement quality is not a preliminary to the science; it <em>is</em> the science.</p>
 </section>
-<section id="challenge" class="level2" data-number="18.7">
-<h2 data-number="18.7" class="anchored" data-anchor-id="challenge"><span class="header-section-number">18.7</span> Challenge</h2>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Do One Yourself
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ol type="1">
-<li>Simulate four groups on a continuous outcome. Compute <span class="math inline">\(SS_{total}\)</span>, <span class="math inline">\(SS_{between}\)</span>, and <span class="math inline">\(SS_{within}\)</span> by hand, confirm they sum, and build <span class="math inline">\(F\)</span> from the mean squares. Check against <code>summary(aov(...))</code>.</li>
-<li>Confirm the same <span class="math inline">\(F\)</span> falls out of <code>anova(lm(y ~ group))</code>.</li>
-<li>Make the group means nearly equal, then very different, keeping the within-group SD fixed. Watch what happens to <span class="math inline">\(F\)</span> - and explain it in terms of the between-versus-within comparison.</li>
-</ol>
-</div>
-</div>
+<section id="what-this-chapter-teaches" class="level2" data-number="12.7">
+<h2 data-number="12.7" class="anchored" data-anchor-id="what-this-chapter-teaches"><span class="header-section-number">12.7</span> What This Chapter Teaches</h2>
+<ul>
+<li><strong>Reduce to gain power.</strong> Reliable composites shrink error variance, un-attenuate effects, and buy power from a sample you already have.</li>
+<li><strong>Check, then collapse.</strong> Confirm the items cohere (alpha), then combine them (sum, mean, or POMP); reserve factor scores for measurement work.</li>
+<li><strong>Test the structure first.</strong> PCA and EFA to discover it, CFA to confirm it: explore, confirm on fresh data, then aggregate.</li>
+<li><strong>Match the tool to the construct.</strong> Reduce reflective constructs; do not force a reflective model onto a formative one.</li>
+<li><strong>Triangulate.</strong> For unobservable constructs, multiple well-vetted measures are how you earn a strong inference.</li>
+</ul>
 </section>
-<section id="where-we-go-next" class="level2" data-number="18.8">
-<h2 data-number="18.8" class="anchored" data-anchor-id="where-we-go-next"><span class="header-section-number">18.8</span> Where We Go Next</h2>
-<p>You now hold the thread that runs through all of it: <strong>quantify your uncertainty, and remember that variance is the currency you quantify it in.</strong> From the first histogram to this <span class="math inline">\(F\)</span> ratio, it was one idea the whole way down. But there is a loose end worth pulling. Every ANOVA you just ran handed R a factor and trusted it to build the right columns of numbers, and <em>how</em> those columns are built quietly decides what each coefficient means. That is the subject of the <a href="./19-coding.html">next chapter</a>, where we stop trusting the defaults and take the coding into our own hands.</p>
+<section id="where-we-go-next" class="level2" data-number="12.8">
+<h2 data-number="12.8" class="anchored" data-anchor-id="where-we-go-next"><span class="header-section-number">12.8</span> Where We Go Next</h2>
+<p>With reliable, well-structured measures in hand, we are finally ready to build models with them. That is the work of the <a href="./12-GLMcovariance.html">next part</a>, where the General Linear Model takes center stage. A model is only as trustworthy as the measures feeding it, which is why this preparation came first.</p>
 
 
 </section>
@@ -1339,13 +1270,13 @@ high-low  2.3877981  0.4133518 4.362245 0.0135958</code></pre>
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./16-ANOVAandGLM.html" class="pagination-link" aria-label="ANOVA and the General Linear Model">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">ANOVA and the General Linear Model</span></span>
+      <a href="./18-rasch.html" class="pagination-link" aria-label="Measuring Like Ben Wright: Rasch in R, Python, and Julia">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Measuring Like Ben Wright: Rasch in R, Python, and Julia</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./19-coding.html" class="pagination-link" aria-label="Coding Categorical Predictors">
-        <span class="nav-page-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Coding Categorical Predictors</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./12-GLMcovariance.html" class="pagination-link" aria-label="Introducing the General Linear Model (GLM)">
+        <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Introducing the General Linear Model (GLM)</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
