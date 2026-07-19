@@ -27,21 +27,51 @@ table(pet)
 
 `pet` is now a **factor**: R stores it as integer codes with labels attached. The moment we put it in a model, R replaces those four labels with three columns of numbers (four groups need $4-1=3$ columns, plus the intercept). *Which* three columns is the coding scheme. Here are the group means we will spend the rest of the chapter reconstructing:
 
+::: {.panel-tabset}
+### R
 ```{r}
 means <- aggregate(happy ~ pet, data = d, FUN = mean)
 means
 ```
+### SPSS
+```
+* Group means of happy by pet.
+MEANS TABLES=happy BY pet
+  /CELLS=MEAN STDDEV COUNT.
+```
+### Julia
+```julia
+using Statistics, DataFrames
+combine(groupby(df, :pet), :happy => mean)
+```
+:::
 
 ## Dummy (Reference) Coding
 
 Dummy coding - R's default, also called *reference* or *indicator* coding - picks one group as the **reference** and compares every other group to it. Let's make `dog` the reference (the 4th level):
 
+::: {.panel-tabset}
+### R
 ```{r}
 contrasts(d$pet) <- contr.treatment(4, base = 4)   # reference = level 4 = dog
 contrasts(d$pet)
 m_dummy <- lm(happy ~ pet, data = d)
 round(coef(m_dummy), 3)
 ```
+### SPSS
+```
+* Dummy / reference coding, reference = dog (4th category).
+UNIANOVA happy BY pet
+  /CONTRAST(pet)=SIMPLE(4)
+  /PRINT=PARAMETER.
+```
+### Julia
+```julia
+using GLM, StatsModels
+m_dummy = lm(@formula(happy ~ pet), df,
+             contrasts = Dict(:pet => DummyCoding(base = "dog")))
+```
+:::
 
 Read the coefficients straight off the means:
 
@@ -68,12 +98,28 @@ Add a second predictor *with an interaction* and a dummy slope is no longer "gro
 
 Dummy coding asks "how does each group differ from *one* group?" **Effects coding** (a.k.a. deviation coding, `contr.sum`) asks a different question: "how does each group differ from the **grand mean**?" The zero point moves from a reference group to the center of everything.
 
+::: {.panel-tabset}
+### R
 ```{r}
 contrasts(d$pet) <- contr.sum(4)
 contrasts(d$pet)
 m_eff <- lm(happy ~ pet, data = d)
 round(coef(m_eff), 3)
 ```
+### SPSS
+```
+* Effects / deviation coding (each group vs the grand mean).
+UNIANOVA happy BY pet
+  /CONTRAST(pet)=DEVIATION
+  /PRINT=PARAMETER.
+```
+### Julia
+```julia
+using GLM, StatsModels
+m_eff = lm(@formula(happy ~ pet), df,
+           contrasts = Dict(:pet => EffectsCoding()))
+```
+:::
 
 Now the meanings shift:
 
@@ -155,11 +201,27 @@ Dummy and effects codes answer fixed questions. **Contrast codes** let *you* pos
 
 R ships one useful family, **Helmert** codes, which compare each level to the *pooled mean of the levels before it*:
 
+::: {.panel-tabset}
+### R
 ```{r}
 contrasts(d$pet) <- contr.helmert(4)
 m_helm <- lm(happy ~ pet, data = d)
 round(coef(m_helm), 3)
 ```
+### SPSS
+```
+* Helmert contrasts.
+UNIANOVA happy BY pet
+  /CONTRAST(pet)=HELMERT
+  /PRINT=PARAMETER.
+```
+### Julia
+```julia
+using GLM, StatsModels
+m_helm = lm(@formula(happy ~ pet), df,
+            contrasts = Dict(:pet => HelmertCoding()))
+```
+:::
 
 The intercept is again the (unweighted) grand mean. The first Helmert slope is *half* the gap between the first two group means - why half? Because the code uses $-1$ and $+1$, a two-unit spread, so the slope is the difference divided by 2:
 

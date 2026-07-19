@@ -39,12 +39,28 @@ plot(x, y, xlim = c(0, 6), pch = 19,
 
 Now we fit the model. In R, the workhorse is `lm()` (for **l**inear **m**odel). The formula `y ~ x` reads "y is predicted by x."
 
+::: {.panel-tabset}
+### R
 ```{r}
 lm1 <- lm(y ~ x)
 plot(x, y, xlim = c(0, 6), pch = 19)
 abline(lm1, col = "red", lwd = 2)
 summary(lm1)
 ```
+### SPSS
+```
+REGRESSION
+  /STATISTICS COEFF R ANOVA
+  /DEPENDENT y
+  /METHOD=ENTER x.
+```
+### Julia
+```julia
+using GLM
+m1 = lm(@formula(y ~ x), df)
+coeftable(m1)
+```
+:::
 
 R just handed us a slope and an intercept. Here is what matters most in this book: **do not trust the machine until you can reproduce what it did.** The rest of this chapter rebuilds every number in that output by hand. If you can do that, you *understand* regression, rather than just knowing how to type `summary()`.
 
@@ -183,12 +199,32 @@ The units *have* to balance, and checking them is a free error-detector. If your
 
 Sometimes we want a slope that does not depend on the units at all - so we can compare predictors measured on wildly different scales. We get it by **standardizing** both variables (converting each to a z-score with `scale()`) before fitting. When both variables are standardized, the intercept is zero by construction, so we drop it with `- 1`:
 
+::: {.panel-tabset}
+### R
 ```{r}
 yz <- scale(y)
 xz <- scale(x)
 lm2 <- lm(yz ~ xz - 1)
 summary(lm2)
 ```
+### SPSS
+```
+* SPSS prints the standardized Beta in the coefficients table by default,
+* so the ordinary regression yields the standardized slope with no extra steps.
+REGRESSION
+  /STATISTICS COEFF R ANOVA
+  /DEPENDENT y
+  /METHOD=ENTER x.
+```
+### Julia
+```julia
+using GLM, Statistics
+z(v) = (v .- mean(v)) ./ std(v)
+df2 = DataFrame(y = z(df.y), x = z(df.x))
+lm2 = lm(@formula(y ~ x - 1), df2)
+coeftable(lm2)
+```
+:::
 
 This standardized slope is the **beta weight** ($\beta$). In the bivariate case it equals the correlation between $x$ and $y$ - a fact worth remembering, and one we will lean on heavily when we get to multiple predictors [@aiken_applied_2002].
 
@@ -196,6 +232,8 @@ This standardized slope is the **beta weight** ($\beta$). In the bivariate case 
 
 Five points are great for hand calculation but a little silly. Let's use a real dataset - one of ours, from years of teaching this material: the high-school and college GPAs (plus SAT scores and letter-of-recommendation quality) of 100 students. Does high-school GPA predict college GPA?
 
+::: {.panel-tabset}
+### R
 ```{r}
 gpa <- read.csv("data/gpa.csv")
 str(gpa)
@@ -207,6 +245,20 @@ plot(CollegeGPA ~ HSGPA, data = gpa, pch = 19, col = "grey40",
 abline(lm3, col = "red", lwd = 2)
 summary(lm3)
 ```
+### SPSS
+```
+REGRESSION
+  /STATISTICS COEFF R ANOVA
+  /DEPENDENT CollegeGPA
+  /METHOD=ENTER HSGPA.
+```
+### Julia
+```julia
+using GLM
+lm3 = lm(@formula(CollegeGPA ~ HSGPA), df)
+coeftable(lm3)
+```
+:::
 
 Interpret it out loud: for every one-point increase in high-school GPA, college GPA is predicted to rise by the slope you see above (in GPA-points per GPA-point). Real data are messier than the toy five points - the scatter is wider, the fit imperfect - but the machinery is identical, and you now know how to read *every* number in that summary, and how uncertain each one is. (Hold onto this dataset; we bring back its other columns - SAT and recommendation quality - when we add predictors in the [next chapter](15-MRC.qmd).)
 

@@ -30,10 +30,21 @@ table(pet)
 
 Does pet type relate to happiness? A regression will happily tell us, even though `pet` is a *factor*:
 
+::: {.panel-tabset}
+### R
 ```{r}
 lm_pet <- lm(happy ~ pet)
 round(coef(lm_pet), 3)
 ```
+### SPSS
+```
+ONEWAY happy BY pet /STATISTICS DESCRIPTIVES.
+```
+### Julia
+```julia
+using GLM; ftest(lm(@formula(happy ~ pet), df).model)
+```
+:::
 
 R fit it without complaint. But look at those coefficient names - `petfish`, `petpig`, `petdog`. Where did they come from, and what do they *mean*? That is the coding question, and there is more than one answer.
 
@@ -128,12 +139,23 @@ One model, one $F$, three names. **ANOVA is regression with categorical predicto
 
 Add a second factor and you get a factorial design - still just regression. Suppose messiness also matters:
 
+::: {.panel-tabset}
+### R
 ```{r}
 mess  <- factor(ifelse(rnorm(100) > 0, "messy", "tidy"))
 sad   <- -x + as.numeric(mess) + rnorm(100)
 lm_fac <- lm(sad ~ pet * mess)
 round(coef(lm_fac), 3)
 ```
+### SPSS
+```
+UNIANOVA sad BY pet mess /DESIGN=pet mess pet*mess.
+```
+### Julia
+```julia
+using GLM; lm(@formula(sad ~ pet * mess), df)
+```
+:::
 
 The `pet:messmessy` terms are the **interaction**, and the same logic applies here. An interaction coefficient is a *difference of differences*: how the effect of pet **changes** across levels of mess. It is the cross-product of the two predictors' codes. A "significant interaction" is nothing to worry about; it just means the group-mean pattern is not purely additive.
 
@@ -141,11 +163,22 @@ The `pet:messmessy` terms are the **interaction**, and the same logic applies he
 
 Everything so far assumes a continuous outcome with roughly normal residuals. But plenty of outcomes are not like that - a yes/no, a count, a rare event. The **generalized** linear model extends the same framework by letting the outcome follow a different distribution through a *link function*. The most common case is a binary outcome via **logistic regression**:
 
+::: {.panel-tabset}
+### R
 ```{r}
 passed <- rbinom(100, size = 1, prob = plogis(x))   # 0/1 outcome driven by x
 glm_fit <- glm(passed ~ x, family = binomial)
 round(coef(glm_fit), 3)
 ```
+### SPSS
+```
+LOGISTIC REGRESSION VARIABLES passed WITH x.
+```
+### Julia
+```julia
+using GLM; glm(@formula(passed ~ x), df, Binomial(), LogitLink())
+```
+:::
 
 Same formula syntax, same partialling logic, same goal of quantifying the uncertainty. We have just swapped `lm()` for `glm()` and told it the outcome is binomial. Linear model, general linear model, generalized linear model: it is the same core idea extended step by step.
 

@@ -13,6 +13,8 @@ The point biserial correlation is a statistical measure that quantifies the rela
 
 Here is the idea that makes this simple. A dichotomous variable (passed/failed, treatment/control, yes/no) looks categorical, but if we simply **code it 0 and 1**, we can drop it straight into a Pearson correlation as if it were a number. That is *all* the point-biserial correlation is: an ordinary Pearson $r$ where one of the two variables happens to be a 0/1 indicator.
 
+::: {.panel-tabset}
+### R
 ```{r}
 set.seed(14)
 studied <- rbinom(50, 1, 0.5)                 # 0 = didn't study, 1 = studied
@@ -22,6 +24,17 @@ r_pb        <- cor(score, studied)             # point-biserial: just Pearson r!
 r_pb_asfac  <- cor(score, as.numeric(factor(studied)) - 1)
 c(point_biserial = round(r_pb, 3), same_thing = round(r_pb_asfac, 3))
 ```
+### SPSS
+```
+* point-biserial correlation: just Pearson r with a 0/1 variable.
+CORRELATIONS /VARIABLES=score studied.
+```
+### Julia
+```julia
+using Statistics
+cor(df.score, df.studied)   # point-biserial: just Pearson r!
+```
+:::
 
 No new formula, no new function; `cor()` did not even notice one variable was a dichotomy. The point-biserial correlation is just Pearson's $r$ computed with a 0/1 variable.
 
@@ -29,6 +42,8 @@ No new formula, no new function; `cor()` did not even notice one variable was a 
 
 Now the payoff. The relationship between a continuous outcome and a two-group predictor can be expressed as (a) a point-biserial correlation, (b) a two-sample t-test, or (c) a simple regression, and they are **the identical analysis**. Every one gives the same t statistic and p-value:
 
+::: {.panel-tabset}
+### R
 ```{r}
 # (a) test the point-biserial correlation
 ct <- cor.test(score, studied)
@@ -43,6 +58,26 @@ round(c(cor_test_t = ct$statistic,
         t_test_t   = abs(tt$statistic),
         regression_t = abs(rg$coefficients[2, "t value"])), 4)
 ```
+### SPSS
+```
+* (a) test the point-biserial correlation.
+CORRELATIONS /VARIABLES=score studied.
+* (b) the classic two-sample t-test (pooled variance).
+T-TEST GROUPS=studied(0 1) /VARIABLES=score.
+* (c) regression with the 0/1 predictor.
+REGRESSION /STATISTICS COEFF R ANOVA /DEPENDENT score /METHOD=ENTER studied.
+```
+### Julia
+```julia
+using HypothesisTests, GLM
+# (a) test the point-biserial correlation
+CorrelationTest(df.score, df.studied)
+# (b) the classic two-sample t-test (pooled variance)
+EqualVarianceTTest(df.score[df.studied .== 0], df.score[df.studied .== 1])
+# (c) regression with the 0/1 predictor
+coeftable(lm(@formula(score ~ studied), df))
+```
+:::
 
 Three "different" techniques, one t statistic. The correlation, the group comparison, and the regression are the same GLM. And the regression coefficient tells you something the correlation does not show directly: the raw difference between the two group means:
 

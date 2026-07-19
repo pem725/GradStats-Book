@@ -21,6 +21,8 @@ An outcome $Y$ is modeled as a weighted sum of predictors plus error $e$. That i
 
 Let's take one simple question, do two groups differ on an outcome, and answer it with three "different" methods. Watch the p-value:
 
+::: {.panel-tabset}
+### R
 ```{r}
 set.seed(12)
 group <- factor(rep(c("control", "treatment"), each = 40))
@@ -32,6 +34,21 @@ p_regr  <- summary(lm(y ~ group))$coefficients[2, "Pr(>|t|)"]
 
 round(c(t_test = p_ttest, ANOVA = p_anova, regression = p_regr), 6)
 ```
+### SPSS
+```
+* Same question, three ways: t-test, ANOVA, regression.
+T-TEST GROUPS=group('control' 'treatment') /VARIABLES=y.
+ONEWAY y BY group /STATISTICS DESCRIPTIVES.
+REGRESSION /STATISTICS COEFF R ANOVA /DEPENDENT y /METHOD=ENTER group.
+```
+### Julia
+```julia
+using HypothesisTests, GLM
+EqualVarianceTTest(df.y[df.group .== "control"], df.y[df.group .== "treatment"])
+ftest(lm(@formula(y ~ group), df).model)
+coeftable(lm(@formula(y ~ group), df))
+```
+:::
 
 Three identical p-values. The t-test, the ANOVA, and the regression are literally the same model here - the t-test is a two-group ANOVA, the two-group ANOVA is a regression with one dummy-coded predictor, and (as a bonus) $F = t^2$:
 

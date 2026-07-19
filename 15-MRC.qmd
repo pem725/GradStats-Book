@@ -17,6 +17,8 @@ The logic does not change one bit. We still minimize the sum of squared residual
 
 To see the interesting behavior, we need predictors that are correlated with each other. The cleanest way to *manufacture* that is to build them from a shared source, then add noise - so we know the truth going in.
 
+::: {.panel-tabset}
+### R
 ```{r}
 set.seed(1936)  # Fisher's "The Design of Experiments"
 base <- rnorm(100)
@@ -28,13 +30,35 @@ dat <- data.frame(y, x1, x2)
 # x1 and x2 are correlated because they share 'base'
 round(cor(dat), 2)
 ```
+### SPSS
+```
+CORRELATIONS /VARIABLES=y x1 x2.
+```
+### Julia
+```julia
+using Statistics
+cor(Matrix(df))
+```
+:::
 
 Now fit the two-predictor model:
 
+::: {.panel-tabset}
+### R
 ```{r}
 lm3 <- lm(y ~ x1 + x2, data = dat)
 coef(lm3)
 ```
+### SPSS
+```
+REGRESSION /STATISTICS COEFF R ANOVA /DEPENDENT y /METHOD=ENTER x1 x2.
+```
+### Julia
+```julia
+using GLM
+coeftable(lm(@formula(y ~ x1 + x2), df))
+```
+:::
 
 Here is the puzzle that drives the chapter. If you regress `y` on `x1` *alone*, you get one slope. In the joint model above you get a **different** slope. Why? Because in the joint model, `b1` is the effect of `x1` *with `x2` held constant* - it has been **partialled**. R did not lie to you in either model; the two slopes answer two different questions.
 
@@ -65,10 +89,26 @@ round(c(semipartial = sr1, partial = pr1, beta = beta1), 3)
 
 Notice they share the same numerator and differ only in the denominator - which is exactly why they get muddled. Let us confirm that $\beta_1$ is really the standardized slope R reports:
 
+::: {.panel-tabset}
+### R
 ```{r}
 lm3z <- lm(scale(y) ~ scale(x1) + scale(x2), data = dat)
 round(coef(lm3z)[["scale(x1)"]], 3)   # compare to beta1 above
 ```
+### SPSS
+```
+* REGRESSION prints the standardized Beta by default.
+REGRESSION /STATISTICS COEFF R ANOVA /DEPENDENT y /METHOD=ENTER x1 x2.
+```
+### Julia
+```julia
+using GLM, Statistics
+df.zy  = (df.y  .- mean(df.y))  ./ std(df.y)
+df.zx1 = (df.x1 .- mean(df.x1)) ./ std(df.x1)
+df.zx2 = (df.x2 .- mean(df.x2)) ./ std(df.x2)
+coeftable(lm(@formula(zy ~ zx1 + zx2), df))
+```
+:::
 
 Same number. So **the coefficient `lm()` reports is a *partial* effect**: it controls for the other predictors. That is the single most important sentence in multiple regression. When someone says "controlling for X," this is the machinery they are invoking.
 
@@ -160,6 +200,8 @@ The VIF told us that collinearity inflates our uncertainty. Here is the deeper r
 
 **Type I (sequential).** Each predictor is credited with the variance it explains *after* the predictors entered before it. It is order-dependent, and the pieces add up to the model total. Watch the credit shift when we swap the order:
 
+::: {.panel-tabset}
+### R
 ```{r}
 set.seed(42); n <- 200
 x1 <- rnorm(n); x2 <- 0.7 * x1 + rnorm(n, sd = sqrt(1 - 0.49))   # x1 and x2 correlate ~ .7
@@ -168,16 +210,47 @@ y  <- 0.5 * x1 + 0.4 * x2 + rnorm(n)
 anova(lm(y ~ x1 + x2))[1:2, "Sum Sq"]     # x1 first, then x2
 anova(lm(y ~ x2 + x1))[1:2, "Sum Sq"]     # x2 first, then x1 — same data, different split
 ```
+### SPSS
+```
+* Type I (sequential) sums of squares; DESIGN order sets the entry order.
+UNIANOVA y WITH x1 x2 /METHOD=SSTYPE(1) /DESIGN=x1 x2.
+UNIANOVA y WITH x1 x2 /METHOD=SSTYPE(1) /DESIGN=x2 x1.
+```
+### Julia
+```julia
+using GLM, StatsModels
+# R's anova() gives Type I (sequential) sums of squares, so the split
+# depends on term order; swap the formula terms to change the credit.
+anova(lm(@formula(y ~ x1 + x2), df))
+anova(lm(@formula(y ~ x2 + x1), df))
+```
+:::
 
 Same data, same model, but x1 is credited with far more variance when it enters first. Whoever goes first gets the shared variance. Sequential sums of squares reward order, which is appropriate when theory dictates an order and misleading when it does not.
 
 **Type III (unique, or "each last").** Each predictor is credited only with the variance that is *uniquely* its own, the part no other predictor can account for. This is order-free: every predictor is evaluated as if it had entered last. It is exactly the **squared semipartial correlation** from earlier in this chapter, and you can read it off as the drop in fit when you remove that one predictor from the full model:
 
+::: {.panel-tabset}
+### R
 ```{r}
 full <- lm(y ~ x1 + x2)
 c(x1_unique = anova(lm(y ~ x2), full)[["Sum of Sq"]][2],   # what x1 adds, controlling x2
   x2_unique = anova(lm(y ~ x1), full)[["Sum of Sq"]][2])   # what x2 adds, controlling x1
 ```
+### SPSS
+```
+* Type III (unique / "each last") sums of squares; SPSS's default.
+UNIANOVA y WITH x1 x2 /METHOD=SSTYPE(3) /DESIGN=x1 x2.
+```
+### Julia
+```julia
+using GLM, StatsModels
+# Type III (unique) sums of squares: each term controlling for all others.
+# SPSS defaults to Type III; R's anova() gives Type I, so build it from
+# the full model down (drop one term at a time), as the R tab does.
+anova(lm(@formula(y ~ x1 + x2), df))
+```
+:::
 
 These do not depend on order, but they do **not** add up to the model total:
 
@@ -228,12 +301,25 @@ One predictor, no collinearity, and often a cleaner story than two fighting over
 
 Let's leave the simulated world and put all of this to work on the real GPA dataset from the [last chapter](14-bivariateregression.qmd). There we predicted college GPA from high-school GPA alone. Now we add the other things an admissions office actually has: SAT total and the quality of the applicant's letters of recommendation.
 
+::: {.panel-tabset}
+### R
 ```{r}
 gpa <- read.csv("data/gpa.csv")
 fit <- lm(CollegeGPA ~ HSGPA + SATtotal + QLOR, data = gpa)
 round(summary(fit)$coefficients, 4)
 c(R2 = summary(fit)$r.squared, adj_R2 = summary(fit)$adj.r.squared)
 ```
+### SPSS
+```
+REGRESSION /STATISTICS COEFF R ANOVA
+  /DEPENDENT CollegeGPA /METHOD=ENTER HSGPA SATtotal QLOR.
+```
+### Julia
+```julia
+using GLM
+coeftable(lm(@formula(CollegeGPA ~ HSGPA + SATtotal + QLOR), df))
+```
+:::
 
 Every coefficient here is a **partial** effect - the pull of that predictor with the other two held constant. Notice HSGPA's slope *shrank* from its bivariate value: some of what looked like "high-school GPA" was really SAT and letter quality traveling alongside it. That is partialling doing its job.
 

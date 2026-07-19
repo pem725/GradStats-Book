@@ -68,9 +68,21 @@ round(c(F = F_stat, p = p_val), 5)
 
 And of course, R will do the bookkeeping for us with `aov()` - confirm it matches our by-hand work:
 
+::: {.panel-tabset}
+### R
 ```{r}
 summary(aov(growth ~ dose))
 ```
+### SPSS
+```
+ONEWAY growth BY dose /STATISTICS DESCRIPTIVES /POSTHOC=TUKEY.
+```
+### Julia
+```julia
+using GLM
+ftest(lm(@formula(growth ~ dose), df).model)
+```
+:::
 
 Same $F$, same p, exactly as we computed by hand.
 
@@ -78,12 +90,24 @@ Same $F$, same p, exactly as we computed by hand.
 
 To honor the slogan from the last chapter, let's prove the classical ANOVA and the regression GLM are one and the same by pulling the identical $F$ out of `lm()`:
 
+::: {.panel-tabset}
+### R
 ```{r}
 fit <- lm(growth ~ dose)
 anova(fit)              # the regression's F test == the ANOVA
 c(regression_F = summary(fit)$fstatistic[1],
   aov_F        = summary(aov(growth ~ dose))[[1]][["F value"]][1])
 ```
+### SPSS
+```
+REGRESSION /STATISTICS COEFF R ANOVA /DEPENDENT growth /METHOD=ENTER dose.
+```
+### Julia
+```julia
+using GLM
+coeftable(lm(@formula(growth ~ dose), df))
+```
+:::
 
 Identical. The "two techniques" were always one. ANOVA is just the variance-partitioning *story* told about a regression on categorical predictors.
 

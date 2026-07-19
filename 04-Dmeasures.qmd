@@ -78,9 +78,22 @@ Dividing by $n$ lands low; dividing by $n-1$ lands right on the truth. That is d
 
 Variance is in *squared* units (squared inches, squared dollars) - useful for math, useless for talking. Take its square root and you get the **standard deviation**, back in the original units and interpretable as "the typical distance from the mean":
 
+::: {.panel-tabset}
+### R
 ```{r}
 c(sd_by_hand = sqrt(var(x)), r_sd = sd(x))
 ```
+### SPSS
+```
+DESCRIPTIVES VARIABLES=x
+  /STATISTICS=STDDEV VARIANCE.
+```
+### Julia
+```julia
+using Statistics
+std(df.x), var(df.x)
+```
+:::
 
 For a roughly normal variable, about 68% of values fall within one standard deviation of the mean, and about 95% within two - a rule of thumb we will lean on hard when we standardize in the [z-distribution](06-zdistribution.qmd) chapter.
 
