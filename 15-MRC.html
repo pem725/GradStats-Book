@@ -689,9 +689,10 @@ window.Quarto = {
   <li><a href="#r-r2-and-the-shrunken-r2" id="toc-r-r2-and-the-shrunken-r2" class="nav-link" data-scroll-target="#r-r2-and-the-shrunken-r2"><span class="header-section-number">15.4</span> <span class="math inline">\(R\)</span>, <span class="math inline">\(R^2\)</span>, and the “Shrunken” <span class="math inline">\(R^2\)</span></a></li>
   <li><a href="#testing-the-coefficients-rebuilding-the-table-again" id="toc-testing-the-coefficients-rebuilding-the-table-again" class="nav-link" data-scroll-target="#testing-the-coefficients-rebuilding-the-table-again"><span class="header-section-number">15.5</span> Testing the Coefficients (Rebuilding the Table Again)</a></li>
   <li><a href="#multicollinearity-seeing-the-damage" id="toc-multicollinearity-seeing-the-damage" class="nav-link" data-scroll-target="#multicollinearity-seeing-the-damage"><span class="header-section-number">15.6</span> Multicollinearity: Seeing the Damage</a></li>
-  <li><a href="#six-ways-to-deal-with-collinearity" id="toc-six-ways-to-deal-with-collinearity" class="nav-link" data-scroll-target="#six-ways-to-deal-with-collinearity"><span class="header-section-number">15.7</span> Six Ways to Deal With Collinearity</a></li>
-  <li><a href="#a-real-example-predicting-college-gpa" id="toc-a-real-example-predicting-college-gpa" class="nav-link" data-scroll-target="#a-real-example-predicting-college-gpa"><span class="header-section-number">15.8</span> A Real Example: Predicting College GPA</a></li>
-  <li><a href="#where-we-go-next" id="toc-where-we-go-next" class="nav-link" data-scroll-target="#where-we-go-next"><span class="header-section-number">15.9</span> Where We Go Next</a></li>
+  <li><a href="#partitioning-variance-types-of-sums-of-squares" id="toc-partitioning-variance-types-of-sums-of-squares" class="nav-link" data-scroll-target="#partitioning-variance-types-of-sums-of-squares"><span class="header-section-number">15.7</span> Partitioning Variance: Types of Sums of Squares</a></li>
+  <li><a href="#six-ways-to-deal-with-collinearity" id="toc-six-ways-to-deal-with-collinearity" class="nav-link" data-scroll-target="#six-ways-to-deal-with-collinearity"><span class="header-section-number">15.8</span> Six Ways to Deal With Collinearity</a></li>
+  <li><a href="#a-real-example-predicting-college-gpa" id="toc-a-real-example-predicting-college-gpa" class="nav-link" data-scroll-target="#a-real-example-predicting-college-gpa"><span class="header-section-number">15.9</span> A Real Example: Predicting College GPA</a></li>
+  <li><a href="#where-we-go-next" id="toc-where-we-go-next" class="nav-link" data-scroll-target="#where-we-go-next"><span class="header-section-number">15.10</span> Where We Go Next</a></li>
   </ul>
 </nav>
     </div>
@@ -906,8 +907,68 @@ x2 0.56 0.57 1.00</code></pre>
 </div>
 <p>Past a correlation of about 0.95 the curve rises very steeply. A predictor that is 95% predictable from the others carries almost no <em>unique</em> information, so the model cannot pin down its slope. The red line marks a rough <span class="math inline">\(\text{VIF} = 10\)</span> rule of thumb, but treat it as a warning sign, not a hard rule.</p>
 </section>
-<section id="six-ways-to-deal-with-collinearity" class="level2" data-number="15.7">
-<h2 data-number="15.7" class="anchored" data-anchor-id="six-ways-to-deal-with-collinearity"><span class="header-section-number">15.7</span> Six Ways to Deal With Collinearity</h2>
+<section id="partitioning-variance-types-of-sums-of-squares" class="level2" data-number="15.7">
+<h2 data-number="15.7" class="anchored" data-anchor-id="partitioning-variance-types-of-sums-of-squares"><span class="header-section-number">15.7</span> Partitioning Variance: Types of Sums of Squares</h2>
+<p>The VIF told us that collinearity inflates our uncertainty. Here is the deeper reason, and it is a matter of <em>bookkeeping</em>: when predictors overlap, the variance they jointly explain cannot be cleanly assigned to one or the other. How you divide it up is a choice, and there are three main conventions, the <strong>types of sums of squares</strong>.</p>
+<p><strong>Type I (sequential).</strong> Each predictor is credited with the variance it explains <em>after</em> the predictors entered before it. It is order-dependent, and the pieces add up to the model total. Watch the credit shift when we swap the order:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>); n <span class="ot">&lt;-</span> <span class="dv">200</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>x1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n); x2 <span class="ot">&lt;-</span> <span class="fl">0.7</span> <span class="sc">*</span> x1 <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">sd =</span> <span class="fu">sqrt</span>(<span class="dv">1</span> <span class="sc">-</span> <span class="fl">0.49</span>))   <span class="co"># x1 and x2 correlate ~ .7</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>y  <span class="ot">&lt;-</span> <span class="fl">0.5</span> <span class="sc">*</span> x1 <span class="sc">+</span> <span class="fl">0.4</span> <span class="sc">*</span> x2 <span class="sc">+</span> <span class="fu">rnorm</span>(n)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2))[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="st">"Sum Sq"</span>]     <span class="co"># x1 first, then x2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 92.77167 22.07744</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x2 <span class="sc">+</span> x1))[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="st">"Sum Sq"</span>]     <span class="co"># x2 first, then x1 — same data, different split</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 100.0556  14.7935</code></pre>
+</div>
+</div>
+<p>Same data, same model, but x1 is credited with far more variance when it enters first. Whoever goes first gets the shared variance. Sequential sums of squares reward order, which is appropriate when theory dictates an order and misleading when it does not.</p>
+<p><strong>Type III (unique, or “each last”).</strong> Each predictor is credited only with the variance that is <em>uniquely</em> its own, the part no other predictor can account for. This is order-free: every predictor is evaluated as if it had entered last. It is exactly the <strong>squared semipartial correlation</strong> from earlier in this chapter, and you can read it off as the drop in fit when you remove that one predictor from the full model:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>full <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">x1_unique =</span> <span class="fu">anova</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x2), full)[[<span class="st">"Sum of Sq"</span>]][<span class="dv">2</span>],   <span class="co"># what x1 adds, controlling x2</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x2_unique =</span> <span class="fu">anova</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x1), full)[[<span class="st">"Sum of Sq"</span>]][<span class="dv">2</span>])   <span class="co"># what x2 adds, controlling x1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>x1_unique x2_unique 
+ 14.79350  22.07744 </code></pre>
+</div>
+</div>
+<p>These do not depend on order, but they do <strong>not</strong> add up to the model total:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">unique_sum =</span> <span class="fu">anova</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x2), full)[[<span class="st">"Sum of Sq"</span>]][<span class="dv">2</span>] <span class="sc">+</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>               <span class="fu">anova</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x1), full)[[<span class="st">"Sum of Sq"</span>]][<span class="dv">2</span>],</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">model_SS   =</span> <span class="fu">sum</span>(<span class="fu">anova</span>(full)[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="st">"Sum Sq"</span>]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>unique_sum   model_SS 
+  36.87093  114.84910 </code></pre>
+</div>
+</div>
+<p>The gap is the <strong>shared variance</strong> - the part both predictors could explain, which Type III refuses to award to either. With collinear predictors that shared piece can be large (here it is most of the model), and that is the collinearity problem stated exactly: much of the explained variance cannot be attributed to one predictor over the other.</p>
+<p><strong>Type II</strong> sits between the two: like Type III it credits each term controlling for the others, but it respects <em>marginality</em> (a main effect is tested controlling for other main effects, but not for the interactions that contain it). For a model without interactions, Type II and Type III agree.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Which type to report is an interpretive choice
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>There is no universally correct type; there is the type that answers your question.</p>
+<ul>
+<li>Use <strong>Type I</strong> when the predictors have a genuine, theory-given order: enter the control variable first and the variable of interest last, then read its sequential contribution.</li>
+<li>Use <strong>Type III</strong> (the default in much of psychology, and what standardized coefficients and semipartial correlations report) when you want each predictor’s <em>unique</em> contribution, controlling for all the others.</li>
+</ul>
+<p>The point to carry away is this: whenever predictors are correlated, some of the explained variance is <strong>shared and unattributable</strong>, and different conventions handle it differently. Reporting a single “variance explained by X” without saying how you partitioned it is incomplete. Collinearity is not only a nuisance to diagnose with a VIF; it is a real limit on what the data can say about any one predictor, and <em>how you partition the variance</em> is part of the answer.</p>
+</div>
+</div>
+</section>
+<section id="six-ways-to-deal-with-collinearity" class="level2" data-number="15.8">
+<h2 data-number="15.8" class="anchored" data-anchor-id="six-ways-to-deal-with-collinearity"><span class="header-section-number">15.8</span> Six Ways to Deal With Collinearity</h2>
 <p>There is no single fix; there are trade-offs. In rough order of how often they are the <em>right</em> call:</p>
 <ol type="1">
 <li><strong>Delete a redundant predictor.</strong> If two variables measure nearly the same thing, you probably do not need both. Cheapest fix, but you lose whatever unique signal was there.</li>
@@ -928,25 +989,25 @@ x2 0.56 0.57 1.00</code></pre>
 </div>
 <div class="callout-body-container callout-body">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>composite <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(<span class="fu">data.frame</span>(<span class="at">x1z =</span> <span class="fu">scale</span>(x1), <span class="at">x2z =</span> <span class="fu">scale</span>(x2)))</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">summary</span>(<span class="fu">lm</span>(y <span class="sc">~</span> composite))<span class="sc">$</span>coefficients, <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>composite <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(<span class="fu">data.frame</span>(<span class="at">x1z =</span> <span class="fu">scale</span>(x1), <span class="at">x2z =</span> <span class="fu">scale</span>(x2)))</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">summary</span>(<span class="fu">lm</span>(y <span class="sc">~</span> composite))<span class="sc">$</span>coefficients, <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>            Estimate Std. Error t value Pr(&gt;|t|)
-(Intercept)   -0.039      0.112  -0.346     0.73
-composite      0.956      0.127   7.513     0.00</code></pre>
+(Intercept)   -0.076      0.074  -1.032    0.303
+composite      0.828      0.080  10.288    0.000</code></pre>
 </div>
 </div>
 <p>One predictor, no collinearity, and often a cleaner story than two fighting over the same variance.</p>
 </div>
 </div>
 </section>
-<section id="a-real-example-predicting-college-gpa" class="level2" data-number="15.8">
-<h2 data-number="15.8" class="anchored" data-anchor-id="a-real-example-predicting-college-gpa"><span class="header-section-number">15.8</span> A Real Example: Predicting College GPA</h2>
+<section id="a-real-example-predicting-college-gpa" class="level2" data-number="15.9">
+<h2 data-number="15.9" class="anchored" data-anchor-id="a-real-example-predicting-college-gpa"><span class="header-section-number">15.9</span> A Real Example: Predicting College GPA</h2>
 <p>Let’s leave the simulated world and put all of this to work on the real GPA dataset from the <a href="./14-bivariateregression.html">last chapter</a>. There we predicted college GPA from high-school GPA alone. Now we add the other things an admissions office actually has: SAT total and the quality of the applicant’s letters of recommendation.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>gpa <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/gpa.csv"</span>)</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(CollegeGPA <span class="sc">~</span> HSGPA <span class="sc">+</span> SATtotal <span class="sc">+</span> QLOR, <span class="at">data =</span> gpa)</span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">summary</span>(fit)<span class="sc">$</span>coefficients, <span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>gpa <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/gpa.csv"</span>)</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(CollegeGPA <span class="sc">~</span> HSGPA <span class="sc">+</span> SATtotal <span class="sc">+</span> QLOR, <span class="at">data =</span> gpa)</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">summary</span>(fit)<span class="sc">$</span>coefficients, <span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>            Estimate Std. Error t value Pr(&gt;|t|)
 (Intercept)  -0.1533     0.3229 -0.4746   0.6362
@@ -954,7 +1015,7 @@ HSGPA         0.3764     0.1143  3.2938   0.0014
 SATtotal      0.0012     0.0003  4.0464   0.0001
 QLOR          0.0227     0.0510  0.4449   0.6574</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">R2 =</span> <span class="fu">summary</span>(fit)<span class="sc">$</span>r.squared, <span class="at">adj_R2 =</span> <span class="fu">summary</span>(fit)<span class="sc">$</span>adj.r.squared)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">R2 =</span> <span class="fu">summary</span>(fit)<span class="sc">$</span>r.squared, <span class="at">adj_R2 =</span> <span class="fu">summary</span>(fit)<span class="sc">$</span>adj.r.squared)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       R2    adj_R2 
 0.3997354 0.3809771 </code></pre>
@@ -963,13 +1024,13 @@ QLOR          0.0227     0.0510  0.4449   0.6574</code></pre>
 <p>Every coefficient here is a <strong>partial</strong> effect - the pull of that predictor with the other two held constant. Notice HSGPA’s slope <em>shrank</em> from its bivariate value: some of what looked like “high-school GPA” was really SAT and letter quality traveling alongside it. That is partialling doing its job.</p>
 <p>Now check for collinearity by hand, exactly as we defined it - each VIF is <span class="math inline">\(1/(1-R^2_j)\)</span> where <span class="math inline">\(R^2_j\)</span> regresses that predictor on the others:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>preds <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"HSGPA"</span>, <span class="st">"SATtotal"</span>, <span class="st">"QLOR"</span>)</span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>vif <span class="ot">&lt;-</span> <span class="fu">sapply</span>(preds, <span class="cf">function</span>(p) {</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  others <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(preds, p)</span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  r2 <span class="ot">&lt;-</span> <span class="fu">summary</span>(<span class="fu">lm</span>(<span class="fu">as.formula</span>(<span class="fu">paste</span>(p, <span class="st">"~"</span>, <span class="fu">paste</span>(others, <span class="at">collapse =</span> <span class="st">"+"</span>))), <span class="at">data =</span> gpa))<span class="sc">$</span>r.squared</span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> r2)</span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(vif, <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>preds <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"HSGPA"</span>, <span class="st">"SATtotal"</span>, <span class="st">"QLOR"</span>)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>vif <span class="ot">&lt;-</span> <span class="fu">sapply</span>(preds, <span class="cf">function</span>(p) {</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  others <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(preds, p)</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  r2 <span class="ot">&lt;-</span> <span class="fu">summary</span>(<span class="fu">lm</span>(<span class="fu">as.formula</span>(<span class="fu">paste</span>(p, <span class="st">"~"</span>, <span class="fu">paste</span>(others, <span class="at">collapse =</span> <span class="st">"+"</span>))), <span class="at">data =</span> gpa))<span class="sc">$</span>r.squared</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> r2)</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(vif, <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   HSGPA SATtotal     QLOR 
     1.94     1.24     1.66 </code></pre>
@@ -996,8 +1057,8 @@ QLOR          0.0227     0.0510  0.4449   0.6574</code></pre>
 </div>
 </div>
 </section>
-<section id="where-we-go-next" class="level2" data-number="15.9">
-<h2 data-number="15.9" class="anchored" data-anchor-id="where-we-go-next"><span class="header-section-number">15.9</span> Where We Go Next</h2>
+<section id="where-we-go-next" class="level2" data-number="15.10">
+<h2 data-number="15.10" class="anchored" data-anchor-id="where-we-go-next"><span class="header-section-number">15.10</span> Where We Go Next</h2>
 <p>We have been treating every predictor as continuous. But some of the most important predictors are <strong>categorical</strong> - treatment vs.&nbsp;control, cat vs.&nbsp;dog, before vs.&nbsp;after. It turns out ANOVA is not a separate technique at all; it is just multiple regression with cleverly coded categorical predictors. That unification - the General Linear Model - is the subject of the next chapter, <a href="./16-ANOVAandGLM.html">ANOVA and the GLM</a>.</p>
 
 
