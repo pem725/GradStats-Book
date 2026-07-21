@@ -750,6 +750,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="the-artifact-you-are-guarding-against" class="level2" data-number="21.2">
 <h2 data-number="21.2" class="anchored" data-anchor-id="the-artifact-you-are-guarding-against"><span class="header-section-number">21.2</span> The Artifact You Are Guarding Against</h2>
 <p>Suppose two groups have exactly the same true level of a trait, but one group tends to answer every item a little higher at the same trait level, because of a translation, a cultural norm, a response style, anything at all. Their composite scores will differ even though the trait does not. Watch it happen:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="" aria-current="page">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">SPSS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Julia</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>); N <span class="ot">&lt;-</span> <span class="dv">300</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>grp   <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>), <span class="at">each =</span> N)</span>
@@ -768,6 +772,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    3.358428e-02   -1.068391e-02    3.101531e-02    4.877684e-01    2.936478e-07 </code></pre>
 </div>
 </div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<pre><code>* Assumes the active dataset holds the true trait, the composite score, and the group factor grp.
+* Group means: true trait (equal by construction) and observed composite, by group.
+MEANS TABLES=trait composite BY grp /CELLS=MEAN STDDEV COUNT.
+* Independent-groups (Welch) t-test comparing the composite across groups.
+T-TEST GROUPS=grp('A' 'B') /VARIABLES=composite.</code></pre>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Statistics</span>, <span class="bu">DataFrames</span>, <span class="bu">HypothesisTests</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Assumes df holds :trait, :composite, and the group factor :grp.</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Group means: true trait (equal by construction) and observed composite, by group.</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">combine</span>(<span class="fu">groupby</span>(df, <span class="op">:</span>grp), <span class="op">:</span>trait <span class="op">=&gt;</span> mean, <span class="op">:</span>composite <span class="op">=&gt;</span> mean)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Independent-groups (Welch) t-test comparing the composite across groups.</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">UnequalVarianceTTest</span>(df.composite[df.grp <span class="op">.==</span> <span class="st">"A"</span>], df.composite[df.grp <span class="op">.==</span> <span class="st">"B"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 <p>The true trait was identical in both groups, yet the observed difference is large and strongly “significant.” It is entirely a property of the measurement, not the people. Report it as a group difference and you have published an artifact. Measurement invariance is the check that catches this before it reaches print.</p>
 </section>
 <section id="invariance-is-a-ladder-not-a-verdict" class="level2" data-number="21.3">
@@ -784,15 +806,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="how-you-test-it" class="level2" data-number="21.4">
 <h2 data-number="21.4" class="anchored" data-anchor-id="how-you-test-it"><span class="header-section-number">21.4</span> How You Test It</h2>
 <p>Invariance is tested with <strong>multi-group confirmatory factor analysis</strong> (<a href="./28-sem.html">CFA</a>): fit the same factor model to every group, then progressively <em>constrain</em> parameters to be equal, one rung at a time. The idiom is <code>lavaan</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Multi-group CFA invariance sequence (needs lavaan — shown, not run on the book's server)</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lavaan)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="st">'curiosity =~ x1 + x2 + x3 + x4 + x5 + x6'</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>configural <span class="ot">&lt;-</span> <span class="fu">cfa</span>(model, <span class="at">data =</span> d, <span class="at">group =</span> <span class="st">"group"</span>)                             <span class="co"># same shape</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>metric     <span class="ot">&lt;-</span> <span class="fu">cfa</span>(model, <span class="at">data =</span> d, <span class="at">group =</span> <span class="st">"group"</span>, <span class="at">group.equal =</span> <span class="st">"loadings"</span>)   <span class="co"># + equal loadings</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>scalar     <span class="ot">&lt;-</span> <span class="fu">cfa</span>(model, <span class="at">data =</span> d, <span class="at">group =</span> <span class="st">"group"</span>,</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>                  <span class="at">group.equal =</span> <span class="fu">c</span>(<span class="st">"loadings"</span>, <span class="st">"intercepts"</span>))                    <span class="co"># + equal intercepts</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>strict     <span class="ot">&lt;-</span> <span class="fu">cfa</span>(model, <span class="at">data =</span> d, <span class="at">group =</span> <span class="st">"group"</span>,</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>                  <span class="at">group.equal =</span> <span class="fu">c</span>(<span class="st">"loadings"</span>, <span class="st">"intercepts"</span>, <span class="st">"residuals"</span>))       <span class="co"># + equal residuals</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Multi-group CFA invariance sequence (needs lavaan — shown, not run on the book's server)</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lavaan)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="st">'curiosity =~ x1 + x2 + x3 + x4 + x5 + x6'</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>configural <span class="ot">&lt;-</span> <span class="fu">cfa</span>(model, <span class="at">data =</span> d, <span class="at">group =</span> <span class="st">"group"</span>)                             <span class="co"># same shape</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>metric     <span class="ot">&lt;-</span> <span class="fu">cfa</span>(model, <span class="at">data =</span> d, <span class="at">group =</span> <span class="st">"group"</span>, <span class="at">group.equal =</span> <span class="st">"loadings"</span>)   <span class="co"># + equal loadings</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>scalar     <span class="ot">&lt;-</span> <span class="fu">cfa</span>(model, <span class="at">data =</span> d, <span class="at">group =</span> <span class="st">"group"</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>                  <span class="at">group.equal =</span> <span class="fu">c</span>(<span class="st">"loadings"</span>, <span class="st">"intercepts"</span>))                    <span class="co"># + equal intercepts</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>strict     <span class="ot">&lt;-</span> <span class="fu">cfa</span>(model, <span class="at">data =</span> d, <span class="at">group =</span> <span class="st">"group"</span>,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>                  <span class="at">group.equal =</span> <span class="fu">c</span>(<span class="st">"loadings"</span>, <span class="st">"intercepts"</span>, <span class="st">"residuals"</span>))       <span class="co"># + equal residuals</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Each step adds constraints. The question at each rung is simple: <em>does forcing this equality make the fit meaningfully worse?</em> If constraining the loadings barely changes fit, metric invariance holds; if constraining the intercepts barely changes fit, scalar holds. “Barely” is judged by the <strong>change in fit indices</strong>, not the chi-square difference test, which is oversensitive in large samples. The common thresholds:</p>
 <ul>
 <li><strong>ΔCFI &lt; .010</strong> (Cheung &amp; Rensvold, 2002) is the workhorse rule.</li>

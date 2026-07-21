@@ -829,6 +829,10 @@ window.Quarto = {
 <h2 data-number="23.3" class="anchored" data-anchor-id="generalizability-reliability-grown-up"><span class="header-section-number">23.3</span> Generalizability: Reliability, Grown Up</h2>
 <p>Classical reliability (<a href="./10-reliability.html">Ch. 10</a>) splits observed variance into “true” and “error.” But error from where? It could come from the particular item you used, the rater who scored you, or the day you happened to show up. <strong>Generalizability theory</strong> treats each of these as a <strong>facet</strong> and estimates how much variance each contributes, turning “reliability” from a single number into an analysis of <em>sources</em>.</p>
 <p>The machinery is the <a href="./04-Dmeasures.html">variance-partitioning</a> you already know, run with <code>aov</code>. Simulate people crossed with items, then recover how much of the variance is real person differences versus item and residual noise:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="" aria-current="page">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">SPSS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Julia</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>np <span class="ot">&lt;-</span> <span class="dv">120</span>; ni <span class="ot">&lt;-</span> <span class="dv">12</span></span>
@@ -848,10 +852,29 @@ window.Quarto = {
     1.13     0.40     0.47 </code></pre>
 </div>
 </div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<pre><code>* Data assumed present as the active dataset with columns score, p (person), i (item).
+* VARCOMP returns the person, item, and residual variance components directly,
+* no hand EMS math from mean squares.
+VARCOMP score BY p i
+  /RANDOM = p i
+  /METHOD = REML.</code></pre>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">MixedModels</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># df is a DataFrame with columns score, p (person), i (item).</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># The random-effect variances ARE the G-theory person/item components;</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># the residual variance is the leftover noise.</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">fit</span>(MixedModel, <span class="pp">@formula</span>(score <span class="op">~</span> <span class="fl">1</span> <span class="op">+</span> (<span class="fl">1</span><span class="op">|</span>p) <span class="op">+</span> (<span class="fl">1</span><span class="op">|</span>i)), df)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 <p>Person variance is the <strong>signal</strong> - the real differences you want to measure. Item and residual variance are <strong>noise</strong>, now itemized by source. The <strong>generalizability coefficient</strong> is the same signal-share idea as reliability, but honest about the fact that you averaged over a <em>sample</em> of items:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>G <span class="ot">&lt;-</span> v_p <span class="sc">/</span> (v_p <span class="sc">+</span> v_e <span class="sc">/</span> ni)                <span class="co"># G-coefficient for a test of ni items</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(G, <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>G <span class="ot">&lt;-</span> v_p <span class="sc">/</span> (v_p <span class="sc">+</span> v_e <span class="sc">/</span> ni)                <span class="co"># G-coefficient for a test of ni items</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(G, <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.966</code></pre>
 </div>
@@ -860,9 +883,9 @@ window.Quarto = {
 <h3 data-number="23.3.1" class="anchored" data-anchor-id="the-d-study-designing-the-measure"><span class="header-section-number">23.3.1</span> The D-study: Designing the Measure</h3>
 <p>This is where G-theory pays for itself. Because you know the variance components, you can ask a <strong>design</strong> question - a <em>decision (D) study</em>: how many items would I need for a target reliability? It is the <a href="./09-statisticalpower.html">power analysis</a> of measurement.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>n_items <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">8</span>, <span class="dv">12</span>, <span class="dv">20</span>, <span class="dv">40</span>)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>G_by_n  <span class="ot">&lt;-</span> v_p <span class="sc">/</span> (v_p <span class="sc">+</span> v_e <span class="sc">/</span> n_items)     <span class="co"># generalizability at each test length</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">setNames</span>(G_by_n, n_items), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>n_items <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">8</span>, <span class="dv">12</span>, <span class="dv">20</span>, <span class="dv">40</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>G_by_n  <span class="ot">&lt;-</span> v_p <span class="sc">/</span> (v_p <span class="sc">+</span> v_e <span class="sc">/</span> n_items)     <span class="co"># generalizability at each test length</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">setNames</span>(G_by_n, n_items), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    4     8    12    20    40 
 0.906 0.951 0.966 0.980 0.990 </code></pre>
