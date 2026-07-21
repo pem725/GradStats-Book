@@ -55,10 +55,26 @@ Filling the holes with what `z` implies pulls the estimate back to the truth. Th
 
 There is a subtlety here worth slowing down for. The *marginal mean* of `y` was wrecked, but watch the *regression slope* of `y` on `z`:
 
+::: {.panel-tabset}
+### R
 ```{r}
 c(slope_full          = round(coef(lm(y ~ z))[2], 3),      # the truth
   slope_complete_case = round(coef(lm(y_obs ~ z))[2], 3))  # barely moved
 ```
+### SPSS
+```
+* Full-data slope of y on z.
+REGRESSION /STATISTICS COEFF R ANOVA /DEPENDENT y /METHOD=ENTER z.
+* Complete-case slope of y_obs on z (SPSS drops missing listwise by default).
+REGRESSION /STATISTICS COEFF R ANOVA /DEPENDENT y_obs /METHOD=ENTER z.
+```
+### Julia
+```julia
+using GLM, DataFrames
+slope_full          = coef(lm(@formula(y ~ z), df))[2]                        # the truth
+slope_complete_case = coef(lm(@formula(y_obs ~ z), dropmissing(df, :y_obs)))[2]  # barely moved
+```
+:::
 
 The slope is essentially fine, even under 47% MAR missingness - because the missingness depends on `z`, and `z` is already *in* the model, so conditioning on it absorbs the mechanism. **Same data, same holes: the mean is biased, the slope is not.** Whether the missing data changes your answer depends on *which* answer you want and *how* the holes relate to your model. "Does missing data matter here?" is a real question with a real, case-by-case answer - not a reflex to reach for either complete-case or imputation.
 

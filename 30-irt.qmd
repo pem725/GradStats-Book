@@ -46,6 +46,8 @@ Classical reliability ([Ch. 10](10-reliability.qmd)) splits observed variance in
 
 The machinery is the [variance-partitioning](04-Dmeasures.qmd) you already know, run with `aov`. Simulate people crossed with items, then recover how much of the variance is real person differences versus item and residual noise:
 
+::: {.panel-tabset}
+### R
 ```{r}
 set.seed(2026)
 np <- 120; ni <- 12
@@ -61,6 +63,25 @@ v_p <- (ms[1] - v_e) / ni                  # person variance (the signal)
 v_i <- (ms[2] - v_e) / np                  # item variance
 round(c(person = v_p, item = v_i, residual = v_e), 2)
 ```
+### SPSS
+```
+* Data assumed present as the active dataset with columns score, p (person), i (item).
+* VARCOMP returns the person, item, and residual variance components directly,
+* no hand EMS math from mean squares.
+VARCOMP score BY p i
+  /RANDOM = p i
+  /METHOD = REML.
+```
+### Julia
+```julia
+using MixedModels
+
+# df is a DataFrame with columns score, p (person), i (item).
+# The random-effect variances ARE the G-theory person/item components;
+# the residual variance is the leftover noise.
+fit(MixedModel, @formula(score ~ 1 + (1|p) + (1|i)), df)
+```
+:::
 
 Person variance is the **signal** - the real differences you want to measure. Item and residual variance are **noise**, now itemized by source. The **generalizability coefficient** is the same signal-share idea as reliability, but honest about the fact that you averaged over a *sample* of items:
 

@@ -13,6 +13,8 @@ Before you compare two groups on a measure - do women and men differ in curiosit
 
 Suppose two groups have exactly the same true level of a trait, but one group tends to answer every item a little higher at the same trait level, because of a translation, a cultural norm, a response style, anything at all. Their composite scores will differ even though the trait does not. Watch it happen:
 
+::: {.panel-tabset}
+### R
 ```{r}
 set.seed(1); N <- 300
 grp   <- rep(c("A", "B"), each = N)
@@ -27,6 +29,24 @@ c(true_mean_A     = mean(trait[grp == "A"]),   # equal by construction
   observed_mean_B = mean(composite[grp == "B"]),
   t_test_p        = t.test(composite ~ grp)$p.value)
 ```
+### SPSS
+```
+* Assumes the active dataset holds the true trait, the composite score, and the group factor grp.
+* Group means: true trait (equal by construction) and observed composite, by group.
+MEANS TABLES=trait composite BY grp /CELLS=MEAN STDDEV COUNT.
+* Independent-groups (Welch) t-test comparing the composite across groups.
+T-TEST GROUPS=grp('A' 'B') /VARIABLES=composite.
+```
+### Julia
+```julia
+using Statistics, DataFrames, HypothesisTests
+# Assumes df holds :trait, :composite, and the group factor :grp.
+# Group means: true trait (equal by construction) and observed composite, by group.
+combine(groupby(df, :grp), :trait => mean, :composite => mean)
+# Independent-groups (Welch) t-test comparing the composite across groups.
+UnequalVarianceTTest(df.composite[df.grp .== "A"], df.composite[df.grp .== "B"])
+```
+:::
 
 The true trait was identical in both groups, yet the observed difference is large and strongly "significant." It is entirely a property of the measurement, not the people. Report it as a group difference and you have published an artifact. Measurement invariance is the check that catches this before it reaches print.
 
