@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -13,10 +13,13 @@
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -77,14 +80,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-c875dbb4c9335aca9cc352e974a4ec92.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-c875dbb4c9335aca9cc352e974a4ec92.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-c875dbb4c9335aca9cc352e974a4ec92.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-aced932c6eb97d642153b8e218288f9f.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-aced932c6eb97d642153b8e218288f9f.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-aced932c6eb97d642153b8e218288f9f.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-7041d42a0ef0b4d7752bc563fd2420bf.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-04d11f364e40cfe56f183506235f74e7.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-7041d42a0ef0b4d7752bc563fd2420bf.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-c677a511756c5975cddbcf4cdb29e7ae.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-f17bee6545793679b258b2bc8eda5adb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-c677a511756c5975cddbcf4cdb29e7ae.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -114,7 +117,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -700,7 +703,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./three-languages.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">The Same Analysis in R, SPSS, and Julia</span></a>
+ <span class="menu-text">The Same Analysis in R, SPSS, Julia, and Python</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -787,35 +790,99 @@ window.Quarto = {
 <p>Every DAG, however complicated, is built from four elementary pieces. Knowing how each behaves is most of causal inference (McElreath). Three of them we can watch directly.</p>
 <p><strong>The Fork</strong> (<span class="math inline">\(X \leftarrow Z \rightarrow Y\)</span>). <span class="math inline">\(Z\)</span> is a common cause, a <strong>confounder</strong>. <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> become correlated even with no arrow between them. <strong>Control <span class="math inline">\(Z\)</span></strong> to close the path:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">4</span>); n <span class="ot">&lt;-</span> <span class="dv">2000</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>Z <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n); X <span class="ot">&lt;-</span> Z <span class="sc">+</span> <span class="fu">rnorm</span>(n); Y <span class="ot">&lt;-</span> Z <span class="sc">+</span> <span class="fu">rnorm</span>(n)          <span class="co"># Z causes both; no X-&gt;Y arrow</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">fork_naive   =</span> <span class="fu">round</span>(<span class="fu">cor</span>(X, Y), <span class="dv">2</span>),                        <span class="co"># spurious association</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">fork_control =</span> <span class="fu">round</span>(<span class="fu">cor</span>(<span class="fu">resid</span>(<span class="fu">lm</span>(X<span class="sc">~</span>Z)), <span class="fu">resid</span>(<span class="fu">lm</span>(Y<span class="sc">~</span>Z))), <span class="dv">2</span>))  <span class="co"># control Z: it vanishes</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>  fork_naive fork_control 
-        0.49        -0.02 </code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)    <span class="co"># dplyr, ggplot2, purrr, tibble, readr, stringr, forcats</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)        <span class="co"># tidy(), glance(), augment() for model output</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"_common.R"</span>)   <span class="co"># book-wide helpers: round2(), fmt_p(), tidy2()</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">4</span>); n <span class="ot">&lt;-</span> <span class="dv">2000</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>fork <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">Z =</span> <span class="fu">rnorm</span>(n)) <span class="sc">|&gt;</span>              <span class="co"># Z causes both; no X-&gt;Y arrow</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">X =</span> Z <span class="sc">+</span> <span class="fu">rnorm</span>(n), <span class="at">Y =</span> Z <span class="sc">+</span> <span class="fu">rnorm</span>(n))</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>fork <span class="sc">|&gt;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">naive   =</span> <span class="fu">cor</span>(X, Y),                     <span class="co"># spurious association</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">control =</span> <span class="fu">cor</span>(<span class="fu">resid</span>(<span class="fu">lm</span>(X <span class="sc">~</span> Z)), <span class="fu">resid</span>(<span class="fu">lm</span>(Y <span class="sc">~</span> Z)))   <span class="co"># control Z: it vanishes</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">naive</th>
+<th style="text-align: right;">control</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.49</td>
+<td style="text-align: right;">-0.02</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <p><strong>The Pipe</strong> (<span class="math inline">\(X \rightarrow M \rightarrow Y\)</span>). <span class="math inline">\(M\)</span> is a <strong>mediator</strong>; <span class="math inline">\(X\)</span> affects <span class="math inline">\(Y\)</span> <em>through</em> <span class="math inline">\(M\)</span>. Control <span class="math inline">\(M\)</span> and you block the very effect you were trying to measure (this is <em>post-treatment bias</em>):</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">5</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n); M <span class="ot">&lt;-</span> X <span class="sc">+</span> <span class="fu">rnorm</span>(n); Y <span class="ot">&lt;-</span> M <span class="sc">+</span> <span class="fu">rnorm</span>(n)          <span class="co"># effect runs X -&gt; M -&gt; Y</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">pipe_naive   =</span> <span class="fu">round</span>(<span class="fu">cor</span>(X, Y), <span class="dv">2</span>),                        <span class="co"># the real, total effect</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">pipe_control =</span> <span class="fu">round</span>(<span class="fu">cor</span>(<span class="fu">resid</span>(<span class="fu">lm</span>(X<span class="sc">~</span>M)), <span class="fu">resid</span>(<span class="fu">lm</span>(Y<span class="sc">~</span>M))), <span class="dv">2</span>))   <span class="co"># control M: effect blocked</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>  pipe_naive pipe_control 
-        0.58        -0.01 </code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">5</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>pipe <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">X =</span> <span class="fu">rnorm</span>(n)) <span class="sc">|&gt;</span>              <span class="co"># the effect runs X -&gt; M -&gt; Y</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">M =</span> X <span class="sc">+</span> <span class="fu">rnorm</span>(n), <span class="at">Y =</span> M <span class="sc">+</span> <span class="fu">rnorm</span>(n))</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>pipe <span class="sc">|&gt;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">naive   =</span> <span class="fu">cor</span>(X, Y),                     <span class="co"># the real, total effect</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">control =</span> <span class="fu">cor</span>(<span class="fu">resid</span>(<span class="fu">lm</span>(X <span class="sc">~</span> M)), <span class="fu">resid</span>(<span class="fu">lm</span>(Y <span class="sc">~</span> M)))   <span class="co"># control M: effect blocked</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">naive</th>
+<th style="text-align: right;">control</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.58</td>
+<td style="text-align: right;">-0.01</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <p><strong>The Collider</strong> (<span class="math inline">\(X \rightarrow Z \leftarrow Y\)</span>). <span class="math inline">\(Z\)</span> is a common <em>effect</em>. Here <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are genuinely unrelated, but conditioning on <span class="math inline">\(Z\)</span> <strong>creates</strong> an association that was never there:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">6</span>)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n); Y <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n); Z <span class="ot">&lt;-</span> X <span class="sc">+</span> Y <span class="sc">+</span> <span class="fu">rnorm</span>(n)          <span class="co"># X and Y both cause Z</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">collider_naive   =</span> <span class="fu">round</span>(<span class="fu">cor</span>(X, Y), <span class="dv">2</span>),                    <span class="co"># correctly ~ 0</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">collider_control =</span> <span class="fu">round</span>(<span class="fu">cor</span>(<span class="fu">resid</span>(<span class="fu">lm</span>(X<span class="sc">~</span>Z)), <span class="fu">resid</span>(<span class="fu">lm</span>(Y<span class="sc">~</span>Z))), <span class="dv">2</span>))  <span class="co"># control Z: spurious!</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>  collider_naive collider_control 
-           -0.04            -0.51 </code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">6</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>collider <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">X =</span> <span class="fu">rnorm</span>(n), <span class="at">Y =</span> <span class="fu">rnorm</span>(n)) <span class="sc">|&gt;</span>   <span class="co"># X and Y both cause Z</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Z =</span> X <span class="sc">+</span> Y <span class="sc">+</span> <span class="fu">rnorm</span>(n))</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>collider <span class="sc">|&gt;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">naive   =</span> <span class="fu">cor</span>(X, Y),                            <span class="co"># correctly ~ 0</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">control =</span> <span class="fu">cor</span>(<span class="fu">resid</span>(<span class="fu">lm</span>(X <span class="sc">~</span> Z)), <span class="fu">resid</span>(<span class="fu">lm</span>(Y <span class="sc">~</span> Z)))   <span class="co"># control Z: spurious!</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">naive</th>
+<th style="text-align: right;">control</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">-0.04</td>
+<td style="text-align: right;">-0.51</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <p><strong>The Descendant.</strong> Conditioning on a variable <em>caused by</em> another partly conditions on that other variable. A descendant of a collider re-opens the collider a little; a descendant of a confounder closes the fork a little. The rule of thumb: a descendant behaves like a weak version of its parent.</p>
@@ -843,16 +910,16 @@ window.Quarto = {
 <section id="the-back-door-criterion" class="level2" data-number="24.4">
 <h2 data-number="24.4" class="anchored" data-anchor-id="the-back-door-criterion"><span class="header-section-number">24.4</span> The Back-Door Criterion</h2>
 <p>Given a DAG, <em>which</em> variables must you control to estimate the causal effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span>? The <strong>back-door criterion</strong> answers it: block every “back-door path” - every non-causal path from <span class="math inline">\(X\)</span> to <span class="math inline">\(Y\)</span> that begins with an arrow <em>into</em> <span class="math inline">\(X\)</span> - by controlling confounders, while being careful not to open any colliders. For anything but the simplest graph this is easy to get wrong by hand, so the <code>dagitty</code> package (which the course uses) computes the adjustment set for you:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The real tool (needs dagitty — shown, not run on the book's server)</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dagitty)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>dag <span class="ot">&lt;-</span> <span class="fu">dagitty</span>(<span class="st">"dag{ X -&gt; Y ; X &lt;- Z -&gt; Y }"</span>)     <span class="co"># a fork: Z confounds X and Y</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">adjustmentSets</span>(dag, <span class="at">exposure =</span> <span class="st">"X"</span>, <span class="at">outcome =</span> <span class="st">"Y"</span>)   <span class="co"># -&gt; { Z }: control Z, nothing else</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The real tool (needs dagitty — shown, not run on the book's server)</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dagitty)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>dag <span class="ot">&lt;-</span> <span class="fu">dagitty</span>(<span class="st">"dag{ X -&gt; Y ; X &lt;- Z -&gt; Y }"</span>)     <span class="co"># a fork: Z confounds X and Y</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">adjustmentSets</span>(dag, <span class="at">exposure =</span> <span class="st">"X"</span>, <span class="at">outcome =</span> <span class="st">"Y"</span>)   <span class="co"># -&gt; { Z }: control Z, nothing else</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The output is the set of variables to put in your regression. Sometimes it is empty (no adjustment needed); sometimes there is more than one valid set; sometimes it warns you that the effect is <em>not identifiable</em> from the data you have. All of that is causal information you cannot get from the numbers alone.</p>
 </section>
 <section id="a-dag-makes-testable-predictions" class="level2" data-number="24.5">
 <h2 data-number="24.5" class="anchored" data-anchor-id="a-dag-makes-testable-predictions"><span class="header-section-number">24.5</span> A DAG Makes Testable Predictions</h2>
 <p>A DAG is an assumption, but not an untestable one. Every DAG implies a set of <strong>conditional independencies</strong> - statements like “<span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> should be independent once we account for <span class="math inline">\(C\)</span>” - that the data can confirm or refute:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">impliedConditionalIndependencies</span>(dag)   <span class="co"># the testable implications of your DAG</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">impliedConditionalIndependencies</span>(dag)   <span class="co"># the testable implications of your DAG</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>If the data violate an independence your DAG predicts, the DAG is wrong and needs revising. This is how a causal model earns trust: not by fitting the data (any flexible model can do that), but by surviving the specific predictions it makes. It is the same discipline the <a href="./23-sportspage.html">Sports Page chapter</a> preached, applied to causal structure.</p>
 </section>
 <section id="dags-and-sem-two-notations-one-idea" class="level2" data-number="24.6">

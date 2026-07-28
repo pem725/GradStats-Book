@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -13,10 +13,13 @@
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -96,14 +99,14 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-c875dbb4c9335aca9cc352e974a4ec92.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-c875dbb4c9335aca9cc352e974a4ec92.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-c875dbb4c9335aca9cc352e974a4ec92.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-aced932c6eb97d642153b8e218288f9f.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-aced932c6eb97d642153b8e218288f9f.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-aced932c6eb97d642153b8e218288f9f.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-7041d42a0ef0b4d7752bc563fd2420bf.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-04d11f364e40cfe56f183506235f74e7.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-7041d42a0ef0b4d7752bc563fd2420bf.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-c677a511756c5975cddbcf4cdb29e7ae.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-f17bee6545793679b258b2bc8eda5adb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-c677a511756c5975cddbcf4cdb29e7ae.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -133,7 +136,7 @@ div.csl-indent {
 }</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -719,7 +722,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./three-languages.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">The Same Analysis in R, SPSS, and Julia</span></a>
+ <span class="menu-text">The Same Analysis in R, SPSS, Julia, and Python</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -802,31 +805,102 @@ window.Quarto = {
 <h2 data-number="17.2" class="anchored" data-anchor-id="a-categorical-predictor-is-a-sliced-up-continuous-one"><span class="header-section-number">17.2</span> A Categorical Predictor Is a Sliced-Up Continuous One</h2>
 <p>Let us start with a continuous relationship. Suppose some trait <span class="math inline">\(x\)</span> makes people happy:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1925</span>)  <span class="co"># Fisher's "Statistical Methods for Research Workers"</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">rnorm</span>(<span class="dv">100</span>))</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>happy <span class="ot">&lt;-</span> x <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">100</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)    <span class="co"># dplyr, ggplot2, purrr, tibble, readr, stringr, forcats</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)        <span class="co"># tidy(), glance(), augment() for model output</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"_common.R"</span>)   <span class="co"># book-wide helpers: round2(), fmt_p(), tidy2()</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1925</span>)  <span class="co"># Fisher's "Statistical Methods for Research Workers"</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">x =</span> <span class="fu">sort</span>(<span class="fu">rnorm</span>(<span class="dv">100</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">happy =</span> x <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">100</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Now imagine <span class="math inline">\(x\)</span> measures something like “dogness,” where higher values mean more dog-like. We rarely measure dogness on a continuum; instead we lump animals into categories. Let us chop the continuum into four pet types:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>pet <span class="ot">&lt;-</span> <span class="fu">cut</span>(x, <span class="dv">4</span>, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"cat"</span>, <span class="st">"fish"</span>, <span class="st">"pig"</span>, <span class="st">"dog"</span>))</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(pet)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>pet
- cat fish  pig  dog 
-  17   47   29    7 </code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> d <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">pet =</span> <span class="fu">cut</span>(x, <span class="dv">4</span>, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"cat"</span>, <span class="st">"fish"</span>, <span class="st">"pig"</span>, <span class="st">"dog"</span>)))</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>d <span class="sc">|&gt;</span> <span class="fu">count</span>(pet)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">pet</th>
+<th style="text-align: right;">n</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">cat</td>
+<td style="text-align: right;">17</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">fish</td>
+<td style="text-align: right;">47</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">pig</td>
+<td style="text-align: right;">29</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">dog</td>
+<td style="text-align: right;">7</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <p>Does pet type relate to happiness? A regression will happily tell us, even though <code>pet</code> is a <em>factor</em>:</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="" aria-current="page">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">SPSS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Julia</a></li></ul>
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="" aria-current="page">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">SPSS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Julia</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-4" role="tab" aria-controls="tabset-1-4" aria-selected="false" href="">Python</a></li></ul>
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>lm_pet <span class="ot">&lt;-</span> <span class="fu">lm</span>(happy <span class="sc">~</span> pet)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">coef</span>(lm_pet), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>(Intercept)     petfish      petpig      petdog 
-     -1.323       1.185       2.052       2.820 </code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>lm_pet <span class="ot">&lt;-</span> <span class="fu">lm</span>(happy <span class="sc">~</span> pet, <span class="at">data =</span> d)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy2</span>(lm_pet)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">term</th>
+<th style="text-align: right;">estimate</th>
+<th style="text-align: right;">std.error</th>
+<th style="text-align: right;">statistic</th>
+<th style="text-align: left;">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">-1.32</td>
+<td style="text-align: right;">0.24</td>
+<td style="text-align: right;">-5.51</td>
+<td style="text-align: left;">&lt; .001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">petfish</td>
+<td style="text-align: right;">1.18</td>
+<td style="text-align: right;">0.28</td>
+<td style="text-align: right;">4.23</td>
+<td style="text-align: left;">&lt; .001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">petpig</td>
+<td style="text-align: right;">2.05</td>
+<td style="text-align: right;">0.30</td>
+<td style="text-align: right;">6.79</td>
+<td style="text-align: left;">&lt; .001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">petdog</td>
+<td style="text-align: right;">2.82</td>
+<td style="text-align: right;">0.44</td>
+<td style="text-align: right;">6.35</td>
+<td style="text-align: left;">&lt; .001</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 </div>
@@ -834,7 +908,11 @@ window.Quarto = {
 <pre><code>ONEWAY happy BY pet /STATISTICS DESCRIPTIVES.</code></pre>
 </div>
 <div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">GLM;</span> ftest(lm(@formula(happy ~ pet), <span class="bu">df).model)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">GLM;</span> ftest(lm(@formula(happy ~ pet), <span class="bu">df).model)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>smf.ols(<span class="st">"happy ~ pet"</span>, data<span class="op">=</span>df).fit().params.<span class="bu">round</span>(<span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </div>
@@ -844,33 +922,36 @@ window.Quarto = {
 <h2 data-number="17.3" class="anchored" data-anchor-id="dummy-coding-differences-from-a-reference"><span class="header-section-number">17.3</span> Dummy Coding: Differences From a Reference</h2>
 <p>By default, R uses <strong>dummy coding</strong> (<code>contr.treatment</code>): it picks the first level (“cat”) as the <strong>reference</strong>, and each coefficient is the difference between that group’s mean and the reference group’s mean. Let us prove it by pulling the group means directly:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>means <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(happy, <span class="at">by =</span> <span class="fu">list</span>(<span class="at">pet =</span> pet), <span class="at">FUN =</span> mean)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>means</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>means <span class="ot">&lt;-</span> d <span class="sc">|&gt;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean =</span> <span class="fu">mean</span>(happy), <span class="at">.by =</span> pet) <span class="sc">|&gt;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(pet)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>means <span class="sc">|&gt;</span> <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
 <thead>
 <tr class="header">
 <th style="text-align: left;">pet</th>
-<th style="text-align: right;">x</th>
+<th style="text-align: right;">mean</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">cat</td>
-<td style="text-align: right;">-1.3234082</td>
+<td style="text-align: right;">-1.32</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">fish</td>
-<td style="text-align: right;">-0.1385552</td>
+<td style="text-align: right;">-0.14</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">pig</td>
-<td style="text-align: right;">0.7284205</td>
+<td style="text-align: right;">0.73</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">dog</td>
-<td style="text-align: right;">1.4965846</td>
+<td style="text-align: right;">1.50</td>
 </tr>
 </tbody>
 </table>
@@ -879,23 +960,45 @@ window.Quarto = {
 </div>
 <p>Now rebuild every coefficient from those means:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># intercept should be the reference (cat) mean:</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">intercept =</span> <span class="fu">coef</span>(lm_pet)[[<span class="dv">1</span>]], <span class="at">cat_mean =</span> means<span class="sc">$</span>x[<span class="dv">1</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>intercept  cat_mean 
--1.323408 -1.323408 </code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>coefs <span class="ot">&lt;-</span> <span class="fu">tidy</span>(lm_pet) <span class="sc">|&gt;</span> <span class="fu">pull</span>(estimate, <span class="at">name =</span> term)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">coefficient =</span> <span class="fu">c</span>(<span class="st">"(Intercept)"</span>, <span class="st">"petfish"</span>, <span class="st">"petdog"</span>),</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">from_model  =</span> <span class="fu">c</span>(coefs[[<span class="st">"(Intercept)"</span>]], coefs[[<span class="st">"petfish"</span>]], coefs[[<span class="st">"petdog"</span>]]),</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">from_means  =</span> <span class="fu">c</span>(means<span class="sc">$</span>mean[<span class="dv">1</span>],                    <span class="co"># the reference (cat) mean</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>                  means<span class="sc">$</span>mean[<span class="dv">2</span>] <span class="sc">-</span> means<span class="sc">$</span>mean[<span class="dv">1</span>],    <span class="co"># fish mean - cat mean</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>                  means<span class="sc">$</span>mean[<span class="dv">4</span>] <span class="sc">-</span> means<span class="sc">$</span>mean[<span class="dv">1</span>])    <span class="co"># dog mean  - cat mean</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">coefficient</th>
+<th style="text-align: right;">from_model</th>
+<th style="text-align: right;">from_means</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">-1.32</td>
+<td style="text-align: right;">-1.32</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">petfish</td>
+<td style="text-align: right;">1.18</td>
+<td style="text-align: right;">1.18</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">petdog</td>
+<td style="text-align: right;">2.82</td>
+<td style="text-align: right;">2.82</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># petfish should be (fish mean - cat mean):</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">petfish_coef =</span> <span class="fu">coef</span>(lm_pet)[[<span class="st">"petfish"</span>]], <span class="at">fish_minus_cat =</span> means<span class="sc">$</span>x[<span class="dv">2</span>] <span class="sc">-</span> means<span class="sc">$</span>x[<span class="dv">1</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>  petfish_coef fish_minus_cat 
-      1.184853       1.184853 </code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># petdog should be (dog mean - cat mean):</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">petdog_coef =</span> <span class="fu">coef</span>(lm_pet)[[<span class="st">"petdog"</span>]], <span class="at">dog_minus_cat =</span> means<span class="sc">$</span>x[<span class="dv">4</span>] <span class="sc">-</span> means<span class="sc">$</span>x[<span class="dv">1</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>  petdog_coef dog_minus_cat 
-     2.819993      2.819993 </code></pre>
 </div>
 </div>
 <p>There is no magic in the box. <strong>A dummy-coded coefficient is a difference between two group means</strong>, and the intercept is the reference group’s mean. That is exactly what a t-test between two groups reports, which is your first hint that t-tests, too, are just this same model.</p>
@@ -904,31 +1007,103 @@ window.Quarto = {
 <h2 data-number="17.4" class="anchored" data-anchor-id="effects-coding-differences-from-the-grand-mean"><span class="header-section-number">17.4</span> Effects Coding: Differences From the Grand Mean</h2>
 <p>Dummy coding answers “how does each group differ from the reference?” Often we would rather ask “how does each group differ from the <em>overall average</em>?” For that we switch to <strong>effects coding</strong> (<code>contr.sum</code>):</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>pet_e <span class="ot">&lt;-</span> pet</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">contrasts</span>(pet_e) <span class="ot">&lt;-</span> <span class="fu">contr.sum</span>(<span class="dv">4</span>)</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>lm_pet_e <span class="ot">&lt;-</span> <span class="fu">lm</span>(happy <span class="sc">~</span> pet_e)</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">coef</span>(lm_pet_e), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>(Intercept)      pet_e1      pet_e2      pet_e3 
-      0.191      -1.514      -0.329       0.538 </code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>d_e <span class="ot">&lt;-</span> d <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">pet_e =</span> pet)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">contrasts</span>(d_e<span class="sc">$</span>pet_e) <span class="ot">&lt;-</span> <span class="fu">contr.sum</span>(<span class="dv">4</span>)   <span class="co"># base R still owns contrast assignment</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>lm_pet_e <span class="ot">&lt;-</span> <span class="fu">lm</span>(happy <span class="sc">~</span> pet_e, <span class="at">data =</span> d_e)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy2</span>(lm_pet_e)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">term</th>
+<th style="text-align: right;">estimate</th>
+<th style="text-align: right;">std.error</th>
+<th style="text-align: right;">statistic</th>
+<th style="text-align: left;">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">0.19</td>
+<td style="text-align: right;">0.13</td>
+<td style="text-align: right;">1.52</td>
+<td style="text-align: left;">0.132</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">pet_e1</td>
+<td style="text-align: right;">-1.51</td>
+<td style="text-align: right;">0.21</td>
+<td style="text-align: right;">-7.17</td>
+<td style="text-align: left;">&lt; .001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">pet_e2</td>
+<td style="text-align: right;">-0.33</td>
+<td style="text-align: right;">0.16</td>
+<td style="text-align: right;">-2.04</td>
+<td style="text-align: left;">0.045</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">pet_e3</td>
+<td style="text-align: right;">0.54</td>
+<td style="text-align: right;">0.18</td>
+<td style="text-align: right;">2.98</td>
+<td style="text-align: left;">0.004</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <p>The coefficients changed, because the <em>question</em> changed. Now the intercept is the <strong>grand mean</strong> - and here is a subtlety worth stopping for: the grand mean of effects coding is the <strong>mean of the group means</strong> (each group weighted equally), <em>not</em> the mean of the raw scores. With unequal group sizes those two differ, and confusing them is a classic error.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>GM <span class="ot">&lt;-</span> <span class="fu">mean</span>(means<span class="sc">$</span>x)                       <span class="co"># mean of the group means (unweighted)</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">intercept =</span> <span class="fu">coef</span>(lm_pet_e)[[<span class="dv">1</span>]], <span class="at">grand_mean =</span> GM)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code> intercept grand_mean 
- 0.1907604  0.1907604 </code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>GM <span class="ot">&lt;-</span> <span class="fu">mean</span>(means<span class="sc">$</span>mean)      <span class="co"># mean of the group means (unweighted)</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>eff <span class="ot">&lt;-</span> <span class="fu">tidy</span>(lm_pet_e) <span class="sc">|&gt;</span> <span class="fu">pull</span>(estimate)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">intercept =</span> eff[<span class="dv">1</span>], <span class="at">grand_mean =</span> GM) <span class="sc">|&gt;</span> <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">intercept</th>
+<th style="text-align: right;">grand_mean</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.19</td>
+<td style="text-align: right;">0.19</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <p>Each effects coefficient is then that group’s mean minus the grand mean:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># first coefficient = cat mean - grand mean:</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">coef1 =</span> <span class="fu">coef</span>(lm_pet_e)[[<span class="dv">2</span>]], <span class="at">cat_minus_GM =</span> means<span class="sc">$</span>x[<span class="dv">1</span>] <span class="sc">-</span> GM)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>       coef1 cat_minus_GM 
-   -1.514169    -1.514169 </code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># first coefficient = cat mean - grand mean:</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">coef1 =</span> eff[<span class="dv">2</span>], <span class="at">cat_minus_GM =</span> means<span class="sc">$</span>mean[<span class="dv">1</span>] <span class="sc">-</span> GM) <span class="sc">|&gt;</span> <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">coef1</th>
+<th style="text-align: right;">cat_minus_GM</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">-1.51</td>
+<td style="text-align: right;">-1.51</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <div class="callout callout-style-default callout-important callout-titled">
@@ -943,11 +1118,28 @@ window.Quarto = {
 <div class="callout-body-container callout-body">
 <p>Count the coefficients: with four groups, effects coding gives you an intercept plus only <strong>three</strong> effects. The fourth group (“dog”) seems to have vanished. It has not - it is <em>implied</em>. Because the effects are deviations from the grand mean, they must sum to zero, so the last group’s effect is minus the sum of the others:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>dog_effect_implied <span class="ot">&lt;-</span> <span class="sc">-</span>(<span class="fu">coef</span>(lm_pet_e)[[<span class="dv">2</span>]] <span class="sc">+</span> <span class="fu">coef</span>(lm_pet_e)[[<span class="dv">3</span>]] <span class="sc">+</span> <span class="fu">coef</span>(lm_pet_e)[[<span class="dv">4</span>]])</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">implied_dog_effect =</span> dog_effect_implied, <span class="at">dog_minus_GM =</span> means<span class="sc">$</span>x[<span class="dv">4</span>] <span class="sc">-</span> GM)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>implied_dog_effect       dog_minus_GM 
-          1.305824           1.305824 </code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">implied_dog_effect =</span> <span class="sc">-</span><span class="fu">sum</span>(eff[<span class="dv">2</span><span class="sc">:</span><span class="dv">4</span>]),   <span class="co"># the three effects must sum to zero</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">dog_minus_GM       =</span> means<span class="sc">$</span>mean[<span class="dv">4</span>] <span class="sc">-</span> GM</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">implied_dog_effect</th>
+<th style="text-align: right;">dog_minus_GM</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1.31</td>
+<td style="text-align: right;">1.31</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <p>They match. The “missing” group is never missing; it is the one the constraint solves for. (Work the algebra once and reference levels stop being confusing.)</p>
@@ -974,21 +1166,42 @@ window.Quarto = {
 <h2 data-number="17.5" class="anchored" data-anchor-id="the-punchline-this-is-anova"><span class="header-section-number">17.5</span> The Punchline: This <em>Is</em> ANOVA</h2>
 <p>Whether you dummy-code or effects-code, the <em>overall</em> test - “do the group means differ at all?” - is identical, and it is identical to what analysis of variance calls the omnibus <span class="math inline">\(F\)</span>. Watch the same number fall out three ways:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) the regression's own F test</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm_pet)<span class="sc">$</span>fstatistic[<span class="dv">1</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>   value 
-20.99332 </code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">source =</span> <span class="fu">c</span>(<span class="st">"1) the regression's own F test"</span>,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>             <span class="st">"2) anova() on the regression object"</span>,</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>             <span class="st">"3) the classic aov() function"</span>),</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">F =</span> <span class="fu">c</span>(</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">glance</span>(lm_pet)<span class="sc">$</span>statistic,</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">anova</span>(lm_pet) <span class="sc">|&gt;</span> <span class="fu">tidy</span>() <span class="sc">|&gt;</span> <span class="fu">filter</span>(term <span class="sc">==</span> <span class="st">"pet"</span>) <span class="sc">|&gt;</span> <span class="fu">pull</span>(statistic),</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aov</span>(happy <span class="sc">~</span> pet, <span class="at">data =</span> d) <span class="sc">|&gt;</span> <span class="fu">tidy</span>() <span class="sc">|&gt;</span> <span class="fu">filter</span>(term <span class="sc">==</span> <span class="st">"pet"</span>) <span class="sc">|&gt;</span> <span class="fu">pull</span>(statistic)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">source</th>
+<th style="text-align: right;">F</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1) the regression’s own F test</td>
+<td style="text-align: right;">20.99</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2) anova() on the regression object</td>
+<td style="text-align: right;">20.99</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3) the classic aov() function</td>
+<td style="text-align: right;">20.99</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) run it as an ANOVA on the regression object</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(lm_pet)[<span class="st">"pet"</span>, <span class="st">"F value"</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 20.99332</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 3) the classic aov() function</span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">aov</span>(happy <span class="sc">~</span> pet))[[<span class="dv">1</span>]][<span class="st">"pet"</span>, <span class="st">"F value"</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 20.99332</code></pre>
 </div>
 </div>
 <p>One model, one <span class="math inline">\(F\)</span>, three names. <strong>ANOVA is regression with categorical predictors</strong>: the coding scheme only changes how we <em>slice up and label</em> the group differences, never the overall test. This is the General Linear Model: pick your predictors (continuous, categorical, or both), pick your coding, and it is all least squares underneath.</p>
@@ -997,19 +1210,90 @@ window.Quarto = {
 <h2 data-number="17.6" class="anchored" data-anchor-id="two-categorical-predictors-and-their-interaction"><span class="header-section-number">17.6</span> Two Categorical Predictors and Their Interaction</h2>
 <p>Add a second factor and you get a factorial design - still just regression. Suppose messiness also matters:</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">SPSS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">Julia</a></li></ul>
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">SPSS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">Julia</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-4" role="tab" aria-controls="tabset-2-4" aria-selected="false" href="">Python</a></li></ul>
 <div class="tab-content">
 <div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>mess  <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">ifelse</span>(<span class="fu">rnorm</span>(<span class="dv">100</span>) <span class="sc">&gt;</span> <span class="dv">0</span>, <span class="st">"messy"</span>, <span class="st">"tidy"</span>))</span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>sad   <span class="ot">&lt;-</span> <span class="sc">-</span>x <span class="sc">+</span> <span class="fu">as.numeric</span>(mess) <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">100</span>)</span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>lm_fac <span class="ot">&lt;-</span> <span class="fu">lm</span>(sad <span class="sc">~</span> pet <span class="sc">*</span> mess)</span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">coef</span>(lm_fac), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>     (Intercept)          petfish           petpig           petdog 
-           2.079           -1.139           -1.609           -2.789 
-        messtidy petfish:messtidy  petpig:messtidy  petdog:messtidy 
-           0.849            0.614            0.117           -0.403 </code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> d <span class="sc">|&gt;</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">mess =</span> <span class="fu">factor</span>(<span class="fu">if_else</span>(<span class="fu">rnorm</span>(<span class="dv">100</span>) <span class="sc">&gt;</span> <span class="dv">0</span>, <span class="st">"messy"</span>, <span class="st">"tidy"</span>)),</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">sad  =</span> <span class="sc">-</span>x <span class="sc">+</span> <span class="fu">as.numeric</span>(mess) <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">100</span>)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>lm_fac <span class="ot">&lt;-</span> <span class="fu">lm</span>(sad <span class="sc">~</span> pet <span class="sc">*</span> mess, <span class="at">data =</span> d)</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy2</span>(lm_fac)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">term</th>
+<th style="text-align: right;">estimate</th>
+<th style="text-align: right;">std.error</th>
+<th style="text-align: right;">statistic</th>
+<th style="text-align: left;">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">2.08</td>
+<td style="text-align: right;">0.42</td>
+<td style="text-align: right;">4.96</td>
+<td style="text-align: left;">&lt; .001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">petfish</td>
+<td style="text-align: right;">-1.14</td>
+<td style="text-align: right;">0.50</td>
+<td style="text-align: right;">-2.27</td>
+<td style="text-align: left;">0.026</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">petpig</td>
+<td style="text-align: right;">-1.61</td>
+<td style="text-align: right;">0.50</td>
+<td style="text-align: right;">-3.20</td>
+<td style="text-align: left;">0.002</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">petdog</td>
+<td style="text-align: right;">-2.79</td>
+<td style="text-align: right;">0.69</td>
+<td style="text-align: right;">-4.02</td>
+<td style="text-align: left;">&lt; .001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">messtidy</td>
+<td style="text-align: right;">0.85</td>
+<td style="text-align: right;">0.55</td>
+<td style="text-align: right;">1.56</td>
+<td style="text-align: left;">0.123</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">petfish:messtidy</td>
+<td style="text-align: right;">0.61</td>
+<td style="text-align: right;">0.64</td>
+<td style="text-align: right;">0.95</td>
+<td style="text-align: left;">0.343</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">petpig:messtidy</td>
+<td style="text-align: right;">0.12</td>
+<td style="text-align: right;">0.69</td>
+<td style="text-align: right;">0.17</td>
+<td style="text-align: left;">0.864</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">petdog:messtidy</td>
+<td style="text-align: right;">-0.40</td>
+<td style="text-align: right;">1.01</td>
+<td style="text-align: right;">-0.40</td>
+<td style="text-align: left;">0.690</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 </div>
@@ -1017,7 +1301,11 @@ window.Quarto = {
 <pre><code>UNIANOVA sad BY pet mess /DESIGN=pet mess pet*mess.</code></pre>
 </div>
 <div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">GLM;</span> lm(@formula(sad ~ pet * mess), <span class="bu">df)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">GLM;</span> lm(@formula(sad ~ pet * mess), <span class="bu">df)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-2-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-4-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>smf.ols(<span class="st">"sad ~ pet * mess"</span>, data<span class="op">=</span>df).fit().params.<span class="bu">round</span>(<span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </div>
@@ -1027,16 +1315,45 @@ window.Quarto = {
 <h2 data-number="17.7" class="anchored" data-anchor-id="beyond-the-straight-line-the-generalized-linear-model"><span class="header-section-number">17.7</span> Beyond the Straight Line: The <em>Generalized</em> Linear Model</h2>
 <p>Everything so far assumes a continuous outcome with roughly normal residuals. But plenty of outcomes are not like that - a yes/no, a count, a rare event. The <strong>generalized</strong> linear model extends the same framework by letting the outcome follow a different distribution through a <em>link function</em>. The most common case is a binary outcome via <strong>logistic regression</strong>:</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href="">SPSS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-3" role="tab" aria-controls="tabset-3-3" aria-selected="false" href="">Julia</a></li></ul>
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href="">SPSS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-3" role="tab" aria-controls="tabset-3-3" aria-selected="false" href="">Julia</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-4" role="tab" aria-controls="tabset-3-4" aria-selected="false" href="">Python</a></li></ul>
 <div class="tab-content">
 <div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>passed <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="dv">100</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fu">plogis</span>(x))   <span class="co"># 0/1 outcome driven by x</span></span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>glm_fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(passed <span class="sc">~</span> x, <span class="at">family =</span> binomial)</span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">coef</span>(glm_fit), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>(Intercept)           x 
-     -0.181       0.728 </code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 0/1 outcome driven by x</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> d <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">passed =</span> <span class="fu">rbinom</span>(<span class="dv">100</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fu">plogis</span>(x)))</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>glm_fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(passed <span class="sc">~</span> x, <span class="at">family =</span> binomial, <span class="at">data =</span> d)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy2</span>(glm_fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">term</th>
+<th style="text-align: right;">estimate</th>
+<th style="text-align: right;">std.error</th>
+<th style="text-align: right;">statistic</th>
+<th style="text-align: left;">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">-0.18</td>
+<td style="text-align: right;">0.21</td>
+<td style="text-align: right;">-0.86</td>
+<td style="text-align: left;">0.392</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">x</td>
+<td style="text-align: right;">0.73</td>
+<td style="text-align: right;">0.26</td>
+<td style="text-align: right;">2.79</td>
+<td style="text-align: left;">0.005</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 </div>
@@ -1044,7 +1361,11 @@ window.Quarto = {
 <pre><code>LOGISTIC REGRESSION VARIABLES passed WITH x.</code></pre>
 </div>
 <div id="tabset-3-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-3-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">GLM;</span> glm(@formula(passed ~ x), <span class="bu">df</span>, <span class="bu">Binomial()</span>, <span class="bu">LogitLink())</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">GLM;</span> glm(@formula(passed ~ x), <span class="bu">df</span>, <span class="bu">Binomial()</span>, <span class="bu">LogitLink())</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-3-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-4-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>smf.logit(<span class="st">"passed ~ x"</span>, data<span class="op">=</span>df).fit().params.<span class="bu">round</span>(<span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </div>

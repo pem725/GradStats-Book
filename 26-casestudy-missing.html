@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -13,10 +13,13 @@
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -96,14 +99,14 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-c875dbb4c9335aca9cc352e974a4ec92.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-c875dbb4c9335aca9cc352e974a4ec92.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-c875dbb4c9335aca9cc352e974a4ec92.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-aced932c6eb97d642153b8e218288f9f.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-aced932c6eb97d642153b8e218288f9f.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-aced932c6eb97d642153b8e218288f9f.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-7041d42a0ef0b4d7752bc563fd2420bf.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-04d11f364e40cfe56f183506235f74e7.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-7041d42a0ef0b4d7752bc563fd2420bf.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-c677a511756c5975cddbcf4cdb29e7ae.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-f17bee6545793679b258b2bc8eda5adb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-c677a511756c5975cddbcf4cdb29e7ae.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -690,7 +693,7 @@ div.csl-indent {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./three-languages.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">The Same Analysis in R, SPSS, and Julia</span></a>
+ <span class="menu-text">The Same Analysis in R, SPSS, Julia, and Python</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -783,32 +786,78 @@ div.csl-indent {
 <h2 data-number="31.2" class="anchored" data-anchor-id="watch-a-hole-bend-an-estimate"><span class="header-section-number">31.2</span> Watch a Hole Bend an Estimate</h2>
 <p>Simulate an outcome <code>y</code> that correlates with an auxiliary variable <code>z</code>, then make <code>y</code> <strong>missing more often when <code>z</code> is high</strong> - a textbook MAR mechanism (the missingness depends on <code>z</code>, which we <em>observe</em>):</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">2000</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)                              <span class="co"># an auxiliary variable, fully observed</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fl">0.6</span> <span class="sc">*</span> z <span class="sc">+</span> <span class="fu">rnorm</span>(N, <span class="at">sd =</span> <span class="fl">0.8</span>)          <span class="co"># outcome; its true mean is ~ 0</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>p_miss <span class="ot">&lt;-</span> <span class="fu">plogis</span>(<span class="fl">1.8</span> <span class="sc">*</span> z <span class="sc">-</span> <span class="fl">0.2</span>)            <span class="co"># P(missing) rises with z  -&gt; MAR</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>y_obs  <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(<span class="fu">runif</span>(N) <span class="sc">&lt;</span> p_miss, <span class="cn">NA</span>, y) <span class="co"># the data we actually get to see</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">pct_missing         =</span> <span class="fu">round</span>(<span class="dv">100</span> <span class="sc">*</span> <span class="fu">mean</span>(<span class="fu">is.na</span>(y_obs)), <span class="dv">1</span>),</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">true_mean           =</span> <span class="fu">round</span>(<span class="fu">mean</span>(y), <span class="dv">3</span>),                 <span class="co"># unobtainable in real life</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">complete_case_mean  =</span> <span class="fu">round</span>(<span class="fu">mean</span>(y_obs, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="dv">3</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>       pct_missing          true_mean complete_case_mean 
-            47.300             -0.014             -0.279 </code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)    <span class="co"># dplyr, ggplot2, purrr, tibble, readr, stringr, forcats</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)        <span class="co"># tidy(), glance(), augment() for model output</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"_common.R"</span>)   <span class="co"># book-wide helpers: round2(), fmt_p(), tidy2()</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">2000</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">z =</span> <span class="fu">rnorm</span>(N)) <span class="sc">|&gt;</span>                      <span class="co"># auxiliary variable, fully observed</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">y      =</span> <span class="fl">0.6</span> <span class="sc">*</span> z <span class="sc">+</span> <span class="fu">rnorm</span>(N, <span class="at">sd =</span> <span class="fl">0.8</span>),        <span class="co"># outcome; its true mean is ~ 0</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">p_miss =</span> <span class="fu">plogis</span>(<span class="fl">1.8</span> <span class="sc">*</span> z <span class="sc">-</span> <span class="fl">0.2</span>),               <span class="co"># P(missing) rises with z -&gt; MAR</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">y_obs  =</span> <span class="fu">if_else</span>(<span class="fu">runif</span>(N) <span class="sc">&lt;</span> p_miss, <span class="cn">NA</span>, y)    <span class="co"># the data we actually get to see</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>d <span class="sc">|&gt;</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">pct_missing        =</span> <span class="dv">100</span> <span class="sc">*</span> <span class="fu">mean</span>(<span class="fu">is.na</span>(y_obs)),</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">true_mean          =</span> <span class="fu">mean</span>(y),                 <span class="co"># unobtainable in real life</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">complete_case_mean =</span> <span class="fu">mean</span>(y_obs, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">pct_missing</th>
+<th style="text-align: right;">true_mean</th>
+<th style="text-align: right;">complete_case_mean</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">47.3</td>
+<td style="text-align: right;">-0.01</td>
+<td style="text-align: right;">-0.28</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <p>The complete-case mean is badly <strong>biased downward</strong>. That makes sense: we systematically dropped the high-<code>z</code> people, and high <code>z</code> means high <code>y</code>, so the survivors are not representative. The hole did more than cost us sample size; it <em>moved the answer</em>.</p>
 <p>Now recover it. The core idea of imputation is to <strong>use the observed information</strong> (<code>z</code>) to fill the holes in <code>y</code> - here with a stochastic regression imputation (predict the missing <code>y</code> from <code>z</code>, and add noise so we don’t fake certainty):</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>cc  <span class="ot">&lt;-</span> <span class="sc">!</span><span class="fu">is.na</span>(y_obs)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(y_obs[cc] <span class="sc">~</span> z[cc])                               <span class="co"># learn y-from-z on complete cases</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>imp <span class="ot">&lt;-</span> y_obs</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>imp[<span class="sc">!</span>cc] <span class="ot">&lt;-</span> <span class="fu">coef</span>(fit)[<span class="dv">1</span>] <span class="sc">+</span> <span class="fu">coef</span>(fit)[<span class="dv">2</span>] <span class="sc">*</span> z[<span class="sc">!</span>cc] <span class="sc">+</span>         <span class="co"># predicted value ...</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>            <span class="fu">rnorm</span>(<span class="fu">sum</span>(<span class="sc">!</span>cc), <span class="dv">0</span>, <span class="fu">sigma</span>(fit))                 <span class="co"># ... plus honest noise</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">mean</span>(imp), <span class="dv">3</span>)                                        <span class="co"># recovered — back near the true 0</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.036</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># learn y-from-z on the complete cases</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(y_obs <span class="sc">~</span> z, <span class="at">data =</span> d)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>b   <span class="ot">&lt;-</span> <span class="fu">tidy</span>(fit) <span class="sc">|&gt;</span> <span class="fu">pull</span>(estimate)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>s   <span class="ot">&lt;-</span> <span class="fu">glance</span>(fit) <span class="sc">|&gt;</span> <span class="fu">pull</span>(sigma)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>d <span class="sc">|&gt;</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">imputed =</span> <span class="fu">if_else</span>(</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">is.na</span>(y_obs),</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    b[<span class="dv">1</span>] <span class="sc">+</span> b[<span class="dv">2</span>] <span class="sc">*</span> z <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="fu">n</span>(), <span class="dv">0</span>, s),   <span class="co"># predicted value, plus honest noise</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    y_obs</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">|&gt;</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">imputed_mean =</span> <span class="fu">mean</span>(imputed)) <span class="sc">|&gt;</span>   <span class="co"># recovered - back near the true 0</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">imputed_mean</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.03</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <p>Filling the holes with what <code>z</code> implies pulls the estimate back to the truth. That is the entire logic of principled missing-data handling: the information to fix the bias was <em>in the data we kept</em>, and complete-case analysis simply threw it away.</p>
@@ -817,15 +866,32 @@ div.csl-indent {
 <h2 data-number="31.3" class="anchored" data-anchor-id="the-twist-it-depends-on-what-youre-estimating"><span class="header-section-number">31.3</span> The Twist: It Depends on What You’re Estimating</h2>
 <p>There is a subtlety here worth slowing down for. The <em>marginal mean</em> of <code>y</code> was wrecked, but watch the <em>regression slope</em> of <code>y</code> on <code>z</code>:</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="" aria-current="page">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">SPSS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Julia</a></li></ul>
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="" aria-current="page">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">SPSS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Julia</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-4" role="tab" aria-controls="tabset-1-4" aria-selected="false" href="">Python</a></li></ul>
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">slope_full          =</span> <span class="fu">round</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(y <span class="sc">~</span> z))[<span class="dv">2</span>], <span class="dv">3</span>),      <span class="co"># the truth</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">slope_complete_case =</span> <span class="fu">round</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(y_obs <span class="sc">~</span> z))[<span class="dv">2</span>], <span class="dv">3</span>))  <span class="co"># barely moved</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>         slope_full.z slope_complete_case.z 
-                0.570                 0.602 </code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">slope_full          =</span> <span class="fu">tidy</span>(<span class="fu">lm</span>(y <span class="sc">~</span> z, <span class="at">data =</span> d))<span class="sc">$</span>estimate[<span class="dv">2</span>],      <span class="co"># the truth</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">slope_complete_case =</span> <span class="fu">tidy</span>(<span class="fu">lm</span>(y_obs <span class="sc">~</span> z, <span class="at">data =</span> d))<span class="sc">$</span>estimate[<span class="dv">2</span>]   <span class="co"># barely moved</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">slope_full</th>
+<th style="text-align: right;">slope_complete_case</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.57</td>
+<td style="text-align: right;">0.6</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 </div>
@@ -836,9 +902,15 @@ REGRESSION /STATISTICS COEFF R ANOVA /DEPENDENT y /METHOD=ENTER z.
 REGRESSION /STATISTICS COEFF R ANOVA /DEPENDENT y_obs /METHOD=ENTER z.</code></pre>
 </div>
 <div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">GLM</span>, <span class="bu">DataFrames</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>slope_full          <span class="op">=</span> <span class="fu">coef</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(y <span class="op">~</span> z), df))[<span class="fl">2</span>]                        <span class="co"># the truth</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>slope_complete_case <span class="op">=</span> <span class="fu">coef</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(y_obs <span class="op">~</span> z), <span class="fu">dropmissing</span>(df, <span class="op">:</span>y_obs)))[<span class="fl">2</span>]  <span class="co"># barely moved</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">GLM</span>, <span class="bu">DataFrames</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>slope_full          <span class="op">=</span> <span class="fu">coef</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(y <span class="op">~</span> z), df))[<span class="fl">2</span>]                        <span class="co"># the truth</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>slope_complete_case <span class="op">=</span> <span class="fu">coef</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(y_obs <span class="op">~</span> z), <span class="fu">dropmissing</span>(df, <span class="op">:</span>y_obs)))[<span class="fl">2</span>]  <span class="co"># barely moved</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># patsy drops rows with missing values, so the second fit is complete-case.</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>slope_full          <span class="op">=</span> smf.ols(<span class="st">"y ~ z"</span>, data<span class="op">=</span>df).fit().params[<span class="st">"z"</span>]       <span class="co"># the truth</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>slope_complete_case <span class="op">=</span> smf.ols(<span class="st">"y_obs ~ z"</span>, data<span class="op">=</span>df).fit().params[<span class="st">"z"</span>]   <span class="co"># barely moved</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </div>
@@ -847,11 +919,11 @@ REGRESSION /STATISTICS COEFF R ANOVA /DEPENDENT y_obs /METHOD=ENTER z.</code></p
 <section id="multiple-imputation-the-honest-tool" class="level2" data-number="31.4">
 <h2 data-number="31.4" class="anchored" data-anchor-id="multiple-imputation-the-honest-tool"><span class="header-section-number">31.4</span> Multiple Imputation: The Honest Tool</h2>
 <p>Our single imputation recovered the mean, but it glossed over one thing: it treated the filled-in values as if they were real, understating our uncertainty. The fix is <strong>multiple imputation</strong> - impute the holes several times (each with fresh noise), analyze each completed dataset, and <strong>pool</strong> the results with Rubin’s rules, so the between-imputation variability is folded into the standard errors. In R that is the <code>mice</code> package:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The real tool (needs the mice package — shown, not run on the book's server)</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mice)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>imp  <span class="ot">&lt;-</span> <span class="fu">mice</span>(data, <span class="at">m =</span> <span class="dv">20</span>, <span class="at">method =</span> <span class="st">"pmm"</span>, <span class="at">printFlag =</span> <span class="cn">FALSE</span>)  <span class="co"># 20 imputations</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>fit  <span class="ot">&lt;-</span> <span class="fu">with</span>(imp, <span class="fu">lm</span>(happiness <span class="sc">~</span> purpose <span class="sc">+</span> wave))              <span class="co"># analyze each</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">pool</span>(fit)                                                       <span class="co"># pool via Rubin's rules</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The real tool (needs the mice package — shown, not run on the book's server)</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mice)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>imp  <span class="ot">&lt;-</span> <span class="fu">mice</span>(data, <span class="at">m =</span> <span class="dv">20</span>, <span class="at">method =</span> <span class="st">"pmm"</span>, <span class="at">printFlag =</span> <span class="cn">FALSE</span>)  <span class="co"># 20 imputations</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>fit  <span class="ot">&lt;-</span> <span class="fu">with</span>(imp, <span class="fu">lm</span>(happiness <span class="sc">~</span> purpose <span class="sc">+</span> wave))              <span class="co"># analyze each</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">pool</span>(fit)                                                       <span class="co"># pool via Rubin's rules</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The purpose-versus-happiness study did exactly this - fitting its growth models under <strong>complete-case and under multiple imputation side by side</strong> - and reported both, so a reader could see whether the two-year conclusions survived the missing data. That comparison <em>is</em> the analysis; reporting only the complete-case result would have meant leaving the question unanswered.</p>
 </section>
 <section id="what-this-case-teaches" class="level2" data-number="31.5">

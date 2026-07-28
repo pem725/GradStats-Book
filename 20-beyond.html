@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -13,10 +13,13 @@
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -96,14 +99,14 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-c875dbb4c9335aca9cc352e974a4ec92.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-c875dbb4c9335aca9cc352e974a4ec92.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-c875dbb4c9335aca9cc352e974a4ec92.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-aced932c6eb97d642153b8e218288f9f.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-aced932c6eb97d642153b8e218288f9f.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-aced932c6eb97d642153b8e218288f9f.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-7041d42a0ef0b4d7752bc563fd2420bf.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-04d11f364e40cfe56f183506235f74e7.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-7041d42a0ef0b4d7752bc563fd2420bf.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-c677a511756c5975cddbcf4cdb29e7ae.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-f17bee6545793679b258b2bc8eda5adb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-c677a511756c5975cddbcf4cdb29e7ae.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -133,7 +136,7 @@ div.csl-indent {
 }</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -719,7 +722,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./three-languages.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">The Same Analysis in R, SPSS, and Julia</span></a>
+ <span class="menu-text">The Same Analysis in R, SPSS, Julia, and Python</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -834,27 +837,55 @@ window.Quarto = {
 <h3 data-number="25.2.1" class="anchored" data-anchor-id="the-bootstrap-estimation"><span class="header-section-number">25.2.1</span> The bootstrap (estimation)</h3>
 <p><strong>Bootstrapping</strong> resamples your data <em>with replacement</em>, <code>n</code> observations drawn from <code>n</code>, over and over, recomputing the statistic each time. The spread of those recomputed values <em>is</em> the estimated sampling distribution. Take a small, skewed sample - exactly where the normal-theory formula is least trustworthy - and bootstrap the mean:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>samp <span class="ot">&lt;-</span> <span class="fu">rexp</span>(<span class="dv">30</span>, <span class="at">rate =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">50</span>)          <span class="co"># n = 30, right-skewed (non-normal) data</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)    <span class="co"># dplyr, ggplot2, purrr, tibble, readr, stringr, forcats</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"_common.R"</span>)   <span class="co"># book-wide helpers: round2(), fmt_p(), tidy2()</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>B <span class="ot">&lt;-</span> <span class="dv">2000</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>boot_means <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B, <span class="fu">mean</span>(<span class="fu">sample</span>(samp, <span class="at">replace =</span> <span class="cn">TRUE</span>)))   <span class="co"># resample &amp; recompute</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>samp <span class="ot">&lt;-</span> <span class="fu">rexp</span>(<span class="dv">30</span>, <span class="at">rate =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">50</span>)          <span class="co"># n = 30, right-skewed (non-normal) data</span></span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">estimate =</span> <span class="fu">mean</span>(samp),</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">boot_SE  =</span> <span class="fu">sd</span>(boot_means),                       <span class="co"># bootstrap standard error</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">lower95  =</span> <span class="fu">quantile</span>(boot_means, <span class="fl">0.025</span>),          <span class="co"># percentile confidence interval</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">upper95  =</span> <span class="fu">quantile</span>(boot_means, <span class="fl">0.975</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>     estimate       boot_SE  lower95.2.5% upper95.97.5% 
-     49.52879      11.10770      31.55877      74.60971 </code></pre>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>B <span class="ot">&lt;-</span> <span class="dv">2000</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>boot_means <span class="ot">&lt;-</span> <span class="fu">map_dbl</span>(<span class="dv">1</span><span class="sc">:</span>B, \(b) <span class="fu">mean</span>(<span class="fu">sample</span>(samp, <span class="at">replace =</span> <span class="cn">TRUE</span>)))  <span class="co"># resample &amp; recompute</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">estimate =</span> <span class="fu">mean</span>(samp),</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">boot_SE  =</span> <span class="fu">sd</span>(boot_means),                    <span class="co"># bootstrap standard error</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">lower95  =</span> <span class="fu">quantile</span>(boot_means, <span class="fl">0.025</span>),       <span class="co"># percentile confidence interval</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">upper95  =</span> <span class="fu">quantile</span>(boot_means, <span class="fl">0.975</span>)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">estimate</th>
+<th style="text-align: right;">boot_SE</th>
+<th style="text-align: right;">lower95</th>
+<th style="text-align: right;">upper95</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">49.53</td>
+<td style="text-align: right;">11.11</td>
+<td style="text-align: right;">31.56</td>
+<td style="text-align: right;">74.61</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <p>That is the entire idea: <code>sample(samp, replace = TRUE)</code> inside <code>replicate()</code>, then read the <strong>standard error</strong> off <code>sd()</code> and the <strong>confidence interval</strong> off <code>quantile()</code>. There is no formula, no normality assumption, and no <span class="math inline">\(z\)</span>. The 2.5th and 97.5th percentiles of the bootstrap distribution are a <strong>percentile confidence interval</strong>, and notice that it can be <em>asymmetric</em>, honestly reflecting the skew that a normal-theory interval would smooth over.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(boot_means, <span class="at">breaks =</span> <span class="dv">40</span>, <span class="at">col =</span> <span class="st">"grey80"</span>, <span class="at">border =</span> <span class="st">"white"</span>,</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">""</span>, <span class="at">xlab =</span> <span class="st">"resampled mean"</span>)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="fu">quantile</span>(boot_means, <span class="fu">c</span>(.<span class="dv">025</span>, .<span class="dv">975</span>)), <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="fu">mean</span>(samp), <span class="at">col =</span> <span class="st">"blue"</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">resampled_mean =</span> boot_means) <span class="sc">|&gt;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> resampled_mean)) <span class="sc">+</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">40</span>, <span class="at">fill =</span> <span class="st">"grey80"</span>, <span class="at">colour =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">quantile</span>(boot_means, <span class="fu">c</span>(.<span class="dv">025</span>, .<span class="dv">975</span>)),</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">colour =</span> <span class="st">"red"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">mean</span>(samp), <span class="at">colour =</span> <span class="st">"blue"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"resampled mean"</span>, <span class="at">y =</span> <span class="st">"count"</span>) <span class="sc">+</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -869,23 +900,44 @@ window.Quarto = {
 <h3 data-number="25.2.2" class="anchored" data-anchor-id="the-permutation-test-testing"><span class="header-section-number">25.2.2</span> The permutation test (testing)</h3>
 <p>The bootstrap <em>estimated</em> an interval. To <em>test</em> a hypothesis - say, that two groups have the same mean - we resample differently. Under the null “the group label is irrelevant,” we can <strong>shuffle the labels</strong> and see how big a difference arises by chance alone. The observed difference is “significant” if it lands in the tail of that shuffled distribution.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">7</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>g1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">15</span>, <span class="at">mean =</span> <span class="fl">0.0</span>)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>g2 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">15</span>, <span class="at">mean =</span> <span class="fl">0.8</span>)</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>obs <span class="ot">&lt;-</span> <span class="fu">mean</span>(g2) <span class="sc">-</span> <span class="fu">mean</span>(g1)                         <span class="co"># the observed difference</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>pool   <span class="ot">&lt;-</span> <span class="fu">c</span>(g1, g2)</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>labels <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="at">each =</span> <span class="dv">15</span>)</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>perm   <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">5000</span>, {                        <span class="co"># shuffle labels 5000 times</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  s <span class="ot">&lt;-</span> <span class="fu">sample</span>(labels)</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mean</span>(pool[s <span class="sc">==</span> <span class="dv">2</span>]) <span class="sc">-</span> <span class="fu">mean</span>(pool[s <span class="sc">==</span> <span class="dv">1</span>])</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">observed_diff =</span> obs,</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">permutation_p =</span> <span class="fu">mean</span>(<span class="fu">abs</span>(perm) <span class="sc">&gt;=</span> <span class="fu">abs</span>(obs)))      <span class="co"># two-sided p-value</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>observed_diff permutation_p 
-    0.4426625     0.2974000 </code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">7</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">value =</span> <span class="fu">c</span>(<span class="fu">rnorm</span>(<span class="dv">15</span>, <span class="at">mean =</span> <span class="fl">0.0</span>), <span class="fu">rnorm</span>(<span class="dv">15</span>, <span class="at">mean =</span> <span class="fl">0.8</span>)),</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">group =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="at">each =</span> <span class="dv">15</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>obs <span class="ot">&lt;-</span> g <span class="sc">|&gt;</span>                                        <span class="co"># the observed difference</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">m =</span> <span class="fu">mean</span>(value), <span class="at">.by =</span> group) <span class="sc">|&gt;</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(group) <span class="sc">|&gt;</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">diff =</span> m[<span class="dv">2</span>] <span class="sc">-</span> m[<span class="dv">1</span>]) <span class="sc">|&gt;</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(diff)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>perm <span class="ot">&lt;-</span> <span class="fu">map_dbl</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5000</span>, \(i) {                     <span class="co"># shuffle labels 5000 times</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  s <span class="ot">&lt;-</span> <span class="fu">sample</span>(g<span class="sc">$</span>group)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mean</span>(g<span class="sc">$</span>value[s <span class="sc">==</span> <span class="dv">2</span>]) <span class="sc">-</span> <span class="fu">mean</span>(g<span class="sc">$</span>value[s <span class="sc">==</span> <span class="dv">1</span>])</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">observed_diff =</span> obs,</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>       <span class="at">permutation_p =</span> <span class="fu">mean</span>(<span class="fu">abs</span>(perm) <span class="sc">&gt;=</span> <span class="fu">abs</span>(obs))) <span class="sc">|&gt;</span>   <span class="co"># two-sided p-value</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">permutation_p =</span> <span class="fu">fmt_p</span>(permutation_p)) <span class="sc">|&gt;</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">observed_diff</th>
+<th style="text-align: left;">permutation_p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.44</td>
+<td style="text-align: left;">0.297</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <p>The permutation <span class="math inline">\(p\)</span>-value is the fraction of shuffles that beat the real difference. It makes <strong>no distributional assumption at all</strong>; it rests only on the exchangeability of labels under the null.</p>
@@ -894,13 +946,31 @@ window.Quarto = {
 <h3 data-number="25.2.3" class="anchored" data-anchor-id="the-jackknife-a-leave-one-out-cousin"><span class="header-section-number">25.2.3</span> The jackknife (a leave-one-out cousin)</h3>
 <p>Older and simpler than the bootstrap, the <strong>jackknife</strong> recomputes the statistic leaving out one observation at a time. It is handy for a quick standard error and for spotting influential points (if dropping one case moves the estimate a lot, you’ve found a leverage problem):</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>jk    <span class="ot">&lt;-</span> <span class="fu">sapply</span>(<span class="fu">seq_along</span>(samp), <span class="cf">function</span>(i) <span class="fu">mean</span>(samp[<span class="sc">-</span>i]))       <span class="co"># leave-one-out means</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>n     <span class="ot">&lt;-</span> <span class="fu">length</span>(samp)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>jk_se <span class="ot">&lt;-</span> <span class="fu">sqrt</span>((n <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> <span class="fu">mean</span>((jk <span class="sc">-</span> <span class="fu">mean</span>(jk))<span class="sc">^</span><span class="dv">2</span>))                  <span class="co"># jackknife SE</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">jackknife_mean =</span> <span class="fu">mean</span>(jk), <span class="at">jackknife_SE =</span> jk_se)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>jackknife_mean   jackknife_SE 
-      49.52879       10.96781 </code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>jk <span class="ot">&lt;-</span> <span class="fu">map_dbl</span>(<span class="fu">seq_along</span>(samp), \(i) <span class="fu">mean</span>(samp[<span class="sc">-</span>i]))   <span class="co"># leave-one-out means</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>n  <span class="ot">&lt;-</span> <span class="fu">length</span>(samp)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">jackknife_mean =</span> <span class="fu">mean</span>(jk),</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">jackknife_SE   =</span> <span class="fu">sqrt</span>((n <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> <span class="fu">mean</span>((jk <span class="sc">-</span> <span class="fu">mean</span>(jk))<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">jackknife_mean</th>
+<th style="text-align: right;">jackknife_SE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">49.53</td>
+<td style="text-align: right;">10.97</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -923,17 +993,40 @@ window.Quarto = {
 <p>Recall from the <a href="./03-CTmeasures.html">central tendency chapter</a> that the mean is a <em>least-squares</em> estimator: it sits where squared deviations are smallest. Squaring is exactly why it’s fragile - one faraway point contributes an enormous squared deviation and drags the mean toward itself. A single bad value can move the mean anywhere; its <strong>breakdown point</strong> (the fraction of contamination it can tolerate before giving nonsense) is essentially <span class="math inline">\(0\%\)</span>.</p>
 <p>Watch nineteen clean observations and one data-entry error:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">rnorm</span>(<span class="dv">19</span>, <span class="at">mean =</span> <span class="dv">100</span>, <span class="at">sd =</span> <span class="dv">10</span>), <span class="dv">250</span>)        <span class="co"># 19 good values + 1 gross outlier</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">mean       =</span> <span class="fu">mean</span>(z),</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">median     =</span> <span class="fu">median</span>(z),</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">trimmed10  =</span> <span class="fu">mean</span>(z, <span class="at">trim =</span> <span class="fl">0.10</span>),         <span class="co"># drop the extreme 10% each tail</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">SD         =</span> <span class="fu">sd</span>(z),</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">MAD        =</span> <span class="fu">mad</span>(z)), <span class="dv">2</span>)                    <span class="co"># median absolute deviation</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>     mean    median trimmed10        SD       MAD 
-   109.11    103.60    102.92     34.38      9.26 </code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">rnorm</span>(<span class="dv">19</span>, <span class="at">mean =</span> <span class="dv">100</span>, <span class="at">sd =</span> <span class="dv">10</span>), <span class="dv">250</span>)        <span class="co"># 19 good values + 1 gross outlier</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">mean      =</span> <span class="fu">mean</span>(z),</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">median    =</span> <span class="fu">median</span>(z),</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">trimmed10 =</span> <span class="fu">mean</span>(z, <span class="at">trim =</span> <span class="fl">0.10</span>),   <span class="co"># drop the extreme 10% in each tail</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">SD        =</span> <span class="fu">sd</span>(z),</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">MAD       =</span> <span class="fu">mad</span>(z)                  <span class="co"># median absolute deviation</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">median</th>
+<th style="text-align: right;">trimmed10</th>
+<th style="text-align: right;">SD</th>
+<th style="text-align: right;">MAD</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">109.11</td>
+<td style="text-align: right;">103.6</td>
+<td style="text-align: right;">102.92</td>
+<td style="text-align: right;">34.38</td>
+<td style="text-align: right;">9.26</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <p>The <strong>mean</strong> and <strong>SD</strong> are inflated by the lone outlier; the <strong>median</strong>, <strong>10% trimmed mean</strong>, and <strong>MAD</strong> barely notice it. That resistance is the whole point of robust statistics:</p>
@@ -944,12 +1037,12 @@ window.Quarto = {
 <li><strong>M-estimators</strong> (Huber, Tukey bisquare) - down-weight, rather than discard, extreme points, via iteratively reweighted least squares. These are the robust-regression workhorses.</li>
 </ul>
 <p>For real robust modeling in R, reach for maintained tools - <code>MASS::rlm()</code> for robust regression, and Rand Wilcox’s <strong><code>WRS2</code></strong> package for robust group comparisons (trimmed-means tests, robust ANOVA). The idioms look like this:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rlm</span>(happy <span class="sc">~</span> dogness, <span class="at">data =</span> d)          <span class="co"># robust regression (Huber M-estimator)</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(WRS2)</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="fu">yuen</span>(happy <span class="sc">~</span> group, <span class="at">data =</span> d)           <span class="co"># robust two-group test on trimmed means</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="fu">t1way</span>(happy <span class="sc">~</span> group, <span class="at">data =</span> d)          <span class="co"># robust one-way "ANOVA"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rlm</span>(happy <span class="sc">~</span> dogness, <span class="at">data =</span> d)          <span class="co"># robust regression (Huber M-estimator)</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(WRS2)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">yuen</span>(happy <span class="sc">~</span> group, <span class="at">data =</span> d)           <span class="co"># robust two-group test on trimmed means</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">t1way</span>(happy <span class="sc">~</span> group, <span class="at">data =</span> d)          <span class="co"># robust one-way "ANOVA"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -973,22 +1066,65 @@ window.Quarto = {
 <h3 data-number="25.4.1" class="anchored" data-anchor-id="why-it-matters-the-arithmetic-of-the-replication-crisis"><span class="header-section-number">25.4.1</span> Why it matters: the arithmetic of the replication crisis</h3>
 <p>Here is a calculation worth sitting with, and it needs nothing but Bayes’ rule. You run a well-powered study, get <span class="math inline">\(p &lt; .05\)</span>, and publish. <strong>What is the probability your hypothesis is actually true?</strong> It is not the <span class="math inline">\(p\)</span>-value; that is <span class="math inline">\(P(\text{significant} \mid H \text{ false})\)</span>. The quantity you want is <span class="math inline">\(P(H \text{ true} \mid \text{significant})\)</span>, and it depends on how plausible your idea was <em>before</em> the data, its prior:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>power <span class="ot">&lt;-</span> <span class="fl">0.99</span>    <span class="co"># P(significant | H true)  -- a very high-powered study</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> <span class="fl">0.01</span>    <span class="co"># P(significant | H false) -- a strict false-positive rate</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>prior <span class="ot">&lt;-</span> <span class="fl">0.02</span>    <span class="co"># P(H true): your idea is ~1 of 50 plausible hypotheses</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>post <span class="ot">&lt;-</span> (power <span class="sc">*</span> prior) <span class="sc">/</span> (power <span class="sc">*</span> prior <span class="sc">+</span> alpha <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> prior))   <span class="co"># Bayes' rule</span></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(post, <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.669</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">power =</span> <span class="fl">0.99</span>,   <span class="co"># P(significant | H true)  -- a very high-powered study</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha =</span> <span class="fl">0.01</span>,   <span class="co"># P(significant | H false) -- a strict false-positive rate</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">prior =</span> <span class="fl">0.02</span>    <span class="co"># P(H true): your idea is ~1 of 50 plausible hypotheses</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">posterior =</span>                                        <span class="co"># Bayes' rule</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    (power <span class="sc">*</span> prior) <span class="sc">/</span> (power <span class="sc">*</span> prior <span class="sc">+</span> alpha <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> prior))) <span class="sc">|&gt;</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">power</th>
+<th style="text-align: right;">alpha</th>
+<th style="text-align: right;">prior</th>
+<th style="text-align: right;">posterior</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.01</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.67</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <p>Even with <span class="math inline">\(99\%\)</span> power and a <span class="math inline">\(1\%\)</span> false-positive rate, a significant result leaves you only about <strong>67%</strong> sure - because the idea was a long shot to begin with. Loosen the study to more realistic numbers and it collapses further:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># modest power, ordinary screening, a rarer idea</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>((<span class="fl">0.95</span> <span class="sc">*</span> <span class="fl">0.01</span>) <span class="sc">/</span> (<span class="fl">0.95</span> <span class="sc">*</span> <span class="fl">0.01</span> <span class="sc">+</span> <span class="fl">0.05</span> <span class="sc">*</span> <span class="fl">0.99</span>), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.161</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># modest power, ordinary screening, a rarer idea</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">power =</span> <span class="fl">0.95</span>, <span class="at">alpha =</span> <span class="fl">0.05</span>, <span class="at">prior =</span> <span class="fl">0.01</span>) <span class="sc">|&gt;</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">posterior =</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    (power <span class="sc">*</span> prior) <span class="sc">/</span> (power <span class="sc">*</span> prior <span class="sc">+</span> alpha <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> prior))) <span class="sc">|&gt;</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">power</th>
+<th style="text-align: right;">alpha</th>
+<th style="text-align: right;">prior</th>
+<th style="text-align: right;">posterior</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.95</td>
+<td style="text-align: right;">0.05</td>
+<td style="text-align: right;">0.01</td>
+<td style="text-align: right;">0.16</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <p>About <strong>16%</strong>. Chase enough low-prior ideas with <span class="math inline">\(p &lt; .05\)</span> and <em>most</em> of your “discoveries” will be false, no matter how small the <span class="math inline">\(p\)</span>-value. This is the arithmetic behind the replication crisis we met in <a href="./08-hypothesistesting.html">hypothesis testing</a>. The <span class="math inline">\(p\)</span>-value does not answer the question you cared about, and Bayes’ rule does, but it asks you to state your prior out loud. That honesty is the point.</p>
@@ -997,14 +1133,18 @@ window.Quarto = {
 <h3 data-number="25.4.2" class="anchored" data-anchor-id="building-a-posterior-by-hand-grid-approximation"><span class="header-section-number">25.4.2</span> Building a posterior by hand (grid approximation)</h3>
 <p>You do not need fancy software to see the machine turn. Take the oldest example in the book - estimating a proportion (a coin’s bias, a globe’s water fraction, a treatment’s success rate) from a handful of trials. Lay down a <strong>grid</strong> of possible values, evaluate prior × likelihood at each, normalize, and you have a posterior:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>grid  <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="at">length.out =</span> <span class="dv">1000</span>)</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>prior <span class="ot">&lt;-</span> <span class="fu">dbeta</span>(grid, <span class="dv">2</span>, <span class="dv">2</span>)                 <span class="co"># weakly informative: centered at 0.5, gentle</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>like  <span class="ot">&lt;-</span> <span class="fu">dbinom</span>(<span class="dv">6</span>, <span class="at">size =</span> <span class="dv">9</span>, <span class="at">prob =</span> grid)  <span class="co"># data: 6 successes in 9 trials</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>post  <span class="ot">&lt;-</span> like <span class="sc">*</span> prior</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>post  <span class="ot">&lt;-</span> post <span class="sc">/</span> <span class="fu">sum</span>(post)                  <span class="co"># normalize to a proper distribution</span></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(grid, post, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"blue"</span>,</span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="fu">expression</span>(theta <span class="sc">~</span> <span class="st">"(the proportion)"</span>), <span class="at">ylab =</span> <span class="st">"posterior density"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>posterior <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">theta =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="at">length.out =</span> <span class="dv">1000</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">prior =</span> <span class="fu">dbeta</span>(theta, <span class="dv">2</span>, <span class="dv">2</span>),                 <span class="co"># weakly informative, centered at 0.5</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">like  =</span> <span class="fu">dbinom</span>(<span class="dv">6</span>, <span class="at">size =</span> <span class="dv">9</span>, <span class="at">prob =</span> theta),  <span class="co"># data: 6 successes in 9 trials</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">post  =</span> like <span class="sc">*</span> prior,</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">post  =</span> post <span class="sc">/</span> <span class="fu">sum</span>(post)                    <span class="co"># normalize to a proper distribution</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(posterior, <span class="fu">aes</span>(<span class="at">x =</span> theta, <span class="at">y =</span> post)) <span class="sc">+</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">colour =</span> <span class="st">"blue"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="fu">expression</span>(theta <span class="sc">~</span> <span class="st">"(the proportion)"</span>), <span class="at">y =</span> <span class="st">"posterior density"</span>) <span class="sc">+</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -1017,45 +1157,80 @@ window.Quarto = {
 <p>Now <em>summarize</em> the posterior - and here the estimation-vs-testing split becomes concrete.</p>
 <p><strong>Estimation.</strong> The answer is the whole posterior; we compress it into a point and an interval. Sampling from the grid makes this a one-liner. A Bayesian interval is a <strong>credible</strong> (or “compatibility”) interval, and - unlike a confidence interval - it means the plain-English thing: “given the model and data, there’s a 95% probability <span class="math inline">\(\theta\)</span> is in here.”</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>draws <span class="ot">&lt;-</span> <span class="fu">sample</span>(grid, <span class="fl">1e5</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>, <span class="at">prob =</span> post)</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">posterior_mean   =</span> <span class="fu">mean</span>(draws),</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">credible_lower95 =</span> <span class="fu">quantile</span>(draws, <span class="fl">0.025</span>),</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">credible_upper95 =</span> <span class="fu">quantile</span>(draws, <span class="fl">0.975</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>        posterior_mean  credible_lower95.2.5% credible_upper95.97.5% 
-             0.6154759              0.3503504              0.8488488 </code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>draws <span class="ot">&lt;-</span> <span class="fu">sample</span>(posterior<span class="sc">$</span>theta, <span class="fl">1e5</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>, <span class="at">prob =</span> posterior<span class="sc">$</span>post)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">posterior_mean   =</span> <span class="fu">mean</span>(draws),</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">credible_lower95 =</span> <span class="fu">quantile</span>(draws, <span class="fl">0.025</span>),</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">credible_upper95 =</span> <span class="fu">quantile</span>(draws, <span class="fl">0.975</span>)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">posterior_mean</th>
+<th style="text-align: right;">credible_lower95</th>
+<th style="text-align: right;">credible_upper95</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.62</td>
+<td style="text-align: right;">0.35</td>
+<td style="text-align: right;">0.85</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <p><strong>Testing.</strong> Rather than a point-null “is <span class="math inline">\(\theta\)</span> <em>exactly</em> 0.5?” (a question of measure zero that is never truly true), Bayesians ask a better one: how much posterior belief sits in a <strong>Region of Practical Equivalence (ROPE)</strong> around the null - a band of values “close enough to 0.5 to not care”? If almost none of the posterior is in the ROPE, the effect is credibly <em>not</em> null; if most of it is, you have evidence <em>for</em> practical equivalence - something a <span class="math inline">\(p\)</span>-value can never give you.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>rope_lo <span class="ot">&lt;-</span> <span class="fl">0.45</span>; rope_hi <span class="ot">&lt;-</span> <span class="fl">0.55</span>                <span class="co"># "practically a fair coin"</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(draws <span class="sc">&gt;</span> rope_lo <span class="sc">&amp;</span> draws <span class="sc">&lt;</span> rope_hi)          <span class="co"># posterior probability inside the ROPE</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.19318</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>rope_lo <span class="ot">&lt;-</span> <span class="fl">0.45</span>; rope_hi <span class="ot">&lt;-</span> <span class="fl">0.55</span>   <span class="co"># "practically a fair coin"</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># posterior probability inside the ROPE</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">p_inside_rope =</span> <span class="fu">mean</span>(draws <span class="sc">&gt;</span> rope_lo <span class="sc">&amp;</span> draws <span class="sc">&lt;</span> rope_hi)) <span class="sc">|&gt;</span> <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">p_inside_rope</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.19</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 </section>
 <section id="from-the-toy-to-the-real-thing" class="level3" data-number="25.4.3">
 <h3 data-number="25.4.3" class="anchored" data-anchor-id="from-the-toy-to-the-real-thing"><span class="header-section-number">25.4.3</span> From the toy to the real thing</h3>
 <p>Grid approximation shows the logic but doesn’t scale past a parameter or two. For real models, samplers (MCMC) do the integration. McKnight’s teaching stack is McElreath’s <strong><code>rethinking</code></strong> for concepts and <strong><code>brms</code></strong> for applied work - both compile to Stan under the hood. The <em>thinking</em> is identical to the grid above; only the engine changes:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rethinking)</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">quap</span>(<span class="fu">alist</span>(</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>        y    <span class="sc">~</span> <span class="fu">dnorm</span>(mu, sigma),     <span class="co"># likelihood</span></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>        mu   <span class="ot">&lt;-</span> a <span class="sc">+</span> b <span class="sc">*</span> x,</span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>        a    <span class="sc">~</span> <span class="fu">dnorm</span>(<span class="dv">0</span>, <span class="dv">10</span>),         <span class="co"># priors</span></span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>        b    <span class="sc">~</span> <span class="fu">dnorm</span>(<span class="dv">0</span>, <span class="dv">1</span>),          <span class="co">#   weakly informative on a standardized predictor</span></span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>        sigma <span class="sc">~</span> <span class="fu">dexp</span>(<span class="dv">1</span>)</span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>     ), <span class="at">data =</span> d)</span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>post <span class="ot">&lt;-</span> <span class="fu">extract.samples</span>(m)</span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="fu">HPDI</span>(post<span class="sc">$</span>b, <span class="at">prob =</span> <span class="fl">0.89</span>)            <span class="co"># highest-posterior-density (credible) interval</span></span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="fu">compare</span>(m1, m2, <span class="at">func =</span> WAIC)         <span class="co"># model comparison (predictive testing)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(brms); <span class="fu">library</span>(bayestestR)</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">brm</span>(y <span class="sc">~</span> x, <span class="at">data =</span> d, <span class="at">family =</span> <span class="fu">gaussian</span>(),</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">prior =</span> <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">class =</span> <span class="st">"b"</span>))   <span class="co"># regularizing prior</span></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="fu">hdi</span>(fit)                             <span class="co"># estimation: credible intervals</span></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="fu">p_direction</span>(fit)                     <span class="co"># probability the effect has a given sign</span></span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="fu">rope</span>(fit, <span class="at">range =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.05</span>, <span class="fl">0.05</span>))    <span class="co"># testing: mass in the ROPE</span></span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="fu">loo</span>(fit)                             <span class="co"># model comparison via leave-one-out</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rethinking)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">quap</span>(<span class="fu">alist</span>(</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>        y    <span class="sc">~</span> <span class="fu">dnorm</span>(mu, sigma),     <span class="co"># likelihood</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>        mu   <span class="ot">&lt;-</span> a <span class="sc">+</span> b <span class="sc">*</span> x,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>        a    <span class="sc">~</span> <span class="fu">dnorm</span>(<span class="dv">0</span>, <span class="dv">10</span>),         <span class="co"># priors</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>        b    <span class="sc">~</span> <span class="fu">dnorm</span>(<span class="dv">0</span>, <span class="dv">1</span>),          <span class="co">#   weakly informative on a standardized predictor</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>        sigma <span class="sc">~</span> <span class="fu">dexp</span>(<span class="dv">1</span>)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>     ), <span class="at">data =</span> d)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>post <span class="ot">&lt;-</span> <span class="fu">extract.samples</span>(m)</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="fu">HPDI</span>(post<span class="sc">$</span>b, <span class="at">prob =</span> <span class="fl">0.89</span>)            <span class="co"># highest-posterior-density (credible) interval</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="fu">compare</span>(m1, m2, <span class="at">func =</span> WAIC)         <span class="co"># model comparison (predictive testing)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(brms); <span class="fu">library</span>(bayestestR)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">brm</span>(y <span class="sc">~</span> x, <span class="at">data =</span> d, <span class="at">family =</span> <span class="fu">gaussian</span>(),</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">prior =</span> <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">class =</span> <span class="st">"b"</span>))   <span class="co"># regularizing prior</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="fu">hdi</span>(fit)                             <span class="co"># estimation: credible intervals</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="fu">p_direction</span>(fit)                     <span class="co"># probability the effect has a given sign</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="fu">rope</span>(fit, <span class="at">range =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.05</span>, <span class="fl">0.05</span>))    <span class="co"># testing: mass in the ROPE</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="fu">loo</span>(fit)                             <span class="co"># model comparison via leave-one-out</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Two habits from McKnight’s applied pipeline are worth stealing: <strong>standardize predictors</strong> so a <code>normal(0, 1)</code> prior is genuinely weakly-informative and interpretable, and <strong>simulate from your priors before touching the data</strong> to check they imply sane predictions (an over-tight prior underfits; a too-vague one overfits).</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">

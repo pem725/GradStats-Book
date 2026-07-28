@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -13,10 +13,13 @@
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -96,14 +99,14 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-c875dbb4c9335aca9cc352e974a4ec92.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-c875dbb4c9335aca9cc352e974a4ec92.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-c875dbb4c9335aca9cc352e974a4ec92.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-aced932c6eb97d642153b8e218288f9f.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-aced932c6eb97d642153b8e218288f9f.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-aced932c6eb97d642153b8e218288f9f.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-7041d42a0ef0b4d7752bc563fd2420bf.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-04d11f364e40cfe56f183506235f74e7.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-7041d42a0ef0b4d7752bc563fd2420bf.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-c677a511756c5975cddbcf4cdb29e7ae.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-f17bee6545793679b258b2bc8eda5adb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-c677a511756c5975cddbcf4cdb29e7ae.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -133,7 +136,7 @@ div.csl-indent {
 }</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -719,7 +722,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./three-languages.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">The Same Analysis in R, SPSS, and Julia</span></a>
+ <span class="menu-text">The Same Analysis in R, SPSS, Julia, and Python</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -791,12 +794,17 @@ window.Quarto = {
 <h2 data-number="29.1" class="anchored" data-anchor-id="how-much-does-a-sum-score-hide"><span class="header-section-number">29.1</span> How Much Does a Sum Score Hide?</h2>
 <p>Start with pure arithmetic - no data and no model, just counting. How many different 21-item profiles produce a total of exactly 15? The answer comes from the <strong>inclusion–exclusion principle</strong>, and it is worth computing yourself because the number is larger than most people expect:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>n_patterns <span class="ot">&lt;-</span> <span class="cf">function</span>(k, a, n) {                 <span class="co"># k items, each 0..a, summing to n</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  imax <span class="ot">&lt;-</span> <span class="fu">floor</span>(n <span class="sc">/</span> (a <span class="sc">+</span> <span class="dv">1</span>))</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(<span class="fu">sapply</span>(<span class="dv">0</span><span class="sc">:</span>imax, <span class="cf">function</span>(i)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    (<span class="sc">-</span><span class="dv">1</span>)<span class="sc">^</span>i <span class="sc">*</span> <span class="fu">choose</span>(k, i) <span class="sc">*</span> <span class="fu">choose</span>(n <span class="sc">-</span> i <span class="sc">*</span> (a <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">+</span> k <span class="sc">-</span> <span class="dv">1</span>, k <span class="sc">-</span> <span class="dv">1</span>)))</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">format</span>(<span class="fu">n_patterns</span>(<span class="dv">21</span>, <span class="dv">3</span>, <span class="dv">15</span>), <span class="at">big.mark =</span> <span class="st">","</span>)     <span class="co"># ways to score 15 on the BDI-II</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)    <span class="co"># dplyr, ggplot2, purrr, tibble, readr, stringr, forcats</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"_common.R"</span>)   <span class="co"># book-wide helpers: round2(), fmt_p(), tidy2()</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>n_patterns <span class="ot">&lt;-</span> <span class="cf">function</span>(k, a, n) {                 <span class="co"># k items, each 0..a, summing to n</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  imax <span class="ot">&lt;-</span> <span class="fu">floor</span>(n <span class="sc">/</span> (a <span class="sc">+</span> <span class="dv">1</span>))</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_dbl</span>(<span class="dv">0</span><span class="sc">:</span>imax, \(i)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    (<span class="sc">-</span><span class="dv">1</span>)<span class="sc">^</span>i <span class="sc">*</span> <span class="fu">choose</span>(k, i) <span class="sc">*</span> <span class="fu">choose</span>(n <span class="sc">-</span> i <span class="sc">*</span> (a <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">+</span> k <span class="sc">-</span> <span class="dv">1</span>, k <span class="sc">-</span> <span class="dv">1</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sum</span>()</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">format</span>(<span class="fu">n_patterns</span>(<span class="dv">21</span>, <span class="dv">3</span>, <span class="dv">15</span>), <span class="at">big.mark =</span> <span class="st">","</span>)     <span class="co"># ways to score 15 on the BDI-II</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "1,653,955,415"</code></pre>
 </div>
@@ -826,40 +834,144 @@ window.Quarto = {
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>              <span class="st">"self_dislike"</span>,<span class="st">"self_critical"</span>,<span class="st">"suicidal"</span>,<span class="st">"crying"</span>,<span class="st">"agitation"</span>,<span class="st">"loss_interest"</span>,</span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>              <span class="st">"indecision"</span>,<span class="st">"worthlessness"</span>,<span class="st">"loss_energy"</span>,<span class="st">"sleep"</span>,<span class="st">"irritability"</span>,<span class="st">"appetite"</span>,</span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>              <span class="st">"concentration"</span>,<span class="st">"tiredness"</span>,<span class="st">"loss_sex_interest"</span>)</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N, <span class="at">mean =</span> <span class="sc">-</span><span class="fl">0.5</span>)                     <span class="co"># latent depression severity (one per person)</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>diff  <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">rnorm</span>(k, <span class="at">mean =</span> <span class="fl">2.6</span>, <span class="at">sd =</span> <span class="fl">1.3</span>))      <span class="co"># item "difficulty": most symptoms are rare</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>bdi <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">sapply</span>(<span class="fu">seq_len</span>(k), <span class="cf">function</span>(j) {</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">&lt;-</span> <span class="fu">plogis</span>(<span class="fu">outer</span>(theta, diff[j] <span class="sc">+</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">1.1</span>, <span class="dv">0</span>, <span class="fl">1.1</span>), <span class="st">`</span><span class="at">-</span><span class="st">`</span>))   <span class="co"># P(score &gt;= 1, 2, 3)</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowSums</span>(<span class="fu">runif</span>(N) <span class="sc">&lt;</span> p)                                        <span class="co"># a graded 0..3 response</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>}))</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(bdi) <span class="ot">&lt;-</span> symptoms</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>totals <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(bdi)</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>pair <span class="ot">&lt;-</span> <span class="fu">which</span>(totals <span class="sc">==</span> <span class="dv">15</span>)[<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>)]               <span class="co"># two people, identical total of 15</span></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="fu">t</span>(bdi[pair, ])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>                  17 24
-sadness            3  3
-pessimism          3  3
-past_failure       1  1
-loss_pleasure      2  2
-guilt              0  0
-punishment         2  1
-self_dislike       0  0
-self_critical      1  1
-suicidal           0  1
-crying             1  0
-agitation          0  0
-loss_interest      1  0
-indecision         1  2
-worthlessness      0  1
-loss_energy        0  0
-sleep              0  0
-irritability       0  0
-appetite           0  0
-concentration      0  0
-tiredness          0  0
-loss_sex_interest  0  0</code></pre>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N, <span class="at">mean =</span> <span class="sc">-</span><span class="fl">0.5</span>)                <span class="co"># latent severity (one per person)</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>diff  <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">rnorm</span>(k, <span class="at">mean =</span> <span class="fl">2.6</span>, <span class="at">sd =</span> <span class="fl">1.3</span>)) <span class="co"># item "difficulty": most symptoms are rare</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>bdi <span class="ot">&lt;-</span> <span class="fu">map</span>(<span class="fu">seq_len</span>(k), \(j) {</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">&lt;-</span> <span class="fu">plogis</span>(<span class="fu">outer</span>(theta, diff[j] <span class="sc">+</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">1.1</span>, <span class="dv">0</span>, <span class="fl">1.1</span>), <span class="st">`</span><span class="at">-</span><span class="st">`</span>))   <span class="co"># P(score &gt;= 1, 2, 3)</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowSums</span>(<span class="fu">runif</span>(N) <span class="sc">&lt;</span> p)                                       <span class="co"># a graded 0..3 response</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>}) <span class="sc">|&gt;</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_names</span>(symptoms) <span class="sc">|&gt;</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>()</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>totals <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(bdi)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>pair <span class="ot">&lt;-</span> <span class="fu">which</span>(totals <span class="sc">==</span> <span class="dv">15</span>)[<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>)]          <span class="co"># two people, identical total of 15</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>bdi <span class="sc">|&gt;</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(pair) <span class="sc">|&gt;</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">person =</span> <span class="fu">c</span>(<span class="st">"person A"</span>, <span class="st">"person B"</span>), <span class="at">.before =</span> <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>person, <span class="at">names_to =</span> <span class="st">"symptom"</span>, <span class="at">values_to =</span> <span class="st">"score"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> person, <span class="at">values_from =</span> score)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">symptom</th>
+<th style="text-align: right;">person A</th>
+<th style="text-align: right;">person B</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">sadness</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">pessimism</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">past_failure</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">loss_pleasure</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">guilt</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">punishment</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">self_dislike</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">self_critical</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">suicidal</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">crying</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">agitation</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">loss_interest</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">indecision</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">worthlessness</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">loss_energy</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">sleep</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">irritability</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">appetite</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">concentration</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">tiredness</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">loss_sex_interest</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <p>One person’s distress concentrates in a few symptoms; the other’s spreads thin across many. Same “15,” but different clinical pictures, and a sum score cannot tell them apart. The <strong>profile</strong> can.</p>
@@ -868,13 +980,33 @@ loss_sex_interest  0  0</code></pre>
 <h2 data-number="29.3" class="anchored" data-anchor-id="the-manifold-collapse"><span class="header-section-number">29.3</span> The Manifold Collapse</h2>
 <p>If 4.4 trillion profiles are <em>possible</em>, how many actually <em>occur</em>? Almost none - because depression symptoms do not vary independently; they hang together. Count the distinct profiles:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>key <span class="ot">&lt;-</span> <span class="fu">apply</span>(bdi, <span class="dv">1</span>, paste, <span class="at">collapse =</span> <span class="st">"-"</span>)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">people            =</span> <span class="fu">nrow</span>(bdi),</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">distinct_profiles =</span> <span class="fu">length</span>(<span class="fu">unique</span>(key)),</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">pct_unique        =</span> <span class="fu">round</span>(<span class="dv">100</span> <span class="sc">*</span> <span class="fu">mean</span>(<span class="sc">!</span>(<span class="fu">duplicated</span>(key) <span class="sc">|</span> <span class="fu">duplicated</span>(key, <span class="at">fromLast =</span> <span class="cn">TRUE</span>))), <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>           people distinct_profiles        pct_unique 
-           1200.0             973.0              74.8 </code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>key <span class="ot">&lt;-</span> bdi <span class="sc">|&gt;</span> <span class="fu">unite</span>(<span class="st">"profile"</span>, <span class="fu">everything</span>(), <span class="at">sep =</span> <span class="st">"-"</span>) <span class="sc">|&gt;</span> <span class="fu">pull</span>(profile)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">people            =</span> <span class="fu">nrow</span>(bdi),</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">distinct_profiles =</span> <span class="fu">n_distinct</span>(key),</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">pct_unique        =</span> <span class="dv">100</span> <span class="sc">*</span> <span class="fu">mean</span>(<span class="sc">!</span>(<span class="fu">duplicated</span>(key) <span class="sc">|</span> <span class="fu">duplicated</span>(key, <span class="at">fromLast =</span> <span class="cn">TRUE</span>)))</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">people</th>
+<th style="text-align: right;">distinct_profiles</th>
+<th style="text-align: right;">pct_unique</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1200</td>
+<td style="text-align: right;">973</td>
+<td style="text-align: right;">74.83</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <p>Roughly <strong>three-quarters have a profile no one else shares</strong>, and in the real six-sample analysis it was <strong>79.7%</strong>. Even our simple simulation reproduces the effect: of the trillions of mathematically possible patterns, people occupy only a small fraction, what the study called the <strong>manifold collapse</strong>. The space of possible profiles is huge, but real people use very little of it. That raises a genuine question: are the profiles that <em>never</em> appear merely rare, or are some of them <em>impossible in principle</em>, incoherent given how depression actually works?</p>
@@ -883,24 +1015,50 @@ loss_sex_interest  0  0</code></pre>
 <h2 data-number="29.4" class="anchored" data-anchor-id="antitypes-profiles-that-shouldnt-exist"><span class="header-section-number">29.4</span> Antitypes: Profiles That Shouldn’t Exist</h2>
 <p>A profile can be numerically fine and clinically nonsensical - maximum <em>worthlessness</em> with zero <em>sadness</em>, say. Borrowing a term from Configural Frequency Analysis, we call these <strong>antitypes</strong>: possible on paper, absent in reality because they violate the internal structure of the construct. To catch them we need a notion of which symptoms are “easy” (commonly endorsed) and which are “hard” (rare), and then flag people who endorse hard symptoms while skipping easy ones. Here is the idea in miniature - a light <strong>ordering-violation</strong> count you can run:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>difficulty <span class="ot">&lt;-</span> <span class="fu">colMeans</span>(bdi)                         <span class="co"># higher = more commonly endorsed = "easier"</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>ovi <span class="ot">&lt;-</span> <span class="fu">apply</span>(bdi, <span class="dv">1</span>, <span class="cf">function</span>(r)                     <span class="co"># count "harder scored above easier" pairs</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(<span class="fu">outer</span>(<span class="fu">seq_along</span>(r), <span class="fu">seq_along</span>(r),</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>            <span class="cf">function</span>(i, j) difficulty[i] <span class="sc">&lt;</span> difficulty[j] <span class="sc">&amp;</span> r[i] <span class="sc">&gt;</span> r[j])))</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">median_violations =</span> <span class="fu">median</span>(ovi), <span class="at">max_violations =</span> <span class="fu">max</span>(ovi),</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">cor_with_total    =</span> <span class="fu">round</span>(<span class="fu">cor</span>(ovi, totals), <span class="dv">2</span>))    <span class="co"># NOT just severity</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>median_violations    max_violations    cor_with_total 
-             10.0              51.0               0.7 </code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># higher mean = more commonly endorsed = "easier"</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>difficulty <span class="ot">&lt;-</span> bdi <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), mean)) <span class="sc">|&gt;</span> <span class="fu">unlist</span>()</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># count "harder symptom scored above an easier one" pairs, person by person</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>ovi <span class="ot">&lt;-</span> <span class="fu">pmap_dbl</span>(bdi, \(...) {</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  r <span class="ot">&lt;-</span> <span class="fu">c</span>(...)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(<span class="fu">outer</span>(<span class="fu">seq_along</span>(r), <span class="fu">seq_along</span>(r),</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>            \(i, j) difficulty[i] <span class="sc">&lt;</span> difficulty[j] <span class="sc">&amp;</span> r[i] <span class="sc">&gt;</span> r[j]))</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">median_violations =</span> <span class="fu">median</span>(ovi),</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_violations    =</span> <span class="fu">max</span>(ovi),</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">cor_with_total    =</span> <span class="fu">cor</span>(ovi, totals)    <span class="co"># NOT just severity</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">median_violations</th>
+<th style="text-align: right;">max_violations</th>
+<th style="text-align: right;">cor_with_total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">51</td>
+<td style="text-align: right;">0.7</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <p>Incoherence is its own dimension - only weakly tied to how <em>high</em> the total is. The real study replaces this rough count with a proper <strong>Graded Response Model</strong> (an IRT model, cousin of the <a href="./18-rasch.html">Rasch model</a>) that estimates each item’s difficulty and each person’s severity, then scores every profile’s log-likelihood. The two measures - our Ordering Violation Index (OVI) and the GRM profile log-likelihood - agree strongly, and that agreement is stable across samples:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The real analysis (needs the mirt package — shown, not run on the book's server)</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mirt)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>fit  <span class="ot">&lt;-</span> <span class="fu">mirt</span>(bdi, <span class="dv">1</span>, <span class="at">itemtype =</span> <span class="st">"graded"</span>)           <span class="co"># fit the Graded Response Model</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">&lt;-</span> <span class="fu">fscores</span>(fit)                               <span class="co"># each person's estimated severity</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>ll    <span class="ot">&lt;-</span> <span class="fu">personfit</span>(fit)<span class="sc">$</span>logLik                      <span class="co"># how probable each profile is</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(ovi, ll)                                        <span class="co"># OVI and GRM-likelihood track each other</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The real analysis (needs the mirt package — shown, not run on the book's server)</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mirt)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>fit  <span class="ot">&lt;-</span> <span class="fu">mirt</span>(bdi, <span class="dv">1</span>, <span class="at">itemtype =</span> <span class="st">"graded"</span>)           <span class="co"># fit the Graded Response Model</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">&lt;-</span> <span class="fu">fscores</span>(fit)                               <span class="co"># each person's estimated severity</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>ll    <span class="ot">&lt;-</span> <span class="fu">personfit</span>(fit)<span class="sc">$</span>logLik                      <span class="co"># how probable each profile is</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(ovi, ll)                                        <span class="co"># OVI and GRM-likelihood track each other</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Across all six independent samples, the OVI–likelihood correlation held between <strong>−0.73 and −0.83</strong>, and the model flagged <strong>13 strong antitypes</strong> in a pooled <span class="math inline">\(n = 1{,}479\)</span>. Incoherent profiles are not a fluke of one dataset; they are a stable, measurable property.</p>
 <p>Finding structure that a sum score hides is a recurring theme in the authors’ work. In a related vein, Kashdan, McKnight, and colleagues <span class="citation" data-cites="KashdanMcKnightRichey2009">(<a href="#ref-KashdanMcKnightRichey2009" role="doc-biblioref">Kashdan et al. 2009</a>)</span> used <strong>latent class analysis</strong> on the National Comorbidity Survey to uncover a neglected, risk-prone <em>subtype</em> of social-anxiety disorder - a whole subgroup of people invisible to anyone who only looked at total symptom counts.</p>
 </section>
