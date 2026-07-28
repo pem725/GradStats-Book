@@ -24,13 +24,21 @@ Think about the sign of that product. When a point is above the mean on *both* v
 ::: {.panel-tabset}
 ### R
 ```{r}
-set.seed(5)
-study  <- rnorm(100, 5, 2)
-grade  <- 60 + 4 * study + rnorm(100, 0, 5)    # grade rises with study
+#| message: false
+library(tidyverse)    # dplyr, ggplot2, purrr, tibble, readr, stringr, forcats
+library(broom)        # tidy(), glance(), augment() for model output
+source("_common.R")   # book-wide helpers: round2(), fmt_p(), tidy2()
 
-# by hand:
-cov_hand <- sum((study - mean(study)) * (grade - mean(grade))) / (length(study) - 1)
-c(by_hand = cov_hand, r_cov = cov(study, grade))   # match
+set.seed(5)
+d <- tibble(study = rnorm(100, 5, 2)) |>
+  mutate(grade = 60 + 4 * study + rnorm(100, 0, 5))   # grade rises with study
+
+d |>
+  summarise(
+    by_hand  = sum((study - mean(study)) * (grade - mean(grade))) / (n() - 1),
+    built_in = cov(study, grade)
+  ) |>
+  round2()   # match
 ```
 ### SPSS
 ```
@@ -43,15 +51,28 @@ CORRELATIONS
 using Statistics
 cov(df.study, df.grade)
 ```
+### Python
+```python
+df.study.cov(df.grade)
+```
 :::
 
 Positive, as expected: more study, more grade. Let's *see* it, colouring each point by the sign of its deviation product:
 
 ```{r}
-sign_prod <- (study - mean(study)) * (grade - mean(grade))
-plot(study, grade, pch = 19, col = ifelse(sign_prod > 0, "steelblue", "red"),
-     main = "Blue points push covariance up; red points push it down")
-abline(v = mean(study), h = mean(grade), lty = 2, col = "grey50")
+d |>
+  mutate(agrees = (study - mean(study)) * (grade - mean(grade)) > 0) |>
+  ggplot(aes(x = study, y = grade, colour = agrees)) +
+  geom_vline(xintercept = mean(d$study), linetype = "dashed", colour = "grey50") +
+  geom_hline(yintercept = mean(d$grade), linetype = "dashed", colour = "grey50") +
+  geom_point(size = 2) +
+  scale_colour_manual(
+    name   = NULL,
+    values = c(`TRUE` = "steelblue", `FALSE` = "red"),
+    labels = c(`TRUE` = "pushes covariance up", `FALSE` = "pushes it down")
+  ) +
+  labs(title = "Blue points push covariance up; red points push it down") +
+  theme_minimal()
 ```
 
 The blue points (agreeing deviations) dominate, so covariance is positive. That picture *is* covariance.
@@ -65,8 +86,12 @@ $$r = \frac{\text{cov}(x, y)}{s_x \, s_y}$$
 ::: {.panel-tabset}
 ### R
 ```{r}
-r_hand <- cov(study, grade) / (sd(study) * sd(grade))
-c(by_hand = r_hand, r_cor = cor(study, grade))     # match
+d |>
+  summarise(
+    by_hand  = cov(study, grade) / (sd(study) * sd(grade)),
+    built_in = cor(study, grade)
+  ) |>
+  round2()   # match
 ```
 ### SPSS
 ```
@@ -78,6 +103,10 @@ CORRELATIONS
 using Statistics
 cor(df.study, df.grade)
 ```
+### Python
+```python
+df.study.corr(df.grade)
+```
 :::
 
 Correlation is covariance stripped of its units, squeezed onto a fixed scale from $-1$ (perfect negative) through $0$ (no linear relationship) to $+1$ (perfect positive). Now the number means the same thing whatever the variables - which is why $r$, not raw covariance, is what we report.
@@ -88,11 +117,14 @@ Two lasting warnings. First, the familiar one: **correlation is not causation.**
 
 ```{r}
 # a perfect U-shape: strong relationship, ~zero correlation
-xx <- seq(-3, 3, length.out = 100)
-yy <- xx^2
-c(correlation = round(cor(xx, yy), 3))    # ~0, yet Y is completely determined by X!
-plot(xx, yy, pch = 19, col = "darkorange",
-     main = "r is near zero, but the relationship is perfect (just not linear)")
+u <- tibble(x = seq(-3, 3, length.out = 100)) |> mutate(y = x^2)
+
+u |> summarise(correlation = cor(x, y)) |> round2()  # ~0, yet y is fixed by x!
+
+ggplot(u, aes(x = x, y = y)) +
+  geom_point(colour = "darkorange", size = 2) +
+  labs(title = "r is near zero, but the relationship is perfect (just not linear)") +
+  theme_minimal()
 ```
 
 ## Anscombe's Quartet: Same Numbers, Four Different Stories
@@ -100,23 +132,31 @@ plot(xx, yy, pch = 19, col = "darkorange",
 The U-shape above was one warning. Here is the most famous one, and the reason "always plot your data" belongs on the first page of every statistics course. In 1973, Francis Anscombe built four small datasets that share almost every summary statistic you would normally report - the same mean of $x$, the same mean of $y$, the same variances, the same correlation, and the same regression line - yet describe four completely different worlds. R ships them in the built-in `anscombe` data:
 
 ```{r}
-a <- anscombe
-sapply(1:4, function(i) round(cor(a[[paste0("x", i)]], a[[paste0("y", i)]]), 3))
+# stack the four datasets into one tidy frame with columns set, x, y
+ans <- anscombe |>
+  as_tibble() |>
+  pivot_longer(everything(),
+               names_to = c(".value", "set"),
+               names_pattern = "(.)(.)")
+
+ans |>
+  summarise(correlation = cor(x, y), .by = set) |>
+  round2()
 ```
 
-Four identical correlations, $r = 0.816$. Every set also has the same fitted line, $\hat{y} = 3 + 0.5\,x$. If you reported only the numbers, you would call these datasets interchangeable. Now plot them:
+Four identical correlations, $r = 0.82$. Every set also has the same fitted line, $\hat{y} = 3 + 0.5\,x$. If you reported only the numbers, you would call these datasets interchangeable. Now plot them:
 
 ```{r}
 #| fig-cap: "Anscombe's quartet: identical means, variances, correlation, and regression line — but four different stories."
 #| fig-height: 6
-op <- par(mfrow = c(2, 2), mar = c(4, 4, 2, 1))
-for (i in 1:4) {
-  x <- a[[paste0("x", i)]]; y <- a[[paste0("y", i)]]
-  plot(x, y, pch = 19, col = "steelblue", xlim = c(3, 20), ylim = c(2, 14),
-       main = paste("Dataset", i), xlab = "x", ylab = "y")
-  abline(lm(y ~ x), col = "firebrick", lwd = 2)   # the SAME line every time
-}
-par(op)
+#| message: false
+ggplot(ans, aes(x = x, y = y)) +
+  geom_point(colour = "steelblue", size = 2) +
+  # the SAME fitted line every time
+  geom_smooth(method = "lm", se = FALSE, colour = "firebrick") +
+  facet_wrap(~ set, labeller = labeller(set = \(s) paste("Dataset", s))) +
+  coord_cartesian(xlim = c(3, 20), ylim = c(2, 14)) +
+  theme_minimal()
 ```
 
 The same red line runs through all four, but only the first tells the story the line claims:
@@ -137,11 +177,15 @@ Fit a line to the curved Dataset 2 and plot the residuals, and the curve the cor
 
 ```{r}
 #| fig-height: 3.4
-m2 <- lm(y2 ~ x2, data = anscombe)
-plot(fitted(m2), resid(m2), pch = 19, col = "steelblue",
-     xlab = "fitted (predicted) value", ylab = "residual (y minus predicted)",
-     main = "Dataset 2 residuals arch — the misfit the scatter revealed")
-abline(h = 0, lty = 2, col = "grey50")
+m2 <- lm(y ~ x, data = filter(ans, set == "2"))
+
+augment(m2) |>                     # broom: fitted values and residuals as columns
+  ggplot(aes(x = .fitted, y = .resid)) +
+  geom_hline(yintercept = 0, linetype = "dashed", colour = "grey50") +
+  geom_point(colour = "steelblue", size = 2) +
+  labs(title = "Dataset 2 residuals arch — the misfit the scatter revealed",
+       x = "fitted (predicted) value", y = "residual (y minus predicted)") +
+  theme_minimal()
 ```
 
 The residuals bow upward at the ends and dip in the middle, the signature of a curved relationship forced through a straight line. The scatter plot and the residual plot told the same story.
@@ -156,12 +200,17 @@ One more idea deserves its own heading, because it runs underneath everything in
 The practical consequence is **restriction of range**: sample only a narrow slice of a variable and you shrink its variance and, with it, the correlation you can observe, even though the real relationship is unchanged. Watch a genuine correlation collapse when we keep only the middle of $x$:
 
 ```{r}
-set.seed(2); n <- 1000
-x <- rnorm(n)
-y <- 0.6 * x + rnorm(n, sd = 0.8)                  # a real relationship
-mid <- x > -0.5 & x < 0.5                           # keep only a narrow band of x
-c(full_range       = round(cor(x, y), 2),
-  restricted_range = round(cor(x[mid], y[mid]), 2))
+set.seed(2)
+rr <- tibble(x = rnorm(1000)) |>
+  mutate(y = 0.6 * x + rnorm(1000, sd = 0.8))   # a real relationship
+
+bind_rows(
+  rr |> summarise(range = "full", correlation = cor(x, y)),
+  rr |>
+    filter(between(x, -0.5, 0.5)) |>            # keep only a narrow band of x
+    summarise(range = "restricted", correlation = cor(x, y))
+) |>
+  round2()
 ```
 
 Same data-generating process, same underlying relationship, but the restricted-range correlation is a fraction of the full one. This is why a study of only high-scoring students finds weak predictors of success (everyone is already high), and why a lab that tests a narrow slice of the population can miss an effect that is real in the wider world. It cuts the other way too: [unreliable measures](10-reliability.qmd) add error variance that dilutes the true signal, attenuating relationships for the same underlying reason. So a recurring question in careful analysis is simply *where is the variance, and how much of it is there?* Variance is the fuel every relationship in this book runs on.
@@ -174,8 +223,14 @@ Here is the payoff that carries into the rest of the book. The slope of a simple
 ::: {.panel-tabset}
 ### R
 ```{r}
-b_from_cov <- cov(study, grade) / var(study)
-c(cov_over_var = b_from_cov, lm_slope = coef(lm(grade ~ study))[["study"]])
+lm_slope <- tidy(lm(grade ~ study, data = d)) |>
+  filter(term == "study") |>
+  pull(estimate)
+
+d |>
+  summarise(cov_over_var = cov(study, grade) / var(study)) |>
+  mutate(lm_slope = lm_slope) |>
+  round2()
 ```
 ### SPSS
 ```
@@ -189,6 +244,12 @@ REGRESSION
 using GLM
 m = lm(@formula(grade ~ study), df)
 coeftable(m)
+```
+### Python
+```python
+import statsmodels.formula.api as smf
+b_from_cov = df.study.cov(df.grade) / df.study.var()
+smf.ols("grade ~ study", data=df).fit().params
 ```
 :::
 

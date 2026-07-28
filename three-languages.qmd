@@ -1,27 +1,38 @@
-# The Same Analysis in R, SPSS, and Julia {#three-languages .unnumbered}
+# The Same Analysis in R, SPSS, Julia, and Python {#three-languages .unnumbered}
 
-This book runs on **R**, but the ideas are not R's property. A correlation is a correlation, a regression is a regression, whatever software you type it into. This appendix shows the core procedures from the book side by side in three environments: **R**, **SPSS**, and **Julia**. Click the tabs to switch languages. The R code is *live* - it runs here and produces the output you see - and the SPSS and Julia versions produce the same result, written the way each language likes to write it.
+This book runs on **R**, but the ideas are not R's property. A correlation is a correlation, a regression is a regression, whatever software you type it into. This appendix shows the core procedures from the book side by side in four environments: **R**, **SPSS**, **Julia**, and **Python**. Click the tabs to switch languages. The R code is *live* - it runs here and produces the output you see - and the SPSS, Julia, and Python versions produce the same result, written the way each language likes to write it.
 
 We use one small dataset throughout: 80 people in two groups, with a predictor `x` and an outcome `y`.
 
 ```{r}
+#| message: false
+library(tidyverse)    # dplyr, ggplot2, purrr, tibble, readr, stringr, forcats
+library(broom)        # tidy(), glance(), augment() for model output
+source("_common.R")   # book-wide helpers: round2(), fmt_p(), tidy2()
+
 set.seed(1)
-d <- data.frame(
+d <- tibble(
   group = factor(rep(c("A", "B"), each = 40)),
   x     = rnorm(80, mean = 50, sd = 10)
-)
-d$y <- 100 + 0.8 * d$x + rnorm(80, sd = 12)   # y depends on x
-head(d, 3)
+) |>
+  mutate(y = 100 + 0.8 * x + rnorm(80, sd = 12))   # y depends on x
+
+d |> head(3) |> round2()
 ```
 
-In SPSS, imagine this same table loaded as the active dataset with variables `group`, `x`, and `y`. In Julia, imagine it as a `DataFrame` called `d`.
+In SPSS, imagine this same table loaded as the active dataset with variables `group`, `x`, and `y`. In Julia, imagine it as a `DataFrame` called `d`. In Python, imagine it as a pandas `DataFrame`, also called `d`.
 
 ## Descriptive Statistics
 
 ::: {.panel-tabset}
 ### R
 ```{r}
-sapply(d[c("x", "y")], function(v) c(mean = mean(v), sd = sd(v)))
+d |>
+  select(x, y) |>
+  pivot_longer(everything(), names_to = "variable") |>
+  summarise(mean = mean(value), sd = sd(value),
+            min = min(value), max = max(value), .by = variable) |>
+  round2()
 ```
 ### SPSS
 ```
@@ -33,6 +44,10 @@ DESCRIPTIVES VARIABLES=x y
 using Statistics, DataFrames
 describe(d[:, [:x, :y]], :mean, :std, :min, :max)
 ```
+### Python
+```python
+d[["x", "y"]].describe().loc[["mean", "std", "min", "max"]]
+```
 :::
 
 ## Correlation
@@ -40,7 +55,7 @@ describe(d[:, [:x, :y]], :mean, :std, :min, :max)
 ::: {.panel-tabset}
 ### R
 ```{r}
-cor(d$x, d$y)
+d |> summarise(r = cor(x, y)) |> round2()
 ```
 ### SPSS
 ```
@@ -52,6 +67,10 @@ CORRELATIONS
 using Statistics
 cor(d.x, d.y)
 ```
+### Python
+```python
+d.x.corr(d.y)
+```
 :::
 
 ## Comparing Two Groups (t-test)
@@ -59,7 +78,10 @@ cor(d.x, d.y)
 ::: {.panel-tabset}
 ### R
 ```{r}
-t.test(y ~ group, data = d)
+t.test(y ~ group, data = d) |>
+  tidy() |>
+  mutate(p.value = fmt_p(p.value)) |>
+  round2()
 ```
 ### SPSS
 ```
@@ -71,6 +93,11 @@ T-TEST GROUPS=group('A' 'B')
 using HypothesisTests
 UnequalVarianceTTest(d.y[d.group .== "A"], d.y[d.group .== "B"])
 ```
+### Python
+```python
+from scipy import stats
+stats.ttest_ind(d.y[d.group == "A"], d.y[d.group == "B"], equal_var=False)
+```
 :::
 
 ## Linear Regression
@@ -78,7 +105,7 @@ UnequalVarianceTTest(d.y[d.group .== "A"], d.y[d.group .== "B"])
 ::: {.panel-tabset}
 ### R
 ```{r}
-summary(lm(y ~ x, data = d))$coefficients
+tidy2(lm(y ~ x, data = d))
 ```
 ### SPSS
 ```
@@ -91,6 +118,11 @@ REGRESSION
 using GLM, DataFrames
 coeftable(lm(@formula(y ~ x), d))
 ```
+### Python
+```python
+import statsmodels.formula.api as smf
+smf.ols("y ~ x", data=d).fit().summary()
+```
 :::
 
 ## One-Way ANOVA
@@ -98,7 +130,10 @@ coeftable(lm(@formula(y ~ x), d))
 ::: {.panel-tabset}
 ### R
 ```{r}
-summary(aov(y ~ group, data = d))
+aov(y ~ group, data = d) |>
+  tidy() |>
+  mutate(p.value = fmt_p(p.value)) |>
+  round2()
 ```
 ### SPSS
 ```
@@ -111,6 +146,12 @@ using GLM
 m = lm(@formula(y ~ group), d)
 ftest(m.model)          # overall F test for the group effect
 ```
+### Python
+```python
+import statsmodels.formula.api as smf
+from statsmodels.stats.anova import anova_lm
+anova_lm(smf.ols("y ~ group", data=d).fit())   # overall F test for the group effect
+```
 :::
 
 ## Principal Components
@@ -118,9 +159,15 @@ ftest(m.model)          # overall F test for the group effect
 ::: {.panel-tabset}
 ### R
 ```{r}
-# a small item matrix for the reduction example
-set.seed(2); it <- sapply(1:4, function(i) rnorm(80) + d$x/10)
-round(prcomp(it, scale. = TRUE)$sdev^2, 2)   # eigenvalues
+# a small item set for the reduction example
+set.seed(2)
+it <- map(1:4, \(i) rnorm(80) + d$x / 10) |>
+  set_names(paste0("item", 1:4)) |>
+  as_tibble()
+
+tibble(component  = paste0("PC", 1:4),
+       eigenvalue = prcomp(it, scale. = TRUE)$sdev^2) |>
+  round2()
 ```
 ### SPSS
 ```
@@ -135,12 +182,20 @@ using MultivariateStats
 M = fit(PCA, Matrix(it)'; maxoutdim = 4)
 principalvars(M)        # variance along each component
 ```
+### Python
+```python
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+z = StandardScaler().fit_transform(it)
+PCA().fit(z).explained_variance_    # variance along each component
+```
 :::
 
-## A Note on the Three Environments
+## A Note on the Four Environments
 
 - **R** is free, open source, and the language this book runs in. Everything you see executes.
 - **SPSS** is menu-driven, but every menu click also writes *syntax* - the code shown above. Pasting that syntax into a Syntax window and running it is the reproducible way to use SPSS, and it reads much like the R.
 - **Julia** is free and open source, fast, and increasingly used for heavy Bayesian and simulation work. Its statistics live in packages (`Statistics`, `DataFrames`, `GLM`, `HypothesisTests`, `MultivariateStats`), loaded with `using`.
+- **Python** is free and open source, and probably the language your students already know. Data lives in a `pandas` DataFrame; the models come from `statsmodels`, whose formula interface (`smf.ols("y ~ x", data=d)`) reads almost exactly like R's. `scipy.stats` supplies the classical tests and `scikit-learn` the reduction methods.
 
 The point is not that one is best. It is that a procedure you understand in one language you can carry to any of them, because the statistics were never about the software.

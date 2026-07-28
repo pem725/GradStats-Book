@@ -55,13 +55,15 @@ My (PEM) graduate advisor Lee Sechrest often likened learning to a helix. Every 
 #| message: false
 #| warning: false
 
-# Load the necessary library
-library(plotly)
+# Load the necessary libraries
+library(tidyverse)    # dplyr, ggplot2, purrr, tibble, readr, stringr, forcats
+library(plotly)       # interactive 3D
+source("_common.R")   # book-wide helpers: round2(), fmt_p(), tidy2()
 
 # Create data for the helix: every learner enters at the bottom and spirals
 # upward toward mastery.
 theta <- seq(0, 6 * pi, length.out = 500)
-helix_df <- data.frame(
+helix_df <- tibble(
   x     = cos(theta),
   y     = sin(theta),
   z     = theta,
@@ -132,15 +134,17 @@ A variable is a characteristic that can take on different values. In this case, 
 ### Some Demonstrations
 
 ```{r}
-# create a vector of heights
-heights <- c(5.5, 6.0, 5.8, 5.9, 6.1, 5.7, 5.6, 5.9, 6.2, 5.8)
+#| message: false
+# ten people, measured twice: height in feet and weight in pounds
+people <- tibble(
+  height = c(5.5, 6.0, 5.8, 5.9, 6.1, 5.7, 5.6, 5.9, 6.2, 5.8),
+  weight = c(125, 189, 220, 175, 145, 147, 256, 127, 155, 184)
+)
 
-# create a vector of weights
-weights <- c(125, 189, 220, 175, 145, 147, 256, 127, 155, 184)
-
-# plot the heights using ggplot
-library(ggplot2)
-ggplot(data.frame(heights), aes(x = heights)) + geom_histogram()
+# plot the heights
+ggplot(people, aes(x = height)) +
+  geom_histogram(bins = 8, fill = "steelblue", colour = "white") +
+  theme_minimal()
 ```
 
 ::: callout-important
@@ -200,23 +204,22 @@ N <- 100
 # create a vector of ice cream flavors
 flavors <- c("chocolate", "vanilla", "strawberry", "mint chip", "rocky road")
 
-# create a data frame of ice cream preferences
-ic_prefs <- data.frame(id=1:N, flavor = factor(rep("chocolate", N), levels = flavors))
+# a data frame of ice cream preferences - everyone picks chocolate
+ic_prefs <- tibble(id = 1:N, flavor = factor(rep("chocolate", N), levels = flavors))
 
-# create a boxplot of the chocolate sample using ice cream cones with the color of the flavor as the fill
-library(ggplot2)
-ggplot(ic_prefs, aes(x = flavor)) + geom_bar(fill = "chocolate") + theme_minimal()
+ggplot(ic_prefs, aes(x = flavor)) +
+  geom_bar(fill = "chocolate") +
+  theme_minimal()
 
+# 1000 people who pick chocolate almost every time
+tibble(flavor = sample(flavors, 1000, replace = TRUE,
+                       prob = c(0.95, 0.01, 0.01, 0.01, 0.01))) |>
+  count(flavor)
 
-# create a sample of 1000 people who like chocolate ice cream 90% of the time
-sample <- sample(flavors, 1000, replace = TRUE, prob = c(0.95, 0.01, 0.01, 0.01, 0.01))
-# create a table of the sample
-table(sample)
-
-# create a sample of 1000 people who like chocolate ice cream 50% of the time
-sample <- sample(flavors, 1000, replace = TRUE, prob = c(0.5, 0.1, 0.1, 0.1, 0.2))
-# create a table of the sample
-table(sample)
+# 1000 people with far more varied tastes
+tibble(flavor = sample(flavors, 1000, replace = TRUE,
+                       prob = c(0.5, 0.1, 0.1, 0.1, 0.2))) |>
+  count(flavor)
 
 ```
 
@@ -226,21 +229,19 @@ one of the early contributors to frequentists statistics, once said, "To consult
 
 Each require some must start with the first general principle - uncertainty or rather quantifying uncertainty. To fully grasp the concept of uncertainty, we offer you a simple exercise. Suppose you were to guess the weight of any adult family member. Your best guess would likely be off. Empirical evidence, however, suggests that the best guess is the arithmetic mean. Why?
 
-```{r, echo=FALSE, message=FALSE}
-Wts <- c(125,189,220,175,145,147,256,127,155,184)
-mean(Wts)
-hist(Wts)
-summary(Wts)
+```{r}
+#| echo: false
+#| message: false
+people |>
+  summarise(
+    mean   = mean(weight),
+    median = median(weight),
+    sd     = sd(weight)
+  ) |>
+  round2()
 
-# write a function to summarize the vector of weights
-# the function should return the mean, median, and standard deviation
-# of the vector of weights
-# the function should also return a histogram of the vector of weights
-
-summarize <- function(x){
-  mean(x)
-  median(x)
-  sd(x)
-  hist(x)
-}
+ggplot(people, aes(x = weight)) +
+  geom_histogram(bins = 8, fill = "steelblue", colour = "white") +
+  labs(x = "weight (lbs)", y = "count") +
+  theme_minimal()
 ```

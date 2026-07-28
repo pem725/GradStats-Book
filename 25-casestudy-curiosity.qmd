@@ -18,22 +18,36 @@ The workhorse decision - *how many factors?* - starts with the **eigenvalues** o
 ```{r}
 #| fig-cap: "A scree plot. Three eigenvalues stand above 1, then the scree falls to rubble — three factors."
 #| fig-height: 3.4
+#| message: false
+library(tidyverse)    # dplyr, ggplot2, purrr, tibble, readr, stringr, forcats
+source("_common.R")   # book-wide helpers: round2(), fmt_p(), tidy2()
+
 set.seed(2026)
 N <- 500; load <- 0.75
-F1 <- rnorm(N); F2 <- rnorm(N); F3 <- rnorm(N)             # three hidden factors
-mk  <- function(f) load * f + rnorm(N, sd = sqrt(1 - load^2))
-items <- data.frame(sapply(c(rep("F1",4), rep("F2",4), rep("F3",4)),
-                           function(f) mk(get(f))))
-names(items) <- paste0("item", 1:12)
+factors <- list(F1 = rnorm(N), F2 = rnorm(N), F3 = rnorm(N))   # three hidden factors
+mk <- function(f) load * f + rnorm(N, sd = sqrt(1 - load^2))
 
-ev <- eigen(cor(items))$values                            # eigenvalues of the correlation matrix
-plot(ev, type = "b", pch = 19, col = "steelblue",
-     xlab = "Factor number", ylab = "Eigenvalue", main = "")
-abline(h = 1, lty = 2, col = "firebrick")                 # Kaiser's "keep it if > 1" line
+# four indicators per factor, twelve items in all
+items <- factors[rep(c("F1", "F2", "F3"), each = 4)] |>
+  map(mk) |>
+  set_names(paste0("item", 1:12)) |>
+  as_tibble()
+
+ev <- eigen(cor(items))$values    # eigenvalues of the correlation matrix
+
+tibble(factor_number = seq_along(ev), eigenvalue = ev) |>
+  ggplot(aes(x = factor_number, y = eigenvalue)) +
+  # Kaiser's "keep it if > 1" line
+  geom_hline(yintercept = 1, linetype = "dashed", colour = "firebrick") +
+  geom_line(colour = "steelblue") +
+  geom_point(colour = "steelblue", size = 2.5) +
+  labs(x = "Factor number", y = "Eigenvalue") +
+  theme_minimal()
 ```
 
 ```{r}
-sum(ev > 1)                                                # how many factors the data suggest
+# how many factors the data suggest
+tibble(factors_above_1 = sum(ev > 1))
 ```
 
 Three, exactly as planted. The real study did this on its item pool and found a coherent multi-dimensional structure of political curiosity. In practice you would rotate and interpret the factors with a dedicated tool:

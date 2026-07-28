@@ -29,13 +29,19 @@ The difficulty is a chicken-and-egg: if we knew who was in each class we could e
 Repeat until nothing moves. First, simulate two classes that differ in *pattern* - items 7–8 are reversed, so the classes are not simply "more" vs. "less" symptomatic:
 
 ```{r}
+#| message: false
+library(tidyverse)    # dplyr, ggplot2, purrr, tibble, readr, stringr, forcats
+source("_common.R")   # book-wide helpers: round2(), fmt_p(), tidy2()
+
 set.seed(2026)
 N <- 800; J <- 8
 prev <- c(0.35, 0.65)
 rho  <- rbind(rep(0.80, J), rep(0.20, J))
 rho[1, c(7, 8)] <- 0.30; rho[2, c(7, 8)] <- 0.70   # reverse two items: pattern, not severity
-cls  <- sample(1:2, N, replace = TRUE, prob = prev)
-X <- t(sapply(cls, function(k) rbinom(J, 1, rho[k, ])))
+
+cls <- sample(1:2, N, replace = TRUE, prob = prev)
+# one response vector per person; the estimator below wants them as a matrix
+X <- do.call(rbind, map(cls, \(k) rbinom(J, 1, rho[k, ])))
 ```
 
 Now the entire estimator - about a dozen lines:
@@ -45,10 +51,13 @@ lca_em <- function(X, K = 2, tol = 1e-6, maxit = 500) {
   N <- nrow(X); J <- ncol(X)
   set.seed(1); pi <- rep(1/K, K); p <- matrix(runif(K * J, .2, .8), K, J)
   ll_old <- -Inf
+  # EM is inherently sequential - each sweep starts from the previous estimates -
+  # so this stays a loop. The per-class E-step inside it does not, and maps.
   for (it in 1:maxit) {
     # E-step: log P(x_i, class k) for every person and class, then normalize to a posterior
-    loglik <- sapply(1:K, function(k)
-      log(pi[k]) + X %*% log(p[k, ]) + (1 - X) %*% log(1 - p[k, ]))
+    loglik <- map(1:K, \(k)
+      log(pi[k]) + X %*% log(p[k, ]) + (1 - X) %*% log(1 - p[k, ])) |>
+      reduce(cbind)
     m    <- apply(loglik, 1, max)
     post <- exp(loglik - m); post <- post / rowSums(post)
     # M-step: re-estimate sizes and item probabilities as posterior-weighted averages
@@ -62,13 +71,19 @@ lca_em <- function(X, K = 2, tol = 1e-6, maxit = 500) {
 
 fit <- lca_em(X, K = 2)
 cat("converged in", fit$iterations, "iterations\n")
-round(fit$prevalence, 2)          # recovered class sizes (true: .35 / .65)
+
+# recovered class sizes (true: .35 / .65)
+tibble(class = seq_along(fit$prevalence), prevalence = fit$prevalence) |> round2()
 ```
 
 The class sizes come back essentially exact. And the item-probability profiles - the *definitions* of the two kinds - recover the reversal we planted:
 
 ```{r}
-round(fit$item_prob, 2)           # rows = classes, columns = items 1..8
+# rows = classes, columns = items 1..8
+fit$item_prob |>
+  as_tibble(.name_repair = \(x) paste0("item", seq_along(x))) |>
+  mutate(class = row_number(), .before = 1) |>
+  round2()
 ```
 
 Read the two rows: one class endorses items 1–6 heavily but items 7–8 rarely; the other is its mirror image. **These classes are not "high" and "low" depression - they are two different *shapes* of response.** A sum score, which only counts yeses, would blend them together; the mixture model pulls them apart. That is what LCA is *for*.

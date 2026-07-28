@@ -48,10 +48,14 @@ Ordinal variables are categories with a **rank order** but without guaranteed eq
 To compute anything, we must turn observations into numbers. For continuous and discrete variables that is natural - the number *is* the measurement. For categorical variables we assign codes, but we must remember that the software does not know those codes are arbitrary; it will happily average "flavor" and hand you 1.7 if you let it. In R, we protect ourselves by storing categories as **factors**, which keeps their labels attached and their order (if any) explicit:
 
 ```{r}
-flavor <- factor(c("choc", "van", "choc", "straw", "van"),
-                 levels = c("choc", "van", "straw"))
-as.integer(flavor)   # the codes R uses under the hood
-table(flavor)        # what we actually care about: the counts
+#| message: false
+library(tidyverse)    # dplyr, ggplot2, purrr, tibble, readr, stringr, forcats
+source("_common.R")   # book-wide helpers: round2(), fmt_p(), tidy2()
+
+flavor <- fct(c("choc", "van", "choc", "straw", "van"),
+              levels = c("choc", "van", "straw"))
+as.integer(flavor)                 # the codes R uses under the hood
+tibble(flavor) |> count(flavor)    # what we actually care about: the counts
 ```
 
 ### Plotting Variables
@@ -63,11 +67,9 @@ Before you compute a single statistic, **look at your data**. A picture reveals 
 A histogram slices the range of a variable into bins and counts how many observations fall in each. The result is a picture of the variable's **distribution** - the pattern of how often each value shows up.
 
 ```{r}
-#| message: false
-library(ggplot2)
 set.seed(20)
-heights <- rnorm(500, mean = 68, sd = 4)   # simulated adult heights (inches)
-ggplot(data.frame(heights), aes(x = heights)) +
+heights <- tibble(height = rnorm(500, mean = 68, sd = 4))  # adult heights (inches)
+ggplot(heights, aes(x = height)) +
   geom_histogram(bins = 30, fill = "steelblue", colour = "white") +
   labs(title = "The distribution of 500 simulated heights",
        x = "height (inches)", y = "count") +
@@ -86,8 +88,8 @@ Distributions have shapes, and the shape tells a story. Three features do most o
 
 ```{r}
 set.seed(21)
-skewed <- rexp(1000, rate = 1)   # a right-skewed variable
-ggplot(data.frame(skewed), aes(x = skewed)) +
+skewed <- tibble(value = rexp(1000, rate = 1))   # a right-skewed variable
+ggplot(skewed, aes(x = value)) +
   geom_histogram(bins = 40, fill = "darkorange", colour = "white") +
   labs(title = "A right-skewed distribution (long tail to the right)",
        x = "value", y = "count") +
@@ -107,12 +109,20 @@ A **distribution** is the full accounting of how often each value (or range of v
 
 ```{r}
 set.seed(22)
-op <- par(mfrow = c(2, 2), mar = c(4, 4, 2, 1))
-hist(rnorm(1000),         main = "Normal",   col = "grey85", border = "white", xlab = "")
-hist(runif(1000),         main = "Uniform",  col = "grey85", border = "white", xlab = "")
-hist(rbinom(1000, 10, .5),main = "Binomial", col = "grey85", border = "white", xlab = "")
-hist(rpois(1000, 3),      main = "Poisson",  col = "grey85", border = "white", xlab = "")
-par(op)
+# draw 1000 values from each of the four named shapes, then stack them
+# into one long tibble so ggplot can facet them side by side
+tibble(
+  Normal   = rnorm(1000),
+  Uniform  = runif(1000),
+  Binomial = rbinom(1000, 10, .5),
+  Poisson  = rpois(1000, 3)
+) |>
+  pivot_longer(everything(), names_to = "shape", values_to = "value") |>
+  ggplot(aes(x = value)) +
+  geom_histogram(bins = 30, fill = "grey85", colour = "white") +
+  facet_wrap(~ shape, scales = "free") +
+  labs(x = NULL, y = "count") +
+  theme_minimal()
 ```
 
 ### Probability Density Functions
@@ -120,9 +130,13 @@ par(op)
 For a continuous variable, asking "what is the probability of *exactly* 68.0000 inches?" is a trap - the answer is zero, because there are infinitely many possible values. Instead we describe a continuous distribution with a **probability density function (PDF)**: a curve whose *area* between two points gives the probability of landing in that range. The whole area under the curve is exactly 1 (something must happen). The normal PDF is the famous bell:
 
 ```{r}
-curve(dnorm(x), from = -4, to = 4, lwd = 2, col = "steelblue",
-      main = "The standard normal PDF", xlab = "z", ylab = "density")
-abline(v = 0, lty = 2)
+tibble(z = seq(-4, 4, length.out = 400)) |>
+  mutate(density = dnorm(z)) |>
+  ggplot(aes(x = z, y = density)) +
+  geom_line(colour = "steelblue", linewidth = 1) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  labs(title = "The standard normal PDF", x = "z", y = "density") +
+  theme_minimal()
 ```
 
 The height of the curve is *density*, not probability; probability is the shaded area you sweep out between two z-values. That single idea, probability as area under a density, is the engine of everything inferential to come, starting with the [z-distribution](06-zdistribution.qmd). But first we need to pin down the two summaries every distribution demands: its center and its spread.

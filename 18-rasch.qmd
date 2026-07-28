@@ -29,14 +29,20 @@ Wright's running example in *Best Test Design* [@wright_best_1979] is the **Knox
 We use Wright's **actual data**: 35 children, 18 items, the very responses from *Best Test Design*, stored as a plain text table (`data/knox.dat`). The children even keep their names - Richard, Tracie, Walter, and the rest.
 
 ```{r}
+#| message: false
+library(tidyverse)    # dplyr, ggplot2, purrr, tibble, readr, stringr, forcats
+source("_common.R")   # book-wide helpers: round2(), fmt_p(), tidy2()
+
 ## Wright's own Knox Cube Test responses (Best Test Design, 1979):
 ## 35 children (rows) by 18 tapping items (columns), 1 = repeated correctly.
-kct <- read.table("data/knox.dat", header = TRUE, stringsAsFactors = FALSE)
+kct <- read_table("data/knox.dat", show_col_types = FALSE)
 
 taps <- c("1-4","2-3","1-2-4","1-3-4","2-1-4","3-4-1","1-4-3-2","1-4-2-3",
           "1-3-2-4","2-4-3-1","1-3-1-2-4","1-3-2-4-3","1-4-3-2-4","1-4-2-3-4-1",
           "1-3-2-4-1-3","1-4-2-3-1-4","1-4-3-1-2-4","4-1-3-4-2-1-4")
-X <- as.matrix(kct[, paste0("i", 1:18)])
+
+# the estimator below is matrix arithmetic, so we hand it a matrix
+X <- kct |> select(num_range("i", 1:18)) |> as.matrix()
 rownames(X) <- kct$Name
 colnames(X) <- taps
 X[1:6, 1:9]   # a corner: the first children, the easiest items
@@ -45,7 +51,8 @@ X[1:6, 1:9]   # a corner: the first children, the easiest items
 Before we estimate anything, look at the item margins - how many of the 35 children passed each item:
 
 ```{r}
-colSums(X)    # passes per item, easy (left) to hard (right)
+# passes per item, easy (left) to hard (right)
+tibble(item = colnames(X), passes = colSums(X))
 ```
 
 Everyone passes the first three items and **no one** passes the last. Those items carry no information about *differences* - and you cannot compute a finite logit for a perfect or zero score (it is $\log$ of $\infty$). So the calibration engine will set them aside automatically. Watch for that in a moment: 18 items go in, but only the estimable ones come out.
@@ -73,27 +80,48 @@ rasch_jmle <- function(X, tol = 1e-6, maxit = 300) {
   }
   N <- nrow(X); L <- ncol(X)
   r <- rowSums(X); s <- colSums(X)
-  b <- log(r / (L - r))                # person abilities, from raw scores
+  b <- log(r / (L - r))                     # person abilities, from raw scores
   d <- log((N - s) / s); d <- d - mean(d)   # item difficulties, centered
+
+  # This outer loop must stay a loop: each sweep starts from the estimates the
+  # previous sweep produced, so the steps genuinely depend on one another.
+  # The two *inner* sweeps do not - within a sweep, every person's update uses
+  # only their own ability and the current difficulties - so those map cleanly.
   for (it in 1:maxit) {
     d0 <- d
-    for (v in 1:N) { Pv <- plogis(b[v] - d); b[v] <- b[v] + (r[v] - sum(Pv)) / sum(Pv * (1 - Pv)) }
-    for (i in 1:L) { Pi <- plogis(b - d[i]); d[i] <- d[i] - (s[i] - sum(Pi)) / sum(Pi * (1 - Pi)) }
-    d <- d - mean(d)                   # fix the origin at the mean item
+    b <- map2_dbl(b, r, \(bv, rv) {          # nudge each ability
+      Pv <- plogis(bv - d)
+      bv + (rv - sum(Pv)) / sum(Pv * (1 - Pv))
+    })
+    d <- map2_dbl(d, s, \(di, si) {          # nudge each difficulty
+      Pi <- plogis(b - di)
+      di - (si - sum(Pi)) / sum(Pi * (1 - Pi))
+    })
+    d <- d - mean(d)                         # fix the origin at the mean item
     if (max(abs(d - d0)) < tol) break
   }
   list(difficulty = d, ability = b, items = colnames(X), iterations = it)
 }
 
 fit <- rasch_jmle(X)
-data.frame(item = fit$items, difficulty = round(fit$difficulty, 2))
+tibble(item = fit$items, difficulty = fit$difficulty) |> round2()
 ```
 
 Read that difficulty column top to bottom: the short tapping sequences sit low (easy), the long ones sit high (hard), climbing steadily just as Wright's KCT does. **We just calibrated a test the way BIGSTEPS calibrates a test** - in thirty lines, and every number rebuildable by hand. The persons are measured on the very same logit scale, so a child's ability and an item's difficulty are directly comparable: if $\theta_v > \delta_i$, the odds favor a correct tap.
 
 ```{r}
 cat("Converged in", fit$iterations, "iterations.\n")
-summary(fit$ability)   # the 35 children, measured in logits on the item scale
+
+# the 35 children, measured in logits on the item scale
+tibble(ability = fit$ability) |>
+  summarise(
+    n      = n(),
+    min    = min(ability),
+    median = median(ability),
+    mean   = mean(ability),
+    max    = max(ability)
+  ) |>
+  round2()
 ```
 
 ## The Same Thirty Lines in Python

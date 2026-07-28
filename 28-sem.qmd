@@ -26,16 +26,22 @@ R's base `factanal()` fits a factor model by maximum likelihood - no extra packa
 ::: {.panel-tabset}
 ### R
 ```{r}
+#| message: false
+library(tidyverse)    # dplyr, ggplot2, purrr, tibble, readr, stringr, forcats
+source("_common.R")   # book-wide helpers: round2(), fmt_p(), tidy2()
+
 set.seed(2026)
 N <- 400; L <- 0.75
 F1 <- rnorm(N)
 F2 <- 0.5 * F1 + rnorm(N, sd = sqrt(1 - 0.25))          # two factors, correlated ~ .5
-mk <- function(f) L * f + rnorm(N, sd = sqrt(1 - L^2))  # an indicator = loading*factor + noise
-X <- data.frame(a1 = mk(F1), a2 = mk(F1), a3 = mk(F1), a4 = mk(F1),
-                b1 = mk(F2), b2 = mk(F2), b3 = mk(F2), b4 = mk(F2))
+mk <- function(f) L * f + rnorm(N, sd = sqrt(1 - L^2))  # indicator = loading*factor + noise
+
+X <- tibble(a1 = mk(F1), a2 = mk(F1), a3 = mk(F1), a4 = mk(F1),
+            b1 = mk(F2), b2 = mk(F2), b3 = mk(F2), b4 = mk(F2))
 
 fa <- factanal(X, factors = 2, rotation = "promax")     # ML factor analysis (base R)
-round(unclass(fa$loadings), 2)
+
+unclass(fa$loadings) |> as_tibble(rownames = "item") |> round2()
 ```
 
 ### SPSS
@@ -55,12 +61,24 @@ using MultivariateStats
 items = Matrix(df[:, [:a1, :a2, :a3, :a4, :b1, :b2, :b3, :b4]])
 fit(FactorAnalysis, items'; maxoutdim = 2)
 ```
+
+### Python
+```python
+from sklearn.decomposition import FactorAnalysis
+
+# ML factor analysis on the eight items (items in columns).
+# scikit-learn rotates varimax or quartimax; for promax, use factor_analyzer.
+items = df[["a1", "a2", "a3", "a4", "b1", "b2", "b3", "b4"]]
+fa = FactorAnalysis(n_components=2, rotation="varimax").fit(items)
+fa.components_.T.round(2)      # loadings, items in rows
+```
 :::
 
 The pattern is unmistakable: `a1`–`a4` load on one factor (~0.75), `b1`–`b4` on the other, and the cross-loadings are essentially zero. The analysis reconstructed the hidden blueprint from nothing but the correlations. And the two factors are themselves related, just as we built them:
 
 ```{r}
-round(fa$correlation[1:2, 1:2], 2)   # estimated correlation between the two factors
+# estimated correlation between the two factors
+fa$correlation[1:2, 1:2] |> as_tibble(rownames = "item") |> round2()
 ```
 
 ## What "Fit" Actually Means: The Model-Implied Covariance
@@ -68,12 +86,14 @@ round(fa$correlation[1:2, 1:2], 2)   # estimated correlation between the two fac
 This is the engine of all of SEM, and it is simpler than its reputation suggests. A factor model does not just describe the data - it **predicts the entire covariance matrix**. If each item is $\lambda_i \xi + \varepsilon_i$, then the model *implies* that the correlation matrix must equal $\Lambda\Lambda^{\top} + \Psi$ (loadings times loadings, plus the unique variances on the diagonal). **Fitting the model means finding loadings that make this implied matrix match the observed one.** Watch it work on a single-factor block:
 
 ```{r}
-fa1     <- factanal(X[, 1:4], factors = 1)
+Xa      <- X |> select(a1:a4)
+fa1     <- factanal(Xa, factors = 1)
 lambda  <- as.numeric(fa1$loadings)          # the four loadings
 psi     <- fa1$uniquenesses                  # each item's unique variance
 implied <- lambda %*% t(lambda) + diag(psi)  # the covariance the model PREDICTS
 
-max(abs(cor(X[, 1:4]) - implied))            # how far off is the prediction?
+# how far off is the prediction?
+tibble(largest_discrepancy = max(abs(cor(Xa) - implied))) |> round2()
 ```
 
 The largest discrepancy between the observed correlations and the ones the model *predicts* is about 0.02 - a near-perfect reproduction. That gap, summarized across the whole matrix, is exactly what **fit indices** measure. A model that reproduces the observed covariances well fits well; one that cannot is rejected. This is why CFA is *confirmatory*: you specify the structure, and the data get to say whether that structure could have produced the correlations you actually see.

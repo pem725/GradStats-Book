@@ -22,28 +22,51 @@ Every DAG, however complicated, is built from four elementary pieces. Knowing ho
 **The Fork** ($X \leftarrow Z \rightarrow Y$). $Z$ is a common cause, a **confounder**. $X$ and $Y$ become correlated even with no arrow between them. **Control $Z$** to close the path:
 
 ```{r}
+#| message: false
+library(tidyverse)    # dplyr, ggplot2, purrr, tibble, readr, stringr, forcats
+library(broom)        # tidy(), glance(), augment() for model output
+source("_common.R")   # book-wide helpers: round2(), fmt_p(), tidy2()
+
 set.seed(4); n <- 2000
-Z <- rnorm(n); X <- Z + rnorm(n); Y <- Z + rnorm(n)          # Z causes both; no X->Y arrow
-c(fork_naive   = round(cor(X, Y), 2),                        # spurious association
-  fork_control = round(cor(resid(lm(X~Z)), resid(lm(Y~Z))), 2))  # control Z: it vanishes
+fork <- tibble(Z = rnorm(n)) |>              # Z causes both; no X->Y arrow
+  mutate(X = Z + rnorm(n), Y = Z + rnorm(n))
+
+fork |>
+  summarise(
+    naive   = cor(X, Y),                     # spurious association
+    control = cor(resid(lm(X ~ Z)), resid(lm(Y ~ Z)))   # control Z: it vanishes
+  ) |>
+  round2()
 ```
 
 **The Pipe** ($X \rightarrow M \rightarrow Y$). $M$ is a **mediator**; $X$ affects $Y$ *through* $M$. Control $M$ and you block the very effect you were trying to measure (this is *post-treatment bias*):
 
 ```{r}
 set.seed(5)
-X <- rnorm(n); M <- X + rnorm(n); Y <- M + rnorm(n)          # effect runs X -> M -> Y
-c(pipe_naive   = round(cor(X, Y), 2),                        # the real, total effect
-  pipe_control = round(cor(resid(lm(X~M)), resid(lm(Y~M))), 2))   # control M: effect blocked
+pipe <- tibble(X = rnorm(n)) |>              # the effect runs X -> M -> Y
+  mutate(M = X + rnorm(n), Y = M + rnorm(n))
+
+pipe |>
+  summarise(
+    naive   = cor(X, Y),                     # the real, total effect
+    control = cor(resid(lm(X ~ M)), resid(lm(Y ~ M)))   # control M: effect blocked
+  ) |>
+  round2()
 ```
 
 **The Collider** ($X \rightarrow Z \leftarrow Y$). $Z$ is a common *effect*. Here $X$ and $Y$ are genuinely unrelated, but conditioning on $Z$ **creates** an association that was never there:
 
 ```{r}
 set.seed(6)
-X <- rnorm(n); Y <- rnorm(n); Z <- X + Y + rnorm(n)          # X and Y both cause Z
-c(collider_naive   = round(cor(X, Y), 2),                    # correctly ~ 0
-  collider_control = round(cor(resid(lm(X~Z)), resid(lm(Y~Z))), 2))  # control Z: spurious!
+collider <- tibble(X = rnorm(n), Y = rnorm(n)) |>   # X and Y both cause Z
+  mutate(Z = X + Y + rnorm(n))
+
+collider |>
+  summarise(
+    naive   = cor(X, Y),                            # correctly ~ 0
+    control = cor(resid(lm(X ~ Z)), resid(lm(Y ~ Z)))   # control Z: spurious!
+  ) |>
+  round2()
 ```
 
 **The Descendant.** Conditioning on a variable *caused by* another partly conditions on that other variable. A descendant of a collider re-opens the collider a little; a descendant of a confounder closes the fork a little. The rule of thumb: a descendant behaves like a weak version of its parent.

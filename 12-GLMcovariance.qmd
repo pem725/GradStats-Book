@@ -24,15 +24,25 @@ Let's take one simple question, do two groups differ on an outcome, and answer i
 ::: {.panel-tabset}
 ### R
 ```{r}
+#| message: false
+library(tidyverse)    # dplyr, ggplot2, purrr, tibble, readr, stringr, forcats
+library(broom)        # tidy(), glance(), augment() for model output
+source("_common.R")   # book-wide helpers: round2(), fmt_p(), tidy2()
+
 set.seed(12)
-group <- factor(rep(c("control", "treatment"), each = 40))
-y <- rnorm(80) + ifelse(group == "treatment", 0.6, 0)
+d <- tibble(group = factor(rep(c("control", "treatment"), each = 40))) |>
+  mutate(y = rnorm(80) + if_else(group == "treatment", 0.6, 0))
 
-p_ttest <- t.test(y ~ group, var.equal = TRUE)$p.value
-p_anova <- summary(aov(y ~ group))[[1]][["Pr(>F)"]][1]
-p_regr  <- summary(lm(y ~ group))$coefficients[2, "Pr(>|t|)"]
+p_ttest <- t.test(y ~ group, data = d, var.equal = TRUE) |> tidy() |> pull(p.value)
+p_anova <- aov(y ~ group, data = d) |> tidy() |> slice(1) |> pull(p.value)
+p_regr  <- lm(y ~ group, data = d)  |> tidy() |> slice(2) |> pull(p.value)
 
-round(c(t_test = p_ttest, ANOVA = p_anova, regression = p_regr), 6)
+tibble(method = c("t-test", "ANOVA", "regression"),
+       p      = c(p_ttest, p_anova, p_regr)) |>
+  mutate(p = fmt_p(p))
+
+# not merely close when rounded - identical to full machine precision:
+all.equal(p_ttest, p_anova) && all.equal(p_ttest, p_regr)
 ```
 ### SPSS
 ```
@@ -48,14 +58,26 @@ EqualVarianceTTest(df.y[df.group .== "control"], df.y[df.group .== "treatment"])
 ftest(lm(@formula(y ~ group), df).model)
 coeftable(lm(@formula(y ~ group), df))
 ```
+### Python
+```python
+from scipy import stats
+import statsmodels.formula.api as smf
+from statsmodels.stats.anova import anova_lm
+
+stats.ttest_ind(df.y[df.group == "control"], df.y[df.group == "treatment"])
+fit = smf.ols("y ~ group", data=df).fit()
+anova_lm(fit)                  # the ANOVA
+fit.summary()                  # the regression
+```
 :::
 
 Three identical p-values. The t-test, the ANOVA, and the regression are literally the same model here - the t-test is a two-group ANOVA, the two-group ANOVA is a regression with one dummy-coded predictor, and (as a bonus) $F = t^2$:
 
 ```{r}
-t_stat <- t.test(y ~ group, var.equal = TRUE)$statistic
-F_stat <- summary(aov(y ~ group))[[1]][["F value"]][1]
-round(c(t_squared = t_stat^2, F = F_stat), 4)   # F = t^2
+t_stat <- t.test(y ~ group, data = d, var.equal = TRUE) |> tidy() |> pull(statistic)
+F_stat <- aov(y ~ group, data = d) |> tidy() |> slice(1) |> pull(statistic)
+
+tibble(t_squared = t_stat^2, F = F_stat) |> round2()   # F = t^2
 ```
 
 Once you see this, a huge amount of statistics stops being a pile of disconnected recipes and becomes a single, learnable idea.

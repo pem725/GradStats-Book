@@ -24,16 +24,27 @@ The danger is that the most common default - **complete-case analysis** (drop an
 Simulate an outcome `y` that correlates with an auxiliary variable `z`, then make `y` **missing more often when `z` is high** - a textbook MAR mechanism (the missingness depends on `z`, which we *observe*):
 
 ```{r}
+#| message: false
+library(tidyverse)    # dplyr, ggplot2, purrr, tibble, readr, stringr, forcats
+library(broom)        # tidy(), glance(), augment() for model output
+source("_common.R")   # book-wide helpers: round2(), fmt_p(), tidy2()
+
 set.seed(2026)
 N <- 2000
-z <- rnorm(N)                              # an auxiliary variable, fully observed
-y <- 0.6 * z + rnorm(N, sd = 0.8)          # outcome; its true mean is ~ 0
-p_miss <- plogis(1.8 * z - 0.2)            # P(missing) rises with z  -> MAR
-y_obs  <- ifelse(runif(N) < p_miss, NA, y) # the data we actually get to see
+d <- tibble(z = rnorm(N)) |>                      # auxiliary variable, fully observed
+  mutate(
+    y      = 0.6 * z + rnorm(N, sd = 0.8),        # outcome; its true mean is ~ 0
+    p_miss = plogis(1.8 * z - 0.2),               # P(missing) rises with z -> MAR
+    y_obs  = if_else(runif(N) < p_miss, NA, y)    # the data we actually get to see
+  )
 
-c(pct_missing         = round(100 * mean(is.na(y_obs)), 1),
-  true_mean           = round(mean(y), 3),                 # unobtainable in real life
-  complete_case_mean  = round(mean(y_obs, na.rm = TRUE), 3))
+d |>
+  summarise(
+    pct_missing        = 100 * mean(is.na(y_obs)),
+    true_mean          = mean(y),                 # unobtainable in real life
+    complete_case_mean = mean(y_obs, na.rm = TRUE)
+  ) |>
+  round2()
 ```
 
 The complete-case mean is badly **biased downward**. That makes sense: we systematically dropped the high-`z` people, and high `z` means high `y`, so the survivors are not representative. The hole did more than cost us sample size; it *moved the answer*.
@@ -41,12 +52,19 @@ The complete-case mean is badly **biased downward**. That makes sense: we system
 Now recover it. The core idea of imputation is to **use the observed information** (`z`) to fill the holes in `y` - here with a stochastic regression imputation (predict the missing `y` from `z`, and add noise so we don't fake certainty):
 
 ```{r}
-cc  <- !is.na(y_obs)
-fit <- lm(y_obs[cc] ~ z[cc])                               # learn y-from-z on complete cases
-imp <- y_obs
-imp[!cc] <- coef(fit)[1] + coef(fit)[2] * z[!cc] +         # predicted value ...
-            rnorm(sum(!cc), 0, sigma(fit))                 # ... plus honest noise
-round(mean(imp), 3)                                        # recovered — back near the true 0
+# learn y-from-z on the complete cases
+fit <- lm(y_obs ~ z, data = d)
+b   <- tidy(fit) |> pull(estimate)
+s   <- glance(fit) |> pull(sigma)
+
+d |>
+  mutate(imputed = if_else(
+    is.na(y_obs),
+    b[1] + b[2] * z + rnorm(n(), 0, s),   # predicted value, plus honest noise
+    y_obs
+  )) |>
+  summarise(imputed_mean = mean(imputed)) |>   # recovered - back near the true 0
+  round2()
 ```
 
 Filling the holes with what `z` implies pulls the estimate back to the truth. That is the entire logic of principled missing-data handling: the information to fix the bias was *in the data we kept*, and complete-case analysis simply threw it away.
@@ -58,8 +76,11 @@ There is a subtlety here worth slowing down for. The *marginal mean* of `y` was 
 ::: {.panel-tabset}
 ### R
 ```{r}
-c(slope_full          = round(coef(lm(y ~ z))[2], 3),      # the truth
-  slope_complete_case = round(coef(lm(y_obs ~ z))[2], 3))  # barely moved
+tibble(
+  slope_full          = tidy(lm(y ~ z, data = d))$estimate[2],      # the truth
+  slope_complete_case = tidy(lm(y_obs ~ z, data = d))$estimate[2]   # barely moved
+) |>
+  round2()
 ```
 ### SPSS
 ```
@@ -73,6 +94,13 @@ REGRESSION /STATISTICS COEFF R ANOVA /DEPENDENT y_obs /METHOD=ENTER z.
 using GLM, DataFrames
 slope_full          = coef(lm(@formula(y ~ z), df))[2]                        # the truth
 slope_complete_case = coef(lm(@formula(y_obs ~ z), dropmissing(df, :y_obs)))[2]  # barely moved
+```
+### Python
+```python
+import statsmodels.formula.api as smf
+# patsy drops rows with missing values, so the second fit is complete-case.
+slope_full          = smf.ols("y ~ z", data=df).fit().params["z"]       # the truth
+slope_complete_case = smf.ols("y_obs ~ z", data=df).fit().params["z"]   # barely moved
 ```
 :::
 

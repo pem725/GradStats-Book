@@ -30,11 +30,21 @@ where $b$ is the **slope** (how much $y$ changes for a one-unit change in $x$) a
 Let's make some data and look at it. We will keep it tiny - five points - so you can check every number by hand.
 
 ```{r}
-x <- c(1, 2, 3, 4, 5)
-y <- c(4, 8, 10, 7, 8)
+#| message: false
+library(tidyverse)    # dplyr, ggplot2, purrr, tibble, readr, stringr, forcats
+library(broom)        # tidy(), glance(), augment() for model output
+source("_common.R")   # book-wide helpers: round2(), fmt_p(), tidy2()
 
-plot(x, y, xlim = c(0, 6), pch = 19,
-     main = "Five points and the line that fits them best")
+toy <- tibble(
+  x = c(1, 2, 3, 4, 5),
+  y = c(4, 8, 10, 7, 8)
+)
+
+ggplot(toy, aes(x = x, y = y)) +
+  geom_point(size = 3) +
+  coord_cartesian(xlim = c(0, 6)) +
+  labs(title = "Five points and the line that fits them best") +
+  theme_minimal()
 ```
 
 Now we fit the model. In R, the workhorse is `lm()` (for **l**inear **m**odel). The formula `y ~ x` reads "y is predicted by x."
@@ -42,10 +52,17 @@ Now we fit the model. In R, the workhorse is `lm()` (for **l**inear **m**odel). 
 ::: {.panel-tabset}
 ### R
 ```{r}
-lm1 <- lm(y ~ x)
-plot(x, y, xlim = c(0, 6), pch = 19)
-abline(lm1, col = "red", lwd = 2)
-summary(lm1)
+#| message: false
+lm1 <- lm(y ~ x, data = toy)
+
+ggplot(toy, aes(x = x, y = y)) +
+  geom_smooth(method = "lm", se = FALSE, colour = "red") +
+  geom_point(size = 3) +
+  coord_cartesian(xlim = c(0, 6)) +
+  theme_minimal()
+
+tidy2(lm1)              # the coefficient table
+glance(lm1) |> round2() # R-squared, residual SE, overall F
 ```
 ### SPSS
 ```
@@ -60,6 +77,12 @@ using GLM
 m1 = lm(@formula(y ~ x), df)
 coeftable(m1)
 ```
+### Python
+```python
+import statsmodels.formula.api as smf
+m1 = smf.ols("y ~ x", data=df).fit()
+m1.summary()
+```
 :::
 
 R just handed us a slope and an intercept. Here is what matters most in this book: **do not trust the machine until you can reproduce what it did.** The rest of this chapter rebuilds every number in that output by hand. If you can do that, you *understand* regression, rather than just knowing how to type `summary()`.
@@ -73,26 +96,34 @@ $$e = y - \hat{y}$$
 Let's draw those distances.
 
 ```{r}
-plot(x, y, xlim = c(0, 6), pch = 19,
-     main = "Residuals: the vertical gaps the line leaves behind")
-abline(lm1, col = "red", lwd = 2)
-for (i in 1:5) {
-  segments(x[i], y[i], x[i], coef(lm1)[[2]] * x[i] + coef(lm1)[[1]],
-           col = "blue", lwd = 2)
-}
+#| message: false
+augment(lm1) |>          # broom adds .fitted and .resid as columns
+  ggplot(aes(x = x, y = y)) +
+  geom_segment(aes(xend = x, yend = .fitted), colour = "blue", linewidth = 1) +
+  geom_smooth(method = "lm", se = FALSE, colour = "red") +
+  geom_point(size = 3) +
+  coord_cartesian(xlim = c(0, 6)) +
+  labs(title = "Residuals: the vertical gaps the line leaves behind") +
+  theme_minimal()
 ```
 
 Here are the residuals themselves:
 
 ```{r}
-resid(lm1)
+augment(lm1) |>
+  select(x, y, .fitted, .resid) |>
+  round2()
 ```
 
 Two facts worth burning into memory:
 
 ```{r}
-sum(resid(lm1))        # the residuals sum to (essentially) zero
-sum(resid(lm1)^2)      # the sum of SQUARED residuals - this is what we minimize
+augment(lm1) |>
+  summarise(
+    sum_of_residuals         = sum(.resid),    # (essentially) zero
+    sum_of_squared_residuals = sum(.resid^2)   # this is what we minimize
+  ) |>
+  round2()
 ```
 
 ::: {.callout-important}
@@ -108,9 +139,12 @@ R did not use magic. It used two formulas. Here is the slope:
 $$b = \frac{N \sum xy - \sum x \sum y}{N \sum x^2 - \left(\sum x\right)^2}$$
 
 ```{r}
-N <- length(x)
-b <- (N * sum(x * y) - sum(x) * sum(y)) / (N * sum(x^2) - sum(x)^2)
-b
+N <- nrow(toy)
+b <- toy |>
+  summarise(b = (N * sum(x * y) - sum(x) * sum(y)) / (N * sum(x^2) - sum(x)^2)) |>
+  pull(b)
+
+tibble(b = b) |> round2()
 ```
 
 Compare that `b` to the slope in the `summary(lm1)` output above. Same number. Good.
@@ -120,15 +154,17 @@ Once we have the slope, the intercept falls right out. The least-squares line al
 $$a = \bar{y} - b\bar{x}$$
 
 ```{r}
-a <- mean(y) - b * mean(x)
-a
+a <- toy |> summarise(a = mean(y) - b * mean(x)) |> pull(a)
+
+tibble(a = a) |> round2()
 ```
 
 There is a more cryptic-looking version that is algebraically identical:
 
 ```{r}
-a <- (sum(y) - b * sum(x)) / N
-a
+a <- toy |> summarise(a = (sum(y) - b * sum(x)) / N) |> pull(a)
+
+tibble(a = a) |> round2()
 ```
 
 ::: {.callout-note}
@@ -146,28 +182,35 @@ $$S_{xy} = \sqrt{\frac{\sum (Y_{obs} - Y_{exp})^2}{N - 2}}$$
 We divide by $N - 2$ (not $N$) because we spent two degrees of freedom estimating two things: the slope and the intercept.
 
 ```{r}
-Sxy <- sqrt(sum((y - predict(lm1))^2) / (N - 2))
-Sxy
+Sxy <- augment(lm1) |>
+  summarise(Sxy = sqrt(sum(.resid^2) / (N - 2))) |>
+  pull(Sxy)
+
+tibble(Sxy = Sxy) |> round2()
 ```
 
 That is the `Residual standard error` line in the `summary()` output. From it we get the standard error of the slope and of the intercept:
 
 ```{r}
-# standard error of b (the slope)
-Sb <- Sxy / sqrt(sum((x - mean(x))^2))
-Sb
+ses <- toy |>
+  summarise(
+    Sb = Sxy / sqrt(sum((x - mean(x))^2)),                  # SE of the slope
+    Sa = Sxy * sqrt(sum(x^2) / (N * sum((x - mean(x))^2)))  # SE of the intercept
+  )
 
-# standard error of a (the intercept)
-Sa <- Sxy * sqrt(sum(x^2) / (N * sum((x - mean(x))^2)))
-Sa
+ses |> round2()
 ```
 
 Now the payoff. A $t$ statistic is just an estimate divided by its own standard error, and we compare it to a $t$ distribution with $N-2$ degrees of freedom:
 
 ```{r}
-t_b <- b / Sb
-p_b <- 2 * pt(-abs(t_b), df = N - 2)
-c(slope = b, SE = Sb, t = t_b, p = p_b)
+tibble(slope = b, SE = ses$Sb) |>
+  mutate(
+    t = slope / SE,
+    p = 2 * pt(-abs(t), df = N - 2)
+  ) |>
+  mutate(p = fmt_p(p)) |>
+  round2()
 ```
 
 Look back at the `x` row of `summary(lm1)`. The estimate, the standard error, the $t$ value, the $p$ value: **we just rebuilt the entire regression table from scratch.** That is the main lesson of the chapter: R is a fast calculator, not an oracle, and you now understand every number it produced.
@@ -197,15 +240,15 @@ The units *have* to balance, and checking them is a free error-detector. If your
 
 ## Standardized Coefficients
 
-Sometimes we want a slope that does not depend on the units at all - so we can compare predictors measured on wildly different scales. We get it by **standardizing** both variables (converting each to a z-score with `scale()`) before fitting. When both variables are standardized, the intercept is zero by construction, so we drop it with `- 1`:
+Sometimes we want a slope that does not depend on the units at all - so we can compare predictors measured on wildly different scales. We get it by **standardizing** both variables (converting each to a z-score) before fitting. When both variables are standardized, the intercept is zero by construction, so we drop it with `- 1`:
 
 ::: {.panel-tabset}
 ### R
 ```{r}
-yz <- scale(y)
-xz <- scale(x)
-lm2 <- lm(yz ~ xz - 1)
-summary(lm2)
+toy_z <- toy |> mutate(across(c(x, y), \(v) (v - mean(v)) / sd(v)))
+
+lm2 <- lm(y ~ x - 1, data = toy_z)
+tidy2(lm2)
 ```
 ### SPSS
 ```
@@ -224,6 +267,16 @@ df2 = DataFrame(y = z(df.y), x = z(df.x))
 lm2 = lm(@formula(y ~ x - 1), df2)
 coeftable(lm2)
 ```
+### Python
+```python
+import statsmodels.formula.api as smf
+
+def z(v):
+    return (v - v.mean()) / v.std()
+
+d2 = df.assign(zy=z(df.y), zx=z(df.x))
+smf.ols("zy ~ zx - 1", data=d2).fit().summary()
+```
 :::
 
 This standardized slope is the **beta weight** ($\beta$). In the bivariate case it equals the correlation between $x$ and $y$ - a fact worth remembering, and one we will lean on heavily when we get to multiple predictors [@aiken_applied_2002].
@@ -235,15 +288,20 @@ Five points are great for hand calculation but a little silly. Let's use a real 
 ::: {.panel-tabset}
 ### R
 ```{r}
-gpa <- read.csv("data/gpa.csv")
-str(gpa)
+#| message: false
+gpa <- read_csv("data/gpa.csv", show_col_types = FALSE)
+glimpse(gpa)
 
 lm3 <- lm(CollegeGPA ~ HSGPA, data = gpa)
 
-plot(CollegeGPA ~ HSGPA, data = gpa, pch = 19, col = "grey40",
-     main = "Predicting college GPA from high-school GPA")
-abline(lm3, col = "red", lwd = 2)
-summary(lm3)
+ggplot(gpa, aes(x = HSGPA, y = CollegeGPA)) +
+  geom_point(colour = "grey40", size = 2) +
+  geom_smooth(method = "lm", se = FALSE, colour = "red") +
+  labs(title = "Predicting college GPA from high-school GPA") +
+  theme_minimal()
+
+tidy2(lm3)
+glance(lm3) |> round2()
 ```
 ### SPSS
 ```
@@ -257,6 +315,14 @@ REGRESSION
 using GLM
 lm3 = lm(@formula(CollegeGPA ~ HSGPA), df)
 coeftable(lm3)
+```
+### Python
+```python
+import pandas as pd
+import statsmodels.formula.api as smf
+gpa = pd.read_csv("data/gpa.csv")
+m3 = smf.ols("CollegeGPA ~ HSGPA", data=gpa).fit()
+m3.summary()
 ```
 :::
 

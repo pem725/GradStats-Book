@@ -25,13 +25,24 @@ The first family of validity questions is about the measure itself - does this i
 ::: {.panel-tabset}
 ### R
 ```{r}
+#| message: false
+library(tidyverse)    # dplyr, ggplot2, purrr, tibble, readr, stringr, forcats
+source("_common.R")   # book-wide helpers: round2(), fmt_p(), tidy2()
+
 # A cartoon of convergent vs discriminant validity as a correlation matrix
 set.seed(4)
-anxiety_true <- rnorm(300)
-new_scale <- anxiety_true + rnorm(300, 0, 0.5)          # our new measure
-old_scale <- anxiety_true + rnorm(300, 0, 0.5)          # established anxiety measure
-verbal    <- rnorm(300)                                  # unrelated construct
-round(cor(data.frame(new_scale, old_scale, verbal)), 2)
+v <- tibble(anxiety_true = rnorm(300)) |>
+  mutate(
+    new_scale = anxiety_true + rnorm(300, 0, 0.5),  # our new measure
+    old_scale = anxiety_true + rnorm(300, 0, 0.5),  # established anxiety measure
+    verbal    = rnorm(300)                          # unrelated construct
+  )
+
+v |>
+  select(new_scale, old_scale, verbal) |>
+  cor() |>
+  as_tibble(rownames = "measure") |>
+  round2()
 ```
 
 ### SPSS
@@ -46,6 +57,12 @@ CORRELATIONS
 using Statistics
 # correlation matrix of the three measures
 cor(Matrix(df[:, [:new_scale, :old_scale, :verbal]]))
+```
+
+### Python
+```python
+# correlation matrix of the three measures
+df[["new_scale", "old_scale", "verbal"]].corr().round(2)
 ```
 :::
 

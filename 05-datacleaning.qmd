@@ -18,14 +18,18 @@ Start with a mindset. A measure is a **sensor** - a thermometer, a questionnaire
 The cheapest, most-skipped step is to *look at your data* before touching it. `str()`, `summary()`, and a few plots catch a surprisingly large share of problems:
 
 ```{r}
+#| message: false
+library(tidyverse)    # dplyr, ggplot2, purrr, tibble, readr, stringr, forcats
+source("_common.R")   # book-wide helpers: round2(), fmt_p(), tidy2()
+
 set.seed(3)
-dat <- data.frame(
-  age    = c(34, 29, 41, 220, 38, NA, 45),   # 220 is impossible
-  income = c(52, 61, 48, 55, -3, 60, 999),    # -3 impossible; 999 a code?
+dat <- tibble(
+  age    = c(34, 29, 41, 220, 38, NA, 45),       # 220 is impossible
+  income = c(52, 61, 48, 55, -3, 60, 999),       # -3 impossible; 999 a code?
   group  = c("A", "A", "b", "B", "A", "B", "A")  # "b" should be "B"
 )
-str(dat)
-summary(dat)
+glimpse(dat)   # the tidyverse's str(): one row per column, types and values
+summary(dat)   # min/max here is what exposes the impossible values
 ```
 
 Three problems already stand out: an age of 220, a negative income (and a suspicious 999), and a stray lowercase "b". None of these needed a model; a look was enough.
@@ -37,11 +41,15 @@ Define what is *possible* and flag what is not. This is domain knowledge, not st
 ::: {.panel-tabset}
 ### R
 ```{r}
-dat$age[dat$age > 120]  <- NA            # no one is 220
-dat$income[dat$income < 0] <- NA         # negative income is impossible here
-dat$income[dat$income == 999] <- NA      # 999 was a "missing" code, not a value
-dat$group <- toupper(trimws(as.character(dat$group)))  # fix "b" and stray spaces
-table(dat$group, useNA = "ifany")
+dat <- dat |>
+  mutate(
+    age    = if_else(age > 120, NA, age),        # no one is 220
+    income = if_else(income < 0 | income == 999, # impossible, and the 999 code
+                     NA, income),
+    group  = str_to_upper(str_trim(group))       # fix "b" and stray spaces
+  )
+
+dat |> count(group)
 ```
 ### SPSS
 ```
@@ -62,6 +70,15 @@ df.income = [ismissing(x) || x < 0 || x == 999 ? missing : x for x in df.income]
 df.group  = uppercase.(strip.(string.(df.group)))                                  # fix "b" and stray spaces
 countmap(df.group)
 ```
+### Python
+```python
+import numpy as np
+df.loc[df.age > 120, "age"]      = np.nan     # no one is 220
+df.loc[df.income < 0, "income"]  = np.nan     # negative income is impossible here
+df.loc[df.income == 999, "income"] = np.nan   # 999 was a "missing" code, not a value
+df.group = df.group.astype(str).str.strip().str.upper()   # fix "b" and stray spaces
+df.group.value_counts(dropna=False)
+```
 :::
 
 Note the tricky one: **999 was never a real income**. It was a placeholder for "declined to answer," and software cannot know that. If you had left it in, the mean income would have been badly wrong. Always look for these coded-missing sentinels (999, -1, "N/A", empty strings) and convert them to a genuine `NA`.
@@ -77,7 +94,8 @@ Once the sentinels are cleaned, you are left with genuine gaps. How you should h
 ::: {.panel-tabset}
 ### R
 ```{r}
-colSums(is.na(dat))     # how much is missing, and where?
+# how much is missing, and where?
+dat |> summarise(across(everything(), \(v) sum(is.na(v))))
 ```
 ### SPSS
 ```
@@ -89,6 +107,10 @@ MVA VARIABLES=ALL.
 using DataFrames
 describe(df, :nmissing)     # how much is missing, and where?
 ```
+### Python
+```python
+df.isna().sum()                # how much is missing, and where?
+```
 :::
 
 The default in most software is **listwise deletion** - throw out any row with a gap - which is fine under MCAR and quietly biasing otherwise. Modern practice prefers **multiple imputation**, but the first, non-negotiable step is simply to *report* how much is missing and think hard about which flavor you are facing.
@@ -98,8 +120,9 @@ The default in most software is **listwise deletion** - throw out any row with a
 An outlier is not automatically an error. It might be your most important data point (the one patient who responded, the fraud you were hired to find). The rule: **investigate before you act.** A value can be (1) an impossible error - fix or remove it; (2) a real but extreme observation - keep it, and consider a robust method or a transformation; or (3) genuinely interesting - study it. Deleting outliers just because they are inconvenient turns honest data into a misleading result.
 
 ```{r}
-z <- scale(c(52, 61, 48, 55, 60, 58, 300))    # 300 stands out
-round(as.vector(z), 2)                          # z-scores flag the extreme point
+tibble(income = c(52, 61, 48, 55, 60, 58, 300)) |>   # 300 stands out
+  mutate(z = (income - mean(income)) / sd(income)) |> # z-scores flag the extreme
+  round2()
 ```
 
 A common screen is "more than 3 standard deviations from the mean," but treat it as a flag for *inspection*, not a delete key.

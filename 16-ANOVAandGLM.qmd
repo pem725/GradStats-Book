@@ -16,16 +16,22 @@ The only new skill you need is **coding**: how to turn a category ("cat," "dog")
 Let us start with a continuous relationship. Suppose some trait $x$ makes people happy:
 
 ```{r}
+#| message: false
+library(tidyverse)    # dplyr, ggplot2, purrr, tibble, readr, stringr, forcats
+library(broom)        # tidy(), glance(), augment() for model output
+source("_common.R")   # book-wide helpers: round2(), fmt_p(), tidy2()
+
 set.seed(1925)  # Fisher's "Statistical Methods for Research Workers"
-x <- sort(rnorm(100))
-happy <- x + rnorm(100)
+d <- tibble(x = sort(rnorm(100))) |>
+  mutate(happy = x + rnorm(100))
 ```
 
 Now imagine $x$ measures something like "dogness," where higher values mean more dog-like. We rarely measure dogness on a continuum; instead we lump animals into categories. Let us chop the continuum into four pet types:
 
 ```{r}
-pet <- cut(x, 4, labels = c("cat", "fish", "pig", "dog"))
-table(pet)
+d <- d |> mutate(pet = cut(x, 4, labels = c("cat", "fish", "pig", "dog")))
+
+d |> count(pet)
 ```
 
 Does pet type relate to happiness? A regression will happily tell us, even though `pet` is a *factor*:
@@ -33,8 +39,8 @@ Does pet type relate to happiness? A regression will happily tell us, even thoug
 ::: {.panel-tabset}
 ### R
 ```{r}
-lm_pet <- lm(happy ~ pet)
-round(coef(lm_pet), 3)
+lm_pet <- lm(happy ~ pet, data = d)
+tidy2(lm_pet)
 ```
 ### SPSS
 ```
@@ -43,6 +49,11 @@ ONEWAY happy BY pet /STATISTICS DESCRIPTIVES.
 ### Julia
 ```julia
 using GLM; ftest(lm(@formula(happy ~ pet), df).model)
+```
+### Python
+```python
+import statsmodels.formula.api as smf
+smf.ols("happy ~ pet", data=df).fit().params.round(3)
 ```
 :::
 
@@ -53,21 +64,26 @@ R fit it without complaint. But look at those coefficient names - `petfish`, `pe
 By default, R uses **dummy coding** (`contr.treatment`): it picks the first level ("cat") as the **reference**, and each coefficient is the difference between that group's mean and the reference group's mean. Let us prove it by pulling the group means directly:
 
 ```{r}
-means <- aggregate(happy, by = list(pet = pet), FUN = mean)
-means
+means <- d |>
+  summarise(mean = mean(happy), .by = pet) |>
+  arrange(pet)
+
+means |> round2()
 ```
 
 Now rebuild every coefficient from those means:
 
 ```{r}
-# intercept should be the reference (cat) mean:
-c(intercept = coef(lm_pet)[[1]], cat_mean = means$x[1])
+coefs <- tidy(lm_pet) |> pull(estimate, name = term)
 
-# petfish should be (fish mean - cat mean):
-c(petfish_coef = coef(lm_pet)[["petfish"]], fish_minus_cat = means$x[2] - means$x[1])
-
-# petdog should be (dog mean - cat mean):
-c(petdog_coef = coef(lm_pet)[["petdog"]], dog_minus_cat = means$x[4] - means$x[1])
+tibble(
+  coefficient = c("(Intercept)", "petfish", "petdog"),
+  from_model  = c(coefs[["(Intercept)"]], coefs[["petfish"]], coefs[["petdog"]]),
+  from_means  = c(means$mean[1],                    # the reference (cat) mean
+                  means$mean[2] - means$mean[1],    # fish mean - cat mean
+                  means$mean[4] - means$mean[1])    # dog mean  - cat mean
+) |>
+  round2()
 ```
 
 There is no magic in the box. **A dummy-coded coefficient is a difference between two group means**, and the intercept is the reference group's mean. That is exactly what a t-test between two groups reports, which is your first hint that t-tests, too, are just this same model.
@@ -77,24 +93,27 @@ There is no magic in the box. **A dummy-coded coefficient is a difference betwee
 Dummy coding answers "how does each group differ from the reference?" Often we would rather ask "how does each group differ from the *overall average*?" For that we switch to **effects coding** (`contr.sum`):
 
 ```{r}
-pet_e <- pet
-contrasts(pet_e) <- contr.sum(4)
-lm_pet_e <- lm(happy ~ pet_e)
-round(coef(lm_pet_e), 3)
+d_e <- d |> mutate(pet_e = pet)
+contrasts(d_e$pet_e) <- contr.sum(4)   # base R still owns contrast assignment
+
+lm_pet_e <- lm(happy ~ pet_e, data = d_e)
+tidy2(lm_pet_e)
 ```
 
 The coefficients changed, because the *question* changed. Now the intercept is the **grand mean** - and here is a subtlety worth stopping for: the grand mean of effects coding is the **mean of the group means** (each group weighted equally), *not* the mean of the raw scores. With unequal group sizes those two differ, and confusing them is a classic error.
 
 ```{r}
-GM <- mean(means$x)                       # mean of the group means (unweighted)
-c(intercept = coef(lm_pet_e)[[1]], grand_mean = GM)
+GM <- mean(means$mean)      # mean of the group means (unweighted)
+eff <- tidy(lm_pet_e) |> pull(estimate)
+
+tibble(intercept = eff[1], grand_mean = GM) |> round2()
 ```
 
 Each effects coefficient is then that group's mean minus the grand mean:
 
 ```{r}
 # first coefficient = cat mean - grand mean:
-c(coef1 = coef(lm_pet_e)[[2]], cat_minus_GM = means$x[1] - GM)
+tibble(coef1 = eff[2], cat_minus_GM = means$mean[1] - GM) |> round2()
 ```
 
 ::: {.callout-important}
@@ -103,8 +122,11 @@ c(coef1 = coef(lm_pet_e)[[2]], cat_minus_GM = means$x[1] - GM)
 Count the coefficients: with four groups, effects coding gives you an intercept plus only **three** effects. The fourth group ("dog") seems to have vanished. It has not - it is *implied*. Because the effects are deviations from the grand mean, they must sum to zero, so the last group's effect is minus the sum of the others:
 
 ```{r}
-dog_effect_implied <- -(coef(lm_pet_e)[[2]] + coef(lm_pet_e)[[3]] + coef(lm_pet_e)[[4]])
-c(implied_dog_effect = dog_effect_implied, dog_minus_GM = means$x[4] - GM)
+tibble(
+  implied_dog_effect = -sum(eff[2:4]),   # the three effects must sum to zero
+  dog_minus_GM       = means$mean[4] - GM
+) |>
+  round2()
 ```
 
 They match. The "missing" group is never missing; it is the one the constraint solves for. (Work the algebra once and reference levels stop being confusing.)
@@ -123,14 +145,17 @@ A perennial knot, so let's cut it. **Dummy coding** uses 0s and 1s and compares 
 Whether you dummy-code or effects-code, the *overall* test - "do the group means differ at all?" - is identical, and it is identical to what analysis of variance calls the omnibus $F$. Watch the same number fall out three ways:
 
 ```{r}
-# 1) the regression's own F test
-summary(lm_pet)$fstatistic[1]
-
-# 2) run it as an ANOVA on the regression object
-anova(lm_pet)["pet", "F value"]
-
-# 3) the classic aov() function
-summary(aov(happy ~ pet))[[1]]["pet", "F value"]
+tibble(
+  source = c("1) the regression's own F test",
+             "2) anova() on the regression object",
+             "3) the classic aov() function"),
+  F = c(
+    glance(lm_pet)$statistic,
+    anova(lm_pet) |> tidy() |> filter(term == "pet") |> pull(statistic),
+    aov(happy ~ pet, data = d) |> tidy() |> filter(term == "pet") |> pull(statistic)
+  )
+) |>
+  round2()
 ```
 
 One model, one $F$, three names. **ANOVA is regression with categorical predictors**: the coding scheme only changes how we *slice up and label* the group differences, never the overall test. This is the General Linear Model: pick your predictors (continuous, categorical, or both), pick your coding, and it is all least squares underneath.
@@ -142,10 +167,14 @@ Add a second factor and you get a factorial design - still just regression. Supp
 ::: {.panel-tabset}
 ### R
 ```{r}
-mess  <- factor(ifelse(rnorm(100) > 0, "messy", "tidy"))
-sad   <- -x + as.numeric(mess) + rnorm(100)
-lm_fac <- lm(sad ~ pet * mess)
-round(coef(lm_fac), 3)
+d <- d |>
+  mutate(
+    mess = factor(if_else(rnorm(100) > 0, "messy", "tidy")),
+    sad  = -x + as.numeric(mess) + rnorm(100)
+  )
+
+lm_fac <- lm(sad ~ pet * mess, data = d)
+tidy2(lm_fac)
 ```
 ### SPSS
 ```
@@ -154,6 +183,11 @@ UNIANOVA sad BY pet mess /DESIGN=pet mess pet*mess.
 ### Julia
 ```julia
 using GLM; lm(@formula(sad ~ pet * mess), df)
+```
+### Python
+```python
+import statsmodels.formula.api as smf
+smf.ols("sad ~ pet * mess", data=df).fit().params.round(3)
 ```
 :::
 
@@ -166,9 +200,11 @@ Everything so far assumes a continuous outcome with roughly normal residuals. Bu
 ::: {.panel-tabset}
 ### R
 ```{r}
-passed <- rbinom(100, size = 1, prob = plogis(x))   # 0/1 outcome driven by x
-glm_fit <- glm(passed ~ x, family = binomial)
-round(coef(glm_fit), 3)
+# 0/1 outcome driven by x
+d <- d |> mutate(passed = rbinom(100, size = 1, prob = plogis(x)))
+
+glm_fit <- glm(passed ~ x, family = binomial, data = d)
+tidy2(glm_fit)
 ```
 ### SPSS
 ```
@@ -177,6 +213,11 @@ LOGISTIC REGRESSION VARIABLES passed WITH x.
 ### Julia
 ```julia
 using GLM; glm(@formula(passed ~ x), df, Binomial(), LogitLink())
+```
+### Python
+```python
+import statsmodels.formula.api as smf
+smf.logit("passed ~ x", data=df).fit().params.round(3)
 ```
 :::
 

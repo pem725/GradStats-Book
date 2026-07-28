@@ -16,11 +16,16 @@ Back in the introduction we asked you to guess a family member's weight, and cla
 ::: {.panel-tabset}
 ### R
 ```{r}
+#| message: false
+library(tidyverse)    # dplyr, ggplot2, purrr, tibble, readr, stringr, forcats
+source("_common.R")   # book-wide helpers: round2(), fmt_p(), tidy2()
+
 x <- c(3, 5, 5, 7, 20)        # note the outlier
-c(mean = mean(x), median = median(x))
-# R has no built-in mode; here is the quick one:
-mode_val <- as.numeric(names(which.max(table(x))))
-c(mode = mode_val)
+
+# R has no built-in mode; count the values and take the most frequent
+mode_val <- tibble(x) |> count(x) |> slice_max(n) |> pull(x)
+
+tibble(mean = mean(x), median = median(x), mode = mode_val) |> round2()
 ```
 ### SPSS
 ```
@@ -33,6 +38,12 @@ mean(df.x)
 median(df.x)
 mode(df.x)
 ```
+### Python
+```python
+df.x.mean()
+df.x.median()
+df.x.mode()[0]                 # mode() returns every tie; take the first
+```
 :::
 
 - **Mean** - the arithmetic average, the balance point of the distribution.
@@ -44,14 +55,21 @@ mode(df.x)
 Here is the deep idea that ties this chapter to the entire rest of the book. Suppose you must pick a single number $c$ to guess every value, and you will be penalized by the **squared** error of each guess. Which $c$ minimizes your total penalty? Let's just try every candidate and see:
 
 ```{r}
-guesses <- seq(0, 20, by = 0.1)
-sse <- sapply(guesses, function(c) sum((x - c)^2))   # sum of squared errors
-best <- guesses[which.min(sse)]
-plot(guesses, sse, type = "l", lwd = 2, col = "steelblue",
-     xlab = "guess (c)", ylab = "sum of squared errors",
-     main = "The mean minimizes squared error")
-abline(v = mean(x), col = "red", lwd = 2, lty = 2)
-c(best_guess = best, the_mean = mean(x))
+# try every candidate guess and record its total squared error
+guesses <- tibble(guess = seq(0, 20, by = 0.1)) |>
+  mutate(sse = map_dbl(guess, \(g) sum((x - g)^2)))
+
+best <- guesses |> slice_min(sse) |> pull(guess)
+
+ggplot(guesses, aes(x = guess, y = sse)) +
+  geom_line(colour = "steelblue", linewidth = 1) +
+  geom_vline(xintercept = mean(x), colour = "red",
+             linetype = "dashed", linewidth = 1) +
+  labs(title = "The mean minimizes squared error",
+       x = "guess (c)", y = "sum of squared errors") +
+  theme_minimal()
+
+tibble(best_guess = best, the_mean = mean(x)) |> round2()
 ```
 
 The valley of that curve sits **exactly** at the mean. That is not a coincidence - it is *the reason the mean matters*. When we do regression later and "minimize the sum of squared residuals," we are doing this same thing in more dimensions. The mean is least-squares estimation with no predictors.
@@ -66,7 +84,7 @@ Look again at that outlier (20). Squaring errors makes the mean very sensitive t
 ### R
 ```{r}
 income <- c(30, 35, 40, 42, 45, 48, 5000)   # thousands; one very rich person
-c(mean = mean(income), median = median(income))
+tibble(mean = mean(income), median = median(income)) |> round2()
 ```
 ### SPSS
 ```
@@ -77,6 +95,11 @@ FREQUENCIES VARIABLES=income /STATISTICS=MEAN MEDIAN.
 using Statistics
 mean(df.income)
 median(df.income)
+```
+### Python
+```python
+df.income.mean()
+df.income.median()
 ```
 :::
 

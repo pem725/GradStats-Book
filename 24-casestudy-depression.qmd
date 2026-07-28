@@ -9,11 +9,17 @@ The instrument is the **Beck Depression Inventory (BDI-II)**: 21 symptoms (sadne
 Start with pure arithmetic - no data and no model, just counting. How many different 21-item profiles produce a total of exactly 15? The answer comes from the **inclusion–exclusion principle**, and it is worth computing yourself because the number is larger than most people expect:
 
 ```{r}
+#| message: false
+library(tidyverse)    # dplyr, ggplot2, purrr, tibble, readr, stringr, forcats
+source("_common.R")   # book-wide helpers: round2(), fmt_p(), tidy2()
+
 n_patterns <- function(k, a, n) {                 # k items, each 0..a, summing to n
   imax <- floor(n / (a + 1))
-  sum(sapply(0:imax, function(i)
-    (-1)^i * choose(k, i) * choose(n - i * (a + 1) + k - 1, k - 1)))
+  map_dbl(0:imax, \(i)
+    (-1)^i * choose(k, i) * choose(n - i * (a + 1) + k - 1, k - 1)) |>
+    sum()
 }
+
 format(n_patterns(21, 3, 15), big.mark = ",")     # ways to score 15 on the BDI-II
 ```
 
@@ -36,17 +42,25 @@ symptoms <- c("sadness","pessimism","past_failure","loss_pleasure","guilt","puni
               "self_dislike","self_critical","suicidal","crying","agitation","loss_interest",
               "indecision","worthlessness","loss_energy","sleep","irritability","appetite",
               "concentration","tiredness","loss_sex_interest")
-theta <- rnorm(N, mean = -0.5)                     # latent depression severity (one per person)
-diff  <- sort(rnorm(k, mean = 2.6, sd = 1.3))      # item "difficulty": most symptoms are rare
-bdi <- as.data.frame(sapply(seq_len(k), function(j) {
+theta <- rnorm(N, mean = -0.5)                # latent severity (one per person)
+diff  <- sort(rnorm(k, mean = 2.6, sd = 1.3)) # item "difficulty": most symptoms are rare
+
+bdi <- map(seq_len(k), \(j) {
   p <- plogis(outer(theta, diff[j] + c(-1.1, 0, 1.1), `-`))   # P(score >= 1, 2, 3)
-  rowSums(runif(N) < p)                                        # a graded 0..3 response
-}))
-names(bdi) <- symptoms
+  rowSums(runif(N) < p)                                       # a graded 0..3 response
+}) |>
+  set_names(symptoms) |>
+  as_tibble()
+
 totals <- rowSums(bdi)
 
-pair <- which(totals == 15)[c(1, 2)]               # two people, identical total of 15
-t(bdi[pair, ])
+pair <- which(totals == 15)[c(1, 2)]          # two people, identical total of 15
+
+bdi |>
+  slice(pair) |>
+  mutate(person = c("person A", "person B"), .before = 1) |>
+  pivot_longer(-person, names_to = "symptom", values_to = "score") |>
+  pivot_wider(names_from = person, values_from = score)
 ```
 
 One person's distress concentrates in a few symptoms; the other's spreads thin across many. Same "15," but different clinical pictures, and a sum score cannot tell them apart. The **profile** can.
@@ -56,10 +70,14 @@ One person's distress concentrates in a few symptoms; the other's spreads thin a
 If 4.4 trillion profiles are *possible*, how many actually *occur*? Almost none - because depression symptoms do not vary independently; they hang together. Count the distinct profiles:
 
 ```{r}
-key <- apply(bdi, 1, paste, collapse = "-")
-c(people            = nrow(bdi),
-  distinct_profiles = length(unique(key)),
-  pct_unique        = round(100 * mean(!(duplicated(key) | duplicated(key, fromLast = TRUE))), 1))
+key <- bdi |> unite("profile", everything(), sep = "-") |> pull(profile)
+
+tibble(
+  people            = nrow(bdi),
+  distinct_profiles = n_distinct(key),
+  pct_unique        = 100 * mean(!(duplicated(key) | duplicated(key, fromLast = TRUE)))
+) |>
+  round2()
 ```
 
 Roughly **three-quarters have a profile no one else shares**, and in the real six-sample analysis it was **79.7%**. Even our simple simulation reproduces the effect: of the trillions of mathematically possible patterns, people occupy only a small fraction, what the study called the **manifold collapse**. The space of possible profiles is huge, but real people use very little of it. That raises a genuine question: are the profiles that *never* appear merely rare, or are some of them *impossible in principle*, incoherent given how depression actually works?
@@ -69,12 +87,22 @@ Roughly **three-quarters have a profile no one else shares**, and in the real si
 A profile can be numerically fine and clinically nonsensical - maximum *worthlessness* with zero *sadness*, say. Borrowing a term from Configural Frequency Analysis, we call these **antitypes**: possible on paper, absent in reality because they violate the internal structure of the construct. To catch them we need a notion of which symptoms are "easy" (commonly endorsed) and which are "hard" (rare), and then flag people who endorse hard symptoms while skipping easy ones. Here is the idea in miniature - a light **ordering-violation** count you can run:
 
 ```{r}
-difficulty <- colMeans(bdi)                         # higher = more commonly endorsed = "easier"
-ovi <- apply(bdi, 1, function(r)                     # count "harder scored above easier" pairs
+# higher mean = more commonly endorsed = "easier"
+difficulty <- bdi |> summarise(across(everything(), mean)) |> unlist()
+
+# count "harder symptom scored above an easier one" pairs, person by person
+ovi <- pmap_dbl(bdi, \(...) {
+  r <- c(...)
   sum(outer(seq_along(r), seq_along(r),
-            function(i, j) difficulty[i] < difficulty[j] & r[i] > r[j])))
-c(median_violations = median(ovi), max_violations = max(ovi),
-  cor_with_total    = round(cor(ovi, totals), 2))    # NOT just severity
+            \(i, j) difficulty[i] < difficulty[j] & r[i] > r[j]))
+})
+
+tibble(
+  median_violations = median(ovi),
+  max_violations    = max(ovi),
+  cor_with_total    = cor(ovi, totals)    # NOT just severity
+) |>
+  round2()
 ```
 
 Incoherence is its own dimension - only weakly tied to how *high* the total is. The real study replaces this rough count with a proper **Graded Response Model** (an IRT model, cousin of the [Rasch model](18-rasch.qmd)) that estimates each item's difficulty and each person's severity, then scores every profile's log-likelihood. The two measures - our Ordering Violation Index (OVI) and the GRM profile log-likelihood - agree strongly, and that agreement is stable across samples:

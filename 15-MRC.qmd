@@ -20,15 +20,21 @@ To see the interesting behavior, we need predictors that are correlated with eac
 ::: {.panel-tabset}
 ### R
 ```{r}
+#| message: false
+library(tidyverse)    # dplyr, ggplot2, purrr, tibble, readr, stringr, forcats
+library(broom)        # tidy(), glance(), augment() for model output
+source("_common.R")   # book-wide helpers: round2(), fmt_p(), tidy2()
+
 set.seed(1936)  # Fisher's "The Design of Experiments"
 base <- rnorm(100)
-y  <- base + rnorm(100)
-x1 <- base + rnorm(100)
-x2 <- base + rnorm(100)
-dat <- data.frame(y, x1, x2)
+dat <- tibble(
+  y  = base + rnorm(100),
+  x1 = base + rnorm(100),
+  x2 = base + rnorm(100)
+)
 
 # x1 and x2 are correlated because they share 'base'
-round(cor(dat), 2)
+dat |> cor() |> as_tibble(rownames = "variable") |> round2()
 ```
 ### SPSS
 ```
@@ -39,6 +45,10 @@ CORRELATIONS /VARIABLES=y x1 x2.
 using Statistics
 cor(Matrix(df))
 ```
+### Python
+```python
+df.corr().round(2)
+```
 :::
 
 Now fit the two-predictor model:
@@ -47,7 +57,7 @@ Now fit the two-predictor model:
 ### R
 ```{r}
 lm3 <- lm(y ~ x1 + x2, data = dat)
-coef(lm3)
+tidy2(lm3)
 ```
 ### SPSS
 ```
@@ -57,6 +67,11 @@ REGRESSION /STATISTICS COEFF R ANOVA /DEPENDENT y /METHOD=ENTER x1 x2.
 ```julia
 using GLM
 coeftable(lm(@formula(y ~ x1 + x2), df))
+```
+### Python
+```python
+import statsmodels.formula.api as smf
+smf.ols("y ~ x1 + x2", data=df).fit().params
 ```
 :::
 
@@ -73,18 +88,19 @@ When predictors overlap, there are three distinct quantities, and sloppy languag
 All three are built from the same three correlations, but they are **not** the same number. Here they are, by formula:
 
 ```{r}
-r_y1 <- cor(x1, y); r_y2 <- cor(x2, y); r_12 <- cor(x1, x2)
+r <- dat |>
+  summarise(r_y1 = cor(x1, y), r_y2 = cor(x2, y), r_12 = cor(x1, x2))
 
-# semipartial correlation of x1 (unique slice = area a)
-sr1 <- (r_y1 - r_y2 * r_12) / sqrt(1 - r_12^2)
-
-# partial correlation of x1 (a / (a + e))
-pr1 <- (r_y1 - r_y2 * r_12) / sqrt((1 - r_y2^2) * (1 - r_12^2))
-
-# standardized regression coefficient (beta) for x1
-beta1 <- (r_y1 - r_y2 * r_12) / (1 - r_12^2)
-
-round(c(semipartial = sr1, partial = pr1, beta = beta1), 3)
+r |>
+  summarise(
+    # semipartial correlation of x1 (unique slice = area a)
+    semipartial = (r_y1 - r_y2 * r_12) / sqrt(1 - r_12^2),
+    # partial correlation of x1 (a / (a + e))
+    partial     = (r_y1 - r_y2 * r_12) / sqrt((1 - r_y2^2) * (1 - r_12^2)),
+    # standardized regression coefficient (beta) for x1
+    beta        = (r_y1 - r_y2 * r_12) / (1 - r_12^2)
+  ) |>
+  round2()
 ```
 
 Notice they share the same numerator and differ only in the denominator - which is exactly why they get muddled. Let us confirm that $\beta_1$ is really the standardized slope R reports:
@@ -92,8 +108,10 @@ Notice they share the same numerator and differ only in the denominator - which 
 ::: {.panel-tabset}
 ### R
 ```{r}
-lm3z <- lm(scale(y) ~ scale(x1) + scale(x2), data = dat)
-round(coef(lm3z)[["scale(x1)"]], 3)   # compare to beta1 above
+datz <- dat |> mutate(across(everything(), \(v) (v - mean(v)) / sd(v)))
+
+lm3z <- lm(y ~ x1 + x2, data = datz)
+tidy2(lm3z) |> filter(term == "x1")   # compare to beta above
 ```
 ### SPSS
 ```
@@ -107,6 +125,12 @@ df.zy  = (df.y  .- mean(df.y))  ./ std(df.y)
 df.zx1 = (df.x1 .- mean(df.x1)) ./ std(df.x1)
 df.zx2 = (df.x2 .- mean(df.x2)) ./ std(df.x2)
 coeftable(lm(@formula(zy ~ zx1 + zx2), df))
+```
+### Python
+```python
+import statsmodels.formula.api as smf
+zd = df.apply(lambda v: (v - v.mean()) / v.std())   # z-score every column
+smf.ols("y ~ x1 + x2", data=zd).fit().params
 ```
 :::
 
@@ -127,9 +151,12 @@ Three questions, three numbers. Do not let a textbook (or a reviewer) tell you t
 Statistics is about variance, and $R^2$ is the cleanest variance story we have. **$R$** is just the correlation between what we observed and what the model predicts; **$R^2$** is the ratio of predicted-to-total variance:
 
 ```{r}
-R  <- cor(y, predict(lm3))
-R2 <- var(predict(lm3)) / var(y)
-round(c(R = R, R2 = R2, R2_from_summary = summary(lm3)$r.squared), 3)
+R2 <- augment(lm3) |> summarise(R2 = var(.fitted) / var(y)) |> pull(R2)
+
+augment(lm3) |>
+  summarise(R = cor(y, .fitted), R2 = var(.fitted) / var(y)) |>
+  mutate(R2_from_glance = glance(lm3)$r.squared) |>
+  round2()
 ```
 
 That is it: $R^2 = \frac{\text{var}(\hat{y})}{\text{var}(y)}$, the fraction of Y's variance the model reproduces. But $R^2$ has a flaw: add any predictor, even pure noise, and it never goes down. So we penalize it for complexity to get the **adjusted (or "shrunken") $R^2$**:
@@ -137,9 +164,13 @@ That is it: $R^2 = \frac{\text{var}(\hat{y})}{\text{var}(y)}$, the fraction of Y
 $$R^2_{adj} = 1 - (1 - R^2)\,\frac{n - 1}{n - k - 1}$$
 
 ```{r}
-n <- length(y); k <- 2
-R2_adj <- 1 - (1 - R2) * (n - 1) / (n - k - 1)
-round(c(R2_adj = R2_adj, adj_from_summary = summary(lm3)$adj.r.squared), 3)
+n <- nrow(dat); k <- 2
+
+tibble(
+  R2_adj          = 1 - (1 - R2) * (n - 1) / (n - k - 1),
+  adj_from_glance = glance(lm3)$adj.r.squared
+) |>
+  round2()
 ```
 
 The adjustment is why you should *never* judge a model by raw $R^2$ alone. Throw in enough predictors and you can make $R^2$ look impressive while the model is worthless.
@@ -153,16 +184,18 @@ $$SE_{b_1} = \frac{s_y}{s_{x_1}} \cdot \sqrt{\text{VIF}_1} \cdot \sqrt{\frac{1 -
 where the **variance inflation factor** $\text{VIF}_1 = \frac{1}{1 - R^2_1}$, and $R^2_1$ comes from regressing $x_1$ on all the *other* predictors. Watch:
 
 ```{r}
-R2_1  <- summary(lm(x1 ~ x2, data = dat))$r.squared   # x1 explained by x2
-VIF1  <- 1 / (1 - R2_1)
+R2_1 <- glance(lm(x1 ~ x2, data = dat))$r.squared   # x1 explained by x2
+VIF1 <- 1 / (1 - R2_1)
 
-SEb1 <- (sd(y) / sd(x1)) * sqrt(VIF1) * sqrt((1 - R2) / (n - k - 1))
-b1   <- coef(lm3)[["x1"]]
-t1   <- b1 / SEb1
-p1   <- 2 * pt(-abs(t1), df = n - k - 1)      # df = n - k - 1, NOT n - 1
+b1   <- tidy(lm3) |> filter(term == "x1") |> pull(estimate)
+SEb1 <- (sd(dat$y) / sd(dat$x1)) * sqrt(VIF1) * sqrt((1 - R2) / (n - k - 1))
 
-round(c(SE = SEb1, t = t1, p = p1), 4)
-summary(lm3)$coefficients["x1", ]              # compare
+tibble(SE = SEb1, t = b1 / SEb1) |>
+  mutate(p = 2 * pt(-abs(t), df = n - k - 1),   # df = n - k - 1, NOT n - 1
+         p = fmt_p(p)) |>
+  round2()
+
+tidy2(lm3) |> filter(term == "x1")              # compare
 ```
 
 The by-hand values match R's table. Two things to burn in:
@@ -176,9 +209,17 @@ $$F = \frac{R^2 / k}{(1 - R^2)/(n - k - 1)} \quad \text{with } df_1 = k,\ df_2 =
 
 ```{r}
 Fmodel <- (R2 / k) / ((1 - R2) / (n - k - 1))
-pF     <- pf(Fmodel, df1 = k, df2 = n - k - 1, lower.tail = FALSE)
-round(c(F = Fmodel, p = pF), 5)
-summary(lm3)$fstatistic          # compare F and its df
+
+tibble(F = Fmodel,
+       p = pf(Fmodel, df1 = k, df2 = n - k - 1, lower.tail = FALSE)) |>
+  mutate(p = fmt_p(p)) |>
+  round2()
+
+# compare: glance() reports the same F, its df, and its p
+glance(lm3) |>
+  select(statistic, df, df.residual, p.value) |>
+  mutate(p.value = fmt_p(p.value)) |>
+  round2()
 ```
 
 ## Multicollinearity: Seeing the Damage
@@ -186,10 +227,15 @@ summary(lm3)$fstatistic          # compare F and its df
 Let us watch the VIF at work directly. As two predictors become more correlated, the VIF explodes:
 
 ```{r}
-curve(1 / (1 - x^2), from = 0, to = 0.99, n = 500,
-      xlab = "correlation between X1 and X2", ylab = "VIF",
-      main = "Collinearity inflates the variance of your estimates")
-abline(h = 10, col = "red", lty = 2)   # a common (rough) rule-of-thumb threshold
+tibble(r = seq(0, 0.99, length.out = 500)) |>
+  mutate(VIF = 1 / (1 - r^2)) |>
+  ggplot(aes(x = r, y = VIF)) +
+  # a common (rough) rule-of-thumb threshold
+  geom_hline(yintercept = 10, colour = "red", linetype = "dashed") +
+  geom_line(linewidth = 1) +
+  labs(title = "Collinearity inflates the variance of your estimates",
+       x = "correlation between X1 and X2", y = "VIF") +
+  theme_minimal()
 ```
 
 Past a correlation of about 0.95 the curve rises very steeply. A predictor that is 95% predictable from the others carries almost no *unique* information, so the model cannot pin down its slope. The red line marks a rough $\text{VIF} = 10$ rule of thumb, but treat it as a warning sign, not a hard rule.
@@ -203,12 +249,20 @@ The VIF told us that collinearity inflates our uncertainty. Here is the deeper r
 ::: {.panel-tabset}
 ### R
 ```{r}
-set.seed(42); n <- 200
-x1 <- rnorm(n); x2 <- 0.7 * x1 + rnorm(n, sd = sqrt(1 - 0.49))   # x1 and x2 correlate ~ .7
-y  <- 0.5 * x1 + 0.4 * x2 + rnorm(n)
+set.seed(42)
+d2 <- tibble(x1 = rnorm(200)) |>
+  mutate(
+    x2 = 0.7 * x1 + rnorm(200, sd = sqrt(1 - 0.49)),  # x1 and x2 correlate ~ .7
+    y  = 0.5 * x1 + 0.4 * x2 + rnorm(200)
+  )
 
-anova(lm(y ~ x1 + x2))[1:2, "Sum Sq"]     # x1 first, then x2
-anova(lm(y ~ x2 + x1))[1:2, "Sum Sq"]     # x2 first, then x1 — same data, different split
+# x1 first, then x2
+anova(lm(y ~ x1 + x2, data = d2)) |>
+  tidy() |> slice(1:2) |> select(term, sumsq) |> round2()
+
+# x2 first, then x1 - same data, different split
+anova(lm(y ~ x2 + x1, data = d2)) |>
+  tidy() |> slice(1:2) |> select(term, sumsq) |> round2()
 ```
 ### SPSS
 ```
@@ -224,6 +278,16 @@ using GLM, StatsModels
 anova(lm(@formula(y ~ x1 + x2), df))
 anova(lm(@formula(y ~ x2 + x1), df))
 ```
+### Python
+```python
+import statsmodels.formula.api as smf
+from statsmodels.stats.anova import anova_lm
+
+# typ=1 is the sequential (Type I) split, so the credit depends on term
+# order; swap the formula terms and the sums of squares move.
+anova_lm(smf.ols("y ~ x1 + x2", data=df).fit(), typ=1)
+anova_lm(smf.ols("y ~ x2 + x1", data=df).fit(), typ=1)
+```
 :::
 
 Same data, same model, but x1 is credited with far more variance when it enters first. Whoever goes first gets the shared variance. Sequential sums of squares reward order, which is appropriate when theory dictates an order and misleading when it does not.
@@ -233,9 +297,15 @@ Same data, same model, but x1 is credited with far more variance when it enters 
 ::: {.panel-tabset}
 ### R
 ```{r}
-full <- lm(y ~ x1 + x2)
-c(x1_unique = anova(lm(y ~ x2), full)[["Sum of Sq"]][2],   # what x1 adds, controlling x2
-  x2_unique = anova(lm(y ~ x1), full)[["Sum of Sq"]][2])   # what x2 adds, controlling x1
+full <- lm(y ~ x1 + x2, data = d2)
+
+# the drop in fit when each predictor is removed from the full model
+x1_unique <- anova(lm(y ~ x2, data = d2), full) |> tidy() |> pull(sumsq) |> last()
+x2_unique <- anova(lm(y ~ x1, data = d2), full) |> tidy() |> pull(sumsq) |> last()
+
+tibble(x1_unique = x1_unique,   # what x1 adds, controlling x2
+       x2_unique = x2_unique) |> # what x2 adds, controlling x1
+  round2()
 ```
 ### SPSS
 ```
@@ -250,14 +320,24 @@ using GLM, StatsModels
 # the full model down (drop one term at a time), as the R tab does.
 anova(lm(@formula(y ~ x1 + x2), df))
 ```
+### Python
+```python
+import statsmodels.formula.api as smf
+from statsmodels.stats.anova import anova_lm
+
+# Type III (unique) sums of squares: each term controlling for all others.
+anova_lm(smf.ols("y ~ x1 + x2", data=df).fit(), typ=3)
+```
 :::
 
 These do not depend on order, but they do **not** add up to the model total:
 
 ```{r}
-c(unique_sum = anova(lm(y ~ x2), full)[["Sum of Sq"]][2] +
-               anova(lm(y ~ x1), full)[["Sum of Sq"]][2],
-  model_SS   = sum(anova(full)[1:2, "Sum Sq"]))
+tibble(
+  unique_sum = x1_unique + x2_unique,
+  model_SS   = anova(full) |> tidy() |> slice(1:2) |> pull(sumsq) |> sum()
+) |>
+  round2()
 ```
 
 The gap is the **shared variance** - the part both predictors could explain, which Type III refuses to award to either. With collinear predictors that shared piece can be large (here it is most of the model), and that is the collinearity problem stated exactly: much of the explained variance cannot be attributed to one predictor over the other.
@@ -280,7 +360,7 @@ The point to carry away is this: whenever predictors are correlated, some of the
 There is no single fix; there are trade-offs. In rough order of how often they are the *right* call:
 
 1.  **Delete a redundant predictor.** If two variables measure nearly the same thing, you probably do not need both. Cheapest fix, but you lose whatever unique signal was there.
-2.  **Combine them.** Average the standardized predictors into a single composite: `rowMeans(scale(cbind(x1, x2)))`. Often the most defensible move when the predictors are indicators of one underlying construct.
+2.  **Combine them.** Average the standardized predictors into a single composite (the code is just below). Often the most defensible move when the predictors are indicators of one underlying construct.
 3.  **Use a shrinkage method** (e.g., ridge regression), which deliberately trades a little bias for a lot of stability.
 4.  **Reduce to principal components** and regress on those - orthogonal by construction, so VIF becomes 1, at the cost of interpretability.
 5.  **Center the predictors** (subtract the mean). This does *nothing* for correlational collinearity, but it removes the *nonessential* collinearity created by interaction and polynomial terms - which is why we center before building those.
@@ -290,8 +370,14 @@ There is no single fix; there are trade-offs. In rough order of how often they a
 ## Combining Predictors, In Code
 
 ```{r}
-composite <- rowMeans(data.frame(x1z = scale(x1), x2z = scale(x2)))
-round(summary(lm(y ~ composite))$coefficients, 3)
+d2 |>
+  mutate(
+    z1        = (x1 - mean(x1)) / sd(x1),
+    z2        = (x2 - mean(x2)) / sd(x2),
+    composite = (z1 + z2) / 2
+  ) |>
+  lm(y ~ composite, data = _) |>
+  tidy2()
 ```
 
 One predictor, no collinearity, and often a cleaner story than two fighting over the same variance.
@@ -304,10 +390,11 @@ Let's leave the simulated world and put all of this to work on the real GPA data
 ::: {.panel-tabset}
 ### R
 ```{r}
-gpa <- read.csv("data/gpa.csv")
+gpa <- read_csv("data/gpa.csv", show_col_types = FALSE)
 fit <- lm(CollegeGPA ~ HSGPA + SATtotal + QLOR, data = gpa)
-round(summary(fit)$coefficients, 4)
-c(R2 = summary(fit)$r.squared, adj_R2 = summary(fit)$adj.r.squared)
+
+tidy2(fit)
+glance(fit) |> select(r.squared, adj.r.squared) |> round2()
 ```
 ### SPSS
 ```
@@ -319,6 +406,14 @@ REGRESSION /STATISTICS COEFF R ANOVA
 using GLM
 coeftable(lm(@formula(CollegeGPA ~ HSGPA + SATtotal + QLOR), df))
 ```
+### Python
+```python
+import pandas as pd
+import statsmodels.formula.api as smf
+gpa = pd.read_csv("data/gpa.csv")
+fit = smf.ols("CollegeGPA ~ HSGPA + SATtotal + QLOR", data=gpa).fit()
+fit.summary()                  # coefficients, R-squared, adjusted R-squared
+```
 :::
 
 Every coefficient here is a **partial** effect - the pull of that predictor with the other two held constant. Notice HSGPA's slope *shrank* from its bivariate value: some of what looked like "high-school GPA" was really SAT and letter quality traveling alongside it. That is partialling doing its job.
@@ -327,12 +422,14 @@ Now check for collinearity by hand, exactly as we defined it - each VIF is $1/(1
 
 ```{r}
 preds <- c("HSGPA", "SATtotal", "QLOR")
-vif <- sapply(preds, function(p) {
-  others <- setdiff(preds, p)
-  r2 <- summary(lm(as.formula(paste(p, "~", paste(others, collapse = "+"))), data = gpa))$r.squared
-  1 / (1 - r2)
-})
-round(vif, 2)
+
+tibble(predictor = preds) |>
+  mutate(VIF = map_dbl(predictor, \(p) {
+    others <- setdiff(preds, p)                       # regress p on the rest
+    r2 <- glance(lm(reformulate(others, response = p), data = gpa))$r.squared
+    1 / (1 - r2)
+  })) |>
+  round2()
 ```
 
 All three VIFs sit near 1 - our predictors carry mostly *distinct* information, so the model can pin down each slope cleanly. (Recall the HSGPA–QLOR correlation was the highest at 0.63; that is real but nowhere near the danger zone.) This is the whole workflow in miniature: fit, read the partial effects, and check that collinearity has not quietly wrecked your standard errors.

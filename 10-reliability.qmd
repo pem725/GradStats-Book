@@ -37,13 +37,20 @@ Reliability is necessary but not sufficient: a consistent measure can still be *
 Let's build a world where we *know* the true scores and confirm the definition:
 
 ```{r}
-set.seed(8)
-truth <- rnorm(1000, 100, 15)      # the true scores we wish we could see
-error <- rnorm(1000, 0, 8)          # sensor noise
-observed <- truth + error           # what we actually record
+#| message: false
+library(tidyverse)    # dplyr, ggplot2, purrr, tibble, readr, stringr, forcats
+source("_common.R")   # book-wide helpers: round2(), fmt_p(), tidy2()
 
-reliability <- var(truth) / var(observed)
-c(reliability = round(reliability, 3))
+set.seed(8)
+ctt <- tibble(
+  truth = rnorm(1000, 100, 15),    # the true scores we wish we could see
+  error = rnorm(1000, 0, 8)        # sensor noise
+) |>
+  mutate(observed = truth + error) # what we actually record
+
+ctt |>
+  summarise(reliability = var(truth) / var(observed)) |>
+  round2()
 ```
 
 About 0.78 of the variance in our observed scores is real signal; the rest is sensor noise. In practice we can never see `truth`, so we *estimate* reliability from clever comparisons.
@@ -65,14 +72,15 @@ $$\alpha = \frac{k}{k-1}\left(1 - \frac{\sum \text{var(item)}}{\text{var(total)}
 set.seed(9)
 # simulate 6 items that share a common "true" factor plus item-specific noise
 common <- rnorm(500)
-items  <- sapply(1:6, function(i) common + rnorm(500))   # 500 people x 6 items
-items  <- as.data.frame(items)
+items <- map(1:6, \(i) common + rnorm(500)) |>   # 500 people x 6 items
+  set_names(paste0("item", 1:6)) |>
+  as_tibble()
 
 k         <- ncol(items)
-var_items <- sum(apply(items, 2, var))
+var_items <- items |> summarise(across(everything(), var)) |> sum()
 var_total <- var(rowSums(items))
-alpha <- (k / (k - 1)) * (1 - var_items / var_total)
-c(cronbach_alpha = round(alpha, 3))
+
+tibble(cronbach_alpha = (k / (k - 1)) * (1 - var_items / var_total)) |> round2()
 ```
 
 An alpha around 0.85 says the six items hang together well; they are largely reading the same underlying construct. By rough convention, 0.70 is "acceptable," 0.80+ "good," but do not lean on the threshold too hard: alpha climbs with more items whether or not they are any good, so a high alpha is necessary, not sufficient.
@@ -90,15 +98,22 @@ Why it matters: when items are congeneric (unequal loadings), **alpha underestim
 ```{r}
 set.seed(3); N <- 500
 Tval   <- rnorm(N)
-lambda <- c(0.9, 0.8, 0.7, 0.5, 0.4)                       # congeneric: unequal item quality
-items  <- sapply(lambda, function(l) l * Tval + rnorm(N, sd = sqrt(1 - l^2)))
+lambda <- c(0.9, 0.8, 0.7, 0.5, 0.4)      # congeneric: unequal item quality
+
+items <- map(lambda, \(l) l * Tval + rnorm(N, sd = sqrt(1 - l^2))) |>
+  set_names(paste0("item", seq_along(lambda))) |>
+  as_tibble()
 
 k     <- ncol(items)
-alpha <- (k / (k - 1)) * (1 - sum(apply(items, 2, var)) / var(rowSums(items)))  # assumes tau-equiv.
-fa    <- factanal(items, 1)                                # a one-factor model gives the loadings
-lam   <- as.numeric(fa$loadings); psi <- fa$uniquenesses
-omega <- sum(lam)^2 / (sum(lam)^2 + sum(psi))              # McDonald's omega
-c(cronbach_alpha = round(alpha, 3), mcdonald_omega = round(omega, 3))
+alpha <- (k / (k - 1)) *                  # assumes tau-equivalence
+  (1 - sum(summarise(items, across(everything(), var))) / var(rowSums(items)))
+
+fa    <- factanal(items, 1)               # a one-factor model gives the loadings
+lam   <- as.numeric(fa$loadings)
+psi   <- fa$uniquenesses
+omega <- sum(lam)^2 / (sum(lam)^2 + sum(psi))    # McDonald's omega
+
+tibble(cronbach_alpha = alpha, mcdonald_omega = omega) |> round2()
 ```
 
 Omega is the larger, and more honest, number. When the items are truly tau-equivalent (equal loadings), the two coincide; the more the loadings differ, the more alpha understates the reliability. The rule the authors follow: **report omega, because it does not assume tau-equivalence.** Alpha is a fine quick check, but it is a lower bound, not the last word.
@@ -109,11 +124,16 @@ Now the practical consequence. Unreliable measures **attenuate** (shrink) the co
 
 ```{r}
 set.seed(10)
-Tx <- rnorm(1000); Ty <- 0.6 * Tx + rnorm(1000, 0, 0.8)  # true correlation ~ .6
-# now observe each through a noisy sensor:
-Ox <- Tx + rnorm(1000, 0, 1)
-Oy <- Ty + rnorm(1000, 0, 1)
-c(true_r = round(cor(Tx, Ty), 2), observed_r = round(cor(Ox, Oy), 2))
+att <- tibble(Tx = rnorm(1000)) |>
+  mutate(
+    Ty = 0.6 * Tx + rnorm(1000, 0, 0.8),   # true correlation ~ .6
+    Ox = Tx + rnorm(1000, 0, 1),           # now observe each through a
+    Oy = Ty + rnorm(1000, 0, 1)            # noisy sensor
+  )
+
+att |>
+  summarise(true_r = cor(Tx, Ty), observed_r = cor(Ox, Oy)) |>
+  round2()
 ```
 
 The observed correlation is noticeably smaller than the true one. A real effect can hide behind a bad ruler, which means a null result might be a measurement failure rather than the absence of an effect. Reliability is more than bookkeeping; it can be the difference between finding your effect and missing it.
@@ -125,29 +145,35 @@ Enough simulation. Let's run the whole pipeline on real data: a 10-item scale (`
 Some items are worded in reverse, so a high true standing produces a *low* score - flip them first or they fight the rest of the scale and sink $\alpha$. We spot a reverse item by its *negative* item-rest correlation (it correlates the wrong way with the sum of the others):
 
 ```{r}
-d <- read.csv("data/moddat2.csv")
-X <- as.matrix(d[, paste0("x", 1:10)])
+d <- read_csv("data/moddat2.csv", show_col_types = FALSE)
+X <- d |> select(num_range("x", 1:10))
 
-alpha_keyed <- function(X) {
-  r     <- sapply(seq_len(ncol(X)),                         # item-rest correlations
-                  function(j) cor(X[, j], rowSums(X[, -j, drop = FALSE])))
-  keys  <- ifelse(r < 0, -1, 1)                             # flip the reverse-worded items
-  Xk    <- sweep(X, 2, keys, `*`)
-  k     <- ncol(Xk)
-  alpha <- (k / (k - 1)) * (1 - sum(apply(Xk, 2, var)) / var(rowSums(Xk)))
-  list(alpha = alpha, keys = keys, scored = Xk)
+alpha_keyed <- function(items) {
+  total <- rowSums(items)
+  # item-rest correlation: each item against the sum of the *other* items
+  r     <- map_dbl(items, \(col) cor(col, total - col))
+  keys  <- if_else(r < 0, -1, 1)              # flip the reverse-worded items
+
+  scored <- map2(items, keys, \(col, key) col * key) |> as_tibble()
+  k      <- ncol(scored)
+  alpha  <- (k / (k - 1)) *
+    (1 - sum(summarise(scored, across(everything(), var))) / var(rowSums(scored)))
+
+  list(alpha = alpha, keys = keys, scored = scored)
 }
+
 a <- alpha_keyed(X)
-a$keys              # -1 marks a reverse-scored item
-round(a$alpha, 3)   # Cronbach's alpha for the keyed scale
+a$keys                                        # -1 marks a reverse-scored item
+tibble(cronbach_alpha = a$alpha) |> round2()  # alpha for the keyed scale
 ```
 
 A healthy $\alpha$. Now the classic "should I cut this item?" diagnostic - recompute $\alpha$ with each item *deleted*:
 
 ```{r}
-drop <- sapply(1:10, function(j) alpha_keyed(X[, -j, drop = FALSE])$alpha)
-names(drop) <- colnames(X)
-round(drop, 3)
+tibble(item = names(X)) |>
+  mutate(alpha_if_deleted = map_dbl(item, \(j)
+    alpha_keyed(select(X, -all_of(j)))$alpha)) |>
+  round2()
 ```
 
 Every "alpha-if-deleted" value sits *below* the full-scale $\alpha$, so no item is dead weight - each one, even the weakest, adds more signal than noise. (Had any value come out *above* the full $\alpha$, that item would be a candidate for the chopping block: removing it would make the scale *more* reliable.)
@@ -160,11 +186,13 @@ Now the payoff, and the link back to [statistical power](09-statisticalpower.qmd
 score <- rowSums(a$scored)                 # the keyed total score
 
 EScalc <- function(dv, cond) {             # McKnight's teaching function for Cohen's d
-  lv <- levels(factor(cond))
-  x1 <- dv[cond == lv[1]]; x2 <- dv[cond == lv[2]]
-  (mean(x1) - mean(x2)) / sqrt((var(x1) + var(x2)) / 2)
+  parts <- tibble(dv = dv, cond = as_factor(cond)) |>
+    summarise(m = mean(dv), v = var(dv), .by = cond) |>
+    arrange(cond)
+  (parts$m[1] - parts$m[2]) / sqrt((parts$v[1] + parts$v[2]) / 2)
 }
-round(EScalc(score, d$sex), 2)
+
+tibble(cohens_d = EScalc(score, d$sex)) |> round2()
 ```
 
 A large $d$. But the point is *why* it was detectable: because the scale was reliable. Had $\alpha$ been 0.5 instead, half the total-score variance would be pure error, the groups would blur together, and the same real difference could sink below significance. **A reliable measure is the cheapest power you will ever buy**: you pay once, in the design, and it pays back in every analysis that follows. (In practice you'd reach for `psych::alpha(X, check.keys = TRUE)`, which does the keying, the drop statistics, and much more in one call - but now you know exactly what it is doing under the hood.)

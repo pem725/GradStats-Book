@@ -19,8 +19,10 @@ The first decision is not color or font - it is *geometry*. What shape of mark a
 #| fig-cap: "Strikeouts per nine innings, MLB, 1985–present. A trend wants a line."
 #| fig-height: 3.6
 #| message: false
-library(ggplot2)
-mlb <- read.csv("data/mlb_league_by_year.csv")
+library(tidyverse)    # dplyr, ggplot2, purrr, tibble, readr, stringr, forcats
+source("_common.R")   # book-wide helpers: round2(), fmt_p(), tidy2()
+
+mlb <- read_csv("data/mlb_league_by_year.csv", show_col_types = FALSE)
 
 ggplot(mlb, aes(year, K_9)) +
   geom_line(color = "steelblue", linewidth = 1) +
@@ -75,11 +77,10 @@ You have three trends to show at once: strikeouts, walks, and home runs per plat
 #| fig-cap: "Three league trends as small multiples — comparable, honest, readable."
 #| fig-height: 3.2
 #| message: false
-long <- data.frame(
-  year = rep(mlb$year, 3),
-  rate = c(mlb$K_PA, mlb$BB_PA, mlb$HR_PA),
-  kind = rep(c("Strikeouts", "Walks", "Home runs"), each = nrow(mlb))
-)
+long <- mlb |>
+  select(year, Strikeouts = K_PA, Walks = BB_PA, `Home runs` = HR_PA) |>
+  pivot_longer(-year, names_to = "kind", values_to = "rate")
+
 ggplot(long, aes(year, rate)) +
   geom_line(color = "steelblue", linewidth = 0.9) +
   facet_wrap(~ kind, scales = "free_y") +               # one panel per series
@@ -97,8 +98,9 @@ For comparing a quantity across categories, the eye reads **position along a com
 #| fig-cap: "NFL first-round bust rate by team — ranked bars, not a 32-slice pie."
 #| fig-height: 5.2
 #| message: false
-nfl <- read.csv("data/nfl_draft_by_team.csv")
-ggplot(nfl, aes(x = reorder(team, rate_bust_a), y = rate_bust_a)) +
+nfl <- read_csv("data/nfl_draft_by_team.csv", show_col_types = FALSE)
+
+ggplot(nfl, aes(x = fct_reorder(team, rate_bust_a), y = rate_bust_a)) +
   geom_col(fill = "grey35") +
   coord_flip() +                                        # horizontal: labels stay readable
   labs(x = NULL, y = "Bust rate (no Pro Bowl)", title = "Draft busts by team") +
@@ -115,8 +117,8 @@ A single summary number - a mean, a bar - throws away the shape of the data, and
 #| fig-cap: "The distribution of OPS across qualified hitters — the shape a single mean hides."
 #| fig-height: 3.3
 #| message: false
-h <- read.csv("data/mlb_hitters_2026.csv")
-h <- h[h$PA >= 50, ]
+h <- read_csv("data/mlb_hitters_2026.csv", show_col_types = FALSE) |>
+  filter(PA >= 50)
 
 ggplot(h, aes(OPS)) +
   geom_histogram(bins = 30, fill = "steelblue", color = "white") +

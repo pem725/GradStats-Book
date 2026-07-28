@@ -16,13 +16,22 @@ Here is the idea that makes this simple. A dichotomous variable (passed/failed, 
 ::: {.panel-tabset}
 ### R
 ```{r}
-set.seed(14)
-studied <- rbinom(50, 1, 0.5)                 # 0 = didn't study, 1 = studied
-score   <- 70 + 8 * studied + rnorm(50, 0, 6) # studiers score higher
+#| message: false
+library(tidyverse)    # dplyr, ggplot2, purrr, tibble, readr, stringr, forcats
+library(broom)        # tidy(), glance(), augment() for model output
+source("_common.R")   # book-wide helpers: round2(), fmt_p(), tidy2()
 
-r_pb        <- cor(score, studied)             # point-biserial: just Pearson r!
-r_pb_asfac  <- cor(score, as.numeric(factor(studied)) - 1)
-c(point_biserial = round(r_pb, 3), same_thing = round(r_pb_asfac, 3))
+set.seed(14)
+d <- tibble(studied = rbinom(50, 1, 0.5)) |>          # 0 = no study, 1 = studied
+  mutate(score = 70 + 8 * studied + rnorm(50, 0, 6))  # studiers score higher
+
+d |>
+  summarise(
+    point_biserial = cor(score, studied),   # point-biserial: just Pearson r!
+    # and the same number even if the dichotomy is stored as a factor
+    same_thing     = cor(score, as.numeric(factor(studied)) - 1)
+  ) |>
+  round2()
 ```
 ### SPSS
 ```
@@ -33,6 +42,10 @@ CORRELATIONS /VARIABLES=score studied.
 ```julia
 using Statistics
 cor(df.score, df.studied)   # point-biserial: just Pearson r!
+```
+### Python
+```python
+df.score.corr(df.studied)      # point-biserial: just Pearson r!
 ```
 :::
 
@@ -46,17 +59,20 @@ Now the payoff. The relationship between a continuous outcome and a two-group pr
 ### R
 ```{r}
 # (a) test the point-biserial correlation
-ct <- cor.test(score, studied)
+ct <- cor.test(d$score, d$studied) |> tidy()
 
 # (b) the classic two-sample t-test (pooled variance)
-tt <- t.test(score ~ studied, var.equal = TRUE)
+tt <- t.test(score ~ studied, data = d, var.equal = TRUE) |> tidy()
 
 # (c) regression with the 0/1 predictor
-rg <- summary(lm(score ~ studied))
+rg <- lm(score ~ studied, data = d) |> tidy()
 
-round(c(cor_test_t = ct$statistic,
-        t_test_t   = abs(tt$statistic),
-        regression_t = abs(rg$coefficients[2, "t value"])), 4)
+tibble(
+  cor_test_t   = ct$statistic,
+  t_test_t     = abs(tt$statistic),
+  regression_t = abs(rg$statistic[2])
+) |>
+  round2()
 ```
 ### SPSS
 ```
@@ -77,14 +93,32 @@ EqualVarianceTTest(df.score[df.studied .== 0], df.score[df.studied .== 1])
 # (c) regression with the 0/1 predictor
 coeftable(lm(@formula(score ~ studied), df))
 ```
+### Python
+```python
+from scipy import stats
+import statsmodels.formula.api as smf
+
+# (a) test the point-biserial correlation
+stats.pearsonr(df.score, df.studied)
+# (b) the classic two-sample t-test (pooled variance)
+stats.ttest_ind(df.score[df.studied == 0], df.score[df.studied == 1])
+# (c) regression with the 0/1 predictor
+smf.ols("score ~ studied", data=df).fit().summary()
+```
 :::
 
 Three "different" techniques, one t statistic. The correlation, the group comparison, and the regression are the same GLM. And the regression coefficient tells you something the correlation does not show directly: the raw difference between the two group means:
 
 ```{r}
-means <- tapply(score, studied, mean)
-c(regression_slope = coef(lm(score ~ studied))[["studied"]],
-  mean_difference  = as.numeric(means["1"] - means["0"]))
+means <- d |>
+  summarise(mean = mean(score), .by = studied) |>
+  arrange(studied)
+
+tibble(
+  regression_slope = rg$estimate[2],
+  mean_difference  = means$mean[2] - means$mean[1]
+) |>
+  round2()
 ```
 
 The slope on a 0/1 predictor **is** the difference in group means. (This is the same dummy-coding logic from the [ANOVA chapter](16-ANOVAandGLM.qmd), previewed here with the simplest possible category.)
@@ -96,9 +130,14 @@ Because they are the same analysis, the correlation and the t statistic are tied
 $$r_{pb} = \frac{t}{\sqrt{t^2 + df}}$$
 
 ```{r}
-t_val <- abs(tt$statistic); df <- tt$parameter
-r_from_t <- t_val / sqrt(t_val^2 + df)
-c(r_pb = round(as.numeric(r_pb), 3), r_from_t = round(as.numeric(r_from_t), 3))
+t_val <- abs(tt$statistic)
+df    <- tt$parameter
+
+tibble(
+  r_pb     = cor(d$score, d$studied),
+  r_from_t = t_val / sqrt(t_val^2 + df)
+) |>
+  round2()
 ```
 
 They match. This little equation is why you can always recover an effect size from a reported t (and its df), and vice versa, which is useful when reading other people's papers.

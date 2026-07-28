@@ -32,16 +32,23 @@ The logic is simpler than it first appears. A statistic (a mean, a slope, an ind
 **Bootstrapping** resamples your data *with replacement*, `n` observations drawn from `n`, over and over, recomputing the statistic each time. The spread of those recomputed values *is* the estimated sampling distribution. Take a small, skewed sample - exactly where the normal-theory formula is least trustworthy - and bootstrap the mean:
 
 ```{r}
+#| message: false
+library(tidyverse)    # dplyr, ggplot2, purrr, tibble, readr, stringr, forcats
+source("_common.R")   # book-wide helpers: round2(), fmt_p(), tidy2()
+
 set.seed(42)
 samp <- rexp(30, rate = 1/50)          # n = 30, right-skewed (non-normal) data
 
 B <- 2000
-boot_means <- replicate(B, mean(sample(samp, replace = TRUE)))   # resample & recompute
+boot_means <- map_dbl(1:B, \(b) mean(sample(samp, replace = TRUE)))  # resample & recompute
 
-c(estimate = mean(samp),
-  boot_SE  = sd(boot_means),                       # bootstrap standard error
-  lower95  = quantile(boot_means, 0.025),          # percentile confidence interval
-  upper95  = quantile(boot_means, 0.975))
+tibble(
+  estimate = mean(samp),
+  boot_SE  = sd(boot_means),                    # bootstrap standard error
+  lower95  = quantile(boot_means, 0.025),       # percentile confidence interval
+  upper95  = quantile(boot_means, 0.975)
+) |>
+  round2()
 ```
 
 That is the entire idea: `sample(samp, replace = TRUE)` inside `replicate()`, then read the **standard error** off `sd()` and the **confidence interval** off `quantile()`. There is no formula, no normality assumption, and no $z$. The 2.5th and 97.5th percentiles of the bootstrap distribution are a **percentile confidence interval**, and notice that it can be *asymmetric*, honestly reflecting the skew that a normal-theory interval would smooth over.
@@ -49,10 +56,14 @@ That is the entire idea: `sample(samp, replace = TRUE)` inside `replicate()`, th
 ```{r}
 #| fig-cap: "The bootstrap sampling distribution of the mean, with the percentile 95% interval."
 #| fig-height: 4
-hist(boot_means, breaks = 40, col = "grey80", border = "white",
-     main = "", xlab = "resampled mean")
-abline(v = quantile(boot_means, c(.025, .975)), col = "red", lwd = 2, lty = 2)
-abline(v = mean(samp), col = "blue", lwd = 2)
+tibble(resampled_mean = boot_means) |>
+  ggplot(aes(x = resampled_mean)) +
+  geom_histogram(bins = 40, fill = "grey80", colour = "white") +
+  geom_vline(xintercept = quantile(boot_means, c(.025, .975)),
+             colour = "red", linetype = "dashed", linewidth = 1) +
+  geom_vline(xintercept = mean(samp), colour = "blue", linewidth = 1) +
+  labs(x = "resampled mean", y = "count") +
+  theme_minimal()
 ```
 
 ### The permutation test (testing)
@@ -61,19 +72,26 @@ The bootstrap *estimated* an interval. To *test* a hypothesis - say, that two gr
 
 ```{r}
 set.seed(7)
-g1 <- rnorm(15, mean = 0.0)
-g2 <- rnorm(15, mean = 0.8)
-obs <- mean(g2) - mean(g1)                         # the observed difference
+g <- tibble(
+  value = c(rnorm(15, mean = 0.0), rnorm(15, mean = 0.8)),
+  group = rep(1:2, each = 15)
+)
 
-pool   <- c(g1, g2)
-labels <- rep(1:2, each = 15)
-perm   <- replicate(5000, {                        # shuffle labels 5000 times
-  s <- sample(labels)
-  mean(pool[s == 2]) - mean(pool[s == 1])
+obs <- g |>                                        # the observed difference
+  summarise(m = mean(value), .by = group) |>
+  arrange(group) |>
+  summarise(diff = m[2] - m[1]) |>
+  pull(diff)
+
+perm <- map_dbl(1:5000, \(i) {                     # shuffle labels 5000 times
+  s <- sample(g$group)
+  mean(g$value[s == 2]) - mean(g$value[s == 1])
 })
 
-c(observed_diff = obs,
-  permutation_p = mean(abs(perm) >= abs(obs)))      # two-sided p-value
+tibble(observed_diff = obs,
+       permutation_p = mean(abs(perm) >= abs(obs))) |>   # two-sided p-value
+  mutate(permutation_p = fmt_p(permutation_p)) |>
+  round2()
 ```
 
 The permutation $p$-value is the fraction of shuffles that beat the real difference. It makes **no distributional assumption at all**; it rests only on the exchangeability of labels under the null.
@@ -83,10 +101,14 @@ The permutation $p$-value is the fraction of shuffles that beat the real differe
 Older and simpler than the bootstrap, the **jackknife** recomputes the statistic leaving out one observation at a time. It is handy for a quick standard error and for spotting influential points (if dropping one case moves the estimate a lot, you've found a leverage problem):
 
 ```{r}
-jk    <- sapply(seq_along(samp), function(i) mean(samp[-i]))       # leave-one-out means
-n     <- length(samp)
-jk_se <- sqrt((n - 1) * mean((jk - mean(jk))^2))                  # jackknife SE
-c(jackknife_mean = mean(jk), jackknife_SE = jk_se)
+jk <- map_dbl(seq_along(samp), \(i) mean(samp[-i]))   # leave-one-out means
+n  <- length(samp)
+
+tibble(
+  jackknife_mean = mean(jk),
+  jackknife_SE   = sqrt((n - 1) * mean((jk - mean(jk))^2))
+) |>
+  round2()
 ```
 
 ::: {.callout-note}
@@ -104,11 +126,14 @@ Watch nineteen clean observations and one data-entry error:
 set.seed(1)
 z <- c(rnorm(19, mean = 100, sd = 10), 250)        # 19 good values + 1 gross outlier
 
-round(c(mean       = mean(z),
-        median     = median(z),
-        trimmed10  = mean(z, trim = 0.10),         # drop the extreme 10% each tail
-        SD         = sd(z),
-        MAD        = mad(z)), 2)                    # median absolute deviation
+tibble(
+  mean      = mean(z),
+  median    = median(z),
+  trimmed10 = mean(z, trim = 0.10),   # drop the extreme 10% in each tail
+  SD        = sd(z),
+  MAD       = mad(z)                  # median absolute deviation
+) |>
+  round2()
 ```
 
 The **mean** and **SD** are inflated by the lone outlier; the **median**, **10% trimmed mean**, and **MAD** barely notice it. That resistance is the whole point of robust statistics:
@@ -147,19 +172,24 @@ The **prior** is what you believed about the parameter $\theta$ before the data;
 Here is a calculation worth sitting with, and it needs nothing but Bayes' rule. You run a well-powered study, get $p < .05$, and publish. **What is the probability your hypothesis is actually true?** It is not the $p$-value; that is $P(\text{significant} \mid H \text{ false})$. The quantity you want is $P(H \text{ true} \mid \text{significant})$, and it depends on how plausible your idea was *before* the data, its prior:
 
 ```{r}
-power <- 0.99    # P(significant | H true)  -- a very high-powered study
-alpha <- 0.01    # P(significant | H false) -- a strict false-positive rate
-prior <- 0.02    # P(H true): your idea is ~1 of 50 plausible hypotheses
-
-post <- (power * prior) / (power * prior + alpha * (1 - prior))   # Bayes' rule
-round(post, 3)
+tibble(
+  power = 0.99,   # P(significant | H true)  -- a very high-powered study
+  alpha = 0.01,   # P(significant | H false) -- a strict false-positive rate
+  prior = 0.02    # P(H true): your idea is ~1 of 50 plausible hypotheses
+) |>
+  mutate(posterior =                                        # Bayes' rule
+    (power * prior) / (power * prior + alpha * (1 - prior))) |>
+  round2()
 ```
 
 Even with $99\%$ power and a $1\%$ false-positive rate, a significant result leaves you only about **67%** sure - because the idea was a long shot to begin with. Loosen the study to more realistic numbers and it collapses further:
 
 ```{r}
 # modest power, ordinary screening, a rarer idea
-round((0.95 * 0.01) / (0.95 * 0.01 + 0.05 * 0.99), 3)
+tibble(power = 0.95, alpha = 0.05, prior = 0.01) |>
+  mutate(posterior =
+    (power * prior) / (power * prior + alpha * (1 - prior))) |>
+  round2()
 ```
 
 About **16%**. Chase enough low-prior ideas with $p < .05$ and *most* of your "discoveries" will be false, no matter how small the $p$-value. This is the arithmetic behind the replication crisis we met in [hypothesis testing](08-hypothesistesting.qmd). The $p$-value does not answer the question you cared about, and Bayes' rule does, but it asks you to state your prior out loud. That honesty is the point.
@@ -171,14 +201,18 @@ You do not need fancy software to see the machine turn. Take the oldest example 
 ```{r}
 #| fig-cap: "Grid-approximation posterior for a proportion after 6 successes in 9 trials."
 #| fig-height: 4
-grid  <- seq(0, 1, length.out = 1000)
-prior <- dbeta(grid, 2, 2)                 # weakly informative: centered at 0.5, gentle
-like  <- dbinom(6, size = 9, prob = grid)  # data: 6 successes in 9 trials
-post  <- like * prior
-post  <- post / sum(post)                  # normalize to a proper distribution
+posterior <- tibble(theta = seq(0, 1, length.out = 1000)) |>
+  mutate(
+    prior = dbeta(theta, 2, 2),                 # weakly informative, centered at 0.5
+    like  = dbinom(6, size = 9, prob = theta),  # data: 6 successes in 9 trials
+    post  = like * prior,
+    post  = post / sum(post)                    # normalize to a proper distribution
+  )
 
-plot(grid, post, type = "l", lwd = 2, col = "blue",
-     xlab = expression(theta ~ "(the proportion)"), ylab = "posterior density")
+ggplot(posterior, aes(x = theta, y = post)) +
+  geom_line(colour = "blue", linewidth = 1) +
+  labs(x = expression(theta ~ "(the proportion)"), y = "posterior density") +
+  theme_minimal()
 ```
 
 Now *summarize* the posterior - and here the estimation-vs-testing split becomes concrete.
@@ -186,17 +220,23 @@ Now *summarize* the posterior - and here the estimation-vs-testing split becomes
 **Estimation.** The answer is the whole posterior; we compress it into a point and an interval. Sampling from the grid makes this a one-liner. A Bayesian interval is a **credible** (or "compatibility") interval, and - unlike a confidence interval - it means the plain-English thing: "given the model and data, there's a 95% probability $\theta$ is in here."
 
 ```{r}
-draws <- sample(grid, 1e5, replace = TRUE, prob = post)
-c(posterior_mean   = mean(draws),
+draws <- sample(posterior$theta, 1e5, replace = TRUE, prob = posterior$post)
+
+tibble(
+  posterior_mean   = mean(draws),
   credible_lower95 = quantile(draws, 0.025),
-  credible_upper95 = quantile(draws, 0.975))
+  credible_upper95 = quantile(draws, 0.975)
+) |>
+  round2()
 ```
 
 **Testing.** Rather than a point-null "is $\theta$ *exactly* 0.5?" (a question of measure zero that is never truly true), Bayesians ask a better one: how much posterior belief sits in a **Region of Practical Equivalence (ROPE)** around the null - a band of values "close enough to 0.5 to not care"? If almost none of the posterior is in the ROPE, the effect is credibly *not* null; if most of it is, you have evidence *for* practical equivalence - something a $p$-value can never give you.
 
 ```{r}
-rope_lo <- 0.45; rope_hi <- 0.55                # "practically a fair coin"
-mean(draws > rope_lo & draws < rope_hi)          # posterior probability inside the ROPE
+rope_lo <- 0.45; rope_hi <- 0.55   # "practically a fair coin"
+
+# posterior probability inside the ROPE
+tibble(p_inside_rope = mean(draws > rope_lo & draws < rope_hi)) |> round2()
 ```
 
 ### From the toy to the real thing

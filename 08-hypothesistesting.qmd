@@ -44,29 +44,40 @@ Let us make this concrete with the simplest test there is. Suppose a population 
 The key idea is the **sampling distribution of the mean**: if we drew sample after sample, the means would themselves form a distribution, centered on $\mu$, with a standard deviation - the **standard error of the mean** - of $\sigma_{\bar{x}} = \sigma / \sqrt{n}$.
 
 ```{r}
+#| message: false
+library(tidyverse)    # dplyr, ggplot2, purrr, tibble, readr, stringr, forcats
+source("_common.R")   # book-wide helpers: round2(), fmt_p(), tidy2()
+
 mu    <- 20      # population mean under H0
 sigma <- 4       # population standard deviation
 n     <- 4       # sample size
 xbar  <- 22      # our observed sample mean
 
-se <- sigma / sqrt(n)          # standard error of the mean
-z  <- (xbar - mu) / se         # how many SEs above the null?
-p  <- pnorm(z, lower.tail = FALSE)  # P(mean > 22) if H0 is true
-
-c(standard_error = se, z = z, p_value = p)
+tibble(
+  standard_error = sigma / sqrt(n),           # standard error of the mean
+  z              = (xbar - mu) / standard_error,  # how many SEs above the null?
+  p_value        = pnorm(z, lower.tail = FALSE)   # P(mean > 22) if H0 is true
+) |>
+  mutate(p_value = fmt_p(p_value)) |>
+  round2()
 ```
 
-So a sample mean of 22 sits exactly one standard error above the null value, and the probability of getting a mean that large (or larger) *if the null is true* is about `r round(pnorm(1, lower.tail = FALSE), 3)`. Let us see it:
+So a sample mean of 22 sits exactly one standard error above the null value, and the probability of getting a mean that large (or larger) *if the null is true* is about `r fmt_p(pnorm(1, lower.tail = FALSE))`. Let us see it:
 
 ```{r}
 # Simulate 10,000 sample means from the H0 world and see where 22 lands
 set.seed(1908)  # the year Gosset published "Student's" t
-means <- replicate(10000, mean(rnorm(n, mean = mu, sd = sigma)))
 
-hist(means, breaks = 40, col = "grey85", border = "white",
-     main = "Sampling distribution of the mean IF the null is true",
-     xlab = "sample mean")
-abline(v = xbar, col = "red", lwd = 3)
+means <- tibble(
+  sample_mean = map_dbl(1:10000, \(i) mean(rnorm(n, mean = mu, sd = sigma)))
+)
+
+ggplot(means, aes(x = sample_mean)) +
+  geom_histogram(bins = 40, fill = "grey85", colour = "white") +
+  geom_vline(xintercept = xbar, colour = "red", linewidth = 1.2) +
+  labs(title = "Sampling distribution of the mean IF the null is true",
+       x = "sample mean", y = "count") +
+  theme_minimal()
 ```
 
 The red line is our result. It is on the high side, sure, but plenty of the null world's own samples land out there too. This is what "the data are (or are not) surprising under $H_0$" looks like, drawn to scale.

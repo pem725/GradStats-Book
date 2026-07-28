@@ -4,13 +4,51 @@ To run the live code in this book you need R and a small handful of packages. To
 
 ## To run the book's live code
 
-The executable code throughout the book uses base R plus a few graphics and publishing packages:
+The executable code throughout the book is written in the **tidyverse**, plus a couple of publishing packages:
 
 ```r
-install.packages(c("ggplot2", "plotly", "knitr", "rmarkdown"))
+install.packages(c("tidyverse", "broom", "plotly", "knitr", "rmarkdown"))
 ```
 
-Everything else the running code needs - regression and ANOVA (`lm`, `aov`), factor analysis (`factanal`), principal components (`prcomp`), reliability from scratch, the bootstrap and permutation tests written by hand - lives in **base R** and is already installed. That is deliberate: the core ideas are demonstrated with tools everyone already has.
+`tidyverse` pulls in everything the chapters use for handling data: `dplyr` for wrangling, `ggplot2` for every figure, `purrr` for iteration, `tibble`, `tidyr`, `readr`, `stringr`, and `forcats`. `broom` is the companion that turns a fitted model into a tidy data frame, which is how the book prints its results.
+
+The **statistical engines themselves are still base R** - `lm()`, `aov()`, `glm()`, `factanal()`, `prcomp()`, `power.t.test()` - and so is every from-scratch derivation: reliability computed by hand, the Rasch estimator, the EM algorithm for latent classes, the bootstrap and permutation tests. That is deliberate. The tidyverse is how we *handle and display* the data; the statistics are demonstrated with tools that ship with R, so nothing important is hidden inside a package.
+
+## The book's shared helpers
+
+Every chapter starts by sourcing `_common.R`, a short file of three helpers that keep the numbers consistent. Here it is in full, so nothing in the chapters is a black box:
+
+```r
+# House rule: every number we print is rounded to two decimal places.
+round2 <- function(x, digits = 2) {
+  dplyr::mutate(x, dplyr::across(
+    tidyselect::where(is.numeric),
+    \(v) round(v, digits)
+  ))
+}
+
+# p-values are the exception. Rounded to two decimals a p of .0000003 would
+# print as 0.00, which reads as "exactly zero" - and no p-value is ever exactly
+# zero. So p gets three decimals and a floor, the way APA style reports it.
+fmt_p <- function(p) {
+  dplyr::if_else(p < .001, "< .001", sprintf("%.3f", p))
+}
+
+# tidy2() is the one used most: fit a model, get a tidy table back with the
+# estimates rounded and the p-values formatted. One call, house style applied.
+tidy2 <- function(model, ...) {
+  broom::tidy(model, ...) |>
+    dplyr::mutate(
+      dplyr::across(
+        tidyselect::where(is.numeric) & !dplyr::any_of("p.value"),
+        \(v) round(v, 2)
+      ),
+      dplyr::across(dplyr::any_of("p.value"), fmt_p)
+    )
+}
+```
+
+One chapter deliberately breaks the two-decimal rule: [Tables](22-tables.qmd), which is *about* choosing how many digits to show, sets its own precision by hand.
 
 ## To reproduce the walkthrough examples
 
@@ -40,14 +78,22 @@ remotes::install_github("rmcelreath/rethinking")
 # Stan toolchain setup: https://github.com/rmcelreath/rethinking
 ```
 
-## SPSS and Julia
+## SPSS, Julia, and Python
 
-- **SPSS** is commercial software. If your institution provides it, the [three-languages appendix](three-languages.qmd) gives the syntax for the book's core procedures.
+Every procedure chapter shows its analysis in four languages. Only the R tab runs here; the other three are there so you can do the same work in whatever you already use.
+
+- **SPSS** is commercial software. If your institution provides it, the [code-tabs appendix](three-languages.qmd) gives the syntax for the book's core procedures.
 - **Julia** is free and open source (julialang.org). Its statistics live in packages you add once:
 
 ```julia
 using Pkg
-Pkg.add(["DataFrames", "Statistics", "GLM", "HypothesisTests", "MultivariateStats"])
+Pkg.add(["DataFrames", "Statistics", "GLM", "HypothesisTests", "MultivariateStats", "MixedModels"])
+```
+
+- **Python** is free and open source (python.org). The book's Python tabs use pandas for data, `statsmodels` for the models, `scipy` for the classical tests, and `scikit-learn` for principal components and factor analysis:
+
+```sh
+pip install pandas numpy scipy statsmodels scikit-learn
 ```
 
 ## Reproducibility

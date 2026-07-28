@@ -20,16 +20,33 @@ The clearest way to feel the difference is to *look* at the items. An item's **c
 ```{r}
 #| fig-cap: "Item characteristic curves. Location = difficulty; steepness = discrimination."
 #| fig-height: 3.8
-theta <- seq(-4, 4, length.out = 300)
-icc <- function(a, b) 1 / (1 + exp(-a * (theta - b)))   # 2PL curve
+#| message: false
+library(tidyverse)    # dplyr, ggplot2, purrr, tibble, readr, stringr, forcats
+library(broom)        # tidy(), glance(), augment() for model output
+source("_common.R")   # book-wide helpers: round2(), fmt_p(), tidy2()
 
-plot(theta, icc(1.0, -1), type = "l", lwd = 2, col = "steelblue", ylim = c(0, 1),
-     xlab = expression(theta ~ "(ability)"), ylab = "P(correct)")
-lines(theta, icc(2.5,  0), lwd = 2, col = "firebrick")           # steep = high discrimination
-lines(theta, icc(0.5,  1), lwd = 2, col = "darkgreen")           # flat  = low discrimination
-legend("topleft", bty = "n", lwd = 2,
-       col = c("steelblue", "firebrick", "darkgreen"),
-       legend = c("easy, moderate a", "medium, high a (steep)", "hard, low a (flat)"))
+icc <- function(theta, a, b) 1 / (1 + exp(-a * (theta - b)))   # 2PL curve
+
+items <- tibble(
+  item = c("easy, moderate a", "medium, high a (steep)", "hard, low a (flat)"),
+  a    = c(1.0, 2.5, 0.5),      # discrimination (steepness)
+  b    = c(-1,  0.0, 1.0)       # difficulty (left-right location)
+)
+
+crossing(theta = seq(-4, 4, length.out = 300), items) |>
+  mutate(p = icc(theta, a, b)) |>
+  ggplot(aes(x = theta, y = p, colour = item)) +
+  geom_line(linewidth = 1) +
+  scale_colour_manual(
+    name   = NULL,
+    values = c("easy, moderate a"       = "steelblue",
+               "medium, high a (steep)" = "firebrick",
+               "hard, low a (flat)"     = "darkgreen")
+  ) +
+  coord_cartesian(ylim = c(0, 1)) +
+  labs(x = expression(theta ~ "(ability)"), y = "P(correct)") +
+  theme_minimal() +
+  theme(legend.position = "top")
 ```
 
 The steep red item is *discriminating*: over a narrow band of ability it flips from "probably wrong" to "probably right," so it sorts people sharply there. The flat green item barely distinguishes anyone - its responses are nearly a coin flip across a wide ability range. **Rasch is the special case where every curve has the same slope**; the 2PL, and its polytomous cousin the **Graded Response Model** (which we met dissecting [depression profiles](24-casestudy-depression.qmd)), let the data say otherwise. In practice you fit these with a maintained engine:
@@ -51,17 +68,22 @@ The machinery is the [variance-partitioning](04-Dmeasures.qmd) you already know,
 ```{r}
 set.seed(2026)
 np <- 120; ni <- 12
-person <- rnorm(np, sd = 1.0)              # real differences between people
-item   <- rnorm(ni, sd = 0.5)             # items differ in easiness
-d <- expand.grid(p = 1:np, i = 1:ni)
-d$score <- person[d$p] + item[d$i] + rnorm(np * ni, sd = 0.7)
-d$p <- factor(d$p); d$i <- factor(d$i)
+person <- rnorm(np, sd = 1.0)   # real differences between people
+item   <- rnorm(ni, sd = 0.5)   # items differ in easiness
 
-ms  <- summary(aov(score ~ p + i, data = d))[[1]][, "Mean Sq"]   # mean squares
-v_e <- ms[3]                               # residual variance
-v_p <- (ms[1] - v_e) / ni                  # person variance (the signal)
-v_i <- (ms[2] - v_e) / np                  # item variance
-round(c(person = v_p, item = v_i, residual = v_e), 2)
+d <- expand_grid(p = 1:np, i = 1:ni) |>
+  mutate(
+    score = person[p] + item[i] + rnorm(np * ni, sd = 0.7),
+    p     = factor(p),
+    i     = factor(i)
+  )
+
+ms  <- aov(score ~ p + i, data = d) |> tidy() |> pull(meansq)   # mean squares
+v_e <- ms[3]                    # residual variance
+v_p <- (ms[1] - v_e) / ni       # person variance (the signal)
+v_i <- (ms[2] - v_e) / np       # item variance
+
+tibble(person = v_p, item = v_i, residual = v_e) |> round2()
 ```
 ### SPSS
 ```
@@ -81,13 +103,24 @@ using MixedModels
 # the residual variance is the leftover noise.
 fit(MixedModel, @formula(score ~ 1 + (1|p) + (1|i)), df)
 ```
+### Python
+```python
+import numpy as np
+import statsmodels.formula.api as smf
+
+# df has columns score, p (person), i (item).
+# Persons and items are crossed random effects; their variances ARE the
+# G-theory components, and the model's scale is the residual variance.
+vc = {"p": "0 + C(p)", "i": "0 + C(i)"}
+smf.mixedlm("score ~ 1", df, groups=np.ones(len(df)), vc_formula=vc).fit().summary()
+```
 :::
 
 Person variance is the **signal** - the real differences you want to measure. Item and residual variance are **noise**, now itemized by source. The **generalizability coefficient** is the same signal-share idea as reliability, but honest about the fact that you averaged over a *sample* of items:
 
 ```{r}
-G <- v_p / (v_p + v_e / ni)                # G-coefficient for a test of ni items
-round(G, 3)
+# G-coefficient for a test of ni items
+tibble(n_items = ni, G = v_p / (v_p + v_e / ni)) |> round2()
 ```
 
 ### The D-study: Designing the Measure
@@ -95,9 +128,9 @@ round(G, 3)
 This is where G-theory pays for itself. Because you know the variance components, you can ask a **design** question - a *decision (D) study*: how many items would I need for a target reliability? It is the [power analysis](09-statisticalpower.qmd) of measurement.
 
 ```{r}
-n_items <- c(4, 8, 12, 20, 40)
-G_by_n  <- v_p / (v_p + v_e / n_items)     # generalizability at each test length
-round(setNames(G_by_n, n_items), 3)
+tibble(n_items = c(4, 8, 12, 20, 40)) |>
+  mutate(G = v_p / (v_p + v_e / n_items)) |>   # generalizability at each test length
+  round2()
 ```
 
 Reliability climbs with test length exactly as the [Spearman-Brown](10-reliability.qmd) logic predicts - and now you can pick the length that buys the reliability you need and stop, instead of guessing. Add a second facet (raters, occasions) and G-theory tells you whether your money is better spent on more items or more raters. That is measurement design as engineering.

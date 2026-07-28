@@ -13,18 +13,25 @@ If you remember one chapter from this book, make it this one. Back in the introd
 
 ```{r}
 #| message: false
-library(ggplot2)
+library(tidyverse)    # dplyr, ggplot2, purrr, tibble, readr, stringr, forcats
+source("_common.R")   # book-wide helpers: round2(), fmt_p(), tidy2()
+
 set.seed(7)
-tight <- rnorm(500, mean = 100, sd = 3)
-wide  <- rnorm(500, mean = 100, sd = 20)
-d <- data.frame(value = c(tight, wide),
-                group = rep(c("tight (sd=3)", "wide (sd=20)"), each = 500))
+d <- tibble(
+  `tight (sd=3)`  = rnorm(500, mean = 100, sd = 3),
+  `wide (sd=20)`  = rnorm(500, mean = 100, sd = 20)
+) |>
+  pivot_longer(everything(), names_to = "group", values_to = "value")
+
 ggplot(d, aes(value, fill = group)) +
   geom_histogram(bins = 40, alpha = 0.6, position = "identity") +
   labs(title = "Identical means (100), very different uncertainty",
        x = "value", y = "count") +
   theme_minimal()
-c(mean_tight = mean(tight), mean_wide = mean(wide))
+
+d |>
+  summarise(mean = mean(value), .by = group) |>
+  round2()
 ```
 
 Same mean, same "best guess" - but a guess of 100 is nearly certain for the tight group and nearly worthless for the wide one. **The spread is the story.**
@@ -35,7 +42,7 @@ The crudest measure is the **range** (max minus min), which uses only two number
 
 ```{r}
 x <- c(3, 5, 5, 7, 8, 9, 12, 40)
-c(range = diff(range(x)), IQR = IQR(x))
+tibble(range = diff(range(x)), IQR = IQR(x)) |> round2()
 ```
 
 The IQR ignores the tails, so it is to spread what the median is to center: robust, honest, and unbothered by a lone extreme value.
@@ -53,8 +60,8 @@ deviations <- x - mean(x)
 sum(deviations)                       # ~0, which is exactly the problem
 SS <- sum(deviations^2)               # sum of squares - the numerator
 n  <- length(x)
-by_hand <- SS / (n - 1)
-c(by_hand = by_hand, r_var = var(x))  # match
+
+tibble(by_hand = SS / (n - 1), r_var = var(x)) |> round2()   # match
 ```
 
 The numerator, $\sum(x-\bar{x})^2$, is the **sum of squares** - a quantity you will meet on every page from here on (it is the same SS that regression and ANOVA minimize and partition). Variance is just the sum of squares, averaged.
@@ -67,9 +74,16 @@ Notice we divided by $n - 1$, not $n$. Here is the honest reason. To compute the
 # demonstrate the bias: divide by n vs n-1, averaged over many samples
 set.seed(11)
 truth <- 25                                  # true variance (sd = 5)
-est_n   <- replicate(5000, { s <- rnorm(10, 0, 5); mean((s - mean(s))^2) })
-est_nm1 <- replicate(5000, var(rnorm(10, 0, 5)))
-c(divide_by_n = mean(est_n), divide_by_n_minus_1 = mean(est_nm1), truth = truth)
+
+est_n <- map_dbl(1:5000, \(i) {
+  s <- rnorm(10, 0, 5)
+  mean((s - mean(s))^2)                      # the n version
+})
+est_nm1 <- map_dbl(1:5000, \(i) var(rnorm(10, 0, 5)))   # the n-1 version
+
+tibble(divide_by_n = mean(est_n),
+       divide_by_n_minus_1 = mean(est_nm1),
+       truth = truth) |> round2()
 ```
 
 Dividing by $n$ lands low; dividing by $n-1$ lands right on the truth. That is degrees of freedom earning their keep.
@@ -81,7 +95,7 @@ Variance is in *squared* units (squared inches, squared dollars) - useful for ma
 ::: {.panel-tabset}
 ### R
 ```{r}
-c(sd_by_hand = sqrt(var(x)), r_sd = sd(x))
+tibble(sd_by_hand = sqrt(var(x)), r_sd = sd(x)) |> round2()
 ```
 ### SPSS
 ```
@@ -92,6 +106,10 @@ DESCRIPTIVES VARIABLES=x
 ```julia
 using Statistics
 std(df.x), var(df.x)
+```
+### Python
+```python
+df.x.std(), df.x.var()         # pandas divides by n - 1, like R
 ```
 :::
 

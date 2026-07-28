@@ -23,12 +23,18 @@ This book is a living document. Major additions and changes are recorded here so
 - POMP scoring added to the [z-distribution chapter](06-zdistribution.qmd).
 - The replication-crisis Bayes calculation and estimation-versus-testing asides woven through the inference chapters.
 
+### The code itself
+
+- **Every running example rewritten in the tidyverse.** `dplyr` and `tibble` in place of `data.frame` and `$`-indexing, `ggplot2` in place of the last base plots, `purrr::map_*` in place of `sapply`/`replicate`/`apply`, `readr` in place of `read.csv`, and `broom` for printing model results. The statistical engines (`lm`, `aov`, `glm`, `factanal`, `prcomp`) are still base R, and so is every from-scratch derivation.
+- **Two decimal places everywhere**, via a shared `round2()` helper, so results are readable and consistent. P-values are the deliberate exception: three decimals, with anything below .001 reported as `< .001`, because a p-value rounded to `0.00` reads as a certainty no p-value ever has.
+- A [setup page](required-packages.qmd) documenting the packages and reprinting the three shared helpers in full.
+
 ### Presentation and back matter
 
 - Light and dark reading modes with a navbar toggle (defaulting to light), framed figure cards, tidy tables, and larger key-term callouts with a 🔑 marker.
 - A voice pass across the whole book for clear, supportive prose.
 - Inviting cover, author biographies, and a to-be-written foreword.
-- This back matter added: the [changelog](changelog.qmd), the [required-packages](required-packages.qmd) setup page, and the [R / SPSS / Julia](three-languages.qmd) code-tabs appendix.
+- This back matter added: the [changelog](changelog.qmd), the [required-packages](required-packages.qmd) setup page, and the [R / SPSS / Julia / Python](three-languages.qmd) code-tabs appendix.
 
 ## Origins
 

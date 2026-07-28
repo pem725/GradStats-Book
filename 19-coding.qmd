@@ -16,13 +16,20 @@ That is the whole chapter in one idea. The coding scheme is a lens, not a model.
 Let's build a categorical variable from scratch so we can see the seams. Take a continuous "dogness" score, chop it into four bins, and call them `cat`, `fish`, `pig`, `dog`:
 
 ```{r}
+#| message: false
+library(tidyverse)    # dplyr, ggplot2, purrr, tibble, readr, stringr, forcats
+library(broom)        # tidy(), glance(), augment() for model output
+source("_common.R")   # book-wide helpers: round2(), fmt_p(), tidy2()
+
 set.seed(725)
-n   <- 200
-x   <- rnorm(n)                                   # a continuous "dogness" score
-pet <- cut(x, 4, labels = c("cat", "fish", "pig", "dog"))
-happy <- x + rnorm(n)                             # more dogness -> happier, on average
-d <- data.frame(pet, happy)
-table(pet)
+n <- 200
+d <- tibble(x = rnorm(n)) |>            # a continuous "dogness" score
+  mutate(
+    pet   = cut(x, 4, labels = c("cat", "fish", "pig", "dog")),
+    happy = x + rnorm(n)                # more dogness -> happier, on average
+  )
+
+d |> count(pet)
 ```
 
 `pet` is now a **factor**: R stores it as integer codes with labels attached. The moment we put it in a model, R replaces those four labels with three columns of numbers (four groups need $4-1=3$ columns, plus the intercept). *Which* three columns is the coding scheme. Here are the group means we will spend the rest of the chapter reconstructing:
@@ -30,8 +37,11 @@ table(pet)
 ::: {.panel-tabset}
 ### R
 ```{r}
-means <- aggregate(happy ~ pet, data = d, FUN = mean)
-means
+means <- d |>
+  summarise(happy = mean(happy), .by = pet) |>
+  arrange(pet)
+
+means |> round2()
 ```
 ### SPSS
 ```
@@ -44,6 +54,10 @@ MEANS TABLES=happy BY pet
 using Statistics, DataFrames
 combine(groupby(df, :pet), :happy => mean)
 ```
+### Python
+```python
+df.groupby("pet")["happy"].mean()
+```
 :::
 
 ## Dummy (Reference) Coding
@@ -55,8 +69,9 @@ Dummy coding - R's default, also called *reference* or *indicator* coding - pick
 ```{r}
 contrasts(d$pet) <- contr.treatment(4, base = 4)   # reference = level 4 = dog
 contrasts(d$pet)
+
 m_dummy <- lm(happy ~ pet, data = d)
-round(coef(m_dummy), 3)
+tidy2(m_dummy)
 ```
 ### SPSS
 ```
@@ -71,6 +86,12 @@ using GLM, StatsModels
 m_dummy = lm(@formula(happy ~ pet), df,
              contrasts = Dict(:pet => DummyCoding(base = "dog")))
 ```
+### Python
+```python
+import statsmodels.formula.api as smf
+m_dummy = smf.ols("happy ~ C(pet, Treatment(reference='dog'))", data=df).fit()
+m_dummy.params.round(3)
+```
 :::
 
 Read the coefficients straight off the means:
@@ -81,10 +102,11 @@ Read the coefficients straight off the means:
 Don't take my word for it - check:
 
 ```{r}
-mu <- setNames(means$happy, means$pet)             # named group means
-c(intercept_is_dog_mean = all.equal(unname(coef(m_dummy)[1]), unname(mu["dog"])),
-  cat_slope_is_cat_minus_dog = all.equal(unname(coef(m_dummy)["pet1"]),
-                                         unname(mu["cat"] - mu["dog"])))
+mu    <- means |> pull(happy, name = pet)          # named group means
+coefs <- tidy(m_dummy) |> pull(estimate, name = term)
+
+c(intercept_is_dog_mean      = all.equal(coefs[["(Intercept)"]], mu[["dog"]]),
+  cat_slope_is_cat_minus_dog = all.equal(coefs[["pet1"]], mu[["cat"]] - mu[["dog"]]))
 ```
 
 Both `TRUE`. Every dummy coefficient is a **simple difference from the reference**. That is exactly why dummy coding is the right lens when you have a control group and want each treatment compared to it.
@@ -103,8 +125,9 @@ Dummy coding asks "how does each group differ from *one* group?" **Effects codin
 ```{r}
 contrasts(d$pet) <- contr.sum(4)
 contrasts(d$pet)
+
 m_eff <- lm(happy ~ pet, data = d)
-round(coef(m_eff), 3)
+tidy2(m_eff)
 ```
 ### SPSS
 ```
@@ -119,6 +142,12 @@ using GLM, StatsModels
 m_eff = lm(@formula(happy ~ pet), df,
            contrasts = Dict(:pet => EffectsCoding()))
 ```
+### Python
+```python
+import statsmodels.formula.api as smf
+m_eff = smf.ols("happy ~ C(pet, Sum)", data=df).fit()   # each group vs the grand mean
+m_eff.params.round(3)
+```
 :::
 
 Now the meanings shift:
@@ -130,19 +159,24 @@ Now the meanings shift:
 Watch the grand-mean subtlety, because it trips everyone:
 
 ```{r}
-GM_groups <- mean(means$happy)                     # mean of the GROUP means
-GM_raw    <- mean(d$happy)                          # mean of the raw data
-c(intercept = unname(coef(m_eff)[1]),
-  grand_mean_of_groups = GM_groups,                 # this one matches
-  grand_mean_of_raw    = GM_raw)                    # this one (slightly) does not
+GM_groups <- mean(means$happy)     # mean of the GROUP means
+GM_raw    <- mean(d$happy)         # mean of the raw data
+
+tibble(
+  intercept            = tidy(m_eff)$estimate[1],
+  grand_mean_of_groups = GM_groups,   # this one matches
+  grand_mean_of_raw    = GM_raw       # this one does not
+) |>
+  round2()
 ```
 
 And recover the invisible fourth effect - `dog` - as minus the sum of the rest:
 
 ```{r}
-eff <- coef(m_eff)[-1]                              # pet1, pet2, pet3 = cat, fish, pig
+eff <- tidy(m_eff) |> slice(-1) |> pull(estimate)  # pet1, pet2, pet3 = cat, fish, pig
 dog_effect <- -sum(eff)
-all.equal(unname(mu["dog"] - GM_groups), unname(dog_effect))
+
+all.equal(mu[["dog"]] - GM_groups, dog_effect)
 ```
 
 `TRUE`. That is the whole trick of effects coding: the coefficients are **deviations that must sum to zero**, so the omitted group is always recoverable.
@@ -165,30 +199,34 @@ Let's make an unbalanced world - many pigs, few dogs - and build the weighted co
 
 ```{r}
 set.seed(9)
-cnt   <- c(cat = 20, fish = 30, pig = 40, dog = 10)
-petw  <- factor(rep(names(cnt), cnt), levels = names(cnt))
-# group-specific means so the demo has structure:
-mu_w  <- c(cat = 0, fish = 1, pig = 2, dog = 3)
-happyw <- rnorm(length(petw), mean = mu_w[as.character(petw)], sd = 1)
+cnt  <- c(cat = 20, fish = 30, pig = 40, dog = 10)
+mu_w <- c(cat = 0, fish = 1, pig = 2, dog = 3)   # group means, so the demo has structure
 
-contrasts(petw) <- contr.sum(4)          # start from unweighted effects codes
-M <- contrasts(petw)
-N <- table(petw)
+dw <- tibble(petw = factor(rep(names(cnt), cnt), levels = names(cnt))) |>
+  mutate(happyw = rnorm(n(), mean = mu_w[as.character(petw)], sd = 1))
+
+contrasts(dw$petw) <- contr.sum(4)   # start from unweighted effects codes
+M <- contrasts(dw$petw)
+N <- dw |> count(petw) |> pull(n)     # cell sizes, in level order
+
 # reweight the comparison (last) group's row by the cell-size ratios:
-M[4, ] <- c(M[4, 1] * N[1] / N[4],
-            M[4, 2] * N[2] / N[4],
-            M[4, 3] * N[3] / N[4])
-contrasts(petw) <- M
-round(M, 2)
-m_weff <- lm(happyw ~ petw)
+M[4, ] <- M[4, ] * N[1:3] / N[4]
+contrasts(dw$petw) <- M
+
+M |> as_tibble(rownames = "pet") |> round2()
+
+m_weff <- lm(happyw ~ petw, data = dw)
 ```
 
 The payoff: the intercept is now the **sample** grand mean - the ordinary mean of the raw data, weighted by cell size - not the mean of the group means:
 
 ```{r}
-c(intercept   = unname(coef(m_weff)[1]),
-  raw_mean    = mean(happyw),               # weighted effects intercept matches THIS
-  groups_mean = mean(tapply(happyw, petw, mean)))
+tibble(
+  intercept   = tidy(m_weff)$estimate[1],
+  raw_mean    = mean(dw$happyw),    # the weighted-effects intercept matches THIS
+  groups_mean = dw |> summarise(m = mean(happyw), .by = petw) |> pull(m) |> mean()
+) |>
+  round2()
 ```
 
 The intercept tracks the raw mean. The weights get pushed onto the comparison-group means, so unbalanced data no longer distorts your grand mean.
@@ -205,8 +243,9 @@ R ships one useful family, **Helmert** codes, which compare each level to the *p
 ### R
 ```{r}
 contrasts(d$pet) <- contr.helmert(4)
+
 m_helm <- lm(happy ~ pet, data = d)
-round(coef(m_helm), 3)
+tidy2(m_helm)
 ```
 ### SPSS
 ```
@@ -221,13 +260,23 @@ using GLM, StatsModels
 m_helm = lm(@formula(happy ~ pet), df,
             contrasts = Dict(:pet => HelmertCoding()))
 ```
+### Python
+```python
+import statsmodels.formula.api as smf
+# Helmert: each level against the mean of the levels before it.
+m_helm = smf.ols("happy ~ C(pet, Helmert)", data=df).fit()
+m_helm.params.round(3)
+```
 :::
 
 The intercept is again the (unweighted) grand mean. The first Helmert slope is *half* the gap between the first two group means - why half? Because the code uses $-1$ and $+1$, a two-unit spread, so the slope is the difference divided by 2:
 
 ```{r}
-c(helmert_b1 = unname(coef(m_helm)[2]),
-  half_the_gap = unname((mu["fish"] - mu["cat"]) / 2))
+tibble(
+  helmert_b1   = tidy(m_helm)$estimate[2],
+  half_the_gap = (mu[["fish"]] - mu[["cat"]]) / 2
+) |>
+  round2()
 ```
 
 ### Custom orthogonal contrasts
@@ -243,10 +292,12 @@ sgc <- matrix(c( 0.5,  0.5, -0.5, -0.5,   # usual (cat,fish) vs unusual (pig,dog
               nrow = 4,
               dimnames = list(levels(d$pet),
                               c("usual_vs_unusual", "cat_vs_fish", "pig_vs_dog")))
-sgc
+
+sgc |> as_tibble(rownames = "pet") |> round2()
+
 contrasts(d$pet) <- sgc
 m_con <- lm(happy ~ pet, data = d)
-round(coef(m_con), 3)
+tidy2(m_con)
 ```
 ### SPSS
 ```
@@ -263,6 +314,21 @@ m_con = lm(@formula(happy ~ pet), df,
            contrasts = Dict(:pet => HypothesisCoding(
                [0.5 0.5 -0.5 -0.5; 0.5 -0.5 0 0; 0 0 0.5 -0.5])))
 ```
+### Python
+```python
+import numpy as np
+import statsmodels.formula.api as smf
+from patsy.contrasts import ContrastMatrix
+
+# rows = cat, fish, pig, dog; columns = the three contrasts
+sgc = ContrastMatrix(np.array([[ 0.5,  0.5,  0.0],
+                               [ 0.5, -0.5,  0.0],
+                               [-0.5,  0.0,  0.5],
+                               [-0.5,  0.0, -0.5]]),
+                     ["_usual_vs_unusual", "_cat_vs_fish", "_pig_vs_dog"])
+m_con = smf.ols("happy ~ C(pet, sgc)", data=df).fit()
+m_con.params.round(3)
+```
 :::
 
 These three contrasts are **orthogonal** (each pair of columns is uncorrelated), so the three comparisons are independent - each coefficient answers its question without contamination from the others. Confirm the first one really is the usual-vs-unusual gap:
@@ -270,8 +336,13 @@ These three contrasts are **orthogonal** (each pair of columns is uncorrelated),
 ```{r}
 usual   <- mean(mu[c("cat", "fish")])
 unusual <- mean(mu[c("pig", "dog")])
-c(contrast_b1 = unname(coef(m_con)["petusual_vs_unusual"]),
-  usual_minus_unusual = usual - unusual)
+
+tibble(
+  contrast_b1 = tidy(m_con) |>
+    filter(term == "petusual_vs_unusual") |> pull(estimate),
+  usual_minus_unusual = usual - unusual
+) |>
+  round2()
 ```
 
 ::: {.callout-important}
@@ -291,9 +362,10 @@ nonsense <- matrix(c( 3.0, -7.0,  2.5,  0.1,
                      -5.0,  2.0,  8.0, -1.0),
                    nrow = 4,
                    dimnames = list(levels(d$pet), c("huh", "wat", "lol")))
+
 contrasts(d$pet) <- nonsense
 m_nonsense <- lm(happy ~ pet, data = d)
-round(coef(m_nonsense), 3)
+tidy2(m_nonsense)
 ```
 ### SPSS
 ```
@@ -309,16 +381,31 @@ m_nonsense = lm(@formula(happy ~ pet), df,
                 contrasts = Dict(:pet => HypothesisCoding(
                     [3 -7 2.5 0.1; 1 1 -2 4; -5 2 8 -1])))
 ```
+### Python
+```python
+import numpy as np
+import statsmodels.formula.api as smf
+from patsy.contrasts import ContrastMatrix
+
+# Nonsense coding: arbitrary contrast coefficients with no meaning.
+nonsense = ContrastMatrix(np.array([[ 3.0,  1.0, -5.0],
+                                    [-7.0,  1.0,  2.0],
+                                    [ 2.5, -2.0,  8.0],
+                                    [ 0.1,  4.0, -1.0]]),
+                          ["_huh", "_wat", "_lol"])
+m_nonsense = smf.ols("happy ~ C(pet, nonsense)", data=df).fit()
+m_nonsense.params.round(3)
+```
 :::
 
 Those coefficients are not interpretable, which is exactly why the columns are named `huh`, `wat`, and `lol`. You cannot read a single one off the group means. And yet look at what has **not** changed:
 
 ```{r}
 # The model fit is byte-for-byte identical to the sensible codings:
-c(same_fitted = isTRUE(all.equal(fitted(m_nonsense), fitted(m_dummy))),
-  same_r2     = all.equal(summary(m_nonsense)$r.squared, summary(m_dummy)$r.squared),
-  same_F      = all.equal(summary(m_nonsense)$fstatistic[1],
-                          summary(m_dummy)$fstatistic[1]))
+c(same_fitted = isTRUE(all.equal(augment(m_nonsense)$.fitted,
+                                 augment(m_dummy)$.fitted)),
+  same_r2     = all.equal(glance(m_nonsense)$r.squared, glance(m_dummy)$r.squared),
+  same_F      = all.equal(glance(m_nonsense)$statistic, glance(m_dummy)$statistic))
 ```
 
 All `TRUE`. **Every coding scheme in this chapter fits the exact same model** - same predicted values, same $R^2$, same omnibus $F$. Dummy, effects, weighted, contrast, and nonsense codes are five different *descriptions* of one fitted surface. The omnibus test ("does `pet` matter at all?") is blind to coding. Only the **individual coefficients** - the intercept and the $b$'s - carry the fingerprint of the code you chose.
@@ -349,11 +436,16 @@ Simulated pets are friendly, but let's prove the machinery on real data - the Mo
 ::: {.panel-tabset}
 ### R
 ```{r}
-d3 <- read.csv("data/mod3data.csv")
-d3$grp <- factor(d3$f3, labels = c("A", "B", "C", "D"))
-mu3 <- tapply(d3$y1, d3$grp, mean)
-round(mu3, 3)          # the four real group means
-table(d3$grp)          # unequal cell sizes
+d3 <- read_csv("data/mod3data.csv", show_col_types = FALSE) |>
+  mutate(grp = factor(f3, labels = c("A", "B", "C", "D")))
+
+group3 <- d3 |>
+  summarise(mean = mean(y1), n = n(), .by = grp) |>
+  arrange(grp)
+
+group3 |> round2()     # the four real group means, and unequal cell sizes
+
+mu3 <- group3 |> pull(mean, name = grp)
 ```
 ### SPSS
 ```
@@ -366,6 +458,13 @@ MEANS TABLES=y1 BY grp
 using Statistics, DataFrames
 combine(groupby(df, :grp), :y1 => mean)
 ```
+### Python
+```python
+import pandas as pd
+d3 = pd.read_csv("data/mod3data.csv")
+d3["grp"] = pd.Categorical(d3.f3).rename_categories(["A", "B", "C", "D"])
+d3.groupby("grp")["y1"].agg(["mean", "size"])   # means and unequal cell sizes
+```
 :::
 
 Dummy-code it (reference = group A) and read the coefficients straight off those means, exactly as we did for the pets:
@@ -374,10 +473,13 @@ Dummy-code it (reference = group A) and read the coefficients straight off those
 ### R
 ```{r}
 contrasts(d3$grp) <- contr.treatment(4, base = 1)
+
 m_real <- lm(y1 ~ grp, data = d3)
-round(coef(m_real), 3)
-c(intercept_is_A    = all.equal(unname(coef(m_real)[1]), unname(mu3["A"])),
-  grp2_is_B_minus_A = all.equal(unname(coef(m_real)["grp2"]), unname(mu3["B"] - mu3["A"])))
+tidy2(m_real)
+
+cr <- tidy(m_real) |> pull(estimate, name = term)
+c(intercept_is_A    = all.equal(cr[["(Intercept)"]], mu3[["A"]]),
+  grp2_is_B_minus_A = all.equal(cr[["grp2"]], mu3[["B"]] - mu3[["A"]]))
 ```
 ### SPSS
 ```
@@ -392,6 +494,12 @@ using GLM, StatsModels
 m_real = lm(@formula(y1 ~ grp), df,
             contrasts = Dict(:grp => DummyCoding(base = "A")))
 ```
+### Python
+```python
+import statsmodels.formula.api as smf
+m_real = smf.ols("y1 ~ C(grp, Treatment(reference='A'))", data=d3).fit()
+m_real.params.round(3)         # intercept = mean of A; next term = B - A
+```
 :::
 
 Both `TRUE` - the intercept is group A's mean, each slope a group's mean minus A's. Switch to effects coding and the intercept becomes the grand mean of the four group means, unequal cells and all:
@@ -400,8 +508,9 @@ Both `TRUE` - the intercept is group A's mean, each slope a group's mean minus A
 ### R
 ```{r}
 contrasts(d3$grp) <- contr.sum(4)
+
 m_real_eff <- lm(y1 ~ grp, data = d3)
-all.equal(unname(coef(m_real_eff)[1]), mean(mu3))
+all.equal(tidy(m_real_eff)$estimate[1], mean(mu3))
 ```
 ### SPSS
 ```
@@ -415,6 +524,12 @@ UNIANOVA y1 BY grp
 using GLM, StatsModels
 m_real_eff = lm(@formula(y1 ~ grp), df,
                 contrasts = Dict(:grp => EffectsCoding()))
+```
+### Python
+```python
+import statsmodels.formula.api as smf
+m_real_eff = smf.ols("y1 ~ C(grp, Sum)", data=d3).fit()
+m_real_eff.params[0]           # intercept = unweighted mean of the four means
 ```
 :::
 

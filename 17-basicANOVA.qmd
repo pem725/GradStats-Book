@@ -14,11 +14,19 @@ We closed the last chapter with a slogan: **ANOVA is regression with categorical
 One-way ANOVA asks: **do three or more groups differ on a continuous outcome?** Say we test a plant fertilizer at three doses:
 
 ```{r}
+#| message: false
+library(tidyverse)    # dplyr, ggplot2, purrr, tibble, readr, stringr, forcats
+library(broom)        # tidy(), glance(), augment() for model output
+source("_common.R")   # book-wide helpers: round2(), fmt_p(), tidy2()
+
 set.seed(17)
-dose  <- factor(rep(c("none", "low", "high"), each = 30),
-                levels = c("none", "low", "high"))
-growth <- rnorm(90, mean = rep(c(10, 12, 15), each = 30), sd = 3)
-tapply(growth, dose, mean)
+d <- tibble(
+  dose   = factor(rep(c("none", "low", "high"), each = 30),
+                  levels = c("none", "low", "high")),
+  growth = rnorm(90, mean = rep(c(10, 12, 15), each = 30), sd = 3)
+)
+
+d |> summarise(mean = mean(growth), .by = dose) |> round2()
 ```
 
 The group means differ in our sample - but is that real, or just sampling noise? ANOVA answers by comparing two kinds of variation.
@@ -36,15 +44,20 @@ $$SS_{total} = SS_{between} + SS_{within}$$
 Let's build all three by hand and confirm they add up:
 
 ```{r}
-grand <- mean(growth)
-group_means <- tapply(growth, dose, mean)
+grand <- mean(d$growth)
 
-SS_total   <- sum((growth - grand)^2)
-SS_between <- sum(table(dose) * (group_means - grand)^2)
-SS_within  <- sum((growth - group_means[dose])^2)
+groups <- d |> summarise(n = n(), group_mean = mean(growth), .by = dose)
 
-c(SS_total = SS_total,
-  between_plus_within = SS_between + SS_within)   # they match
+SS_total   <- d |> summarise(s = sum((growth - grand)^2)) |> pull(s)
+SS_between <- groups |> summarise(s = sum(n * (group_mean - grand)^2)) |> pull(s)
+SS_within  <- d |>
+  left_join(groups, by = "dose") |>
+  summarise(s = sum((growth - group_mean)^2)) |>
+  pull(s)
+
+tibble(SS_total            = SS_total,
+       between_plus_within = SS_between + SS_within) |>
+  round2()   # they match
 ```
 
 The total variance really does split exactly into "explained by group" plus "unexplained." That partition *is* analysis of variance.
@@ -59,11 +72,17 @@ with $k$ groups and $N$ observations. $F$ asks a simple question: **is the varia
 
 ```{r}
 k <- 3; N <- 90
-MS_between <- SS_between / (k - 1)
-MS_within  <- SS_within  / (N - k)
-F_stat <- MS_between / MS_within
-p_val  <- pf(F_stat, df1 = k - 1, df2 = N - k, lower.tail = FALSE)
-round(c(F = F_stat, p = p_val), 5)
+
+tibble(
+  MS_between = SS_between / (k - 1),
+  MS_within  = SS_within  / (N - k)
+) |>
+  mutate(
+    F = MS_between / MS_within,
+    p = pf(F, df1 = k - 1, df2 = N - k, lower.tail = FALSE)
+  ) |>
+  mutate(p = fmt_p(p)) |>
+  round2()
 ```
 
 And of course, R will do the bookkeeping for us with `aov()` - confirm it matches our by-hand work:
@@ -71,7 +90,10 @@ And of course, R will do the bookkeeping for us with `aov()` - confirm it matche
 ::: {.panel-tabset}
 ### R
 ```{r}
-summary(aov(growth ~ dose))
+aov(growth ~ dose, data = d) |>
+  tidy() |>
+  mutate(p.value = fmt_p(p.value)) |>
+  round2()
 ```
 ### SPSS
 ```
@@ -81,6 +103,12 @@ ONEWAY growth BY dose /STATISTICS DESCRIPTIVES /POSTHOC=TUKEY.
 ```julia
 using GLM
 ftest(lm(@formula(growth ~ dose), df).model)
+```
+### Python
+```python
+import statsmodels.formula.api as smf
+from statsmodels.stats.anova import anova_lm
+anova_lm(smf.ols("growth ~ dose", data=df).fit())
 ```
 :::
 
@@ -93,10 +121,16 @@ To honor the slogan from the last chapter, let's prove the classical ANOVA and t
 ::: {.panel-tabset}
 ### R
 ```{r}
-fit <- lm(growth ~ dose)
-anova(fit)              # the regression's F test == the ANOVA
-c(regression_F = summary(fit)$fstatistic[1],
-  aov_F        = summary(aov(growth ~ dose))[[1]][["F value"]][1])
+fit <- lm(growth ~ dose, data = d)
+
+# the regression's F test == the ANOVA
+anova(fit) |> tidy() |> mutate(p.value = fmt_p(p.value)) |> round2()
+
+tibble(
+  regression_F = glance(fit)$statistic,
+  aov_F = aov(growth ~ dose, data = d) |> tidy() |> slice(1) |> pull(statistic)
+) |>
+  round2()
 ```
 ### SPSS
 ```
@@ -107,6 +141,14 @@ REGRESSION /STATISTICS COEFF R ANOVA /DEPENDENT growth /METHOD=ENTER dose.
 using GLM
 coeftable(lm(@formula(growth ~ dose), df))
 ```
+### Python
+```python
+import statsmodels.formula.api as smf
+from statsmodels.stats.anova import anova_lm
+fit = smf.ols("growth ~ dose", data=df).fit()
+anova_lm(fit)                  # the regression's F test == the ANOVA
+fit.fvalue
+```
 :::
 
 Identical. The "two techniques" were always one. ANOVA is just the variance-partitioning *story* told about a regression on categorical predictors.
@@ -116,7 +158,10 @@ Identical. The "two techniques" were always one. ANOVA is just the variance-part
 The omnibus $F$ only says "*somewhere* among these groups there is a difference." It does not say *which* groups differ. For that we run **post-hoc** comparisons - and because we are now making several comparisons at once, we must control the inflated false-alarm rate (recall Type I error from the [hypothesis-testing chapter](08-hypothesistesting.qmd)). Tukey's Honest Significant Difference does exactly that:
 
 ```{r}
-TukeyHSD(aov(growth ~ dose))
+TukeyHSD(aov(growth ~ dose, data = d)) |>
+  tidy() |>
+  mutate(adj.p.value = fmt_p(adj.p.value)) |>
+  round2()
 ```
 
 Each row is a pairwise comparison with a confidence interval already adjusted for the fact that we peeked at all of them. Any interval that excludes zero is a real difference; any that includes zero is not.

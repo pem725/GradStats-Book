@@ -18,17 +18,26 @@ Recall from [central tendency](03-CTmeasures.qmd) and [reliability](10-reliabili
 Here is why that matters for detecting effects. Watch power climb as we build a composite from more items measuring the same construct. The true effect and the sample size never change; only the reliability of the measure does:
 
 ```{r}
+#| message: false
+library(tidyverse)    # dplyr, ggplot2, purrr, tibble, readr, stringr, forcats
+library(broom)        # tidy(), glance(), augment() for model output
+source("_common.R")   # book-wide helpers: round2(), fmt_p(), tidy2()
+
 set.seed(1)
 sim_power <- function(n_items, reps = 400, N = 120) {
-  mean(replicate(reps, {
-    Tval  <- rnorm(N)                        # the true construct
-    Y     <- 0.35 * Tval + rnorm(N)          # a real effect of T on Y
-    items <- sapply(1:n_items, function(i) Tval + rnorm(N, sd = 1.6))  # noisy items
-    composite <- rowMeans(items)             # data reduction: average them
-    summary(lm(Y ~ composite))$coefficients[2, 4] < 0.05
-  }))
+  hits <- map_lgl(1:reps, \(rep) {
+    Tval <- rnorm(N)                     # the true construct
+    Y    <- 0.35 * Tval + rnorm(N)       # a real effect of T on Y
+    its  <- map(1:n_items, \(i) Tval + rnorm(N, sd = 1.6))   # noisy items
+    composite <- reduce(its, `+`) / n_items                  # average them
+    tidy(lm(Y ~ composite)) |> slice(2) |> pull(p.value) < 0.05
+  })
+  mean(hits)
 }
-c(one_item = sim_power(1), four_items = sim_power(4), twelve_items = sim_power(12))
+
+tibble(n_items = c(1, 4, 12)) |>
+  mutate(power = map_dbl(n_items, sim_power)) |>
+  round2()
 ```
 
 One item catches the effect less than half the time; a twelve-item composite catches it roughly nine times in ten. Nothing changed but the reliability of the ruler. This is the whole case for data reduction in one line: *you already collected the items, and combining them recovers power you would otherwise throw away.*
@@ -55,14 +64,19 @@ A composite also solves a problem you met in [multiple regression](15-MRC.qmd). 
 
 ```{r}
 set.seed(7); N <- 200
-Tval  <- rnorm(N)
-items <- sapply(1:6, function(i) Tval + rnorm(N, sd = 0.8))   # six views of one construct
-colnames(items) <- paste0("x", 1:6); d <- as.data.frame(items)
+Tval <- rnorm(N)
+
+items <- map(1:6, \(i) Tval + rnorm(N, sd = 0.8)) |>   # six views of one construct
+  set_names(paste0("x", 1:6)) |>
+  as_tibble()
 
 # each item's variance-inflation factor when all six enter as separate predictors:
-vif <- sapply(1:6, function(j)
-  1 / (1 - summary(lm(d[[j]] ~ ., data = d[-j]))$r.squared))
-round(vif, 1)
+tibble(item = names(items)) |>
+  mutate(VIF = map_dbl(item, \(j) {
+    others <- setdiff(names(items), j)
+    1 / (1 - glance(lm(reformulate(others, response = j), data = items))$r.squared)
+  })) |>
+  round2()
 ```
 
 Those inflated factors are the model telling you the items are redundant. Replace the six with a single composite and the collinearity disappears: one dependable predictor in place of six quarrelling ones. That is data reduction doing double duty, more reliability *and* a cleaner model.
@@ -77,7 +91,10 @@ Averaging items into a composite quietly assumes they measure *one* thing. Befor
 ### R
 ```{r}
 pc <- prcomp(items, scale. = TRUE)
-round(pc$sdev^2, 2)          # eigenvalues: one large, the rest small = one dimension
+
+# eigenvalues: one large, the rest small = one dimension
+tibble(component = paste0("PC", seq_along(pc$sdev)), eigenvalue = pc$sdev^2) |>
+  round2()
 ```
 ### SPSS
 ```
@@ -87,6 +104,13 @@ FACTOR /VARIABLES x1 x2 x3 x4 x5 x6 /EXTRACTION PC /PRINT EIGEN /PLOT EIGEN.
 ```julia
 using MultivariateStats
 fit(PCA, Matrix(items)'; maxoutdim=6)
+```
+### Python
+```python
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+z = StandardScaler().fit_transform(items)
+PCA().fit(z).explained_variance_    # eigenvalues: one large, the rest small
 ```
 :::
 
@@ -98,7 +122,9 @@ One eigenvalue well above the rest is the signature of a single underlying dimen
 ### R
 ```{r}
 fa1 <- factanal(items, factors = 1)
-round(as.numeric(fa1$loadings), 2)          # all items load on the common factor
+
+# all items load on the common factor
+tibble(item = names(items), loading = as.numeric(fa1$loadings)) |> round2()
 ```
 ### SPSS
 ```
@@ -108,6 +134,12 @@ FACTOR /VARIABLES x1 x2 x3 x4 x5 x6 /EXTRACTION ML /CRITERIA FACTORS(1) /ROTATIO
 ```julia
 using MultivariateStats
 fit(FactorAnalysis, Matrix(items)'; maxoutdim=1)
+```
+### Python
+```python
+from sklearn.decomposition import FactorAnalysis
+fa1 = FactorAnalysis(n_components=1).fit(items)
+fa1.components_.round(2)            # all items load on the common factor
 ```
 :::
 

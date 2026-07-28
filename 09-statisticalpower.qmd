@@ -64,9 +64,16 @@ These are deliberately crude (they hide the effect size you're implicitly assumi
 Base R ships with `power.t.test()`, which ties together effect size, $n$, $\alpha$, and power - give it any three and it solves for the fourth. First, the trade-offs, made concrete:
 
 ```{r}
+#| message: false
+library(tidyverse)    # dplyr, ggplot2, purrr, tibble, readr, stringr, forcats
+library(broom)        # tidy(), glance(), augment() for model output
+source("_common.R")   # book-wide helpers: round2(), fmt_p(), tidy2()
+
 # Hold the effect (d = 0.5) and n = 30 per group; vary alpha
-sapply(c(0.01, 0.05, 0.10), function(a)
-  power.t.test(n = 30, delta = 0.5, sd = 1, sig.level = a)$power)
+tibble(alpha = c(0.01, 0.05, 0.10)) |>
+  mutate(power = map_dbl(alpha, \(a)
+    power.t.test(n = 30, delta = 0.5, sd = 1, sig.level = a)$power)) |>
+  round2()
 ```
 
 Read left to right: as $\alpha$ goes from strict (.01) to lenient (.10), power **rises**. Stricter $\alpha$ costs you power - the trade-off, in numbers.
@@ -75,8 +82,10 @@ Now the lever you actually control - sample size:
 
 ```{r}
 # Hold effect (d = 0.5) and alpha (.05); vary n per group
-sapply(c(20, 50, 100), function(nn)
-  power.t.test(n = nn, delta = 0.5, sd = 1, sig.level = 0.05)$power)
+tibble(n_per_group = c(20, 50, 100)) |>
+  mutate(power = map_dbl(n_per_group, \(nn)
+    power.t.test(n = nn, delta = 0.5, sd = 1, sig.level = 0.05)$power)) |>
+  round2()
 ```
 
 More data, more power - and unlike the $\alpha$ trade-off, this buys power *without* raising your false-alarm rate.
@@ -86,7 +95,9 @@ More data, more power - and unlike the $\alpha$ trade-off, this buys power *with
 The real payoff is planning. If you want 80% power to detect a medium effect ($d = 0.5$) at $\alpha = .05$, how many people do you need? Leave `n` out and let R solve for it:
 
 ```{r}
-power.t.test(delta = 0.5, sd = 1, sig.level = 0.05, power = 0.80)
+power.t.test(delta = 0.5, sd = 1, sig.level = 0.05, power = 0.80) |>
+  tidy() |>          # broom turns the printed result into a one-row table
+  round2()
 ```
 
 The answer (about 64 per group) is a number you want *before* you run the study, not after. Running first and computing power later, so-called "post-hoc power," tells you almost nothing useful; power is a design tool, not a consolation prize.
@@ -97,13 +108,15 @@ If the formulas ever feel like a black box, remember they are only shortcuts for
 
 ```{r}
 set.seed(1988)
-d <- 0.5; n <- 64
-hits <- replicate(2000, {
-  group1 <- rnorm(n, mean = 0,  sd = 1)
-  group2 <- rnorm(n, mean = d,  sd = 1)   # a real difference of d
-  t.test(group1, group2)$p.value < 0.05   # did we detect it?
+effect <- 0.5; n <- 64
+
+hits <- map_lgl(1:2000, \(i) {
+  group1 <- rnorm(n, mean = 0,      sd = 1)
+  group2 <- rnorm(n, mean = effect, sd = 1)   # a real difference of d
+  t.test(group1, group2)$p.value < 0.05       # did we detect it?
 })
-mean(hits)   # simulated power ~ 0.80
+
+tibble(simulated_power = mean(hits)) |> round2()   # ~ 0.80
 ```
 
 The simulation lands right where `power.t.test()` said it would. It is simply a count of how often a true effect trips the wire.

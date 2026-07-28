@@ -16,18 +16,31 @@ Suppose two groups have exactly the same true level of a trait, but one group te
 ::: {.panel-tabset}
 ### R
 ```{r}
-set.seed(1); N <- 300
-grp   <- rep(c("A", "B"), each = N)
-trait <- rnorm(2 * N)                          # SAME true trait distribution in both groups
-bias  <- ifelse(grp == "B", 0.5, 0)            # group B answers 0.5 higher at the same trait level
-items <- sapply(1:6, function(i) trait + bias + rnorm(2 * N, sd = 0.8))
-composite <- rowMeans(items)
+#| message: false
+library(tidyverse)    # dplyr, ggplot2, purrr, tibble, readr, stringr, forcats
+library(broom)        # tidy(), glance(), augment() for model output
+source("_common.R")   # book-wide helpers: round2(), fmt_p(), tidy2()
 
-c(true_mean_A     = mean(trait[grp == "A"]),   # equal by construction
-  true_mean_B     = mean(trait[grp == "B"]),
-  observed_mean_A = mean(composite[grp == "A"]),
-  observed_mean_B = mean(composite[grp == "B"]),
-  t_test_p        = t.test(composite ~ grp)$p.value)
+set.seed(1); N <- 300
+d <- tibble(
+  grp   = rep(c("A", "B"), each = N),
+  trait = rnorm(2 * N)                  # SAME true trait distribution in both groups
+) |>
+  mutate(bias = if_else(grp == "B", 0.5, 0))  # B answers higher at the same trait
+
+# six items, each the trait plus that group's response bias plus noise
+items <- map(1:6, \(i) d$trait + d$bias + rnorm(2 * N, sd = 0.8))
+d <- d |> mutate(composite = reduce(items, `+`) / 6)
+
+d |>
+  summarise(true_mean = mean(trait), observed_mean = mean(composite), .by = grp) |>
+  round2()
+
+t.test(composite ~ grp, data = d) |>
+  tidy() |>
+  select(estimate, statistic, p.value) |>
+  mutate(p.value = fmt_p(p.value)) |>
+  round2()
 ```
 ### SPSS
 ```
@@ -45,6 +58,16 @@ using Statistics, DataFrames, HypothesisTests
 combine(groupby(df, :grp), :trait => mean, :composite => mean)
 # Independent-groups (Welch) t-test comparing the composite across groups.
 UnequalVarianceTTest(df.composite[df.grp .== "A"], df.composite[df.grp .== "B"])
+```
+### Python
+```python
+from scipy import stats
+# df holds trait, composite, and the group factor grp.
+# Group means: true trait (equal by construction) and observed composite.
+df.groupby("grp")[["trait", "composite"]].mean()
+# Independent-groups (Welch) t-test comparing the composite across groups.
+stats.ttest_ind(df.composite[df.grp == "A"],
+                df.composite[df.grp == "B"], equal_var=False)
 ```
 :::
 
