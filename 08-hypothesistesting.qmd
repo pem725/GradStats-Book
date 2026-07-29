@@ -43,6 +43,8 @@ Let us make this concrete with the simplest test there is. Suppose a population 
 
 The key idea is the **sampling distribution of the mean**: if we drew sample after sample, the means would themselves form a distribution, centered on $\mu$, with a standard deviation - the **standard error of the mean** - of $\sigma_{\bar{x}} = \sigma / \sqrt{n}$.
 
+::: {.panel-tabset}
+### R
 ```{r}
 #| message: false
 library(tidyverse)    # dplyr, ggplot2, purrr, tibble, readr, stringr, forcats
@@ -61,9 +63,46 @@ tibble(
   mutate(p_value = fmt_p(p_value)) |>
   round2()
 ```
+### SPSS
+```
+* The standard error, z, and one-tailed p for a sample mean of 22
+* against a null mean of 20 with sigma = 4 and n = 4.
+DATA LIST FREE /mu sigma n xbar.
+BEGIN DATA
+20 4 4 22
+END DATA.
+
+COMPUTE standard_error = sigma / SQRT(n).
+COMPUTE z = (xbar - mu) / standard_error.
+COMPUTE p_value = 1 - CDF.NORMAL(z, 0, 1).
+EXECUTE.
+LIST VARIABLES=standard_error z p_value.
+```
+### Julia
+```julia
+using Distributions
+mu, sigma, n, xbar = 20, 4, 4, 22
+
+standard_error = sigma / sqrt(n)                     # SE of the mean
+z = (xbar - mu) / standard_error                     # how many SEs above the null
+p_value = ccdf(Normal(0, 1), z)                      # P(mean > 22) if H0 is true
+```
+### Python
+```python
+from scipy.stats import norm
+
+mu, sigma, n, xbar = 20, 4, 4, 22
+
+standard_error = sigma / n**0.5                      # SE of the mean
+z = (xbar - mu) / standard_error                     # how many SEs above the null
+p_value = norm.sf(z)                                 # P(mean > 22) if H0 is true
+```
+:::
 
 So a sample mean of 22 sits exactly one standard error above the null value, and the probability of getting a mean that large (or larger) *if the null is true* is about `r fmt_p(pnorm(1, lower.tail = FALSE))`. Let us see it:
 
+::: {.panel-tabset}
+### R
 ```{r}
 # Simulate 10,000 sample means from the H0 world and see where 22 lands
 set.seed(1908)  # the year Gosset published "Student's" t
@@ -79,6 +118,50 @@ ggplot(means, aes(x = sample_mean)) +
        x = "sample mean", y = "count") +
   theme_minimal()
 ```
+### SPSS
+```
+* Simulate 10,000 sample means of n = 4 from the H0 world (mu = 20, sigma = 4)
+* and see where the observed 22 lands.
+INPUT PROGRAM.
+LOOP #i = 1 TO 10000.
+  COMPUTE sample_mean = MEAN(RV.NORMAL(20, 4), RV.NORMAL(20, 4),
+                             RV.NORMAL(20, 4), RV.NORMAL(20, 4)).
+  END CASE.
+END LOOP.
+END FILE.
+END INPUT PROGRAM.
+EXECUTE.
+
+GRAPH /HISTOGRAM = sample_mean
+  /TITLE = 'Sampling distribution of the mean IF the null is true'.
+```
+### Julia
+```julia
+using Random, Distributions, Statistics, Plots
+Random.seed!(1908)   # the year Gosset published "Student's" t
+
+means = [mean(rand(Normal(20, 4), 4)) for _ in 1:10_000]
+
+histogram(means, bins = 40, legend = false,
+          title = "Sampling distribution of the mean IF the null is true",
+          xlabel = "sample mean", ylabel = "count")
+vline!([22], linewidth = 2, color = :red)
+```
+### Python
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(1908)   # the year Gosset published "Student's" t
+means = rng.normal(20, 4, size=(10_000, 4)).mean(axis=1)
+
+plt.hist(means, bins=40, color="lightgrey", edgecolor="white")
+plt.axvline(22, color="red", linewidth=2)
+plt.title("Sampling distribution of the mean IF the null is true")
+plt.xlabel("sample mean"); plt.ylabel("count")
+plt.show()
+```
+:::
 
 The red line is our result. It is on the high side, sure, but plenty of the null world's own samples land out there too. This is what "the data are (or are not) surprising under $H_0$" looks like, drawn to scale.
 

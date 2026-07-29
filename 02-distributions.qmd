@@ -47,6 +47,8 @@ Ordinal variables are categories with a **rank order** but without guaranteed eq
 
 To compute anything, we must turn observations into numbers. For continuous and discrete variables that is natural - the number *is* the measurement. For categorical variables we assign codes, but we must remember that the software does not know those codes are arbitrary; it will happily average "flavor" and hand you 1.7 if you let it. In R, we protect ourselves by storing categories as **factors**, which keeps their labels attached and their order (if any) explicit:
 
+::: {.panel-tabset}
+### R
 ```{r}
 #| message: false
 library(tidyverse)    # dplyr, ggplot2, purrr, tibble, readr, stringr, forcats
@@ -57,6 +59,41 @@ flavor <- fct(c("choc", "van", "choc", "straw", "van"),
 as.integer(flavor)                 # the codes R uses under the hood
 tibble(flavor) |> count(flavor)    # what we actually care about: the counts
 ```
+### SPSS
+```
+* Categories live as string values with VALUE LABELS attached; the labels
+* travel with the data the way an R factor's levels do.
+DATA LIST LIST /flavor (A6).
+BEGIN DATA
+choc
+van
+choc
+straw
+van
+END DATA.
+
+* AUTORECODE exposes the integer codes sitting under the labels.
+AUTORECODE VARIABLES=flavor /INTO flavor_code.
+* What we actually care about: the counts.
+FREQUENCIES VARIABLES=flavor.
+```
+### Julia
+```julia
+using CategoricalArrays, DataFrames
+flavor = categorical(["choc", "van", "choc", "straw", "van"],
+                     levels = ["choc", "van", "straw"])
+levelcode.(flavor)                  # the codes Julia uses under the hood
+combine(groupby(DataFrame(flavor = flavor), :flavor), nrow => :n)
+```
+### Python
+```python
+import pandas as pd
+flavor = pd.Categorical(["choc", "van", "choc", "straw", "van"],
+                        categories=["choc", "van", "straw"])
+flavor.codes                        # the codes pandas uses under the hood
+pd.Series(flavor).value_counts()    # what we actually care about: the counts
+```
+:::
 
 ### Plotting Variables
 
@@ -66,6 +103,8 @@ Before you compute a single statistic, **look at your data**. A picture reveals 
 
 A histogram slices the range of a variable into bins and counts how many observations fall in each. The result is a picture of the variable's **distribution** - the pattern of how often each value shows up.
 
+::: {.panel-tabset}
+### R
 ```{r}
 set.seed(20)
 heights <- tibble(height = rnorm(500, mean = 68, sd = 4))  # adult heights (inches)
@@ -75,6 +114,45 @@ ggplot(heights, aes(x = height)) +
        x = "height (inches)", y = "count") +
   theme_minimal()
 ```
+### SPSS
+```
+* Build 500 simulated adult heights, then draw the histogram.
+INPUT PROGRAM.
+LOOP #i = 1 TO 500.
+  COMPUTE height = RV.NORMAL(68, 4).
+  END CASE.
+END LOOP.
+END FILE.
+END INPUT PROGRAM.
+EXECUTE.
+
+GRAPH /HISTOGRAM = height
+  /TITLE = 'The distribution of 500 simulated heights'.
+```
+### Julia
+```julia
+using Random, Distributions, Plots
+Random.seed!(20)
+height = rand(Normal(68, 4), 500)          # adult heights (inches)
+
+histogram(height, bins = 30, legend = false,
+          title = "The distribution of 500 simulated heights",
+          xlabel = "height (inches)", ylabel = "count")
+```
+### Python
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(20)
+height = rng.normal(68, 4, 500)            # adult heights (inches)
+
+plt.hist(height, bins=30, color="steelblue", edgecolor="white")
+plt.title("The distribution of 500 simulated heights")
+plt.xlabel("height (inches)"); plt.ylabel("count")
+plt.show()
+```
+:::
 
 That mound-shaped pile is the thing we spend the rest of the book reasoning about.
 
@@ -86,6 +164,8 @@ Distributions have shapes, and the shape tells a story. Three features do most o
 - **Spread** - how wide the pile is (the chapter after that).
 - **Symmetry** - whether the pile leans. A distribution with a long right tail is **right- (positively) skewed**; a long left tail is **left- (negatively) skewed**. Income is famously right-skewed: most people cluster low, a few soar high, and the mean gets dragged toward the millionaires.
 
+::: {.panel-tabset}
+### R
 ```{r}
 set.seed(21)
 skewed <- tibble(value = rexp(1000, rate = 1))   # a right-skewed variable
@@ -95,6 +175,45 @@ ggplot(skewed, aes(x = value)) +
        x = "value", y = "count") +
   theme_minimal()
 ```
+### SPSS
+```
+* A right-skewed variable: exponential with rate 1.
+INPUT PROGRAM.
+LOOP #i = 1 TO 1000.
+  COMPUTE value = RV.EXP(1).
+  END CASE.
+END LOOP.
+END FILE.
+END INPUT PROGRAM.
+EXECUTE.
+
+GRAPH /HISTOGRAM = value
+  /TITLE = 'A right-skewed distribution (long tail to the right)'.
+```
+### Julia
+```julia
+using Random, Distributions, Plots
+Random.seed!(21)
+value = rand(Exponential(1), 1000)         # a right-skewed variable
+
+histogram(value, bins = 40, legend = false,
+          title = "A right-skewed distribution (long tail to the right)",
+          xlabel = "value", ylabel = "count")
+```
+### Python
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(21)
+value = rng.exponential(1.0, 1000)         # a right-skewed variable
+
+plt.hist(value, bins=40, color="darkorange", edgecolor="white")
+plt.title("A right-skewed distribution (long tail to the right)")
+plt.xlabel("value"); plt.ylabel("count")
+plt.show()
+```
+:::
 
 ## Distributions
 
@@ -107,6 +226,8 @@ A **distribution** is the full accounting of how often each value (or range of v
 - **Binomial** - the count of "successes" in a fixed number of yes/no trials (heads in 10 coin flips). `rbinom()`.
 - **Poisson** - the count of rare events in a fixed window (typos per page, emails per hour). `rpois()`.
 
+::: {.panel-tabset}
+### R
 ```{r}
 set.seed(22)
 # draw 1000 values from each of the four named shapes, then stack them
@@ -124,11 +245,66 @@ tibble(
   labs(x = NULL, y = "count") +
   theme_minimal()
 ```
+### SPSS
+```
+* Draw 1000 values from each of the four named shapes.
+INPUT PROGRAM.
+LOOP #i = 1 TO 1000.
+  COMPUTE Normal   = RV.NORMAL(0, 1).
+  COMPUTE Uniform  = RV.UNIFORM(0, 1).
+  COMPUTE Binomial = RV.BINOM(10, 0.5).
+  COMPUTE Poisson  = RV.POISSON(3).
+  END CASE.
+END LOOP.
+END FILE.
+END INPUT PROGRAM.
+EXECUTE.
+
+* SPSS has no faceting, so each shape gets its own GRAPH command.
+GRAPH /HISTOGRAM = Normal   /TITLE = 'Normal'.
+GRAPH /HISTOGRAM = Uniform  /TITLE = 'Uniform'.
+GRAPH /HISTOGRAM = Binomial /TITLE = 'Binomial'.
+GRAPH /HISTOGRAM = Poisson  /TITLE = 'Poisson'.
+```
+### Julia
+```julia
+using Random, Distributions, Plots
+Random.seed!(22)
+
+shapes = ["Normal"   => rand(Normal(0, 1), 1000),
+          "Uniform"  => rand(Uniform(0, 1), 1000),
+          "Binomial" => rand(Binomial(10, 0.5), 1000),
+          "Poisson"  => rand(Poisson(3), 1000)]
+
+# one panel per shape, laid out 2 x 2
+plot([histogram(v, bins = 30, title = k, legend = false) for (k, v) in shapes]...,
+     layout = (2, 2))
+```
+### Python
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(22)
+shapes = {"Normal":   rng.normal(0, 1, 1000),
+          "Uniform":  rng.uniform(0, 1, 1000),
+          "Binomial": rng.binomial(10, 0.5, 1000),
+          "Poisson":  rng.poisson(3, 1000)}
+
+fig, axes = plt.subplots(2, 2)             # one panel per shape
+for ax, (name, v) in zip(axes.flat, shapes.items()):
+    ax.hist(v, bins=30, color="lightgrey", edgecolor="white")
+    ax.set_title(name)
+fig.tight_layout(); plt.show()
+```
+:::
 
 ### Probability Density Functions
 
 For a continuous variable, asking "what is the probability of *exactly* 68.0000 inches?" is a trap - the answer is zero, because there are infinitely many possible values. Instead we describe a continuous distribution with a **probability density function (PDF)**: a curve whose *area* between two points gives the probability of landing in that range. The whole area under the curve is exactly 1 (something must happen). The normal PDF is the famous bell:
 
+::: {.panel-tabset}
+### R
 ```{r}
 tibble(z = seq(-4, 4, length.out = 400)) |>
   mutate(density = dnorm(z)) |>
@@ -138,5 +314,45 @@ tibble(z = seq(-4, 4, length.out = 400)) |>
   labs(title = "The standard normal PDF", x = "z", y = "density") +
   theme_minimal()
 ```
+### SPSS
+```
+* The standard normal density across a grid of z values from -4 to 4.
+INPUT PROGRAM.
+LOOP #i = -400 TO 400.
+  COMPUTE z = #i / 100.
+  COMPUTE density = PDF.NORMAL(z, 0, 1).
+  END CASE.
+END LOOP.
+END FILE.
+END INPUT PROGRAM.
+EXECUTE.
+
+GRAPH /LINE(SIMPLE) = VALUE(density) BY z
+  /TITLE = 'The standard normal PDF'.
+```
+### Julia
+```julia
+using Distributions, Plots
+z = range(-4, 4, length = 400)
+
+plot(z, pdf.(Normal(0, 1), z), linewidth = 2, legend = false,
+     title = "The standard normal PDF", xlabel = "z", ylabel = "density")
+vline!([0], linestyle = :dash, color = :grey)
+```
+### Python
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import norm
+
+z = np.linspace(-4, 4, 400)
+
+plt.plot(z, norm.pdf(z), color="steelblue", linewidth=2)
+plt.axvline(0, linestyle="--", color="grey")
+plt.title("The standard normal PDF")
+plt.xlabel("z"); plt.ylabel("density")
+plt.show()
+```
+:::
 
 The height of the curve is *density*, not probability; probability is the shaded area you sweep out between two z-values. That single idea, probability as area under a density, is the engine of everything inferential to come, starting with the [z-distribution](06-zdistribution.qmd). But first we need to pin down the two summaries every distribution demands: its center and its spread.

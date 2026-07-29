@@ -15,6 +15,8 @@ We continue with the same real data from [The Sports Page](https://thesportspage
 
 A table wins when the numbers are **few**, the **exact values matter**, or the reader will **look things up** rather than scan for a shape. The strikeout trend was a job for a line. But "what did each decade actually look like, in numbers I can quote?" is a job for a small table. Summarize the 42 years down to five decade averages - few rows, exact values, quotable:
 
+::: {.panel-tabset}
+### R
 ```{r}
 #| message: false
 library(tidyverse)    # dplyr, ggplot2, purrr, tibble, readr, stringr, forcats
@@ -34,6 +36,40 @@ knitr::kable(dec, digits = c(0, 2, 2, 2, 3),
              col.names = c("Decade", "K/9", "BB/9", "HR/9", "AVG"),
              caption = "MLB by the decade: the strikeout climb, in exact numbers.")
 ```
+### SPSS
+```
+* Summarise 42 years down to five decade averages.
+GET DATA /TYPE=TXT /FILE='data/mlb_league_by_year.csv'
+  /DELIMITERS=',' /FIRSTCASE=2.
+
+COMPUTE decade = TRUNC(year / 10) * 10.
+FORMATS decade (F4.0).
+EXECUTE.
+
+MEANS TABLES=K_9 BB_9 HR_9 AVG BY decade
+  /CELLS=MEAN.
+```
+### Julia
+```julia
+using CSV, DataFrames, Statistics
+mlb = CSV.read("data/mlb_league_by_year.csv", DataFrame)
+mlb.decade = string.(fld.(mlb.year, 10) .* 10, "s")
+
+combine(groupby(mlb, :decade),
+        [:K_9, :BB_9, :HR_9, :AVG] .=> mean .=> [:K_9, :BB_9, :HR_9, :AVG])
+```
+### Python
+```python
+import pandas as pd
+
+mlb = pd.read_csv("data/mlb_league_by_year.csv")
+mlb["decade"] = (mlb.year // 10 * 10).astype(str) + "s"
+
+(mlb.groupby("decade")[["K_9", "BB_9", "HR_9", "AVG"]]
+    .mean()
+    .round({"K_9": 2, "BB_9": 2, "HR_9": 2, "AVG": 3}))
+```
+:::
 
 Five rows, and you can *quote* any cell. The graph made you feel the strikeout climb; the table lets you say "K/9 went from about 5.7 in the 1980s to about 8.5 in the 2020s" without guessing off an axis. Same data, different instrument, different job.
 
@@ -41,6 +77,8 @@ Five rows, and you can *quote* any cell. The graph made you feel the strikeout c
 
 The fastest way to make a table mislead, or simply to tire your reader, is to print every digit the computer produced. A bust rate stored as `0.5455` does **not** mean you know it to four decimals; with a few dozen draft picks, you barely know the second. Rounding is not sloppiness; it is honesty about how much you actually know. Watch the difference:
 
+::: {.panel-tabset}
+### R
 ```{r}
 nfl <- read_csv("data/nfl_draft_by_team.csv", show_col_types = FALSE)
 
@@ -52,7 +90,39 @@ worst <- nfl |>
 knitr::kable(head(worst, 4), row.names = FALSE,
              caption = "Too many digits — implies a precision the data don't have.")
 ```
+### SPSS
+```
+* False precision: every digit the machine produced.
+GET DATA /TYPE=TXT /FILE='data/nfl_draft_by_team.csv'
+  /DELIMITERS=',' /FIRSTCASE=2.
 
+SORT CASES BY rate_bust_a (D).
+* SPSS shows whatever the variable's FORMAT allows - widen it and the
+* spurious digits appear:
+FORMATS rate_bust_a rate_clean_hit (F8.4).
+LIST VARIABLES=team n_picks rate_bust_a rate_clean_hit /CASES=4.
+```
+### Julia
+```julia
+using CSV, DataFrames
+nfl = CSV.read("data/nfl_draft_by_team.csv", DataFrame)
+worst = sort(select(nfl, :team, :n_picks, :rate_bust_a, :rate_clean_hit),
+             :rate_bust_a, rev = true)
+
+first(worst, 4)          # too many digits for what the data can support
+```
+### Python
+```python
+nfl = pd.read_csv("data/nfl_draft_by_team.csv")
+worst = (nfl.sort_values("rate_bust_a", ascending=False)
+            [["team", "n_picks", "rate_bust_a", "rate_clean_hit"]])
+
+worst.head(4)            # too many digits for what the data can support
+```
+:::
+
+::: {.panel-tabset}
+### R
 ```{r}
 # honest precision: percentages, rounded to what the sample can support
 worst <- worst |>
@@ -62,6 +132,34 @@ knitr::kable(head(worst, 4), row.names = FALSE,
              col.names = c("Team", "Picks", "Bust rate (%)", "Clean-hit rate (%)"),
              caption = "Rounded to whole percentages — easier to read, honest about precision.")
 ```
+### SPSS
+```
+* Honest precision: whole percentages, rounded to what the sample supports.
+COMPUTE rate_bust_a    = RND(100 * rate_bust_a).
+COMPUTE rate_clean_hit = RND(100 * rate_clean_hit).
+FORMATS rate_bust_a rate_clean_hit (F3.0).
+VARIABLE LABELS rate_bust_a 'Bust rate (%)'
+                rate_clean_hit 'Clean-hit rate (%)'.
+EXECUTE.
+
+LIST VARIABLES=team n_picks rate_bust_a rate_clean_hit /CASES=4.
+```
+### Julia
+```julia
+worst.rate_bust_a    = round.(100 .* worst.rate_bust_a)
+worst.rate_clean_hit = round.(100 .* worst.rate_clean_hit)
+
+first(worst, 4)          # easier to read AND more truthful
+```
+### Python
+```python
+worst = worst.assign(
+    rate_bust_a=lambda d: (100 * d.rate_bust_a).round(),
+    rate_clean_hit=lambda d: (100 * d.rate_clean_hit).round())
+
+worst.head(4)            # easier to read AND more truthful
+```
+:::
 
 The second table is easier to read *and* more truthful. **Show the digits you can defend, and not one more.**
 
@@ -69,6 +167,8 @@ The second table is easier to read *and* more truthful. **Show the digits you ca
 
 A table's row order is free information - spend it. An alphabetical list of teams makes the reader hunt; a list **sorted by the thing you care about** answers the question before they ask it. We already sorted by bust rate above (worst first), so the ranking *is* the message. Now show the two ends that a reader actually wants - the best and worst drafters - instead of dumping all 32:
 
+::: {.panel-tabset}
+### R
 ```{r}
 ends <- bind_rows(
   worst |> slice_head(n = 5) |> mutate(group = "Worst drafters", .before = 1),
@@ -80,6 +180,36 @@ knitr::kable(ends, row.names = FALSE,
              col.names = c("", "Team", "Picks", "Bust rate (%)"),
              caption = "The two ends of the ranking — the comparison the reader wanted.")
 ```
+### SPSS
+```
+* Show the two ends of the ranking, not all 32 rows.
+* Flag the top and bottom five, then list only those.
+COMPUTE rank_bust = $CASENUM.
+COMPUTE ends = 0.
+IF (rank_bust <= 5) ends = 1.
+IF (rank_bust > 27) ends = 2.
+VALUE LABELS ends 1 'Worst drafters' 2 'Best drafters'.
+EXECUTE.
+
+TEMPORARY.
+SELECT IF (ends > 0).
+LIST VARIABLES=ends team n_picks rate_bust_a.
+```
+### Julia
+```julia
+ends = vcat(transform(first(worst, 5), :team => ByRow(_ -> "Worst drafters") => :group),
+            transform(last(worst, 5),  :team => ByRow(_ -> "Best drafters")  => :group))
+
+select(ends, :group, :team, :n_picks, :rate_bust_a)
+```
+### Python
+```python
+ends = pd.concat([worst.head(5).assign(group="Worst drafters"),
+                  worst.tail(5).assign(group="Best drafters")])
+
+ends[["group", "team", "n_picks", "rate_bust_a"]]
+```
+:::
 
 Ten rows, sorted, grouped into the contrast that matters. A 32-row alphabetical dump would contain the same facts but communicate far less of them. **Order and trim the table to the question; do not make the reader do your sorting.**
 

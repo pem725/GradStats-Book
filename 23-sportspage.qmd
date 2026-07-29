@@ -23,6 +23,8 @@ Here is the idea that separates a describer from a forecaster: **any model flexi
 
 Every April, someone goes 6-for-9 and gets talked about as an MVP. Every April, that call turns out to be premature, and you already have the tools to know *why*. It is the same lesson as [statistical power](09-statisticalpower.qmd): small samples are noisy. Watch what happens when we plot every hitter's performance against how many chances they have had:
 
+::: {.panel-tabset}
+### R
 ```{r}
 #| fig-cap: "OPS vs. plate appearances. Every extreme lives on the left — where the sample is tiny."
 #| fig-height: 3.6
@@ -41,9 +43,54 @@ ggplot(h, aes(PA, OPS)) +
        title = "The funnel: extremes only survive at small samples") +
   theme_minimal(base_size = 12)
 ```
+### SPSS
+```
+* OPS against plate appearances, with a reference line at the league median
+* among hitters with 200+ PA.
+GET DATA /TYPE=TXT /FILE='data/mlb_hitters_2026.csv'
+  /DELIMITERS=',' /FIRSTCASE=2 /VARIABLES=PA F8.0 OPS F8.3.
+
+* First find the median among the qualified hitters.
+TEMPORARY.
+SELECT IF (PA >= 200).
+FREQUENCIES VARIABLES=OPS /STATISTICS=MEDIAN.
+
+GRAPH /SCATTERPLOT(BIVAR) = PA WITH OPS
+  /TITLE = 'The funnel: extremes only survive at small samples'.
+```
+### Julia
+```julia
+using CSV, DataFrames, Statistics, Plots
+h = CSV.read("data/mlb_hitters_2026.csv", DataFrame)   # a partial season
+
+league_median = median(h.OPS[h.PA .>= 200])
+
+scatter(h.PA, h.OPS, alpha = 0.35, legend = false,
+        xlabel = "Plate appearances", ylabel = "OPS",
+        title = "The funnel: extremes only survive at small samples")
+hline!([league_median], color = :firebrick, linewidth = 2)
+```
+### Python
+```python
+import pandas as pd
+import matplotlib.pyplot as plt
+
+h = pd.read_csv("data/mlb_hitters_2026.csv")           # a partial season
+
+league_median = h.loc[h.PA >= 200, "OPS"].median()
+
+plt.scatter(h.PA, h.OPS, alpha=0.35, color="steelblue")
+plt.axhline(league_median, color="firebrick", linewidth=2)
+plt.xlabel("Plate appearances"); plt.ylabel("OPS")
+plt.title("The funnel: extremes only survive at small samples")
+plt.show()
+```
+:::
 
 The plot is a **funnel**. On the right, where hitters have 200+ chances, everyone clusters near the league median (the red line). On the left, where a hitter has batted a handful of times, OPS ranges from near zero to the stratosphere. The numbers make it stark:
 
+::: {.panel-tabset}
+### R
 ```{r}
 h |>
   summarise(
@@ -54,6 +101,39 @@ h |>
   ) |>
   round2()
 ```
+### SPSS
+```
+* Spread of OPS at small vs large samples, and the season's best mark.
+TEMPORARY.
+SELECT IF (PA < 20).
+DESCRIPTIVES VARIABLES=OPS /STATISTICS=STDDEV.
+
+TEMPORARY.
+SELECT IF (PA >= 200).
+DESCRIPTIVES VARIABLES=OPS /STATISTICS=STDDEV.
+
+* The best OPS and the plate appearances behind it.
+SORT CASES BY OPS (D).
+LIST VARIABLES=OPS PA /CASES=1.
+```
+### Julia
+```julia
+using Statistics
+std(h.OPS[h.PA .< 20])        # tiny samples: huge spread
+std(h.OPS[h.PA .>= 200])      # big samples: tight
+
+best = argmax(h.OPS)
+h.OPS[best], h.PA[best]       # the best mark, and how few chances made it
+```
+### Python
+```python
+h.loc[h.PA < 20, "OPS"].std()      # tiny samples: huge spread
+h.loc[h.PA >= 200, "OPS"].std()   # big samples: tight
+
+best = h.OPS.idxmax()
+h.loc[best, ["OPS", "PA"]]        # the best mark, and how few chances made it
+```
+:::
 
 The best OPS in the league belongs to someone with a single-digit number of at-bats. That is not a hitter who has cracked the code; that is mostly **sampling noise in a very small sample**. The honest read: a hot start is *description* of a tiny sample, and mistaking it for *prediction* is one of the most common errors in sports, and in science more broadly. The player will "regress to the mean" not because of some mysterious force, but because the extreme value was mostly luck, and luck does not carry over to the rest of the season.
 

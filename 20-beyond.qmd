@@ -31,6 +31,8 @@ The logic is simpler than it first appears. A statistic (a mean, a slope, an ind
 
 **Bootstrapping** resamples your data *with replacement*, `n` observations drawn from `n`, over and over, recomputing the statistic each time. The spread of those recomputed values *is* the estimated sampling distribution. Take a small, skewed sample - exactly where the normal-theory formula is least trustworthy - and bootstrap the mean:
 
+::: {.panel-tabset}
+### R
 ```{r}
 #| message: false
 library(tidyverse)    # dplyr, ggplot2, purrr, tibble, readr, stringr, forcats
@@ -50,9 +52,52 @@ tibble(
 ) |>
   round2()
 ```
+### SPSS
+```
+* SPSS has a genuine BOOTSTRAP subcommand (Bootstrapping add-on module),
+* which resamples and reports percentile intervals for most procedures.
+INPUT PROGRAM.
+LOOP #i = 1 TO 30.
+  COMPUTE samp = RV.EXP(1 / 50).      /* n = 30, right-skewed */
+  END CASE.
+END LOOP.
+END FILE.
+END INPUT PROGRAM.
+EXECUTE.
+
+BOOTSTRAP /SAMPLING METHOD=SIMPLE /VARIABLES TARGET=samp
+  /CRITERIA CILEVEL=95 NSAMPLES=2000 CITYPE=PERCENTILE.
+DESCRIPTIVES VARIABLES=samp /STATISTICS=MEAN.
+```
+### Julia
+```julia
+using Random, Distributions, Statistics, StatsBase
+Random.seed!(42)
+samp = rand(Exponential(50), 30)         # n = 30, right-skewed data
+
+boot_means = [mean(sample(samp, length(samp), replace = true)) for _ in 1:2000]
+
+mean(samp), std(boot_means),
+quantile(boot_means, 0.025), quantile(boot_means, 0.975)
+```
+### Python
+```python
+import numpy as np
+
+rng = np.random.default_rng(42)
+samp = rng.exponential(50, 30)           # n = 30, right-skewed data
+
+boot_means = np.array([rng.choice(samp, samp.size, replace=True).mean()
+                       for _ in range(2000)])
+
+samp.mean(), boot_means.std(ddof=1), *np.quantile(boot_means, [0.025, 0.975])
+```
+:::
 
 That is the entire idea: `sample(samp, replace = TRUE)` inside `replicate()`, then read the **standard error** off `sd()` and the **confidence interval** off `quantile()`. There is no formula, no normality assumption, and no $z$. The 2.5th and 97.5th percentiles of the bootstrap distribution are a **percentile confidence interval**, and notice that it can be *asymmetric*, honestly reflecting the skew that a normal-theory interval would smooth over.
 
+::: {.panel-tabset}
+### R
 ```{r}
 #| fig-cap: "The bootstrap sampling distribution of the mean, with the percentile 95% interval."
 #| fig-height: 4
@@ -65,11 +110,43 @@ tibble(resampled_mean = boot_means) |>
   labs(x = "resampled mean", y = "count") +
   theme_minimal()
 ```
+### SPSS
+```
+* SPSS reports the bootstrap interval as a table rather than drawing the
+* resampling distribution. To picture it, save the bootstrap estimates and
+* histogram them:
+BOOTSTRAP /SAMPLING METHOD=SIMPLE /VARIABLES TARGET=samp
+  /CRITERIA NSAMPLES=2000
+  /SAVE BOOTSTRAPESTIMATES.
+
+GRAPH /HISTOGRAM = BootstrapMean.
+```
+### Julia
+```julia
+using Plots
+histogram(boot_means, bins = 40, legend = false,
+          xlabel = "resampled mean", ylabel = "count")
+vline!(quantile(boot_means, [0.025, 0.975]), color = :red, linestyle = :dash)
+vline!([mean(samp)], color = :blue, linewidth = 2)
+```
+### Python
+```python
+import matplotlib.pyplot as plt
+
+plt.hist(boot_means, bins=40, color="lightgrey", edgecolor="white")
+for q in np.quantile(boot_means, [0.025, 0.975]):
+    plt.axvline(q, color="red", linestyle="--", linewidth=2)
+plt.axvline(samp.mean(), color="blue", linewidth=2)
+plt.xlabel("resampled mean"); plt.ylabel("count"); plt.show()
+```
+:::
 
 ### The permutation test (testing)
 
 The bootstrap *estimated* an interval. To *test* a hypothesis - say, that two groups have the same mean - we resample differently. Under the null "the group label is irrelevant," we can **shuffle the labels** and see how big a difference arises by chance alone. The observed difference is "significant" if it lands in the tail of that shuffled distribution.
 
+::: {.panel-tabset}
+### R
 ```{r}
 set.seed(7)
 g <- tibble(
@@ -93,6 +170,51 @@ tibble(observed_diff = obs,
   mutate(permutation_p = fmt_p(permutation_p)) |>
   round2()
 ```
+### SPSS
+```
+* Base SPSS has no permutation test. The Exact Tests add-on module gives
+* exact/Monte-Carlo p-values for many nonparametric procedures, which is
+* the same logic applied to rank tests:
+NPAR TESTS
+  /M-W = value BY group(1 2)
+  /MISSING ANALYSIS
+  /METHOD=MC CIN(99) SAMPLES(5000).
+
+* A mean-difference permutation test as written in the other tabs has no
+* base-SPSS equivalent; it needs the Python or R integration plug-in.
+```
+### Julia
+```julia
+using Random, Distributions, Statistics
+Random.seed!(7)
+value = vcat(rand(Normal(0.0), 15), rand(Normal(0.8), 15))
+group = repeat([1, 2], inner = 15)
+
+obs = mean(value[group .== 2]) - mean(value[group .== 1])
+
+perm = [begin
+          s = shuffle(group)                        # shuffle labels
+          mean(value[s .== 2]) - mean(value[s .== 1])
+        end for _ in 1:5000]
+
+obs, mean(abs.(perm) .>= abs(obs))                  # two-sided p-value
+```
+### Python
+```python
+import numpy as np
+
+rng = np.random.default_rng(7)
+value = np.concatenate([rng.normal(0.0, 1, 15), rng.normal(0.8, 1, 15)])
+group = np.repeat([1, 2], 15)
+
+obs = value[group == 2].mean() - value[group == 1].mean()
+
+perm = np.array([(lambda s: value[s == 2].mean() - value[s == 1].mean())
+                 (rng.permutation(group)) for _ in range(5000)])
+
+obs, (np.abs(perm) >= abs(obs)).mean()              # two-sided p-value
+```
+:::
 
 The permutation $p$-value is the fraction of shuffles that beat the real difference. It makes **no distributional assumption at all**; it rests only on the exchangeability of labels under the null.
 
@@ -100,6 +222,8 @@ The permutation $p$-value is the fraction of shuffles that beat the real differe
 
 Older and simpler than the bootstrap, the **jackknife** recomputes the statistic leaving out one observation at a time. It is handy for a quick standard error and for spotting influential points (if dropping one case moves the estimate a lot, you've found a leverage problem):
 
+::: {.panel-tabset}
+### R
 ```{r}
 jk <- map_dbl(seq_along(samp), \(i) mean(samp[-i]))   # leave-one-out means
 n  <- length(samp)
@@ -110,6 +234,36 @@ tibble(
 ) |>
   round2()
 ```
+### SPSS
+```
+* Base SPSS has no jackknife. The leave-one-out logic is easy to write by
+* hand, though: drop each case in turn and recompute the mean.
+* (SPSS's BOOTSTRAP module covers the same ground more directly.)
+COMPUTE id = $CASENUM.
+EXECUTE.
+
+* For each case i, the mean of everything except i:
+AGGREGATE OUTFILE=* MODE=ADDVARIABLES /BREAK= /grand=SUM(samp) /n=N.
+COMPUTE loo_mean = (grand - samp) / (n - 1).
+EXECUTE.
+
+DESCRIPTIVES VARIABLES=loo_mean /STATISTICS=MEAN STDDEV.
+```
+### Julia
+```julia
+jk = [mean(samp[setdiff(1:end, i)]) for i in eachindex(samp)]
+n  = length(samp)
+
+mean(jk), sqrt((n - 1) * mean((jk .- mean(jk)).^2))     # jackknife mean and SE
+```
+### Python
+```python
+jk = np.array([np.delete(samp, i).mean() for i in range(samp.size)])
+n = samp.size
+
+jk.mean(), np.sqrt((n - 1) * ((jk - jk.mean())**2).mean())  # jackknife mean, SE
+```
+:::
 
 ::: {.callout-note}
 ## Estimation vs. testing, the resampling version
@@ -122,6 +276,8 @@ Recall from the [central tendency chapter](03-CTmeasures.qmd) that the mean is a
 
 Watch nineteen clean observations and one data-entry error:
 
+::: {.panel-tabset}
+### R
 ```{r}
 set.seed(1)
 z <- c(rnorm(19, mean = 100, sd = 10), 250)        # 19 good values + 1 gross outlier
@@ -135,6 +291,46 @@ tibble(
 ) |>
   round2()
 ```
+### SPSS
+```
+* Nineteen clean observations and one data-entry error.
+INPUT PROGRAM.
+LOOP #i = 1 TO 19.
+  COMPUTE z = RV.NORMAL(100, 10).
+  END CASE.
+END LOOP.
+COMPUTE z = 250.
+END CASE.
+END FILE.
+END INPUT PROGRAM.
+EXECUTE.
+
+* EXAMINE reports the mean, median, the 5% trimmed mean, and the SD.
+EXAMINE VARIABLES=z /STATISTICS=DESCRIPTIVES.
+
+* MAD has no base-SPSS keyword; compute it from the median directly:
+* COMPUTE absdev = ABS(z - <median>).  then take the median of absdev,
+* multiplied by 1.4826 for consistency with the SD under normality.
+```
+### Julia
+```julia
+using Statistics, StatsBase
+Random.seed!(1)
+z = vcat(rand(Normal(100, 10), 19), 250.0)   # 19 good values + 1 gross outlier
+
+mean(z), median(z), mean(trim(z, prop = 0.10)), std(z), mad(z)
+```
+### Python
+```python
+from scipy import stats
+
+rng = np.random.default_rng(1)
+z = np.append(rng.normal(100, 10, 19), 250)  # 19 good values + 1 gross outlier
+
+(z.mean(), np.median(z), stats.trim_mean(z, 0.10),
+ z.std(ddof=1), stats.median_abs_deviation(z, scale="normal"))
+```
+:::
 
 The **mean** and **SD** are inflated by the lone outlier; the **median**, **10% trimmed mean**, and **MAD** barely notice it. That resistance is the whole point of robust statistics:
 
@@ -171,6 +367,8 @@ The **prior** is what you believed about the parameter $\theta$ before the data;
 
 Here is a calculation worth sitting with, and it needs nothing but Bayes' rule. You run a well-powered study, get $p < .05$, and publish. **What is the probability your hypothesis is actually true?** It is not the $p$-value; that is $P(\text{significant} \mid H \text{ false})$. The quantity you want is $P(H \text{ true} \mid \text{significant})$, and it depends on how plausible your idea was *before* the data, its prior:
 
+::: {.panel-tabset}
+### R
 ```{r}
 tibble(
   power = 0.99,   # P(significant | H true)  -- a very high-powered study
@@ -181,9 +379,37 @@ tibble(
     (power * prior) / (power * prior + alpha * (1 - prior))) |>
   round2()
 ```
+### SPSS
+```
+* Bayes' rule applied to a screening question: given power, alpha, and a
+* prior, what is the posterior probability the hypothesis is true?
+DATA LIST FREE /power alpha prior.
+BEGIN DATA
+0.99 0.01 0.02
+END DATA.
+
+COMPUTE posterior = (power * prior) / (power * prior + alpha * (1 - prior)).
+EXECUTE.
+LIST VARIABLES=power alpha prior posterior.
+```
+### Julia
+```julia
+power, alpha, prior = 0.99, 0.01, 0.02   # very high power, strict alpha, rare idea
+
+posterior = (power * prior) / (power * prior + alpha * (1 - prior))
+```
+### Python
+```python
+power, alpha, prior = 0.99, 0.01, 0.02   # very high power, strict alpha, rare idea
+
+posterior = (power * prior) / (power * prior + alpha * (1 - prior))
+```
+:::
 
 Even with $99\%$ power and a $1\%$ false-positive rate, a significant result leaves you only about **67%** sure - because the idea was a long shot to begin with. Loosen the study to more realistic numbers and it collapses further:
 
+::: {.panel-tabset}
+### R
 ```{r}
 # modest power, ordinary screening, a rarer idea
 tibble(power = 0.95, alpha = 0.05, prior = 0.01) |>
@@ -191,6 +417,29 @@ tibble(power = 0.95, alpha = 0.05, prior = 0.01) |>
     (power * prior) / (power * prior + alpha * (1 - prior))) |>
   round2()
 ```
+### SPSS
+```
+* Modest power, ordinary screening, a rarer idea.
+DATA LIST FREE /power alpha prior.
+BEGIN DATA
+0.95 0.05 0.01
+END DATA.
+
+COMPUTE posterior = (power * prior) / (power * prior + alpha * (1 - prior)).
+EXECUTE.
+LIST VARIABLES=posterior.
+```
+### Julia
+```julia
+power, alpha, prior = 0.95, 0.05, 0.01
+(power * prior) / (power * prior + alpha * (1 - prior))
+```
+### Python
+```python
+power, alpha, prior = 0.95, 0.05, 0.01
+(power * prior) / (power * prior + alpha * (1 - prior))
+```
+:::
 
 About **16%**. Chase enough low-prior ideas with $p < .05$ and *most* of your "discoveries" will be false, no matter how small the $p$-value. This is the arithmetic behind the replication crisis we met in [hypothesis testing](08-hypothesistesting.qmd). The $p$-value does not answer the question you cared about, and Bayes' rule does, but it asks you to state your prior out loud. That honesty is the point.
 
@@ -198,6 +447,8 @@ About **16%**. Chase enough low-prior ideas with $p < .05$ and *most* of your "d
 
 You do not need fancy software to see the machine turn. Take the oldest example in the book - estimating a proportion (a coin's bias, a globe's water fraction, a treatment's success rate) from a handful of trials. Lay down a **grid** of possible values, evaluate prior × likelihood at each, normalize, and you have a posterior:
 
+::: {.panel-tabset}
+### R
 ```{r}
 #| fig-cap: "Grid-approximation posterior for a proportion after 6 successes in 9 trials."
 #| fig-height: 4
@@ -214,11 +465,64 @@ ggplot(posterior, aes(x = theta, y = post)) +
   labs(x = expression(theta ~ "(the proportion)"), y = "posterior density") +
   theme_minimal()
 ```
+### SPSS
+```
+* Grid approximation of a posterior for a proportion after 6 successes
+* in 9 trials, with a Beta(2,2) prior.
+INPUT PROGRAM.
+LOOP #i = 0 TO 1000.
+  COMPUTE theta = #i / 1000.
+  COMPUTE prior = PDF.BETA(theta, 2, 2).
+  COMPUTE like  = PDF.BINOM(6, 9, theta).
+  COMPUTE post  = like * prior.
+  END CASE.
+END LOOP.
+END FILE.
+END INPUT PROGRAM.
+EXECUTE.
+
+* Normalise, then plot.
+AGGREGATE OUTFILE=* MODE=ADDVARIABLES /BREAK= /tot=SUM(post).
+COMPUTE post = post / tot.
+EXECUTE.
+
+GRAPH /LINE(SIMPLE) = VALUE(post) BY theta
+  /TITLE = 'Grid-approximation posterior'.
+```
+### Julia
+```julia
+using Distributions, Plots
+theta = range(0, 1, length = 1000)
+prior = pdf.(Beta(2, 2), theta)                   # weakly informative
+like  = [pdf(Binomial(9, t), 6) for t in theta]   # data: 6 successes in 9 trials
+post  = like .* prior; post ./= sum(post)
+
+plot(theta, post, linewidth = 2, legend = false,
+     xlabel = "theta (the proportion)", ylabel = "posterior density")
+```
+### Python
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import beta, binom
+
+theta = np.linspace(0, 1, 1000)
+prior = beta.pdf(theta, 2, 2)                # weakly informative
+like  = binom.pmf(6, 9, theta)               # data: 6 successes in 9 trials
+post  = like * prior; post /= post.sum()
+
+plt.plot(theta, post, color="blue", linewidth=2)
+plt.xlabel(r"$\theta$ (the proportion)"); plt.ylabel("posterior density")
+plt.show()
+```
+:::
 
 Now *summarize* the posterior - and here the estimation-vs-testing split becomes concrete.
 
 **Estimation.** The answer is the whole posterior; we compress it into a point and an interval. Sampling from the grid makes this a one-liner. A Bayesian interval is a **credible** (or "compatibility") interval, and - unlike a confidence interval - it means the plain-English thing: "given the model and data, there's a 95% probability $\theta$ is in here."
 
+::: {.panel-tabset}
+### R
 ```{r}
 draws <- sample(posterior$theta, 1e5, replace = TRUE, prob = posterior$post)
 
@@ -229,15 +533,67 @@ tibble(
 ) |>
   round2()
 ```
+### SPSS
+```
+* Sampling from the grid posterior needs a weighted draw, which base SPSS
+* does not offer directly. The posterior mean and quantiles can instead be
+* read off the grid itself, which is exact rather than simulated:
+*   posterior mean = SUM(theta * post)
+*   the 2.5th/97.5th percentiles are where the CUMULATIVE post crosses
+*   0.025 and 0.975.
+CREATE cum_post = CSUM(post).
+EXECUTE.
+
+TEMPORARY.
+SELECT IF (cum_post >= 0.025 AND cum_post <= 0.975).
+DESCRIPTIVES VARIABLES=theta /STATISTICS=MINIMUM MAXIMUM.
+```
+### Julia
+```julia
+using StatsBase
+draws = sample(collect(theta), Weights(post), 100_000)
+
+mean(draws), quantile(draws, 0.025), quantile(draws, 0.975)
+```
+### Python
+```python
+rng = np.random.default_rng()
+draws = rng.choice(theta, 100_000, p=post)
+
+draws.mean(), *np.quantile(draws, [0.025, 0.975])
+```
+:::
 
 **Testing.** Rather than a point-null "is $\theta$ *exactly* 0.5?" (a question of measure zero that is never truly true), Bayesians ask a better one: how much posterior belief sits in a **Region of Practical Equivalence (ROPE)** around the null - a band of values "close enough to 0.5 to not care"? If almost none of the posterior is in the ROPE, the effect is credibly *not* null; if most of it is, you have evidence *for* practical equivalence - something a $p$-value can never give you.
 
+::: {.panel-tabset}
+### R
 ```{r}
 rope_lo <- 0.45; rope_hi <- 0.55   # "practically a fair coin"
 
 # posterior probability inside the ROPE
 tibble(p_inside_rope = mean(draws > rope_lo & draws < rope_hi)) |> round2()
 ```
+### SPSS
+```
+* The posterior probability inside a region of practical equivalence
+* (here 0.45 to 0.55, "practically a fair coin"). On the grid this is
+* simply the posterior mass between those two values.
+TEMPORARY.
+SELECT IF (theta > 0.45 AND theta < 0.55).
+DESCRIPTIVES VARIABLES=post /STATISTICS=SUM.
+```
+### Julia
+```julia
+rope_lo, rope_hi = 0.45, 0.55        # "practically a fair coin"
+mean(rope_lo .< draws .< rope_hi)     # posterior probability inside the ROPE
+```
+### Python
+```python
+rope_lo, rope_hi = 0.45, 0.55        # "practically a fair coin"
+((draws > rope_lo) & (draws < rope_hi)).mean()   # probability inside the ROPE
+```
+:::
 
 ### From the toy to the real thing
 

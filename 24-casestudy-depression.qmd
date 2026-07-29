@@ -8,6 +8,8 @@ The instrument is the **Beck Depression Inventory (BDI-II)**: 21 symptoms (sadne
 
 Start with pure arithmetic - no data and no model, just counting. How many different 21-item profiles produce a total of exactly 15? The answer comes from the **inclusion–exclusion principle**, and it is worth computing yourself because the number is larger than most people expect:
 
+::: {.panel-tabset}
+### R
 ```{r}
 #| message: false
 library(tidyverse)    # dplyr, ggplot2, purrr, tibble, readr, stringr, forcats
@@ -22,6 +24,47 @@ n_patterns <- function(k, a, n) {                 # k items, each 0..a, summing 
 
 format(n_patterns(21, 3, 15), big.mark = ",")     # ways to score 15 on the BDI-II
 ```
+### SPSS
+```
+* How many 21-item profiles (each item 0..3) sum to exactly 15?
+* Inclusion-exclusion, evaluated as a running total.
+DATA LIST FREE /dummy.
+BEGIN DATA
+1
+END DATA.
+
+COMPUTE k = 21.
+COMPUTE a = 3.
+COMPUTE n = 15.
+COMPUTE total = 0.
+LOOP #i = 0 TO TRUNC(n / (a + 1)).
+  COMPUTE total = total + ((-1) ** #i)
+    * (EXP(LNGAMMA(k+1) - LNGAMMA(#i+1) - LNGAMMA(k-#i+1)))
+    * (EXP(LNGAMMA(n - #i*(a+1) + k) - LNGAMMA(k) - LNGAMMA(n - #i*(a+1) + 1))).
+END LOOP.
+EXECUTE.
+LIST VARIABLES=total.
+```
+### Julia
+```julia
+function n_patterns(k, a, n)          # k items, each 0..a, summing to n
+    sum((-1)^i * binomial(k, i) * binomial(n - i*(a+1) + k - 1, k - 1)
+        for i in 0:fld(n, a + 1))
+end
+
+n_patterns(21, 3, 15)                 # ways to score 15 on the BDI-II
+```
+### Python
+```python
+from math import comb
+
+def n_patterns(k, a, n):              # k items, each 0..a, summing to n
+    return sum((-1)**i * comb(k, i) * comb(n - i*(a+1) + k - 1, k - 1)
+               for i in range(n // (a + 1) + 1))
+
+f"{n_patterns(21, 3, 15):,}"          # ways to score 15 on the BDI-II
+```
+:::
 
 **1.65 billion** distinct symptom profiles all land on "15 = mild depression." Across all possible totals there are $4^{21} \approx 4.4$ trillion profiles, peaking at 338 billion different ways to score a 31. The clinical convention - "minimal / mild / moderate / severe" - treats all of them as the same. That is a large amount of discarded information, and the question is whether any of it mattered.
 
@@ -34,6 +77,8 @@ The clinical and student profiles behind this project are the authors' own resea
 
 The billion is abstract; two people make it concrete. First we build the simulated sample, then pull two who **both scored exactly 15**:
 
+::: {.panel-tabset}
+### R
 ```{r}
 #| message: false
 set.seed(2026)
@@ -62,6 +107,80 @@ bdi |>
   pivot_longer(-person, names_to = "symptom", values_to = "score") |>
   pivot_wider(names_from = person, values_from = score)
 ```
+### SPSS
+```
+* Simulate 1200 people answering 21 graded (0..3) BDI-II-like items from a
+* single latent severity dimension, then pull two who both scored 15.
+* (Item names s1 to s21; theta is the person's latent severity.)
+INPUT PROGRAM.
+LOOP #p = 1 TO 1200.
+  COMPUTE theta = RV.NORMAL(-0.5, 1).
+  VECTOR s(21).
+  LOOP #j = 1 TO 21.
+    COMPUTE #d = 2.6 + 1.3 * IDF.NORMAL(#j / 22, 0, 1).
+    COMPUTE s(#j) = (RV.UNIFORM(0,1) < (1/(1+EXP(-(theta - (#d - 1.1))))))
+                  + (RV.UNIFORM(0,1) < (1/(1+EXP(-(theta - #d)))))
+                  + (RV.UNIFORM(0,1) < (1/(1+EXP(-(theta - (#d + 1.1)))))).
+  END LOOP.
+  END CASE.
+END LOOP.
+END FILE.
+END INPUT PROGRAM.
+COMPUTE total = SUM(s1 TO s21).
+EXECUTE.
+
+TEMPORARY.
+SELECT IF (total = 15).
+LIST VARIABLES=s1 TO s21 /CASES=2.
+```
+### Julia
+```julia
+using Random, Distributions, DataFrames
+Random.seed!(2026)
+N, k = 1200, 21
+symptoms = ["sadness","pessimism","past_failure","loss_pleasure","guilt",
+            "punishment","self_dislike","self_critical","suicidal","crying",
+            "agitation","loss_interest","indecision","worthlessness",
+            "loss_energy","sleep","irritability","appetite","concentration",
+            "tiredness","loss_sex_interest"]
+
+theta = rand(Normal(-0.5, 1), N)
+diff  = sort(rand(Normal(2.6, 1.3), k))
+
+bdi = DataFrame([Symbol(symptoms[j]) =>
+        [sum(rand() < 1/(1+exp(-(t - (diff[j] + s)))) for s in (-1.1, 0, 1.1))
+         for t in theta] for j in 1:k])
+
+totals = sum(eachcol(bdi))
+pair = findall(==(15), totals)[1:2]
+bdi[pair, :]
+```
+### Python
+```python
+import numpy as np, pandas as pd
+
+rng = np.random.default_rng(2026)
+N, k = 1200, 21
+symptoms = ["sadness","pessimism","past_failure","loss_pleasure","guilt",
+            "punishment","self_dislike","self_critical","suicidal","crying",
+            "agitation","loss_interest","indecision","worthlessness",
+            "loss_energy","sleep","irritability","appetite","concentration",
+            "tiredness","loss_sex_interest"]
+
+theta = rng.normal(-0.5, 1, N)
+diff  = np.sort(rng.normal(2.6, 1.3, k))
+
+def item(j):                                   # P(score >= 1, 2, 3)
+    p = 1 / (1 + np.exp(-(theta[:, None] - (diff[j] + np.array([-1.1, 0, 1.1])))))
+    return (rng.random((N, 3)) < p).sum(axis=1)
+
+bdi = pd.DataFrame({s: item(j) for j, s in enumerate(symptoms)})
+totals = bdi.sum(axis=1)
+
+pair = totals[totals == 15].index[:2]           # two people, identical total
+bdi.loc[pair].T
+```
+:::
 
 One person's distress concentrates in a few symptoms; the other's spreads thin across many. Same "15," but different clinical pictures, and a sum score cannot tell them apart. The **profile** can.
 
@@ -69,6 +188,8 @@ One person's distress concentrates in a few symptoms; the other's spreads thin a
 
 If 4.4 trillion profiles are *possible*, how many actually *occur*? Almost none - because depression symptoms do not vary independently; they hang together. Count the distinct profiles:
 
+::: {.panel-tabset}
+### R
 ```{r}
 key <- bdi |> unite("profile", everything(), sep = "-") |> pull(profile)
 
@@ -79,6 +200,36 @@ tibble(
 ) |>
   round2()
 ```
+### SPSS
+```
+* How many distinct 21-item profiles actually occur among 1200 people?
+* Concatenate the items into a single key, then count distinct keys.
+STRING profile (A63).
+COMPUTE profile = CONCAT(STRING(s1,F1), '-', STRING(s2,F1), '-', STRING(s3,F1)).
+* ... continue for s4 to s21 ...
+EXECUTE.
+
+AGGREGATE OUTFILE=* MODE=ADDVARIABLES
+  /BREAK=profile
+  /n_sharing=N.
+
+FREQUENCIES VARIABLES=n_sharing.
+```
+### Julia
+```julia
+using StatsBase
+key = [join(r, "-") for r in eachrow(bdi)]
+
+nrow(bdi), length(unique(key)),
+100 * mean(values(countmap(key))[indexin(key, collect(keys(countmap(key))))] .== 1)
+```
+### Python
+```python
+key = bdi.astype(str).agg("-".join, axis=1)
+
+len(bdi), key.nunique(), 100 * (key.map(key.value_counts()) == 1).mean()
+```
+:::
 
 Roughly **three-quarters have a profile no one else shares**, and in the real six-sample analysis it was **79.7%**. Even our simple simulation reproduces the effect: of the trillions of mathematically possible patterns, people occupy only a small fraction, what the study called the **manifold collapse**. The space of possible profiles is huge, but real people use very little of it. That raises a genuine question: are the profiles that *never* appear merely rare, or are some of them *impossible in principle*, incoherent given how depression actually works?
 
@@ -86,6 +237,8 @@ Roughly **three-quarters have a profile no one else shares**, and in the real si
 
 A profile can be numerically fine and clinically nonsensical - maximum *worthlessness* with zero *sadness*, say. Borrowing a term from Configural Frequency Analysis, we call these **antitypes**: possible on paper, absent in reality because they violate the internal structure of the construct. To catch them we need a notion of which symptoms are "easy" (commonly endorsed) and which are "hard" (rare), and then flag people who endorse hard symptoms while skipping easy ones. Here is the idea in miniature - a light **ordering-violation** count you can run:
 
+::: {.panel-tabset}
+### R
 ```{r}
 # higher mean = more commonly endorsed = "easier"
 difficulty <- bdi |> summarise(across(everything(), mean)) |> unlist()
@@ -104,6 +257,49 @@ tibble(
 ) |>
   round2()
 ```
+### SPSS
+```
+* Ordering violations: count pairs where a person scores a "harder"
+* (rarely endorsed) symptom above an "easier" one.
+* SPSS has no vectorised pairwise comparison, so this needs nested loops
+* over the 21 x 21 item pairs inside a VECTOR.
+DESCRIPTIVES VARIABLES=s1 TO s21 /STATISTICS=MEAN.
+
+VECTOR s = s1 TO s21.
+VECTOR d = d1 TO d21.        /* item means, filled in from the run above */
+COMPUTE ovi = 0.
+LOOP #i = 1 TO 21.
+  LOOP #j = 1 TO 21.
+    IF (d(#i) < d(#j) AND s(#i) > s(#j)) ovi = ovi + 1.
+  END LOOP.
+END LOOP.
+EXECUTE.
+
+FREQUENCIES VARIABLES=ovi /STATISTICS=MEDIAN MAXIMUM.
+CORRELATIONS /VARIABLES=ovi total.
+```
+### Julia
+```julia
+using Statistics
+difficulty = [mean(col) for col in eachcol(bdi)]   # higher = more endorsed
+
+ovi = [sum(difficulty[i] < difficulty[j] && r[i] > r[j]
+           for i in 1:k, j in 1:k) for r in eachrow(bdi)]
+
+median(ovi), maximum(ovi), cor(ovi, totals)        # NOT just severity
+```
+### Python
+```python
+difficulty = bdi.mean().values          # higher = more commonly endorsed
+
+harder = difficulty[:, None] < difficulty[None, :]
+X = bdi.values
+ovi = np.array([((X[r][:, None] > X[r][None, :]) & harder).sum()
+                for r in range(len(X))])
+
+np.median(ovi), ovi.max(), np.corrcoef(ovi, totals)[0, 1]   # NOT just severity
+```
+:::
 
 Incoherence is its own dimension - only weakly tied to how *high* the total is. The real study replaces this rough count with a proper **Graded Response Model** (an IRT model, cousin of the [Rasch model](18-rasch.qmd)) that estimates each item's difficulty and each person's severity, then scores every profile's log-likelihood. The two measures - our Ordering Violation Index (OVI) and the GRM profile log-likelihood - agree strongly, and that agreement is stable across samples:
 

@@ -15,6 +15,8 @@ The examples here come from a real project - [The Sports Page](https://thesports
 
 The first decision is not color or font - it is *geometry*. What shape of mark answers your question? A change **over time** wants a line. Here is a true story: over the last four decades, major-league baseball became a strikeout sport. Watch it in one line:
 
+::: {.panel-tabset}
+### R
 ```{r}
 #| fig-cap: "Strikeouts per nine innings, MLB, 1985–present. A trend wants a line."
 #| fig-height: 3.6
@@ -31,6 +33,36 @@ ggplot(mlb, aes(year, K_9)) +
        title = "The strikeout revolution") +
   theme_minimal(base_size = 12)
 ```
+### SPSS
+```
+* A trend over time wants a line.
+GET DATA /TYPE=TXT /FILE='data/mlb_league_by_year.csv'
+  /DELIMITERS=',' /FIRSTCASE=2.
+
+GRAPH /LINE(SIMPLE) = VALUE(K_9) BY year
+  /TITLE = 'The strikeout revolution'.
+```
+### Julia
+```julia
+using CSV, DataFrames, Plots
+mlb = CSV.read("data/mlb_league_by_year.csv", DataFrame)
+
+plot(mlb.year, mlb.K_9, linewidth = 2, marker = :circle, legend = false,
+     ylabel = "Strikeouts per 9 innings", title = "The strikeout revolution")
+```
+### Python
+```python
+import pandas as pd
+import matplotlib.pyplot as plt
+
+mlb = pd.read_csv("data/mlb_league_by_year.csv")
+
+plt.plot(mlb.year, mlb.K_9, color="steelblue", linewidth=2, marker="o", ms=4)
+plt.ylabel("Strikeouts per 9 innings")
+plt.title("The strikeout revolution")
+plt.show()
+```
+:::
 
 A line says "these points are connected in sequence" - exactly the claim you want for a time trend. A bar chart here would be wrong: bars say "these are separate categories to compare," which is a different (and misleading) sentence. **The geometry is the argument.** Trend → line; category comparison → bar; one distribution → histogram; two variables → scatter. Pick the mark that makes the claim you actually mean.
 
@@ -38,6 +70,8 @@ A line says "these points are connected in sequence" - exactly the claim you wan
 
 Same data, two axes, two very different impressions. Batting average has drifted down over the same period, from about .257 to about .242, a real but *modest* slide. First, watch a zoomed-in y-axis make that modest slide look like a catastrophe:
 
+::: {.panel-tabset}
+### R
 ```{r}
 #| fig-cap: "Dishonest axis: zoomed tight, a 15-point drift looks like a cliff."
 #| fig-height: 3.0
@@ -48,9 +82,43 @@ ggplot(mlb, aes(year, AVG)) +
   labs(x = NULL, y = "AVG", title = "“Hitting is DEAD”") +
   theme_minimal(base_size = 11)
 ```
+### SPSS
+```
+* Dishonest axis: zoom the y scale tight and a 15-point drift looks
+* like a cliff. In the chart editor you would set the y-axis minimum to
+* .242 and maximum to .258; in syntax, GGRAPH carries the scale range.
+GGRAPH
+  /GRAPHDATASET NAME="g" VARIABLES=year AVG
+  /GRAPHSPEC SOURCE=INLINE
+  /FRAME INNER=YES.
+BEGIN GPL
+  SOURCE: s=userSource(id("g"))
+  DATA: year=col(source(s), name("year"))
+  DATA: AVG=col(source(s), name("AVG"))
+  SCALE: linear(dim(2), min(0.242), max(0.258))
+  GUIDE: text.title(label("Hitting is DEAD"))
+  ELEMENT: line(position(year*AVG))
+END GPL.
+```
+### Julia
+```julia
+plot(mlb.year, mlb.AVG, linewidth = 2, color = :firebrick, legend = false,
+     ylims = (0.242, 0.258),          # axis zoomed to the data
+     ylabel = "AVG", title = "\"Hitting is DEAD\"")
+```
+### Python
+```python
+plt.plot(mlb.year, mlb.AVG, color="firebrick", linewidth=2)
+plt.ylim(0.242, 0.258)                # axis zoomed to the data
+plt.ylabel("AVG"); plt.title('"Hitting is DEAD"')
+plt.show()
+```
+:::
 
 Now the exact same numbers, on an axis anchored to a meaningful baseline:
 
+::: {.panel-tabset}
+### R
 ```{r}
 #| fig-cap: "Honest axis: from a meaningful zero, the same drift is a gentle slope."
 #| fig-height: 3.0
@@ -61,6 +129,36 @@ ggplot(mlb, aes(year, AVG)) +
   labs(x = NULL, y = "AVG", title = "“Hitting drifted down a bit”") +
   theme_minimal(base_size = 11)
 ```
+### SPSS
+```
+* Honest axis: from a meaningful zero, the same drift is a gentle slope.
+GGRAPH
+  /GRAPHDATASET NAME="g" VARIABLES=year AVG
+  /GRAPHSPEC SOURCE=INLINE
+  /FRAME INNER=YES.
+BEGIN GPL
+  SOURCE: s=userSource(id("g"))
+  DATA: year=col(source(s), name("year"))
+  DATA: AVG=col(source(s), name("AVG"))
+  SCALE: linear(dim(2), min(0), max(0.3))
+  GUIDE: text.title(label("Hitting drifted down a bit"))
+  ELEMENT: line(position(year*AVG))
+END GPL.
+```
+### Julia
+```julia
+plot(mlb.year, mlb.AVG, linewidth = 2, color = :firebrick, legend = false,
+     ylims = (0, 0.3),                # axis from a meaningful zero
+     ylabel = "AVG", title = "\"Hitting drifted down a bit\"")
+```
+### Python
+```python
+plt.plot(mlb.year, mlb.AVG, color="firebrick", linewidth=2)
+plt.ylim(0, 0.3)                      # axis from a meaningful zero
+plt.ylabel("AVG"); plt.title('"Hitting drifted down a bit"')
+plt.show()
+```
+:::
 
 Same numbers, opposite impressions. The first axis turns a 15-point drift into what looks like a cliff; the second, anchored to a meaningful baseline, shows the truth: hitting softened, it did not collapse. Neither axis is *always* right. A zoomed axis is legitimate when small differences genuinely matter (and you say so), but the choice is never neutral. **Ask what the axis is doing to the size of the effect, and whether that is honest.**
 
@@ -73,6 +171,8 @@ A truncated y-axis is the single most common way a well-meaning person makes a s
 
 You have three trends to show at once: strikeouts, walks, and home runs per plate appearance. The temptation is to put them all on one chart with two or three y-axes. It is better not to. Dual-axis charts let you *manufacture* almost any relationship by rescaling one axis, and readers cannot tell which line belongs to which scale. The clearer tool is **small multiples**: the same chart repeated, one panel per series, on comparable axes.
 
+::: {.panel-tabset}
+### R
 ```{r}
 #| fig-cap: "Three league trends as small multiples — comparable, honest, readable."
 #| fig-height: 3.2
@@ -87,6 +187,50 @@ ggplot(long, aes(year, rate)) +
   labs(x = NULL, y = "per plate appearance") +
   theme_minimal(base_size = 11)
 ```
+### SPSS
+```
+* Small multiples: three league trends, one panel each.
+* SPSS facets with a PANEL clause inside GGRAPH. The data must be stacked
+* long first (one row per year per series).
+VARSTOCASES /MAKE rate FROM K_PA BB_PA HR_PA /INDEX=kind.
+
+GGRAPH
+  /GRAPHDATASET NAME="g" VARIABLES=year rate kind
+  /GRAPHSPEC SOURCE=INLINE.
+BEGIN GPL
+  SOURCE: s=userSource(id("g"))
+  DATA: year=col(source(s), name("year"))
+  DATA: rate=col(source(s), name("rate"))
+  DATA: kind=col(source(s), name("kind"), unit.category())
+  GUIDE: axis(dim(1), label("year"))
+  GUIDE: axis(dim(2), label("per plate appearance"))
+  ELEMENT: line(position(year*rate*kind))
+END GPL.
+```
+### Julia
+```julia
+using DataFrames, Plots
+long = stack(select(mlb, :year, :K_PA, :BB_PA, :HR_PA),
+             [:K_PA, :BB_PA, :HR_PA], :year,
+             variable_name = :kind, value_name = :rate)
+
+# one panel per series
+plot([plot(g.year, g.rate, title = string(first(g.kind)), legend = false)
+      for g in groupby(long, :kind)]..., layout = (1, 3))
+```
+### Python
+```python
+long = mlb.melt(id_vars="year", value_vars=["K_PA", "BB_PA", "HR_PA"],
+                var_name="kind", value_name="rate")
+
+fig, axes = plt.subplots(1, 3, figsize=(10, 3))   # one panel per series
+for ax, (kind, g) in zip(axes, long.groupby("kind")):
+    ax.plot(g.year, g.rate, color="steelblue")
+    ax.set_title(kind)
+axes[0].set_ylabel("per plate appearance")
+fig.tight_layout(); plt.show()
+```
+:::
 
 Each panel tells its own honest story (strikeouts soared, walks held steady, homers crept up), and no rescaling trick can fake a relationship between them. When you have many series, **repeat the chart; don't overload it.**
 
@@ -94,6 +238,8 @@ Each panel tells its own honest story (strikeouts soared, walks held steady, hom
 
 For comparing a quantity across categories, the eye reads **position along a common scale** far more accurately than it reads the *angles* of a pie. So a bar chart beats a pie chart almost always - and a *sorted* bar chart beats an unsorted one, because the ordering is itself information. Which NFL teams draft worst? Thirty-two teams is already far too many for a pie; rank them:
 
+::: {.panel-tabset}
+### R
 ```{r}
 #| fig-cap: "NFL first-round bust rate by team — ranked bars, not a 32-slice pie."
 #| fig-height: 5.2
@@ -106,6 +252,39 @@ ggplot(nfl, aes(x = fct_reorder(team, rate_bust_a), y = rate_bust_a)) +
   labs(x = NULL, y = "Bust rate (no Pro Bowl)", title = "Draft busts by team") +
   theme_minimal(base_size = 10)
 ```
+### SPSS
+```
+* Rank, don't pie: a sorted horizontal bar chart of bust rate by team.
+GET DATA /TYPE=TXT /FILE='data/nfl_draft_by_team.csv'
+  /DELIMITERS=',' /FIRSTCASE=2.
+
+SORT CASES BY rate_bust_a (A).
+
+GRAPH /BAR(SIMPLE) = VALUE(rate_bust_a) BY team
+  /TITLE = 'Draft busts by team'.
+* In the chart editor, transpose to horizontal so the team labels stay
+* readable - the equivalent of coord_flip().
+```
+### Julia
+```julia
+using CSV, DataFrames, Plots
+nfl = CSV.read("data/nfl_draft_by_team.csv", DataFrame)
+sort!(nfl, :rate_bust_a)                       # sorted: the ranking IS the message
+
+bar(nfl.team, nfl.rate_bust_a, orientation = :horizontal, legend = false,
+    xlabel = "Bust rate (no Pro Bowl)", title = "Draft busts by team")
+```
+### Python
+```python
+nfl = pd.read_csv("data/nfl_draft_by_team.csv")
+nfl = nfl.sort_values("rate_bust_a")           # sorted: the ranking IS the message
+
+plt.figure(figsize=(6, 8))
+plt.barh(nfl.team, nfl.rate_bust_a, color="0.35")   # horizontal: labels readable
+plt.xlabel("Bust rate (no Pro Bowl)"); plt.title("Draft busts by team")
+plt.tight_layout(); plt.show()
+```
+:::
 
 Sorted, horizontal, one bar per team: you can read off the best and worst drafters quickly, and every team is comparable on the same axis. A pie chart of these same 32 numbers would be very hard to read; you could not tell 22% from 25% by eye, and the ranking would disappear. **Pie charts work for maybe two or three slices; past that, rank a bar chart.**
 
@@ -113,6 +292,8 @@ Sorted, horizontal, one bar per team: you can read off the best and worst drafte
 
 A single summary number - a mean, a bar - throws away the shape of the data, and the shape is usually the story. Do not draw a bar of averages when you could draw the whole distribution. Here are this season's qualified hitters; a histogram shows the *spread* of performance a mean would erase:
 
+::: {.panel-tabset}
+### R
 ```{r}
 #| fig-cap: "The distribution of OPS across qualified hitters — the shape a single mean hides."
 #| fig-height: 3.3
@@ -126,9 +307,41 @@ ggplot(h, aes(OPS)) +
   labs(x = "OPS", y = "hitters", title = "Most hitters are ordinary; a few are stars") +
   theme_minimal(base_size = 12)
 ```
+### SPSS
+```
+* Show the distribution, not just the mean.
+GET DATA /TYPE=TXT /FILE='data/mlb_hitters_2026.csv'
+  /DELIMITERS=',' /FIRSTCASE=2.
+SELECT IF (PA >= 50).
+EXECUTE.
+
+FREQUENCIES VARIABLES=OPS /STATISTICS=MEDIAN /HISTOGRAM.
+```
+### Julia
+```julia
+using CSV, DataFrames, Statistics, Plots
+h = filter(:PA => >=(50), CSV.read("data/mlb_hitters_2026.csv", DataFrame))
+
+histogram(h.OPS, bins = 30, legend = false, xlabel = "OPS", ylabel = "hitters",
+          title = "Most hitters are ordinary; a few are stars")
+vline!([median(h.OPS)], color = :firebrick, linewidth = 2)
+```
+### Python
+```python
+h = pd.read_csv("data/mlb_hitters_2026.csv").query("PA >= 50")
+
+plt.hist(h.OPS, bins=30, color="steelblue", edgecolor="white")
+plt.axvline(h.OPS.median(), color="firebrick", linewidth=2)
+plt.xlabel("OPS"); plt.ylabel("hitters")
+plt.title("Most hitters are ordinary; a few are stars")
+plt.show()
+```
+:::
 
 And when you plot two variables against each other with hundreds of points, they pile up and hide their own density. The fix is **transparency** (or jitter): let the dark regions show where the data actually concentrate.
 
+::: {.panel-tabset}
+### R
 ```{r}
 #| fig-cap: "On-base vs. slugging, 400+ hitters. Transparency reveals the crowd."
 #| fig-height: 3.4
@@ -138,6 +351,34 @@ ggplot(h, aes(OBP, SLG)) +
   labs(x = "On-base percentage", y = "Slugging percentage") +
   theme_minimal(base_size = 12)
 ```
+### SPSS
+```
+* Transparency tames overplotting. SPSS sets marker transparency in the
+* chart editor, or through GGRAPH's transparency() aesthetic.
+GGRAPH
+  /GRAPHDATASET NAME="g" VARIABLES=OBP SLG
+  /GRAPHSPEC SOURCE=INLINE.
+BEGIN GPL
+  SOURCE: s=userSource(id("g"))
+  DATA: OBP=col(source(s), name("OBP"))
+  DATA: SLG=col(source(s), name("SLG"))
+  GUIDE: axis(dim(1), label("On-base percentage"))
+  GUIDE: axis(dim(2), label("Slugging percentage"))
+  ELEMENT: point(position(OBP*SLG), transparency.exterior(transparency."0.65"))
+END GPL.
+```
+### Julia
+```julia
+scatter(h.OBP, h.SLG, alpha = 0.35, legend = false,   # alpha tames overplotting
+        xlabel = "On-base percentage", ylabel = "Slugging percentage")
+```
+### Python
+```python
+plt.scatter(h.OBP, h.SLG, alpha=0.35, color="steelblue")  # tames overplotting
+plt.xlabel("On-base percentage"); plt.ylabel("Slugging percentage")
+plt.show()
+```
+:::
 
 The cloud's shape, with its positive drift, its dense middle, and a few outliers in the upper right, is information a table of two means could never carry. That is much of the reason graphics exist.
 

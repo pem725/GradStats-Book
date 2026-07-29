@@ -28,6 +28,8 @@ The difficulty is a chicken-and-egg: if we knew who was in each class we could e
 
 Repeat until nothing moves. First, simulate two classes that differ in *pattern* - items 7–8 are reversed, so the classes are not simply "more" vs. "less" symptomatic:
 
+::: {.panel-tabset}
+### R
 ```{r}
 #| message: false
 library(tidyverse)    # dplyr, ggplot2, purrr, tibble, readr, stringr, forcats
@@ -43,9 +45,61 @@ cls <- sample(1:2, N, replace = TRUE, prob = prev)
 # one response vector per person; the estimator below wants them as a matrix
 X <- do.call(rbind, map(cls, \(k) rbinom(J, 1, rho[k, ])))
 ```
+### SPSS
+```
+* Two latent classes that differ in PATTERN: items 7-8 are reversed, so
+* the classes are not simply "more" vs "less" symptomatic.
+INPUT PROGRAM.
+LOOP #i = 1 TO 800.
+  COMPUTE cls = 1 + (RV.UNIFORM(0,1) < 0.65).
+  VECTOR x(8).
+  LOOP #j = 1 TO 8.
+    DO IF (cls = 1).
+      COMPUTE #p = 0.80.
+      IF (#j >= 7) #p = 0.30.
+    ELSE.
+      COMPUTE #p = 0.20.
+      IF (#j >= 7) #p = 0.70.
+    END IF.
+    COMPUTE x(#j) = RV.UNIFORM(0,1) < #p.
+  END LOOP.
+  END CASE.
+END LOOP.
+END FILE.
+END INPUT PROGRAM.
+EXECUTE.
+```
+### Julia
+```julia
+using Random, Distributions
+Random.seed!(2026)
+N, J = 800, 8
+prev = [0.35, 0.65]
+rho  = [fill(0.80, J), fill(0.20, J)]
+rho[1][7:8] .= 0.30; rho[2][7:8] .= 0.70   # reverse two items
+
+cls = rand(Categorical(prev), N)
+X = [rand() < rho[cls[i]][j] ? 1 : 0 for i in 1:N, j in 1:J]
+```
+### Python
+```python
+import numpy as np
+
+rng = np.random.default_rng(2026)
+N, J = 800, 8
+prev = [0.35, 0.65]
+rho = np.vstack([np.full(J, 0.80), np.full(J, 0.20)])
+rho[0, 6:8] = 0.30; rho[1, 6:8] = 0.70     # reverse two items
+
+cls = rng.choice([0, 1], N, p=prev)
+X = (rng.random((N, J)) < rho[cls]).astype(int)
+```
+:::
 
 Now the entire estimator - about a dozen lines:
 
+::: {.panel-tabset}
+### R
 ```{r}
 lca_em <- function(X, K = 2, tol = 1e-6, maxit = 500) {
   N <- nrow(X); J <- ncol(X)
@@ -75,9 +129,76 @@ cat("converged in", fit$iterations, "iterations\n")
 # recovered class sizes (true: .35 / .65)
 tibble(class = seq_along(fit$prevalence), prevalence = fit$prevalence) |> round2()
 ```
+### SPSS
+```
+* Base SPSS has no latent class analysis. The nearest built-in relative is
+* TwoStep Cluster (CLUSTER / TWOSTEP), which groups cases but does not
+* estimate class-conditional item probabilities or class membership
+* posteriors the way an LCA does.
+*
+* A genuine LCA in the SPSS world needs the Latent GOLD plug-in, Mplus, or
+* R's poLCA. The from-scratch EM estimator is shown in the R, Julia, and
+* Python tabs.
+TWOSTEP CLUSTER
+  /CATEGORICAL VARIABLES=x1 x2 x3 x4 x5 x6 x7 x8
+  /CRITERIA NUMCLUSTERS(2).
+```
+### Julia
+```julia
+using Statistics
+function lca_em(X, K = 2; tol = 1e-6, maxit = 500)
+    N, J = size(X)
+    pi_ = fill(1/K, K)
+    p   = rand(K, J) .* 0.6 .+ 0.2
+    ll_old = -Inf
+    # EM is sequential: each sweep starts from the previous estimates
+    for it in 1:maxit
+        loglik = [log(pi_[k]) + sum(X[i,j]*log(p[k,j]) + (1-X[i,j])*log(1-p[k,j])
+                                    for j in 1:J) for i in 1:N, k in 1:K]
+        m    = maximum(loglik, dims = 2)
+        post = exp.(loglik .- m); post ./= sum(post, dims = 2)
+        pi_  = vec(mean(post, dims = 1))
+        p    = (post' * X) ./ sum(post, dims = 1)'
+        ll   = sum(m .+ log.(sum(exp.(loglik .- m), dims = 2)))
+        abs(ll - ll_old) < tol && return (prevalence = pi_, item_prob = p, iterations = it)
+        ll_old = ll
+    end
+end
+
+fit = lca_em(X, 2)
+fit.prevalence                     # recovered class sizes (true: .35 / .65)
+```
+### Python
+```python
+import numpy as np
+
+def lca_em(X, K=2, tol=1e-6, maxit=500):
+    N, J = X.shape
+    rng = np.random.default_rng(1)
+    pi_ = np.full(K, 1 / K)
+    p = rng.uniform(0.2, 0.8, (K, J))
+    ll_old = -np.inf
+    # EM is sequential: each sweep starts from the previous estimates
+    for it in range(1, maxit + 1):
+        loglik = (np.log(pi_) + X @ np.log(p).T + (1 - X) @ np.log(1 - p).T)
+        m = loglik.max(axis=1, keepdims=True)
+        post = np.exp(loglik - m); post /= post.sum(axis=1, keepdims=True)
+        pi_ = post.mean(axis=0)
+        p = (post.T @ X) / post.sum(axis=0)[:, None]
+        ll = float((m + np.log(np.exp(loglik - m).sum(axis=1, keepdims=True))).sum())
+        if abs(ll - ll_old) < tol:
+            return dict(prevalence=pi_, item_prob=p, iterations=it)
+        ll_old = ll
+
+fit = lca_em(X, 2)
+fit["prevalence"]                  # recovered class sizes (true: .35 / .65)
+```
+:::
 
 The class sizes come back essentially exact. And the item-probability profiles - the *definitions* of the two kinds - recover the reversal we planted:
 
+::: {.panel-tabset}
+### R
 ```{r}
 # rows = classes, columns = items 1..8
 fit$item_prob |>
@@ -85,6 +206,26 @@ fit$item_prob |>
   mutate(class = row_number(), .before = 1) |>
   round2()
 ```
+### SPSS
+```
+* The item-probability profiles - the DEFINITIONS of the two kinds - are
+* what an LCA reports and TwoStep Cluster does not. See the note in the
+* previous SPSS tab; use Latent GOLD, Mplus, or R's poLCA for these.
+*
+* The closest built-in summary is the endorsement rate of each item within
+* each cluster:
+MEANS TABLES=x1 x2 x3 x4 x5 x6 x7 x8 BY TSC_Predicted
+  /CELLS=MEAN.
+```
+### Julia
+```julia
+fit.item_prob                      # rows = classes, columns = items 1..8
+```
+### Python
+```python
+fit["item_prob"].round(2)          # rows = classes, columns = items 1..8
+```
+:::
 
 Read the two rows: one class endorses items 1–6 heavily but items 7–8 rarely; the other is its mirror image. **These classes are not "high" and "low" depression - they are two different *shapes* of response.** A sum score, which only counts yeses, would blend them together; the mixture model pulls them apart. That is what LCA is *for*.
 

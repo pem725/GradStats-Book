@@ -28,6 +28,8 @@ Wright's running example in *Best Test Design* [@wright_best_1979] is the **Knox
 
 We use Wright's **actual data**: 35 children, 18 items, the very responses from *Best Test Design*, stored as a plain text table (`data/knox.dat`). The children even keep their names - Richard, Tracie, Walter, and the rest.
 
+::: {.panel-tabset}
+### R
 ```{r}
 #| message: false
 library(tidyverse)    # dplyr, ggplot2, purrr, tibble, readr, stringr, forcats
@@ -47,13 +49,69 @@ rownames(X) <- kct$Name
 colnames(X) <- taps
 X[1:6, 1:9]   # a corner: the first children, the easiest items
 ```
+### SPSS
+```
+* Reading Wright's Knox Cube Test responses: 35 children (rows) by 18
+* tapping items (columns), 1 = repeated the pattern correctly.
+GET DATA /TYPE=TXT /FILE='data/knox.dat'
+  /DELIMITERS=' \t' /FIRSTCASE=2
+  /VARIABLES=Name A10 sex A1 i1 TO i18 F1.0.
+
+LIST VARIABLES=Name i1 TO i9 /CASES=6.
+```
+### Julia
+```julia
+using DelimitedFiles, DataFrames
+raw = readdlm("data/knox.dat", header = true)
+kct = DataFrame(raw[1], vec(raw[2]))
+
+taps = ["1-4","2-3","1-2-4","1-3-4","2-1-4","3-4-1","1-4-3-2","1-4-2-3",
+        "1-3-2-4","2-4-3-1","1-3-1-2-4","1-3-2-4-3","1-4-3-2-4","1-4-2-3-4-1",
+        "1-3-2-4-1-3","1-4-2-3-1-4","1-4-3-1-2-4","4-1-3-4-2-1-4"]
+
+X = Matrix(select(kct, r"^i\d+$"))
+X[1:6, 1:9]        # a corner: the first children, the easiest items
+```
+### Python
+```python
+import numpy as np
+
+# skip the header, drop the Name and sex columns
+rows = [ln.split() for ln in open("data/knox.dat")][1:]
+X = np.array([[int(v) for v in r[2:]] for r in rows], float)
+
+taps = ["1-4","2-3","1-2-4","1-3-4","2-1-4","3-4-1","1-4-3-2","1-4-2-3",
+        "1-3-2-4","2-4-3-1","1-3-1-2-4","1-3-2-4-3","1-4-3-2-4","1-4-2-3-4-1",
+        "1-3-2-4-1-3","1-4-2-3-1-4","1-4-3-1-2-4","4-1-3-4-2-1-4"]
+
+X[:6, :9]          # a corner: the first children, the easiest items
+```
+:::
 
 Before we estimate anything, look at the item margins - how many of the 35 children passed each item:
 
+::: {.panel-tabset}
+### R
 ```{r}
 # passes per item, easy (left) to hard (right)
 tibble(item = colnames(X), passes = colSums(X))
 ```
+### SPSS
+```
+* Passes per item, easy (left) to hard (right). Everyone passes the first
+* three and no one passes the last - those carry no information about
+* DIFFERENCES, and cannot get a finite logit.
+DESCRIPTIVES VARIABLES=i1 TO i18 /STATISTICS=SUM.
+```
+### Julia
+```julia
+[(taps[j], sum(X[:, j])) for j in 1:size(X, 2)]
+```
+### Python
+```python
+dict(zip(taps, X.sum(axis=0).astype(int)))
+```
+:::
 
 Everyone passes the first three items and **no one** passes the last. Those items carry no information about *differences* - and you cannot compute a finite logit for a perfect or zero score (it is $\log$ of $\infty$). So the calibration engine will set them aside automatically. Watch for that in a moment: 18 items go in, but only the estimable ones come out.
 
@@ -69,6 +127,8 @@ BIGSTEPS estimates every ability and every difficulty at once by **joint maximum
 
 Every "nudge" is a one-step Newton update: (observed − expected) divided by the information (the sum of $P(1-P)$). Here it is, whole:
 
+::: {.panel-tabset}
+### R
 ```{r}
 rasch_jmle <- function(X, tol = 1e-6, maxit = 300) {
   # BIGSTEPS drops persons/items with perfect or zero scores (no finite estimate)
@@ -106,9 +166,88 @@ rasch_jmle <- function(X, tol = 1e-6, maxit = 300) {
 fit <- rasch_jmle(X)
 tibble(item = fit$items, difficulty = fit$difficulty) |> round2()
 ```
+### SPSS
+```
+* Base SPSS has no Rasch or IRT procedure. Item calibration needs a
+* dedicated engine - Winsteps/BIGSTEPS (Wright's own), ConQuest, or R's
+* eRm/TAM - or the SPSS Python/R integration plug-in calling one of those.
+*
+* * The joint-maximum-likelihood calibration below
+* is shown in the R, Julia, and Python tabs.
+```
+### Julia
+```julia
+function rasch_jmle(X; tol = 1e-6, maxit = 300)
+    # drop persons/items with perfect or zero scores (no finite estimate)
+    while true
+        ci = vec(sum(X, dims = 1)); ri = vec(sum(X, dims = 2))
+        keepI = (ci .> 0) .& (ci .< size(X, 1))
+        keepP = (ri .> 0) .& (ri .< size(X, 2))
+        all(keepI) && all(keepP) && break
+        X = X[keepP, keepI]
+    end
+    N, L = size(X)
+    r = vec(sum(X, dims = 2)); s = vec(sum(X, dims = 1))
+    b = log.(r ./ (L .- r))
+    d = log.((N .- s) ./ s); d .-= mean(d)
+    local it
+    # the outer loop is sequential; the inner sweeps are independent
+    for outer it in 1:maxit
+        d0 = copy(d)
+        b = [bv + (rv - sum(1 ./ (1 .+ exp.(-(bv .- d))))) /
+                  sum((p -> p*(1-p)).(1 ./ (1 .+ exp.(-(bv .- d)))))
+             for (bv, rv) in zip(b, r)]
+        d = [di - (si - sum(1 ./ (1 .+ exp.(-(b .- di))))) /
+                  sum((p -> p*(1-p)).(1 ./ (1 .+ exp.(-(b .- di)))))
+             for (di, si) in zip(d, s)]
+        d .-= mean(d)
+        maximum(abs.(d .- d0)) < tol && break
+    end
+    (difficulty = d, ability = b, iterations = it)
+end
+
+fit = rasch_jmle(X)
+collect(zip(taps, round.(fit.difficulty, digits = 2)))
+```
+### Python
+```python
+import numpy as np
+
+def rasch_jmle(X, tol=1e-6, maxit=300):
+    X = np.asarray(X, float)
+    while True:                                   # drop perfect/zero rows & cols
+        ci, ri = X.sum(0), X.sum(1)
+        keepI = (ci > 0) & (ci < X.shape[0])
+        keepP = (ri > 0) & (ri < X.shape[1])
+        if keepI.all() and keepP.all():
+            break
+        X = X[keepP][:, keepI]
+    N, L = X.shape
+    r, s = X.sum(1), X.sum(0)
+    b = np.log(r / (L - r))                       # abilities from raw scores
+    d = np.log((N - s) / s); d -= d.mean()        # difficulties, centered
+    for it in range(1, maxit + 1):
+        d0 = d.copy()
+        for v in range(N):                        # the person sweep
+            Pv = 1 / (1 + np.exp(-(b[v] - d)))
+            b[v] += (r[v] - Pv.sum()) / (Pv * (1 - Pv)).sum()
+        for i in range(L):                        # the item sweep
+            Pi = 1 / (1 + np.exp(-(b - d[i])))
+            d[i] -= (s[i] - Pi.sum()) / (Pi * (1 - Pi)).sum()
+        d -= d.mean()                             # fix the origin
+        if np.max(np.abs(d - d0)) < tol:
+            break
+    return d, b, it
+
+difficulty, ability, iterations = rasch_jmle(X)
+dict(zip(taps, difficulty.round(2)))
+```
+:::
 
 Read that difficulty column top to bottom: the short tapping sequences sit low (easy), the long ones sit high (hard), climbing steadily just as Wright's KCT does. **We just calibrated a test the way BIGSTEPS calibrates a test** - in thirty lines, and every number rebuildable by hand. The persons are measured on the very same logit scale, so a child's ability and an item's difficulty are directly comparable: if $\theta_v > \delta_i$, the odds favor a correct tap.
 
+::: {.panel-tabset}
+### R
 ```{r}
 cat("Converged in", fit$iterations, "iterations.\n")
 
@@ -123,6 +262,33 @@ tibble(ability = fit$ability) |>
   ) |>
   round2()
 ```
+### SPSS
+```
+* Base SPSS has no Rasch or IRT procedure. Item calibration needs a
+* dedicated engine - Winsteps/BIGSTEPS (Wright's own), ConQuest, or R's
+* eRm/TAM - or the SPSS Python/R integration plug-in calling one of those.
+*
+* * The person measures (abilities) summarised below
+* is shown in the R, Julia, and Python tabs.
+```
+### Julia
+```julia
+using Statistics
+println("Converged in ", fit.iterations, " iterations.")
+
+# the 35 children, measured in logits on the item scale
+length(fit.ability), minimum(fit.ability), median(fit.ability),
+mean(fit.ability), maximum(fit.ability)
+```
+### Python
+```python
+print(f"Converged in {iterations} iterations.")
+
+# the 35 children, measured in logits on the item scale
+import numpy as np
+len(ability), ability.min(), np.median(ability), ability.mean(), ability.max()
+```
+:::
 
 ## The Same Thirty Lines in Python
 
