@@ -4,17 +4,112 @@ The journey to master statistics starts with a simple concept - **uncertainty**.
 
 ## Should I read this book?
 
-We have no clue if you should read the book; only you can answer that question. Check these hints for yourself:
+We have no clue if you should read the book; only you can answer that question. Tick whatever is true for you - the more you tick, the more enthusiastic we get.
 
--   [ ] I am a (graduate, undergraduate, lifelong, or curious) student.
--   [ ] I love to learn.
--   [ ] I have a job that requires me to make decisions based upon data.
--   [ ] I typically vote in elections.
--   [ ] I can read English (essential until translated; sorry).
--   [ ] I have a computer I can run computer code (e.g., R, python, etc.).
--   [ ] I have a desire to learn how to quantify my uncertainty.
+```{=html}
+<div class="fitcheck">
+  <ul class="fitcheck-list">
+    <li><label><input type="checkbox"> I am a (graduate, undergraduate, lifelong, or curious) student.</label></li>
+    <li><label><input type="checkbox"> I love to learn.</label></li>
+    <li><label><input type="checkbox"> I have a job that requires me to make decisions based upon data.</label></li>
+    <li><label><input type="checkbox"> I typically vote in elections.</label></li>
+    <li><label><input type="checkbox"> I can read English (essential until translated; sorry).</label></li>
+    <li><label><input type="checkbox"> I have a computer I can run computer code (e.g., R, python, etc.).</label></li>
+    <li><label><input type="checkbox"> I have a desire to learn how to quantify my uncertainty.</label></li>
+  </ul>
+  <p class="fitcheck-verdict" role="status" aria-live="polite">
+    <span class="fitcheck-score">0 / 7</span>
+    <span class="fitcheck-text">Nothing ticked yet. No pressure - go on, tick the true ones.</span>
+  </p>
+</div>
 
-If you answered yes to any of these questions, you might find this book useful. We hope you read on.
+<style>
+.fitcheck { border: 1px solid rgba(128,128,128,.35); border-radius: .5rem;
+            padding: .9rem 1.1rem; margin: 1.2rem 0; }
+.fitcheck-list { list-style: none; margin: 0 0 .6rem 0; padding: 0; }
+.fitcheck-list li { margin: .3rem 0; }
+.fitcheck-list label { cursor: pointer; display: flex; gap: .55rem;
+                       align-items: flex-start; line-height: 1.45; }
+.fitcheck-list input { margin-top: .3rem; flex: none; width: 1rem; height: 1rem;
+                       cursor: pointer; }
+.fitcheck-verdict { margin: .4rem 0 0 0; display: flex; gap: .6rem;
+                    align-items: baseline; flex-wrap: wrap; }
+.fitcheck-score { font-variant-numeric: tabular-nums; font-weight: 700;
+                  border-radius: .35rem; padding: .1rem .45rem;
+                  background: rgba(128,128,128,.18); flex: none; }
+.fitcheck-text { font-style: italic; }
+</style>
+
+<script>
+(function () {
+  // Nothing leaves this page: no storage, no network, no cookies. It just
+  // counts the boxes you tick and stacks up adjectives accordingly.
+  var box = document.currentScript.parentElement.querySelector('.fitcheck');
+  if (!box) { box = document.querySelector('.fitcheck'); }
+  var inputs  = box.querySelectorAll('input[type=checkbox]');
+  var scoreEl = box.querySelector('.fitcheck-score');
+  var textEl  = box.querySelector('.fitcheck-text');
+
+  var ADJECTIVES = ['really', 'genuinely', 'thoroughly', 'seriously',
+                    'remarkably', 'splendidly', 'extraordinarily',
+                    'magnificently', 'super-duper', 'extra-especially'];
+
+  var OPENERS = ['Oh yeah.', 'Well now.', 'There it is.', 'Look at that.'];
+
+  var FLOURISH = {
+    1: ['That is all it takes. Come on in.',
+        'One is plenty. Welcome aboard.',
+        'Good enough for us. Read on.'],
+    2: ['You are in the right place.',
+        'We are getting optimistic.'],
+    3: ['We are now openly pleased about this.',
+        'This is going well.'],
+    4: ['We may have written this one with you in mind.',
+        'At this point we are just describing you.'],
+    5: ['We are running out of composure.',
+        'Honestly, this is a little uncanny.'],
+    6: ['Are you quite sure you did not write this book?',
+        'We are checking whether you are one of the authors.'],
+    7: ['A perfect score. You are the reader we imagined, in every particular. Please, read on.',
+        'Seven for seven. If this book had a target audience poster, your face would be on it.']
+  };
+
+  function pick(list) { return list[Math.floor(Math.random() * list.length)]; }
+
+  function stack(n) {                       // n adjectives, no repeats
+    var pool = ADJECTIVES.slice(), out = [];
+    for (var i = 0; i < n && pool.length; i++) {
+      out.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
+    }
+    return out;
+  }
+
+  function verdict(k) {
+    if (k === 0) return 'Nothing ticked yet. No pressure - go on, tick the true ones.';
+    if (k === 1) return pick(OPENERS) + ' This book is for you. ' + pick(FLOURISH[1]);
+    var adj = stack(k - 1);
+    var last = adj.pop();
+    var phrase = last;                                  // one adjective
+    if (adj.length === 1) { phrase = adj[0] + ' and ' + last; }
+    else if (adj.length > 1) { phrase = adj.join(', ') + ', and ' + last; }
+    return pick(OPENERS) + ' You are ' + phrase + ' well suited to this book. ' +
+           pick(FLOURISH[k]);
+  }
+
+  function update() {
+    var k = 0;
+    inputs.forEach(function (i) { if (i.checked) k++; });
+    scoreEl.textContent = k + ' / ' + inputs.length;
+    textEl.textContent  = verdict(k);
+  }
+
+  inputs.forEach(function (i) { i.addEventListener('change', update); });
+  update();
+})();
+</script>
+```
+
+Tick even one and you might find this book useful. We hope you read on.
 
 Not a graduate student? That is fine. Read the book anyway. Arm yourself with knowledge of how uncertainty gets communicated. You - the reader - can make more informed decisions when you quantify your uncertainty. We wrote this book with graduate students in mind since most had a previous undergraduate course in statistics that, no doubt, was taught a very standard way. That way does not bode well for long-term retention. Most students forget the details and only a small minority retain the essentials. We assume only a passing familiarity. **Most people have the background we assume in this book.**
 
@@ -26,14 +121,76 @@ As implied in our self-check above, you need to read English, be motivated and h
 
 ## What To Expect
 
-You should expect:
+Six things. Each one is a heading you can open if you want the detail, and skip if you would rather get on with it.
 
-1.  Structure: A framework to understand and master statistics
-2.  Brevity: short, concise descriptions of key statistical concepts
-3.  Examples: real-world examples to illustrate the concepts
-4.  Code: statistical software code to demonstrate the concepts
-5.  Challenges: exercises to test your understanding of the concepts
-6.  References: a list of references to deepen your understanding of the concepts
+```{=html}
+<div class="expect">
+
+<details>
+<summary><strong>Structure</strong> - a framework to understand and master statistics</summary>
+
+Everything in this book hangs off one idea: **quantifying uncertainty**. The parts are ordered so that each one earns the next.
+
+We start with a single variable and ask where it sits and how much it spreads - that spread *is* the uncertainty. Then two variables, and how they move together, which turns out to be the engine underneath correlation, regression, and ANOVA alike. Then we stop to ask whether the measurements deserve our trust at all, because a model built on a broken ruler predicts nothing. Only then do we build models, and finally we look at what to do when the tidy assumptions fail.
+
+The point of the order is that you should never meet a technique before you have met the reason it exists. When a formula turns up, you will already know what question it answers.
+
+</details>
+
+<details>
+<summary><strong>Brevity</strong> - short, concise descriptions of key concepts</summary>
+
+We would rather you read a short chapter three times than abandon a long one once. Chapters are deliberately compact, and the code chunks are short enough to read top to bottom without scrolling.
+
+Where a topic genuinely needs a book of its own - measurement, causal inference, missing data - we say so, give you the working version, and point you at the definitive treatment in the references.
+
+</details>
+
+<details>
+<summary><strong>Examples</strong> - real-world examples to illustrate the concepts</summary>
+
+Wherever we can, the data is real and so are the decisions. A good deal of it comes from our own published work and from the graduate courses this book grew out of: college GPAs, a ten-item scale with a reverse-worded item that has to be caught, depression symptom profiles, Ben Wright's original Knox Cube Test responses.
+
+Real data misbehaves. That is the point of using it. Simulated examples appear when we need to *know* the right answer in advance so you can watch a method find it - or fail to.
+
+</details>
+
+<details>
+<summary><strong>Code</strong> - statistical software code to demonstrate the concepts</summary>
+
+Every procedure in this book is shown in **R, SPSS, Julia, and Python**, in tabs you can click between. The R tab is live: it runs as the book is built, so the numbers you see are the numbers that code produced.
+
+Working in one of the other three? See [Getting the Book's Data](setup.qmd) for a one-file setup so your numbers match ours exactly. And where a language genuinely cannot do something, its tab says so plainly and names the tool that can, rather than inventing syntax that would not run.
+
+</details>
+
+<details>
+<summary><strong>Challenges</strong> - exercises to test your understanding</summary>
+
+Most chapters end with a **Do One Yourself** box. These are not busywork. They usually ask you to rebuild a number the chapter just handed you - compute a standard error by hand and confirm it against the software, or break an assumption on purpose and watch what happens.
+
+Nothing in this book should stay a black box. The challenges are where you find out whether it has.
+
+</details>
+
+<details>
+<summary><strong>References</strong> - where to go deeper</summary>
+
+Citations point to the sources we actually rely on, not a decorative reading list. Some are classics you should meet at least once - Meehl on why the null hypothesis was always a straw man, Cohen on multiple regression, Wright on measurement. Others are our own work, cited where the book leans on it, so you can check our reasoning.
+
+</details>
+
+</div>
+
+<style>
+.expect details { border: 1px solid rgba(128,128,128,.3); border-radius: .45rem;
+                  padding: .55rem .85rem; margin: .5rem 0; }
+.expect details[open] { background: rgba(128,128,128,.06); }
+.expect summary { cursor: pointer; font-weight: 500; }
+.expect summary::marker { color: rgba(128,128,128,.8); }
+.expect details > *:not(summary) { margin-top: .7rem; }
+</style>
+```
 
 ## How To Read This Book
 
@@ -171,11 +328,11 @@ That house of cards leads to many researchers hunting for new, potential finding
 
 Imagine a boring world where everyone liked chocolate ice cream. We would have no need for statistics or science for prediction; we have both perfect prediction and certainty. If just one person liked vanilla instead of chocolate, we would have uncertainty - not much uncertainty because it would still be prudent to guess that everyone liked chocolate ice cream. One error that occurs 1/N times can be quite trivial with a large sample. This seemingly trivial example brings all of the statistics you need to undestand in English. Now, we need to take these ideas from English and convert them into statistical language. Don't worry, the language will become second nature and your understanding will deepen with each passing use. We introduced many concepts in this first example including:
 
-::: callout-important
-## Variables (and constants)
+### Variables and Constants
 
-A variable is a characteristic that can take on different values. In this case, the variable is the ice cream flavor that a person would order. The variable can take on different values such as chocolate, vanilla, strawberry, mint chip, and rocky road. A constant is a value that does not change. In this case, the constant is the number of people who like chocolate ice cream. Thus, you now know that when we say variable, we mean some characteristic that we may want to better understand (or use to predict something that we want to understand - more on that later). When we say constant, we mean a value that does not change. Variables vary; constants do not.
-:::
+A **variable** is a characteristic that can take on different values. Here the variable is the ice cream flavor a person would order, and it can take the values chocolate, vanilla, strawberry, mint chip, or rocky road. A **constant** is a value that does not change.
+
+So when we say *variable*, we mean a characteristic we want to understand better - or one we want to use to predict something else we care about. When we say *constant*, we mean a value that stays put. Variables vary; constants do not. That distinction sounds almost too simple to state, and it is the hinge everything else swings on.
 
 ### Some Examples
 
@@ -247,49 +404,38 @@ plt.xlabel("height (feet)"); plt.show()
 Yes, we yelled it. If you learn nothing else from this resource, please master **VARIANCE**. As we alluded to above, the characteristics that we measure differ between people (e.g., height) and within a person (e.g., weight). To our example, we can imagine ice cream preference differing between people (i.e., some people prefer vanilla to chocolate) and within each (i.e., our tastes change as we age). The differences between or changes within are variance. You will learn that there are formal definitions, graphical depictions, and qualifiers to variance. For now, remember that variance is a measure of how much difference exists in your variables. More differences are preferable to fewer differences. Why? Differences are what we study. We study differences to understand the world around us, to predict the future, and to gain some control over the world. Variance is the measure of differences and, as a result, variance is **the** measure of uncertainty. We shall return to this concept often.
 :::
 
-::: callout-important
-## Prediction
+### The Rest of the Vocabulary, in One Pass
 
-We aim to predict in science.
-:::
+Variance is the one we yell about. The remaining words from this example are worth meeting properly too, and they are easier to learn as a chain than as a pile, because each one leads to the next.
 
-::: callout-important
-## Error (difference between observed and predicted value)
+We **predict**. That is what science does: given what we know, what is our best guess about what we have not seen? In the ice cream world, our prediction is "chocolate," because almost everyone orders it.
 
-Error is the gap between what we observed and what we predicted: $e = \text{observed} - \text{predicted}$. Do not read "error" as "mistake." It is the part of the world our prediction failed to capture, and working to shrink it and understand it is most of what statistics actually does.
-:::
+Predictions miss, and the gap is **error**: $e = \text{observed} - \text{predicted}$. The person who ordered vanilla is our error. Do not read "error" as "mistake" - nobody blundered. It is simply the part of the world our prediction failed to capture, and shrinking it, or at least understanding it, is most of what statistics actually does.
 
-::: callout-important
-## Probability (likelihood of a particular event occurring)
+Because we cannot eliminate error, we put a number on how often we expect it. That number is a **probability**, scaled from 0 (never happens) to 1 (certain). Probability is the common currency of uncertainty; every p-value and every confidence interval later in this book is a probability wearing a costume.
 
-Probability puts a number on how likely an event is, scaled from 0 (never happens) to 1 (certain). It is the common scale we use to express uncertainty. Every claim we make later, every p-value and every confidence interval, is expressed as a probability.
-:::
+Where do those numbers come from? Usually from counting. A **frequency** is how often something happens - a raw tally, the most honest number in statistics, because you can point at the people you counted. Ninety-five chocolate, one vanilla, and so on.
 
-::: callout-important
-## Frequency (number of times an event occurs)
+Pile those counts across every value a variable can take and you have a **distribution**: the pattern the frequencies make, the shape of how often each value shows up. Almost everything from here on is a claim about a distribution - where its center is, how wide it spreads, and how surprising some particular value is within it.
 
-Frequency is simply how often something happens - a raw count. It is the most honest number in statistics because you can literally tally it. Pile those counts up across every value a variable can take, and you have built a distribution.
-:::
+We never get to see the whole distribution, though, because we cannot ask everyone. We see a **sample**, the subset we actually observed. Every voter, every patient, every ice cream eater - the population is out of reach, and the sample is our narrow window onto it. The whole enterprise of inference is guessing about what is out there through that window.
 
-::: callout-important
-## Distribution (pattern of frequencies of events)
+How narrow the window is has a name: **sample size**, written $N$. Bigger samples buy precision, which is why $N$ shows up in nearly every formula in this book. More is not always better, but it is almost always more certain.
 
-A distribution is the pattern those frequencies make - the shape of how often each value shows up. Almost everything we do from here on is, at bottom, a claim about a distribution: its center, its spread, and how surprising a particular value is within it.
-:::
+That is the vocabulary. Here it is in one place, for when you want to check a word without rereading the paragraph:
 
-::: callout-important
-## Sample (subset of a population)
-
-A sample is the subset of the population we actually get to observe. We almost never see the whole population (every voter, every patient, every ice-cream eater); the sample is our narrow window onto it, and the entire enterprise of inference is guessing about the population through that window.
-:::
-
-::: callout-important
-## Sample size (number of observations in a sample)
-
-Sample size ($N$) is the number of observations in our sample. Bigger samples buy us more precision - less uncertainty about the population - which is why $N$ turns up in nearly every formula in this book. More is not always better, but it is almost always more certain.
-:::
-
-Concepts such as variables (and constants), prediction, and sample size. We also introduced the concept of error. Error is the difference between the observed (aka true) value and the predicted value. In this case, the true value is the ice cream flavor the person would order. The predicted value is the most likely flavor the person would order. The error is the difference between the true value and the predicted value. In this case, the error is the difference between the flavor the person would order and the flavor we predicted the person would order.
+| Term | What it means |
+|---|---|
+| **Variable** | A characteristic that takes different values |
+| **Constant** | A value that does not change |
+| **Variance** | How much difference there is - the measure of uncertainty |
+| **Prediction** | Our best guess at what we have not observed |
+| **Error** | Observed minus predicted; what the guess missed |
+| **Probability** | How likely an event is, from 0 to 1 |
+| **Frequency** | How often something happened - a raw count |
+| **Distribution** | The pattern those frequencies make |
+| **Sample** | The subset we actually observed |
+| **Sample size ($N$)** | How many observations are in that subset |
 
 ::: {.panel-tabset}
 ### R
@@ -379,7 +525,7 @@ pd.Series(picks).value_counts()
 
 Who might be such a person to go against the social norms?
 
-one of the early contributors to frequentists statistics, once said, "To consult the statistician after an experiment is finished is often merely to ask him to conduct a post mortem examination. He can perhaps say what the experiment died of." Such a post mortem were apropos.
+Sir Ronald Fisher, one of the early contributors to frequentist statistics, once said, "To consult the statistician after an experiment is finished is often merely to ask him to conduct a post mortem examination. He can perhaps say what the experiment died of." Such a post mortem were apropos.
 
 Each require some must start with the first general principle - uncertainty or rather quantifying uncertainty. To fully grasp the concept of uncertainty, we offer you a simple exercise. Suppose you were to guess the weight of any adult family member. Your best guess would likely be off. Empirical evidence, however, suggests that the best guess is the arithmetic mean. Why?
 
