@@ -876,6 +876,10 @@ window.Quarto = {
 <section id="seeing-power-in-r" class="level2" data-number="8.5">
 <h2 data-number="8.5" class="anchored" data-anchor-id="seeing-power-in-r"><span class="header-section-number">8.5</span> Seeing Power in R</h2>
 <p>Base R ships with <code>power.t.test()</code>, which ties together effect size, <span class="math inline">\(n\)</span>, <span class="math inline">\(\alpha\)</span>, and power - give it any three and it solves for the fourth. First, the trade-offs, made concrete:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="" aria-current="page">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">SPSS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Julia</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-4" role="tab" aria-controls="tabset-1-4" aria-selected="false" href="">Python</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)    <span class="co"># dplyr, ggplot2, purrr, tibble, readr, stringr, forcats</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)        <span class="co"># tidy(), glance(), augment() for model output</span></span>
@@ -913,14 +917,49 @@ window.Quarto = {
 </div>
 </div>
 </div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<pre><code>* Base SPSS has no power analysis. Power and sample-size planning live in
+* the separate, separately licensed SamplePower module (Analyze &gt; Power
+* Analysis in recent versions), or in an external tool such as G*Power.
+*
+* * The question here - how power moves as alpha goes .01 -&gt; .05 -&gt; .10 -
+* is answered in the R, Julia, and Python tabs.</code></pre>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Distributions</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Power of a two-sample t test: the probability a noncentral t exceeds</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># the critical value. delta = 0.5, n = 30 per group.</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">power_t</span>(n, delta, alpha)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> <span class="fl">2</span>n <span class="op">-</span> <span class="fl">2</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    ncp <span class="op">=</span> delta <span class="op">*</span> <span class="fu">sqrt</span>(n <span class="op">/</span> <span class="fl">2</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    crit <span class="op">=</span> <span class="fu">quantile</span>(<span class="fu">TDist</span>(df), <span class="fl">1</span> <span class="op">-</span> alpha <span class="op">/</span> <span class="fl">2</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ccdf</span>(<span class="fu">NoncentralT</span>(df, ncp), crit) <span class="op">+</span> <span class="fu">cdf</span>(<span class="fu">NoncentralT</span>(df, ncp), <span class="op">-</span>crit)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>[<span class="fu">power_t</span>(<span class="fl">30</span>, <span class="fl">0.5</span>, a) for a <span class="kw">in</span> (<span class="fl">0.01</span>, <span class="fl">0.05</span>, <span class="fl">0.10</span>)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.stats.power <span class="im">import</span> TTestIndPower</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Hold the effect (d = 0.5) and n = 30 per group; vary alpha</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>analysis <span class="op">=</span> TTestIndPower()</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>[analysis.power(effect_size<span class="op">=</span><span class="fl">0.5</span>, nobs1<span class="op">=</span><span class="dv">30</span>, alpha<span class="op">=</span>a) <span class="cf">for</span> a <span class="kw">in</span> (<span class="fl">0.01</span>, <span class="fl">0.05</span>, <span class="fl">0.10</span>)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 <p>Read left to right: as <span class="math inline">\(\alpha\)</span> goes from strict (.01) to lenient (.10), power <strong>rises</strong>. Stricter <span class="math inline">\(\alpha\)</span> costs you power - the trade-off, in numbers.</p>
 <p>Now the lever you actually control - sample size:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">SPSS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">Julia</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-4" role="tab" aria-controls="tabset-2-4" aria-selected="false" href="">Python</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Hold effect (d = 0.5) and alpha (.05); vary n per group</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">n_per_group =</span> <span class="fu">c</span>(<span class="dv">20</span>, <span class="dv">50</span>, <span class="dv">100</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">power =</span> <span class="fu">map_dbl</span>(n_per_group, \(nn)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">power.t.test</span>(<span class="at">n =</span> nn, <span class="at">delta =</span> <span class="fl">0.5</span>, <span class="at">sd =</span> <span class="dv">1</span>, <span class="at">sig.level =</span> <span class="fl">0.05</span>)<span class="sc">$</span>power)) <span class="sc">|&gt;</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Hold effect (d = 0.5) and alpha (.05); vary n per group</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">n_per_group =</span> <span class="fu">c</span>(<span class="dv">20</span>, <span class="dv">50</span>, <span class="dv">100</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">power =</span> <span class="fu">map_dbl</span>(n_per_group, \(nn)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">power.t.test</span>(<span class="at">n =</span> nn, <span class="at">delta =</span> <span class="fl">0.5</span>, <span class="at">sd =</span> <span class="dv">1</span>, <span class="at">sig.level =</span> <span class="fl">0.05</span>)<span class="sc">$</span>power)) <span class="sc">|&gt;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
@@ -948,15 +987,38 @@ window.Quarto = {
 </div>
 </div>
 </div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<pre><code>* Base SPSS has no power analysis. Power and sample-size planning live in
+* the separate, separately licensed SamplePower module (Analyze &gt; Power
+* Analysis in recent versions), or in an external tool such as G*Power.
+*
+* * The question here - how power grows with n = 20, 50, 100 per group -
+* is answered in the R, Julia, and Python tabs.</code></pre>
+</div>
+<div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Hold effect (d = 0.5) and alpha (.05); vary n per group</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>[<span class="fu">power_t</span>(n, <span class="fl">0.5</span>, <span class="fl">0.05</span>) for n <span class="kw">in</span> (<span class="fl">20</span>, <span class="fl">50</span>, <span class="fl">100</span>)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-2-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-4-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Hold effect (d = 0.5) and alpha (.05); vary n per group</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>[analysis.power(effect_size<span class="op">=</span><span class="fl">0.5</span>, nobs1<span class="op">=</span>n, alpha<span class="op">=</span><span class="fl">0.05</span>) <span class="cf">for</span> n <span class="kw">in</span> (<span class="dv">20</span>, <span class="dv">50</span>, <span class="dv">100</span>)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 <p>More data, more power - and unlike the <span class="math inline">\(\alpha\)</span> trade-off, this buys power <em>without</em> raising your false-alarm rate.</p>
 </section>
 <section id="planning-a-study-solve-for-n" class="level2" data-number="8.6">
 <h2 data-number="8.6" class="anchored" data-anchor-id="planning-a-study-solve-for-n"><span class="header-section-number">8.6</span> Planning a Study: Solve for <span class="math inline">\(n\)</span></h2>
 <p>The real payoff is planning. If you want 80% power to detect a medium effect (<span class="math inline">\(d = 0.5\)</span>) at <span class="math inline">\(\alpha = .05\)</span>, how many people do you need? Leave <code>n</code> out and let R solve for it:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href="">SPSS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-3" role="tab" aria-controls="tabset-3-3" aria-selected="false" href="">Julia</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-4" role="tab" aria-controls="tabset-3-4" aria-selected="false" href="">Python</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">power.t.test</span>(<span class="at">delta =</span> <span class="fl">0.5</span>, <span class="at">sd =</span> <span class="dv">1</span>, <span class="at">sig.level =</span> <span class="fl">0.05</span>, <span class="at">power =</span> <span class="fl">0.80</span>) <span class="sc">|&gt;</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>() <span class="sc">|&gt;</span>          <span class="co"># broom turns the printed result into a one-row table</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">power.t.test</span>(<span class="at">delta =</span> <span class="fl">0.5</span>, <span class="at">sd =</span> <span class="dv">1</span>, <span class="at">sig.level =</span> <span class="fl">0.05</span>, <span class="at">power =</span> <span class="fl">0.80</span>) <span class="sc">|&gt;</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>() <span class="sc">|&gt;</span>          <span class="co"># broom turns the printed result into a one-row table</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
@@ -982,22 +1044,46 @@ window.Quarto = {
 </div>
 </div>
 </div>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<pre><code>* Base SPSS has no power analysis. Power and sample-size planning live in
+* the separate, separately licensed SamplePower module (Analyze &gt; Power
+* Analysis in recent versions), or in an external tool such as G*Power.
+*
+* * The question here - the n needed for 80% power at d = 0.5 -
+* is answered in the R, Julia, and Python tabs.</code></pre>
+</div>
+<div id="tabset-3-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Roots</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Solve for the n that delivers 80% power at d = 0.5, alpha = .05</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">find_zero</span>(n <span class="op">-&gt;</span> <span class="fu">power_t</span>(n, <span class="fl">0.5</span>, <span class="fl">0.05</span>) <span class="op">-</span> <span class="fl">0.80</span>, (<span class="fl">5.0</span>, <span class="fl">500.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-3-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-4-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Leave nobs1 out and let statsmodels solve for it</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>analysis.solve_power(effect_size<span class="op">=</span><span class="fl">0.5</span>, alpha<span class="op">=</span><span class="fl">0.05</span>, power<span class="op">=</span><span class="fl">0.80</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 <p>The answer (about 64 per group) is a number you want <em>before</em> you run the study, not after. Running first and computing power later, so-called “post-hoc power,” tells you almost nothing useful; power is a design tool, not a consolation prize.</p>
 </section>
 <section id="power-is-really-just-simulation" class="level2" data-number="8.7">
 <h2 data-number="8.7" class="anchored" data-anchor-id="power-is-really-just-simulation"><span class="header-section-number">8.7</span> Power Is Really Just Simulation</h2>
 <p>If the formulas ever feel like a black box, remember they are only shortcuts for something you can <em>watch</em> directly. The recipe is four steps: <strong>generate</strong> data from a world where the effect is real, <strong>run</strong> your model, <strong>collect</strong> whether it hit (<span class="math inline">\(p &lt; \alpha\)</span>), and <strong>repeat</strong> a few thousand times. The fraction of hits <strong>is</strong> the power, and unlike a formula, this recipe works for <em>any</em> design you can simulate (a mixed model, a mediation, a custom test), long after the closed-form equations give up:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false" href="">SPSS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-3" role="tab" aria-controls="tabset-4-3" aria-selected="false" href="">Julia</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-4" role="tab" aria-controls="tabset-4-4" aria-selected="false" href="">Python</a></li></ul>
+<div class="tab-content">
+<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1988</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>effect <span class="ot">&lt;-</span> <span class="fl">0.5</span>; n <span class="ot">&lt;-</span> <span class="dv">64</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>hits <span class="ot">&lt;-</span> <span class="fu">map_lgl</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2000</span>, \(i) {</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  group1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">0</span>,      <span class="at">sd =</span> <span class="dv">1</span>)</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  group2 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> effect, <span class="at">sd =</span> <span class="dv">1</span>)   <span class="co"># a real difference of d</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">t.test</span>(group1, group2)<span class="sc">$</span>p.value <span class="sc">&lt;</span> <span class="fl">0.05</span>       <span class="co"># did we detect it?</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">simulated_power =</span> <span class="fu">mean</span>(hits)) <span class="sc">|&gt;</span> <span class="fu">round2</span>()   <span class="co"># ~ 0.80</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1988</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>effect <span class="ot">&lt;-</span> <span class="fl">0.5</span>; n <span class="ot">&lt;-</span> <span class="dv">64</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>hits <span class="ot">&lt;-</span> <span class="fu">map_lgl</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2000</span>, \(i) {</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  group1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">0</span>,      <span class="at">sd =</span> <span class="dv">1</span>)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  group2 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> effect, <span class="at">sd =</span> <span class="dv">1</span>)   <span class="co"># a real difference of d</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">t.test</span>(group1, group2)<span class="sc">$</span>p.value <span class="sc">&lt;</span> <span class="fl">0.05</span>       <span class="co"># did we detect it?</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">simulated_power =</span> <span class="fu">mean</span>(hits)) <span class="sc">|&gt;</span> <span class="fu">round2</span>()   <span class="co"># ~ 0.80</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
@@ -1012,6 +1098,60 @@ window.Quarto = {
 </tr>
 </tbody>
 </table>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
+<pre><code>* The simulation approach DOES work in base SPSS, because it needs only
+* data generation and a t test - no power module required. Generate two
+* groups with a real difference, test, repeat, and count the hits.
+INPUT PROGRAM.
+LOOP #rep = 1 TO 2000.
+  LOOP #i = 1 TO 64.
+    COMPUTE rep = #rep.
+    COMPUTE grp = 1.
+    COMPUTE y = RV.NORMAL(0, 1).
+    END CASE.
+    COMPUTE grp = 2.
+    COMPUTE y = RV.NORMAL(0.5, 1).
+    END CASE.
+  END LOOP.
+END LOOP.
+END FILE.
+END INPUT PROGRAM.
+EXECUTE.
+
+* Run the t test within each replication, then the fraction with p &lt; .05
+* is the simulated power.
+SORT CASES BY rep.
+SPLIT FILE BY rep.
+T-TEST GROUPS=grp(1 2) /VARIABLES=y.
+SPLIT FILE OFF.</code></pre>
+</div>
+<div id="tabset-4-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Random</span>, <span class="bu">Distributions</span>, <span class="bu">HypothesisTests</span>, <span class="bu">Statistics</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="bu">Random</span>.<span class="fu">seed!</span>(<span class="fl">1988</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>effect, n <span class="op">=</span> <span class="fl">0.5</span>, <span class="fl">64</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>hits <span class="op">=</span> [<span class="fu">pvalue</span>(<span class="fu">UnequalVarianceTTest</span>(<span class="fu">rand</span>(<span class="fu">Normal</span>(<span class="fl">0</span>, <span class="fl">1</span>), n),</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>                                    <span class="fu">rand</span>(<span class="fu">Normal</span>(effect, <span class="fl">1</span>), n))) <span class="op">&lt;</span> <span class="fl">0.05</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>        for _ <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2000</span>]</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(hits)      <span class="co"># simulated power ~ 0.80</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-4-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-4-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy <span class="im">import</span> stats</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">1988</span>)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>effect, n <span class="op">=</span> <span class="fl">0.5</span>, <span class="dv">64</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>hits <span class="op">=</span> [stats.ttest_ind(rng.normal(<span class="dv">0</span>, <span class="dv">1</span>, n),</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>                        rng.normal(effect, <span class="dv">1</span>, n)).pvalue <span class="op">&lt;</span> <span class="fl">0.05</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">2000</span>)]</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>np.mean(hits)   <span class="co"># simulated power ~ 0.80</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </div>

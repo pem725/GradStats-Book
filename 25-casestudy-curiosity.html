@@ -757,6 +757,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 data-number="30.1" class="anchored" data-anchor-id="study-1---explore-how-many-things-are-we-even-measuring"><span class="header-section-number">30.1</span> Study 1 - Explore: How Many Things Are We Even Measuring?</h2>
 <p>You write a big pool of candidate items and collect responses. Now the first question: do these items measure <em>one</em> thing, or several? This is a job for <strong>Exploratory Factor Analysis (EFA)</strong> - a method that looks at how items correlate and infers the small number of hidden dimensions (“factors”) that could produce those correlations.</p>
 <p>The workhorse decision - <em>how many factors?</em> - starts with the <strong>eigenvalues</strong> of the item correlation matrix. Each eigenvalue is the amount of variance one potential factor accounts for; the classic rules keep factors with an eigenvalue above 1 (they explain more than a single item’s worth) and look for the “elbow” in a scree plot. Watch it recover a structure we planted on purpose - twelve items secretly built from three factors:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="" aria-current="page">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">SPSS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Julia</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-4" role="tab" aria-controls="tabset-1-4" aria-selected="false" href="">Python</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)    <span class="co"># dplyr, ggplot2, purrr, tibble, readr, stringr, forcats</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"_common.R"</span>)   <span class="co"># book-wide helpers: round2(), fmt_p(), tidy2()</span></span>
@@ -791,9 +795,56 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<pre><code>* Twelve items built from three hidden factors, then the scree plot.
+* (Assumes item1 to item12 are already the active dataset.)
+FACTOR
+  /VARIABLES item1 TO item12
+  /EXTRACTION PC
+  /PRINT EIGEN
+  /PLOT EIGEN.</code></pre>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Random</span>, <span class="bu">Distributions</span>, <span class="bu">Statistics</span>, <span class="bu">LinearAlgebra</span>, <span class="bu">DataFrames</span>, <span class="bu">Plots</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="bu">Random</span>.<span class="fu">seed!</span>(<span class="fl">2026</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>N, load <span class="op">=</span> <span class="fl">500</span>, <span class="fl">0.75</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>F <span class="op">=</span> [<span class="fu">rand</span>(<span class="fu">Normal</span>(), N) for _ <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>]                <span class="co"># three hidden factors</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">mk</span>(f) <span class="op">=</span> load <span class="op">.*</span> f <span class="op">.+</span> <span class="fu">rand</span>(<span class="fu">Normal</span>(<span class="fl">0</span>, <span class="fu">sqrt</span>(<span class="fl">1</span> <span class="op">-</span> load<span class="op">^</span><span class="fl">2</span>)), N)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>items <span class="op">=</span> <span class="fu">DataFrame</span>([<span class="fu">Symbol</span>(<span class="st">"item"</span>, i) <span class="op">=&gt;</span> <span class="fu">mk</span>(F[<span class="fu">cld</span>(i, <span class="fl">4</span>)]) for i <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">12</span>])</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>ev <span class="op">=</span> <span class="fu">eigvals</span>(<span class="fu">cor</span>(<span class="fu">Matrix</span>(items))) <span class="op">|&gt;</span> reverse         <span class="co"># eigenvalues, largest first</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fl">1</span><span class="op">:</span><span class="fl">12</span>, ev, marker <span class="op">=</span> <span class="op">:</span>circle, legend <span class="op">=</span> <span class="cn">false</span>,</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>     xlabel <span class="op">=</span> <span class="st">"Factor number"</span>, ylabel <span class="op">=</span> <span class="st">"Eigenvalue"</span>)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="fu">hline!</span>([<span class="fl">1</span>], linestyle <span class="op">=</span> <span class="op">:</span>dash, color <span class="op">=</span> <span class="op">:</span>firebrick)  <span class="co"># Kaiser's "keep it if &gt; 1"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np, pandas <span class="im">as</span> pd</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">2026</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>N, load <span class="op">=</span> <span class="dv">500</span>, <span class="fl">0.75</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>F <span class="op">=</span> [rng.normal(size<span class="op">=</span>N) <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3</span>)]          <span class="co"># three hidden factors</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>mk <span class="op">=</span> <span class="kw">lambda</span> f: load <span class="op">*</span> f <span class="op">+</span> rng.normal(<span class="dv">0</span>, np.sqrt(<span class="dv">1</span> <span class="op">-</span> load<span class="op">**</span><span class="dv">2</span>), N)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>items <span class="op">=</span> pd.DataFrame({<span class="ss">f"item</span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss">"</span>: mk(F[i <span class="op">//</span> <span class="dv">4</span>]) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">12</span>)})</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>ev <span class="op">=</span> np.sort(np.linalg.eigvals(items.corr()).real)[::<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>plt.plot(<span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">13</span>), ev, marker<span class="op">=</span><span class="st">"o"</span>, color<span class="op">=</span><span class="st">"steelblue"</span>)</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>plt.axhline(<span class="dv">1</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, color<span class="op">=</span><span class="st">"firebrick"</span>)   <span class="co"># Kaiser's "keep it if &gt; 1"</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Factor number"</span>)<span class="op">;</span> plt.ylabel(<span class="st">"Eigenvalue"</span>)</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">SPSS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">Julia</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-4" role="tab" aria-controls="tabset-2-4" aria-selected="false" href="">Python</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># how many factors the data suggest</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">factors_above_1 =</span> <span class="fu">sum</span>(ev <span class="sc">&gt;</span> <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># how many factors the data suggest</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">factors_above_1 =</span> <span class="fu">sum</span>(ev <span class="sc">&gt;</span> <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
@@ -811,38 +862,52 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<pre><code>* How many factors the data suggest: count the eigenvalues above 1.
+* SPSS reports this directly in the FACTOR output above - the number of
+* components retained under the default Kaiser (eigenvalue &gt; 1) rule.</code></pre>
+</div>
+<div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">count</span>(<span class="fu">&gt;</span>(<span class="fl">1</span>), ev)                 <span class="co"># how many factors the data suggest</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-2-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-4-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(ev <span class="op">&gt;</span> <span class="dv">1</span>).<span class="bu">sum</span>()                  <span class="co"># how many factors the data suggest</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 <p>Three, exactly as planted. The real study did this on its item pool and found a coherent multi-dimensional structure of political curiosity. In practice you would rotate and interpret the factors with a dedicated tool:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The real EFA (needs the psych package — shown, not run here)</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(psych)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">fa.parallel</span>(items)              <span class="co"># parallel analysis: a better "how many factors?" than Kaiser alone</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>efa <span class="ot">&lt;-</span> <span class="fu">fa</span>(items, <span class="at">nfactors =</span> <span class="dv">3</span>, <span class="at">rotate =</span> <span class="st">"oblimin"</span>)   <span class="co"># extract &amp; rotate to interpret</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>efa<span class="sc">$</span>loadings                    <span class="co"># which items load on which factor</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The real EFA (needs the psych package — shown, not run here)</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(psych)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">fa.parallel</span>(items)              <span class="co"># parallel analysis: a better "how many factors?" than Kaiser alone</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>efa <span class="ot">&lt;-</span> <span class="fu">fa</span>(items, <span class="at">nfactors =</span> <span class="dv">3</span>, <span class="at">rotate =</span> <span class="st">"oblimin"</span>)   <span class="co"># extract &amp; rotate to interpret</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>efa<span class="sc">$</span>loadings                    <span class="co"># which items load on which factor</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>But finding a structure in your data is the <em>easy</em> part. Any rich enough dataset will hand you a tidy factor solution if you go looking. Remember that fitting the past is not the same as predicting the future. The real test comes next.</p>
 </section>
 <section id="study-2---confirm-on-data-you-have-not-seen" class="level2" data-number="30.2">
 <h2 data-number="30.2" class="anchored" data-anchor-id="study-2---confirm-on-data-you-have-not-seen"><span class="header-section-number">30.2</span> Study 2 - Confirm: On Data You Have Not Seen</h2>
 <p>The cardinal rule that separates measurement from wishful thinking is straightforward: <strong>you do not confirm a structure on the same data that suggested it.</strong> EFA is exploratory, and it will always find <em>something</em>. To believe the structure is real, you fit it as a fixed hypothesis to a <strong>new, independent sample</strong> using <strong>Confirmatory Factor Analysis (CFA)</strong>, and ask whether the pre-specified model actually fits.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The real CFA on Study 2's fresh sample (needs lavaan — shown, not run here)</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lavaan)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="st">'</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="st">  curiosity  =~ item1 + item2 + item3 + item4</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="st">  tolerance  =~ item5 + item6 + item7 + item8</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="st">  engagement =~ item9 + item10 + item11 + item12</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="st">'</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">cfa</span>(model, <span class="at">data =</span> study2_data)</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="fu">fitMeasures</span>(fit, <span class="fu">c</span>(<span class="st">"cfi"</span>, <span class="st">"tli"</span>, <span class="st">"rmsea"</span>, <span class="st">"srmr"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The real CFA on Study 2's fresh sample (needs lavaan — shown, not run here)</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lavaan)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="st">'</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="st">  curiosity  =~ item1 + item2 + item3 + item4</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="st">  tolerance  =~ item5 + item6 + item7 + item8</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="st">  engagement =~ item9 + item10 + item11 + item12</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="st">'</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">cfa</span>(model, <span class="at">data =</span> study2_data)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="fu">fitMeasures</span>(fit, <span class="fu">c</span>(<span class="st">"cfi"</span>, <span class="st">"tli"</span>, <span class="st">"rmsea"</span>, <span class="st">"srmr"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>CFA does not ask “what structure is here?” - it asks “does <em>this</em> structure hold?” and answers with <strong>fit indices</strong> you judge against conventional standards (Hu &amp; Bentler): <strong>CFI and TLI ≥ .95</strong>, <strong>RMSEA ≤ .06</strong>, <strong>SRMR ≤ .08</strong>. The political-curiosity model met those standards on the independent Study 2 sample - which is what earns the measure the right to be used. Explore once, confirm elsewhere; a structure that survives a fresh sample is a structure worth believing.</p>
 </section>
 <section id="does-the-ruler-mean-the-same-thing-for-everyone" class="level2" data-number="30.3">
 <h2 data-number="30.3" class="anchored" data-anchor-id="does-the-ruler-mean-the-same-thing-for-everyone"><span class="header-section-number">30.3</span> Does the Ruler Mean the Same Thing for Everyone?</h2>
 <p>Before you compare groups on a measure - do liberals and conservatives differ in political curiosity? - you must first check that the measure means the <em>same thing</em> in both groups. If “curiosity” items behave differently for conservatives than for liberals, then a group difference in scores might be an artifact of the <strong>ruler</strong>, not a real difference in the trait. This is <strong>measurement invariance</strong>, tested with multi-group CFA that progressively constrains the model to be equal across groups:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Measurement invariance across political groups (lavaan — shown, not run here)</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>configural <span class="ot">&lt;-</span> <span class="fu">cfa</span>(model, <span class="at">data =</span> dat, <span class="at">group =</span> <span class="st">"conservative"</span>)            <span class="co"># same shape?</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>metric     <span class="ot">&lt;-</span> <span class="fu">cfa</span>(model, <span class="at">data =</span> dat, <span class="at">group =</span> <span class="st">"conservative"</span>,</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                  <span class="at">group.equal =</span> <span class="st">"loadings"</span>)                             <span class="co"># same loadings?</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>scalar     <span class="ot">&lt;-</span> <span class="fu">cfa</span>(model, <span class="at">data =</span> dat, <span class="at">group =</span> <span class="st">"conservative"</span>,</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>                  <span class="at">group.equal =</span> <span class="fu">c</span>(<span class="st">"loadings"</span>, <span class="st">"intercepts"</span>))            <span class="co"># same intercepts?</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(configural, metric, scalar)   <span class="co"># does constraining hurt fit? if not, invariance holds</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Measurement invariance across political groups (lavaan — shown, not run here)</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>configural <span class="ot">&lt;-</span> <span class="fu">cfa</span>(model, <span class="at">data =</span> dat, <span class="at">group =</span> <span class="st">"conservative"</span>)            <span class="co"># same shape?</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>metric     <span class="ot">&lt;-</span> <span class="fu">cfa</span>(model, <span class="at">data =</span> dat, <span class="at">group =</span> <span class="st">"conservative"</span>,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>                  <span class="at">group.equal =</span> <span class="st">"loadings"</span>)                             <span class="co"># same loadings?</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>scalar     <span class="ot">&lt;-</span> <span class="fu">cfa</span>(model, <span class="at">data =</span> dat, <span class="at">group =</span> <span class="st">"conservative"</span>,</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>                  <span class="at">group.equal =</span> <span class="fu">c</span>(<span class="st">"loadings"</span>, <span class="st">"intercepts"</span>))            <span class="co"># same intercepts?</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(configural, metric, scalar)   <span class="co"># does constraining hurt fit? if not, invariance holds</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The study ran exactly this before comparing political groups - because a group comparison on a non-invariant scale is comparing inches to centimeters and calling the difference meaningful. It is the same lesson the <a href="./24-casestudy-depression.html">depression study</a> learned the hard way: <em>make sure two measurements are on the same footing before you read anything into their difference.</em></p>
 </section>
 <section id="preregister-call-your-shot-before-the-data-arrive" class="level2" data-number="30.4">

@@ -811,6 +811,10 @@ window.Quarto = {
 <li><strong>M-step</strong> (Maximization): given those soft memberships, re-estimate each class’s size and item probabilities as membership-weighted averages.</li>
 </ul>
 <p>Repeat until nothing moves. First, simulate two classes that differ in <em>pattern</em> - items 7–8 are reversed, so the classes are not simply “more” vs.&nbsp;“less” symptomatic:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="" aria-current="page">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">SPSS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Julia</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-4" role="tab" aria-controls="tabset-1-4" aria-selected="false" href="">Python</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)    <span class="co"># dplyr, ggplot2, purrr, tibble, readr, stringr, forcats</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"_common.R"</span>)   <span class="co"># book-wide helpers: round2(), fmt_p(), tidy2()</span></span>
@@ -825,37 +829,90 @@ window.Quarto = {
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># one response vector per person; the estimator below wants them as a matrix</span></span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">map</span>(cls, \(k) <span class="fu">rbinom</span>(J, <span class="dv">1</span>, rho[k, ])))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<pre><code>* Two latent classes that differ in PATTERN: items 7-8 are reversed, so
+* the classes are not simply "more" vs "less" symptomatic.
+INPUT PROGRAM.
+LOOP #i = 1 TO 800.
+  COMPUTE cls = 1 + (RV.UNIFORM(0,1) &lt; 0.65).
+  VECTOR x(8).
+  LOOP #j = 1 TO 8.
+    DO IF (cls = 1).
+      COMPUTE #p = 0.80.
+      IF (#j &gt;= 7) #p = 0.30.
+    ELSE.
+      COMPUTE #p = 0.20.
+      IF (#j &gt;= 7) #p = 0.70.
+    END IF.
+    COMPUTE x(#j) = RV.UNIFORM(0,1) &lt; #p.
+  END LOOP.
+  END CASE.
+END LOOP.
+END FILE.
+END INPUT PROGRAM.
+EXECUTE.</code></pre>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Random</span>, <span class="bu">Distributions</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="bu">Random</span>.<span class="fu">seed!</span>(<span class="fl">2026</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>N, J <span class="op">=</span> <span class="fl">800</span>, <span class="fl">8</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>prev <span class="op">=</span> [<span class="fl">0.35</span>, <span class="fl">0.65</span>]</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>rho  <span class="op">=</span> [<span class="fu">fill</span>(<span class="fl">0.80</span>, J), <span class="fu">fill</span>(<span class="fl">0.20</span>, J)]</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>rho[<span class="fl">1</span>][<span class="fl">7</span><span class="op">:</span><span class="fl">8</span>] <span class="op">.=</span> <span class="fl">0.30</span>; rho[<span class="fl">2</span>][<span class="fl">7</span><span class="op">:</span><span class="fl">8</span>] <span class="op">.=</span> <span class="fl">0.70</span>   <span class="co"># reverse two items</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>cls <span class="op">=</span> <span class="fu">rand</span>(<span class="fu">Categorical</span>(prev), N)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> [<span class="fu">rand</span>() <span class="op">&lt;</span> rho[cls[i]][j] ? <span class="fl">1</span> <span class="op">:</span> <span class="fl">0</span> for i <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span>N, j <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span>J]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">2026</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>N, J <span class="op">=</span> <span class="dv">800</span>, <span class="dv">8</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>prev <span class="op">=</span> [<span class="fl">0.35</span>, <span class="fl">0.65</span>]</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>rho <span class="op">=</span> np.vstack([np.full(J, <span class="fl">0.80</span>), np.full(J, <span class="fl">0.20</span>)])</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>rho[<span class="dv">0</span>, <span class="dv">6</span>:<span class="dv">8</span>] <span class="op">=</span> <span class="fl">0.30</span><span class="op">;</span> rho[<span class="dv">1</span>, <span class="dv">6</span>:<span class="dv">8</span>] <span class="op">=</span> <span class="fl">0.70</span>     <span class="co"># reverse two items</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>cls <span class="op">=</span> rng.choice([<span class="dv">0</span>, <span class="dv">1</span>], N, p<span class="op">=</span>prev)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> (rng.random((N, J)) <span class="op">&lt;</span> rho[cls]).astype(<span class="bu">int</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 <p>Now the entire estimator - about a dozen lines:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">SPSS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">Julia</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-4" role="tab" aria-controls="tabset-2-4" aria-selected="false" href="">Python</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>lca_em <span class="ot">&lt;-</span> <span class="cf">function</span>(X, <span class="at">K =</span> <span class="dv">2</span>, <span class="at">tol =</span> <span class="fl">1e-6</span>, <span class="at">maxit =</span> <span class="dv">500</span>) {</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  N <span class="ot">&lt;-</span> <span class="fu">nrow</span>(X); J <span class="ot">&lt;-</span> <span class="fu">ncol</span>(X)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">1</span>); pi <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">/</span>K, K); p <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">runif</span>(K <span class="sc">*</span> J, .<span class="dv">2</span>, .<span class="dv">8</span>), K, J)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  ll_old <span class="ot">&lt;-</span> <span class="sc">-</span><span class="cn">Inf</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># EM is inherently sequential - each sweep starts from the previous estimates -</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># so this stays a loop. The per-class E-step inside it does not, and maps.</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (it <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>maxit) {</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># E-step: log P(x_i, class k) for every person and class, then normalize to a posterior</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    loglik <span class="ot">&lt;-</span> <span class="fu">map</span>(<span class="dv">1</span><span class="sc">:</span>K, \(k)</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>      <span class="fu">log</span>(pi[k]) <span class="sc">+</span> X <span class="sc">%*%</span> <span class="fu">log</span>(p[k, ]) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">-</span> X) <span class="sc">%*%</span> <span class="fu">log</span>(<span class="dv">1</span> <span class="sc">-</span> p[k, ])) <span class="sc">|&gt;</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">reduce</span>(cbind)</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    m    <span class="ot">&lt;-</span> <span class="fu">apply</span>(loglik, <span class="dv">1</span>, max)</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    post <span class="ot">&lt;-</span> <span class="fu">exp</span>(loglik <span class="sc">-</span> m); post <span class="ot">&lt;-</span> post <span class="sc">/</span> <span class="fu">rowSums</span>(post)</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># M-step: re-estimate sizes and item probabilities as posterior-weighted averages</span></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    pi <span class="ot">&lt;-</span> <span class="fu">colMeans</span>(post)</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    p  <span class="ot">&lt;-</span> <span class="fu">t</span>(post) <span class="sc">%*%</span> X <span class="sc">/</span> <span class="fu">colSums</span>(post)</span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    ll <span class="ot">&lt;-</span> <span class="fu">sum</span>(m <span class="sc">+</span> <span class="fu">log</span>(<span class="fu">rowSums</span>(<span class="fu">exp</span>(loglik <span class="sc">-</span> m))))</span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">abs</span>(ll <span class="sc">-</span> ll_old) <span class="sc">&lt;</span> tol) <span class="cf">break</span>; ll_old <span class="ot">&lt;-</span> ll</span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">prevalence =</span> pi, <span class="at">item_prob =</span> p, <span class="at">iterations =</span> it)</span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lca_em</span>(X, <span class="at">K =</span> <span class="dv">2</span>)</span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"converged in"</span>, fit<span class="sc">$</span>iterations, <span class="st">"iterations</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>lca_em <span class="ot">&lt;-</span> <span class="cf">function</span>(X, <span class="at">K =</span> <span class="dv">2</span>, <span class="at">tol =</span> <span class="fl">1e-6</span>, <span class="at">maxit =</span> <span class="dv">500</span>) {</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  N <span class="ot">&lt;-</span> <span class="fu">nrow</span>(X); J <span class="ot">&lt;-</span> <span class="fu">ncol</span>(X)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">1</span>); pi <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">/</span>K, K); p <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">runif</span>(K <span class="sc">*</span> J, .<span class="dv">2</span>, .<span class="dv">8</span>), K, J)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  ll_old <span class="ot">&lt;-</span> <span class="sc">-</span><span class="cn">Inf</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># EM is inherently sequential - each sweep starts from the previous estimates -</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># so this stays a loop. The per-class E-step inside it does not, and maps.</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (it <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>maxit) {</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># E-step: log P(x_i, class k) for every person and class, then normalize to a posterior</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    loglik <span class="ot">&lt;-</span> <span class="fu">map</span>(<span class="dv">1</span><span class="sc">:</span>K, \(k)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>      <span class="fu">log</span>(pi[k]) <span class="sc">+</span> X <span class="sc">%*%</span> <span class="fu">log</span>(p[k, ]) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">-</span> X) <span class="sc">%*%</span> <span class="fu">log</span>(<span class="dv">1</span> <span class="sc">-</span> p[k, ])) <span class="sc">|&gt;</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">reduce</span>(cbind)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    m    <span class="ot">&lt;-</span> <span class="fu">apply</span>(loglik, <span class="dv">1</span>, max)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    post <span class="ot">&lt;-</span> <span class="fu">exp</span>(loglik <span class="sc">-</span> m); post <span class="ot">&lt;-</span> post <span class="sc">/</span> <span class="fu">rowSums</span>(post)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># M-step: re-estimate sizes and item probabilities as posterior-weighted averages</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    pi <span class="ot">&lt;-</span> <span class="fu">colMeans</span>(post)</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    p  <span class="ot">&lt;-</span> <span class="fu">t</span>(post) <span class="sc">%*%</span> X <span class="sc">/</span> <span class="fu">colSums</span>(post)</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    ll <span class="ot">&lt;-</span> <span class="fu">sum</span>(m <span class="sc">+</span> <span class="fu">log</span>(<span class="fu">rowSums</span>(<span class="fu">exp</span>(loglik <span class="sc">-</span> m))))</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">abs</span>(ll <span class="sc">-</span> ll_old) <span class="sc">&lt;</span> tol) <span class="cf">break</span>; ll_old <span class="ot">&lt;-</span> ll</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">prevalence =</span> pi, <span class="at">item_prob =</span> p, <span class="at">iterations =</span> it)</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lca_em</span>(X, <span class="at">K =</span> <span class="dv">2</span>)</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"converged in"</span>, fit<span class="sc">$</span>iterations, <span class="st">"iterations</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>converged in 22 iterations</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># recovered class sizes (true: .35 / .65)</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">class =</span> <span class="fu">seq_along</span>(fit<span class="sc">$</span>prevalence), <span class="at">prevalence =</span> fit<span class="sc">$</span>prevalence) <span class="sc">|&gt;</span> <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># recovered class sizes (true: .35 / .65)</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">class =</span> <span class="fu">seq_along</span>(fit<span class="sc">$</span>prevalence), <span class="at">prevalence =</span> fit<span class="sc">$</span>prevalence) <span class="sc">|&gt;</span> <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
@@ -879,13 +936,81 @@ window.Quarto = {
 </div>
 </div>
 </div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<pre><code>* Base SPSS has no latent class analysis. The nearest built-in relative is
+* TwoStep Cluster (CLUSTER / TWOSTEP), which groups cases but does not
+* estimate class-conditional item probabilities or class membership
+* posteriors the way an LCA does.
+*
+* A genuine LCA in the SPSS world needs the Latent GOLD plug-in, Mplus, or
+* R's poLCA. The from-scratch EM estimator is shown in the R, Julia, and
+* Python tabs.
+TWOSTEP CLUSTER
+  /CATEGORICAL VARIABLES=x1 x2 x3 x4 x5 x6 x7 x8
+  /CRITERIA NUMCLUSTERS(2).</code></pre>
+</div>
+<div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Statistics</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">lca_em</span>(X, K <span class="op">=</span> <span class="fl">2</span>; tol <span class="op">=</span> <span class="fl">1e-6</span>, maxit <span class="op">=</span> <span class="fl">500</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    N, J <span class="op">=</span> <span class="fu">size</span>(X)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    pi_ <span class="op">=</span> <span class="fu">fill</span>(<span class="fl">1</span><span class="op">/</span>K, K)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    p   <span class="op">=</span> <span class="fu">rand</span>(K, J) <span class="op">.*</span> <span class="fl">0.6</span> <span class="op">.+</span> <span class="fl">0.2</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    ll_old <span class="op">=</span> <span class="op">-</span><span class="cn">Inf</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># EM is sequential: each sweep starts from the previous estimates</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> it <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span>maxit</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>        loglik <span class="op">=</span> [<span class="fu">log</span>(pi_[k]) <span class="op">+</span> <span class="fu">sum</span>(X[i,j]<span class="fu">*log</span>(p[k,j]) <span class="op">+</span> (<span class="fl">1</span><span class="op">-</span>X[i,j])<span class="fu">*log</span>(<span class="fl">1</span><span class="op">-</span>p[k,j])</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>                                    for j <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span>J) for i <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span>N, k <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span>K]</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>        m    <span class="op">=</span> <span class="fu">maximum</span>(loglik, dims <span class="op">=</span> <span class="fl">2</span>)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>        post <span class="op">=</span> <span class="fu">exp</span>.(loglik <span class="op">.-</span> m); post <span class="op">./=</span> <span class="fu">sum</span>(post, dims <span class="op">=</span> <span class="fl">2</span>)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>        pi_  <span class="op">=</span> <span class="fu">vec</span>(<span class="fu">mean</span>(post, dims <span class="op">=</span> <span class="fl">1</span>))</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>        p    <span class="op">=</span> (post<span class="op">'</span> <span class="op">*</span> X) <span class="op">./</span> <span class="fu">sum</span>(post, dims <span class="op">=</span> <span class="fl">1</span>)<span class="ch">'</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>        ll   <span class="op">=</span> <span class="fu">sum</span>(m <span class="op">.+</span> <span class="fu">log</span>.(<span class="fu">sum</span>(<span class="fu">exp</span>.(loglik <span class="op">.-</span> m), dims <span class="op">=</span> <span class="fl">2</span>)))</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>        <span class="fu">abs</span>(ll <span class="op">-</span> ll_old) <span class="op">&lt;</span> tol <span class="op">&amp;&amp;</span> <span class="cf">return</span> (prevalence <span class="op">=</span> pi_, item_prob <span class="op">=</span> p, iterations <span class="op">=</span> it)</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>        ll_old <span class="op">=</span> ll</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>fit <span class="op">=</span> <span class="fu">lca_em</span>(X, <span class="fl">2</span>)</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>fit.prevalence                     <span class="co"># recovered class sizes (true: .35 / .65)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-2-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-4-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> lca_em(X, K<span class="op">=</span><span class="dv">2</span>, tol<span class="op">=</span><span class="fl">1e-6</span>, maxit<span class="op">=</span><span class="dv">500</span>):</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    N, J <span class="op">=</span> X.shape</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    rng <span class="op">=</span> np.random.default_rng(<span class="dv">1</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    pi_ <span class="op">=</span> np.full(K, <span class="dv">1</span> <span class="op">/</span> K)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    p <span class="op">=</span> rng.uniform(<span class="fl">0.2</span>, <span class="fl">0.8</span>, (K, J))</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    ll_old <span class="op">=</span> <span class="op">-</span>np.inf</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># EM is sequential: each sweep starts from the previous estimates</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> it <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, maxit <span class="op">+</span> <span class="dv">1</span>):</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>        loglik <span class="op">=</span> (np.log(pi_) <span class="op">+</span> X <span class="op">@</span> np.log(p).T <span class="op">+</span> (<span class="dv">1</span> <span class="op">-</span> X) <span class="op">@</span> np.log(<span class="dv">1</span> <span class="op">-</span> p).T)</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>        m <span class="op">=</span> loglik.<span class="bu">max</span>(axis<span class="op">=</span><span class="dv">1</span>, keepdims<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>        post <span class="op">=</span> np.exp(loglik <span class="op">-</span> m)<span class="op">;</span> post <span class="op">/=</span> post.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>, keepdims<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>        pi_ <span class="op">=</span> post.mean(axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>        p <span class="op">=</span> (post.T <span class="op">@</span> X) <span class="op">/</span> post.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">0</span>)[:, <span class="va">None</span>]</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>        ll <span class="op">=</span> <span class="bu">float</span>((m <span class="op">+</span> np.log(np.exp(loglik <span class="op">-</span> m).<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>, keepdims<span class="op">=</span><span class="va">True</span>))).<span class="bu">sum</span>())</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">abs</span>(ll <span class="op">-</span> ll_old) <span class="op">&lt;</span> tol:</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="bu">dict</span>(prevalence<span class="op">=</span>pi_, item_prob<span class="op">=</span>p, iterations<span class="op">=</span>it)</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>        ll_old <span class="op">=</span> ll</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>fit <span class="op">=</span> lca_em(X, <span class="dv">2</span>)</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>fit[<span class="st">"prevalence"</span>]                  <span class="co"># recovered class sizes (true: .35 / .65)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 <p>The class sizes come back essentially exact. And the item-probability profiles - the <em>definitions</em> of the two kinds - recover the reversal we planted:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href="">SPSS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-3" role="tab" aria-controls="tabset-3-3" aria-selected="false" href="">Julia</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-4" role="tab" aria-controls="tabset-3-4" aria-selected="false" href="">Python</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># rows = classes, columns = items 1..8</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>item_prob <span class="sc">|&gt;</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>(<span class="at">.name_repair =</span> \(x) <span class="fu">paste0</span>(<span class="st">"item"</span>, <span class="fu">seq_along</span>(x))) <span class="sc">|&gt;</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">class =</span> <span class="fu">row_number</span>(), <span class="at">.before =</span> <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># rows = classes, columns = items 1..8</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>item_prob <span class="sc">|&gt;</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>(<span class="at">.name_repair =</span> \(x) <span class="fu">paste0</span>(<span class="st">"item"</span>, <span class="fu">seq_along</span>(x))) <span class="sc">|&gt;</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">class =</span> <span class="fu">row_number</span>(), <span class="at">.before =</span> <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
@@ -930,17 +1055,36 @@ window.Quarto = {
 </div>
 </div>
 </div>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<pre><code>* The item-probability profiles - the DEFINITIONS of the two kinds - are
+* what an LCA reports and TwoStep Cluster does not. See the note in the
+* previous SPSS tab; use Latent GOLD, Mplus, or R's poLCA for these.
+*
+* The closest built-in summary is the endorsement rate of each item within
+* each cluster:
+MEANS TABLES=x1 x2 x3 x4 x5 x6 x7 x8 BY TSC_Predicted
+  /CELLS=MEAN.</code></pre>
+</div>
+<div id="tabset-3-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>fit.item_prob                      <span class="co"># rows = classes, columns = items 1..8</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-3-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-4-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>fit[<span class="st">"item_prob"</span>].<span class="bu">round</span>(<span class="dv">2</span>)          <span class="co"># rows = classes, columns = items 1..8</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 <p>Read the two rows: one class endorses items 1–6 heavily but items 7–8 rarely; the other is its mirror image. <strong>These classes are not “high” and “low” depression - they are two different <em>shapes</em> of response.</strong> A sum score, which only counts yeses, would blend them together; the mixture model pulls them apart. That is what LCA is <em>for</em>.</p>
 </section>
 <section id="how-many-classes" class="level2" data-number="22.4">
 <h2 data-number="22.4" class="anchored" data-anchor-id="how-many-classes"><span class="header-section-number">22.4</span> How Many Classes?</h2>
 <p>We told the estimator <span class="math inline">\(K = 2\)</span>, but in real life the number of classes is itself unknown - and it is the crux of the analysis. You fit <span class="math inline">\(K = 1, 2, 3, \dots\)</span> and compare, usually with an information criterion (<strong>BIC</strong> or <strong>AIC</strong>) that rewards fit and penalizes complexity, plus interpretability (a class you cannot describe is probably an artifact). In practice you would use a maintained tool that also handles this:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The real tool (needs the poLCA package — shown, not run on the book's server)</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(poLCA)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>f  <span class="ot">&lt;-</span> <span class="fu">cbind</span>(i1, i2, i3, i4, i5, i6, i7, i8) <span class="sc">~</span> <span class="dv">1</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">poLCA</span>(f, data, <span class="at">nclass =</span> <span class="dv">2</span>)      <span class="co"># fit 2, 3, 4 classes ...</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>m3 <span class="ot">&lt;-</span> <span class="fu">poLCA</span>(f, data, <span class="at">nclass =</span> <span class="dv">3</span>)      <span class="co"># ... and compare</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(m2<span class="sc">$</span>bic, m3<span class="sc">$</span>bic)                     <span class="co"># lower BIC = better; also judge interpretability</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The real tool (needs the poLCA package — shown, not run on the book's server)</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(poLCA)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>f  <span class="ot">&lt;-</span> <span class="fu">cbind</span>(i1, i2, i3, i4, i5, i6, i7, i8) <span class="sc">~</span> <span class="dv">1</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">poLCA</span>(f, data, <span class="at">nclass =</span> <span class="dv">2</span>)      <span class="co"># fit 2, 3, 4 classes ...</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>m3 <span class="ot">&lt;-</span> <span class="fu">poLCA</span>(f, data, <span class="at">nclass =</span> <span class="dv">3</span>)      <span class="co"># ... and compare</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(m2<span class="sc">$</span>bic, m3<span class="sc">$</span>bic)                     <span class="co"># lower BIC = better; also judge interpretability</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">

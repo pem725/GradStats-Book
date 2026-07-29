@@ -754,6 +754,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="when-a-table-beats-a-graph" class="level2" data-number="27.2">
 <h2 data-number="27.2" class="anchored" data-anchor-id="when-a-table-beats-a-graph"><span class="header-section-number">27.2</span> When a Table Beats a Graph</h2>
 <p>A table wins when the numbers are <strong>few</strong>, the <strong>exact values matter</strong>, or the reader will <strong>look things up</strong> rather than scan for a shape. The strikeout trend was a job for a line. But “what did each decade actually look like, in numbers I can quote?” is a job for a small table. Summarize the 42 years down to five decade averages - few rows, exact values, quotable:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="" aria-current="page">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">SPSS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Julia</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-4" role="tab" aria-controls="tabset-1-4" aria-selected="false" href="">Python</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)    <span class="co"># dplyr, ggplot2, purrr, tibble, readr, stringr, forcats</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"_common.R"</span>)   <span class="co"># book-wide helpers: round2(), fmt_p(), tidy2()</span></span>
@@ -823,21 +827,58 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </div>
 </div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<pre><code>* Summarise 42 years down to five decade averages.
+GET DATA /TYPE=TXT /FILE='data/mlb_league_by_year.csv'
+  /DELIMITERS=',' /FIRSTCASE=2.
+
+COMPUTE decade = TRUNC(year / 10) * 10.
+FORMATS decade (F4.0).
+EXECUTE.
+
+MEANS TABLES=K_9 BB_9 HR_9 AVG BY decade
+  /CELLS=MEAN.</code></pre>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Statistics</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>mlb <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/mlb_league_by_year.csv"</span>, DataFrame)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>mlb.decade <span class="op">=</span> <span class="fu">string</span>.(<span class="fu">fld</span>.(mlb.year, <span class="fl">10</span>) <span class="op">.*</span> <span class="fl">10</span>, <span class="st">"s"</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">combine</span>(<span class="fu">groupby</span>(mlb, <span class="op">:</span>decade),</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        [<span class="op">:</span>K_9, <span class="op">:</span>BB_9, <span class="op">:</span>HR_9, <span class="op">:</span>AVG] <span class="op">.=&gt;</span> mean <span class="op">.=&gt;</span> [<span class="op">:</span>K_9, <span class="op">:</span>BB_9, <span class="op">:</span>HR_9, <span class="op">:</span>AVG])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>mlb <span class="op">=</span> pd.read_csv(<span class="st">"data/mlb_league_by_year.csv"</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>mlb[<span class="st">"decade"</span>] <span class="op">=</span> (mlb.year <span class="op">//</span> <span class="dv">10</span> <span class="op">*</span> <span class="dv">10</span>).astype(<span class="bu">str</span>) <span class="op">+</span> <span class="st">"s"</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>(mlb.groupby(<span class="st">"decade"</span>)[[<span class="st">"K_9"</span>, <span class="st">"BB_9"</span>, <span class="st">"HR_9"</span>, <span class="st">"AVG"</span>]]</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    .mean()</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">round</span>({<span class="st">"K_9"</span>: <span class="dv">2</span>, <span class="st">"BB_9"</span>: <span class="dv">2</span>, <span class="st">"HR_9"</span>: <span class="dv">2</span>, <span class="st">"AVG"</span>: <span class="dv">3</span>}))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 <p>Five rows, and you can <em>quote</em> any cell. The graph made you feel the strikeout climb; the table lets you say “K/9 went from about 5.7 in the 1980s to about 8.5 in the 2020s” without guessing off an axis. Same data, different instrument, different job.</p>
 </section>
 <section id="kill-false-precision" class="level2" data-number="27.3">
 <h2 data-number="27.3" class="anchored" data-anchor-id="kill-false-precision"><span class="header-section-number">27.3</span> Kill False Precision</h2>
 <p>The fastest way to make a table mislead, or simply to tire your reader, is to print every digit the computer produced. A bust rate stored as <code>0.5455</code> does <strong>not</strong> mean you know it to four decimals; with a few dozen draft picks, you barely know the second. Rounding is not sloppiness; it is honesty about how much you actually know. Watch the difference:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">SPSS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">Julia</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-4" role="tab" aria-controls="tabset-2-4" aria-selected="false" href="">Python</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>nfl <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/nfl_draft_by_team.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>worst <span class="ot">&lt;-</span> nfl <span class="sc">|&gt;</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(rate_bust_a)) <span class="sc">|&gt;</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(team, n_picks, rate_bust_a, rate_clean_hit)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># false precision: every digit the machine produced</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(worst, <span class="dv">4</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>             <span class="at">caption =</span> <span class="st">"Too many digits — implies a precision the data don't have."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>nfl <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/nfl_draft_by_team.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>worst <span class="ot">&lt;-</span> nfl <span class="sc">|&gt;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(rate_bust_a)) <span class="sc">|&gt;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(team, n_picks, rate_bust_a, rate_clean_hit)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># false precision: every digit the machine produced</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(worst, <span class="dv">4</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>             <span class="at">caption =</span> <span class="st">"Too many digits — implies a precision the data don't have."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <caption>Too many digits — implies a precision the data don’t have.</caption>
@@ -878,14 +919,47 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </div>
 </div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<pre><code>* False precision: every digit the machine produced.
+GET DATA /TYPE=TXT /FILE='data/nfl_draft_by_team.csv'
+  /DELIMITERS=',' /FIRSTCASE=2.
+
+SORT CASES BY rate_bust_a (D).
+* SPSS shows whatever the variable's FORMAT allows - widen it and the
+* spurious digits appear:
+FORMATS rate_bust_a rate_clean_hit (F8.4).
+LIST VARIABLES=team n_picks rate_bust_a rate_clean_hit /CASES=4.</code></pre>
+</div>
+<div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>nfl <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/nfl_draft_by_team.csv"</span>, DataFrame)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>worst <span class="op">=</span> <span class="fu">sort</span>(<span class="fu">select</span>(nfl, <span class="op">:</span>team, <span class="op">:</span>n_picks, <span class="op">:</span>rate_bust_a, <span class="op">:</span>rate_clean_hit),</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>             <span class="op">:</span>rate_bust_a, rev <span class="op">=</span> <span class="cn">true</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="fu">first</span>(worst, <span class="fl">4</span>)          <span class="co"># too many digits for what the data can support</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-2-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-4-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>nfl <span class="op">=</span> pd.read_csv(<span class="st">"data/nfl_draft_by_team.csv"</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>worst <span class="op">=</span> (nfl.sort_values(<span class="st">"rate_bust_a"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>            [[<span class="st">"team"</span>, <span class="st">"n_picks"</span>, <span class="st">"rate_bust_a"</span>, <span class="st">"rate_clean_hit"</span>]])</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>worst.head(<span class="dv">4</span>)            <span class="co"># too many digits for what the data can support</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href="">SPSS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-3" role="tab" aria-controls="tabset-3-3" aria-selected="false" href="">Julia</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-4" role="tab" aria-controls="tabset-3-4" aria-selected="false" href="">Python</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># honest precision: percentages, rounded to what the sample can support</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>worst <span class="ot">&lt;-</span> worst <span class="sc">|&gt;</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(rate_bust_a, rate_clean_hit), \(v) <span class="fu">round</span>(<span class="dv">100</span> <span class="sc">*</span> v)))</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(worst, <span class="dv">4</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Team"</span>, <span class="st">"Picks"</span>, <span class="st">"Bust rate (%)"</span>, <span class="st">"Clean-hit rate (%)"</span>),</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>             <span class="at">caption =</span> <span class="st">"Rounded to whole percentages — easier to read, honest about precision."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># honest precision: percentages, rounded to what the sample can support</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>worst <span class="ot">&lt;-</span> worst <span class="sc">|&gt;</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(rate_bust_a, rate_clean_hit), \(v) <span class="fu">round</span>(<span class="dv">100</span> <span class="sc">*</span> v)))</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(worst, <span class="dv">4</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Team"</span>, <span class="st">"Picks"</span>, <span class="st">"Bust rate (%)"</span>, <span class="st">"Clean-hit rate (%)"</span>),</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>             <span class="at">caption =</span> <span class="st">"Rounded to whole percentages — easier to read, honest about precision."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <caption>Rounded to whole percentages — easier to read, honest about precision.</caption>
@@ -926,21 +1000,52 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </div>
 </div>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<pre><code>* Honest precision: whole percentages, rounded to what the sample supports.
+COMPUTE rate_bust_a    = RND(100 * rate_bust_a).
+COMPUTE rate_clean_hit = RND(100 * rate_clean_hit).
+FORMATS rate_bust_a rate_clean_hit (F3.0).
+VARIABLE LABELS rate_bust_a 'Bust rate (%)'
+                rate_clean_hit 'Clean-hit rate (%)'.
+EXECUTE.
+
+LIST VARIABLES=team n_picks rate_bust_a rate_clean_hit /CASES=4.</code></pre>
+</div>
+<div id="tabset-3-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>worst.rate_bust_a    <span class="op">=</span> <span class="fu">round</span>.(<span class="fl">100</span> <span class="op">.*</span> worst.rate_bust_a)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>worst.rate_clean_hit <span class="op">=</span> <span class="fu">round</span>.(<span class="fl">100</span> <span class="op">.*</span> worst.rate_clean_hit)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">first</span>(worst, <span class="fl">4</span>)          <span class="co"># easier to read AND more truthful</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-3-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-4-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>worst <span class="op">=</span> worst.assign(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    rate_bust_a<span class="op">=</span><span class="kw">lambda</span> d: (<span class="dv">100</span> <span class="op">*</span> d.rate_bust_a).<span class="bu">round</span>(),</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    rate_clean_hit<span class="op">=</span><span class="kw">lambda</span> d: (<span class="dv">100</span> <span class="op">*</span> d.rate_clean_hit).<span class="bu">round</span>())</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>worst.head(<span class="dv">4</span>)            <span class="co"># easier to read AND more truthful</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 <p>The second table is easier to read <em>and</em> more truthful. <strong>Show the digits you can defend, and not one more.</strong></p>
 </section>
 <section id="order-rows-to-carry-information" class="level2" data-number="27.4">
 <h2 data-number="27.4" class="anchored" data-anchor-id="order-rows-to-carry-information"><span class="header-section-number">27.4</span> Order Rows to Carry Information</h2>
 <p>A table’s row order is free information - spend it. An alphabetical list of teams makes the reader hunt; a list <strong>sorted by the thing you care about</strong> answers the question before they ask it. We already sorted by bust rate above (worst first), so the ranking <em>is</em> the message. Now show the two ends that a reader actually wants - the best and worst drafters - instead of dumping all 32:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false" href="">SPSS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-3" role="tab" aria-controls="tabset-4-3" aria-selected="false" href="">Julia</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-4" role="tab" aria-controls="tabset-4-4" aria-selected="false" href="">Python</a></li></ul>
+<div class="tab-content">
+<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>ends <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  worst <span class="sc">|&gt;</span> <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">5</span>) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">group =</span> <span class="st">"Worst drafters"</span>, <span class="at">.before =</span> <span class="dv">1</span>),</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  worst <span class="sc">|&gt;</span> <span class="fu">slice_tail</span>(<span class="at">n =</span> <span class="dv">5</span>) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">group =</span> <span class="st">"Best drafters"</span>,  <span class="at">.before =</span> <span class="dv">1</span>)</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(group, team, n_picks, rate_bust_a)</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(ends, <span class="at">row.names =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>             <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">""</span>, <span class="st">"Team"</span>, <span class="st">"Picks"</span>, <span class="st">"Bust rate (%)"</span>),</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>             <span class="at">caption =</span> <span class="st">"The two ends of the ranking — the comparison the reader wanted."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>ends <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  worst <span class="sc">|&gt;</span> <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">5</span>) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">group =</span> <span class="st">"Worst drafters"</span>, <span class="at">.before =</span> <span class="dv">1</span>),</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  worst <span class="sc">|&gt;</span> <span class="fu">slice_tail</span>(<span class="at">n =</span> <span class="dv">5</span>) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">group =</span> <span class="st">"Best drafters"</span>,  <span class="at">.before =</span> <span class="dv">1</span>)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(group, team, n_picks, rate_bust_a)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(ends, <span class="at">row.names =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>             <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">""</span>, <span class="st">"Team"</span>, <span class="st">"Picks"</span>, <span class="st">"Bust rate (%)"</span>),</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>             <span class="at">caption =</span> <span class="st">"The two ends of the ranking — the comparison the reader wanted."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <caption>The two ends of the ranking — the comparison the reader wanted.</caption>
@@ -1015,6 +1120,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
+</div>
+</div>
+</div>
+<div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
+<pre><code>* Show the two ends of the ranking, not all 32 rows.
+* Flag the top and bottom five, then list only those.
+COMPUTE rank_bust = $CASENUM.
+COMPUTE ends = 0.
+IF (rank_bust &lt;= 5) ends = 1.
+IF (rank_bust &gt; 27) ends = 2.
+VALUE LABELS ends 1 'Worst drafters' 2 'Best drafters'.
+EXECUTE.
+
+TEMPORARY.
+SELECT IF (ends &gt; 0).
+LIST VARIABLES=ends team n_picks rate_bust_a.</code></pre>
+</div>
+<div id="tabset-4-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>ends <span class="op">=</span> <span class="fu">vcat</span>(<span class="fu">transform</span>(<span class="fu">first</span>(worst, <span class="fl">5</span>), <span class="op">:</span>team <span class="op">=&gt;</span> <span class="fu">ByRow</span>(_ <span class="op">-&gt;</span> <span class="st">"Worst drafters"</span>) <span class="op">=&gt;</span> <span class="op">:</span>group),</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>            <span class="fu">transform</span>(<span class="fu">last</span>(worst, <span class="fl">5</span>),  <span class="op">:</span>team <span class="op">=&gt;</span> <span class="fu">ByRow</span>(_ <span class="op">-&gt;</span> <span class="st">"Best drafters"</span>)  <span class="op">=&gt;</span> <span class="op">:</span>group))</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(ends, <span class="op">:</span>group, <span class="op">:</span>team, <span class="op">:</span>n_picks, <span class="op">:</span>rate_bust_a)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-4-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-4-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>ends <span class="op">=</span> pd.concat([worst.head(<span class="dv">5</span>).assign(group<span class="op">=</span><span class="st">"Worst drafters"</span>),</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>                  worst.tail(<span class="dv">5</span>).assign(group<span class="op">=</span><span class="st">"Best drafters"</span>)])</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>ends[[<span class="st">"group"</span>, <span class="st">"team"</span>, <span class="st">"n_picks"</span>, <span class="st">"rate_bust_a"</span>]]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </div>
 </div>
 <p>Ten rows, sorted, grouped into the contrast that matters. A 32-row alphabetical dump would contain the same facts but communicate far less of them. <strong>Order and trim the table to the question; do not make the reader do your sorting.</strong></p>
