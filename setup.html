@@ -8,7 +8,7 @@
 
 <meta name="description" content="A comprehensive graduate statistics book suitable for social and behavioral sciences. Our approach is to provide interested students a gentle guide to the rudiments of statistical estimation and inference.">
 
-<title>3&nbsp; Dispersion and Uncertainty – Statistics by Us for You</title>
+<title>Getting the Book’s Data – Statistics by Us for You</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -72,8 +72,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./05-datacleaning.html" rel="next">
-<link href="./03-CTmeasures.html" rel="prev">
+<link href="./required-packages.html" rel="next">
+<link href="./three-languages.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -116,35 +116,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 </head>
 
@@ -319,7 +290,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02-distributions.html">The Basics</a></li><li class="breadcrumb-item"><a href="./04-Dmeasures.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Dispersion and Uncertainty</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./three-languages.html">Appendices</a></li><li class="breadcrumb-item"><a href="./setup.html">Getting the Book’s Data</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -401,7 +372,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./04-Dmeasures.html" class="sidebar-item-text sidebar-link active">
+  <a href="./04-Dmeasures.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Dispersion and Uncertainty</span></span></a>
   </div>
 </li>
@@ -708,7 +679,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./setup.html" class="sidebar-item-text sidebar-link">
+  <a href="./setup.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Getting the Book’s Data</span></a>
   </div>
 </li>
@@ -742,14 +713,11 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#learning-objectives" id="toc-learning-objectives" class="nav-link active" data-scroll-target="#learning-objectives"><span class="header-section-number">3.1</span> Learning Objectives</a></li>
-  <li><a href="#same-center-different-worlds" id="toc-same-center-different-worlds" class="nav-link" data-scroll-target="#same-center-different-worlds"><span class="header-section-number">3.2</span> Same Center, Different Worlds</a></li>
-  <li><a href="#the-simple-measures-range-and-iqr" id="toc-the-simple-measures-range-and-iqr" class="nav-link" data-scroll-target="#the-simple-measures-range-and-iqr"><span class="header-section-number">3.3</span> The Simple Measures: Range and IQR</a></li>
-  <li><a href="#variance-why-we-square" id="toc-variance-why-we-square" class="nav-link" data-scroll-target="#variance-why-we-square"><span class="header-section-number">3.4</span> Variance: Why We Square</a></li>
-  <li><a href="#degrees-of-freedom-why-n-1" id="toc-degrees-of-freedom-why-n-1" class="nav-link" data-scroll-target="#degrees-of-freedom-why-n-1"><span class="header-section-number">3.5</span> Degrees of Freedom: Why <span class="math inline">\(n-1\)</span></a></li>
-  <li><a href="#standard-deviation-back-to-human-units" id="toc-standard-deviation-back-to-human-units" class="nav-link" data-scroll-target="#standard-deviation-back-to-human-units"><span class="header-section-number">3.6</span> Standard Deviation: Back to Human Units</a></li>
-  <li><a href="#challenge" id="toc-challenge" class="nav-link" data-scroll-target="#challenge"><span class="header-section-number">3.7</span> Challenge</a></li>
-  <li><a href="#where-we-go-next" id="toc-where-we-go-next" class="nav-link" data-scroll-target="#where-we-go-next"><span class="header-section-number">3.8</span> Where We Go Next</a></li>
+  <li><a href="#the-problem-stated-honestly" id="toc-the-problem-stated-honestly" class="nav-link active" data-scroll-target="#the-problem-stated-honestly">The problem, stated honestly</a></li>
+  <li><a href="#four-files-one-per-language" id="toc-four-files-one-per-language" class="nav-link" data-scroll-target="#four-files-one-per-language">Four files, one per language</a></li>
+  <li><a href="#the-recipes-are-still-there" id="toc-the-recipes-are-still-there" class="nav-link" data-scroll-target="#the-recipes-are-still-there">The recipes are still there</a></li>
+  <li><a href="#one-trap-worth-knowing-about" id="toc-one-trap-worth-knowing-about" class="nav-link" data-scroll-target="#one-trap-worth-knowing-about">One trap worth knowing about</a></li>
+  <li><a href="#the-real-datasets" id="toc-the-real-datasets" class="nav-link" data-scroll-target="#the-real-datasets">The real datasets</a></li>
   </ul>
 </nav>
     </div>
@@ -757,9 +725,9 @@ window.Quarto = {
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02-distributions.html">The Basics</a></li><li class="breadcrumb-item"><a href="./04-Dmeasures.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Dispersion and Uncertainty</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./three-languages.html">Appendices</a></li><li class="breadcrumb-item"><a href="./setup.html">Getting the Book’s Data</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Dispersion and Uncertainty</span></h1>
+<h1 class="title"><span id="setup" class="quarto-section-identifier">Getting the Book’s Data</span></h1>
 </div>
 
 
@@ -776,265 +744,64 @@ window.Quarto = {
 </header>
 
 
-<p>If you remember one chapter from this book, make it this one. Back in the introduction we YELLED it: <strong>VARIANCE</strong>. Central tendency tells us where a distribution sits; <strong>dispersion</strong> tells us how much it spreads - and spread <em>is</em> uncertainty. Two groups can have identical means and tell completely opposite stories. The difference is dispersion, and dispersion is the raw material of everything we do.</p>
-<section id="learning-objectives" class="level2" data-number="3.1">
-<h2 data-number="3.1" class="anchored" data-anchor-id="learning-objectives"><span class="header-section-number">3.1</span> Learning Objectives</h2>
-<ol type="1">
-<li>Understand why spread, not center, is the quantity statistics is really about.</li>
-<li>Learn the common measures of dispersion and what each is good for.</li>
-<li>Understand variance and the standard deviation, and why we square.</li>
-<li>Understand degrees of freedom and why we divide by <span class="math inline">\(n-1\)</span>.</li>
-</ol>
+<p>Every chapter in this book shows its analysis in four languages. The <strong>R</strong> tab runs live on this page, so R readers never have to think about where the data came from. If you are working in <strong>SPSS, Julia, or Python</strong>, you need the data first - and this page is how you get it.</p>
+<section id="the-problem-stated-honestly" class="level2">
+<h2 class="anchored" data-anchor-id="the-problem-stated-honestly">The problem, stated honestly</h2>
+<p>Most of the book’s datasets are simulated. The obvious thing would be to hand you the simulation code in your language and let you run it. That does not work, and it is worth knowing why.</p>
+<p><strong>Random number generators are not portable.</strong> <code>set.seed(5)</code> followed by <code>rnorm(100)</code> in R, <code>Random.seed!(5)</code> and <code>rand(Normal(), 100)</code> in Julia, and <code>default_rng(5).normal(size=100)</code> in NumPy produce three <em>completely different</em> sets of numbers. Same distribution, different draws. If you regenerated the data in your own language, every correlation, slope, and <em>p</em>-value you computed would be a little off from the ones printed here - and you would reasonably assume you had made a mistake.</p>
+<p>So we do the only thing that actually works: <strong>we generated the data once, in R, and we ship it.</strong> All four languages read the same files, so all four print the same numbers.</p>
 </section>
-<section id="same-center-different-worlds" class="level2" data-number="3.2">
-<h2 data-number="3.2" class="anchored" data-anchor-id="same-center-different-worlds"><span class="header-section-number">3.2</span> Same Center, Different Worlds</h2>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)    <span class="co"># dplyr, ggplot2, purrr, tibble, readr, stringr, forcats</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"_common.R"</span>)   <span class="co"># book-wide helpers: round2(), fmt_p(), tidy2()</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">7</span>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">tight (sd=3)</span><span class="st">`</span>  <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="dv">500</span>, <span class="at">mean =</span> <span class="dv">100</span>, <span class="at">sd =</span> <span class="dv">3</span>),</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">wide (sd=20)</span><span class="st">`</span>  <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="dv">500</span>, <span class="at">mean =</span> <span class="dv">100</span>, <span class="at">sd =</span> <span class="dv">20</span>)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="fu">everything</span>(), <span class="at">names_to =</span> <span class="st">"group"</span>, <span class="at">values_to =</span> <span class="st">"value"</span>)</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(value, <span class="at">fill =</span> group)) <span class="sc">+</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">40</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>, <span class="at">position =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Identical means (100), very different uncertainty"</span>,</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"value"</span>, <span class="at">y =</span> <span class="st">"count"</span>) <span class="sc">+</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="04-Dmeasures_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>d <span class="sc">|&gt;</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean =</span> <span class="fu">mean</span>(value), <span class="at">.by =</span> group) <span class="sc">|&gt;</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div class="kable-table">
-<table class="caption-top table table-sm table-striped small">
+<section id="four-files-one-per-language" class="level2">
+<h2 class="anchored" data-anchor-id="four-files-one-per-language">Four files, one per language</h2>
+<p>Download the one for your language, put it beside the book’s <code>data/</code> folder, and run it once.</p>
+<table class="caption-top table">
 <thead>
 <tr class="header">
-<th style="text-align: left;">group</th>
-<th style="text-align: right;">mean</th>
+<th>Language</th>
+<th>File</th>
+<th>Use it like this</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">tight (sd=3)</td>
-<td style="text-align: right;">100.14</td>
+<td>R</td>
+<td><a href="https://github.com/pem725/GradStats-Book/blob/main/setup/load_data.R"><code>setup/load_data.R</code></a></td>
+<td><code>source("setup/load_data.R"); d &lt;- book_data("ch06-study")</code></td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">wide (sd=20)</td>
-<td style="text-align: right;">99.22</td>
+<td>SPSS</td>
+<td><a href="https://github.com/pem725/GradStats-Book/blob/main/setup/load_data.sps"><code>setup/load_data.sps</code></a></td>
+<td>Run the file, then <code>!bookdata name = "ch06-study".</code></td>
 </tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<p>Same mean, same “best guess” - but a guess of 100 is nearly certain for the tight group and nearly worthless for the wide one. <strong>The spread is the story.</strong></p>
-</section>
-<section id="the-simple-measures-range-and-iqr" class="level2" data-number="3.3">
-<h2 data-number="3.3" class="anchored" data-anchor-id="the-simple-measures-range-and-iqr"><span class="header-section-number">3.3</span> The Simple Measures: Range and IQR</h2>
-<p>The crudest measure is the <strong>range</strong> (max minus min), which uses only two numbers and is therefore hostage to outliers. A sturdier cousin is the <strong>interquartile range (IQR)</strong> - the width of the middle 50% of the data:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>, <span class="dv">12</span>, <span class="dv">40</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">range =</span> <span class="fu">diff</span>(<span class="fu">range</span>(x)), <span class="at">IQR =</span> <span class="fu">IQR</span>(x)) <span class="sc">|&gt;</span> <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div class="kable-table">
-<table class="caption-top table table-sm table-striped small">
-<thead>
-<tr class="header">
-<th style="text-align: right;">range</th>
-<th style="text-align: right;">IQR</th>
-</tr>
-</thead>
-<tbody>
 <tr class="odd">
-<td style="text-align: right;">37</td>
-<td style="text-align: right;">4.75</td>
+<td>Julia</td>
+<td><a href="https://github.com/pem725/GradStats-Book/blob/main/setup/load_data.jl"><code>setup/load_data.jl</code></a></td>
+<td><code>include("setup/load_data.jl"); d = book_data("ch06-study")</code></td>
+</tr>
+<tr class="even">
+<td>Python</td>
+<td><a href="https://github.com/pem725/GradStats-Book/blob/main/setup/load_data.py"><code>setup/load_data.py</code></a></td>
+<td><code>from setup.load_data import book_data; d = book_data("ch06-study")</code></td>
 </tr>
 </tbody>
 </table>
-</div>
-</div>
-</div>
-<p>The IQR ignores the tails, so it is to spread what the median is to center: robust, honest, and unbothered by a lone extreme value.</p>
+<p>Each chapter tells you which dataset it uses, in a note near the top.</p>
 </section>
-<section id="variance-why-we-square" class="level2" data-number="3.4">
-<h2 data-number="3.4" class="anchored" data-anchor-id="variance-why-we-square"><span class="header-section-number">3.4</span> Variance: Why We Square</h2>
-<p>The measure that runs the whole show is <strong>variance</strong> - the average squared distance from the mean. Why squared? Because the plain distances from the mean <em>always sum to zero</em> (that is what the mean does), so we could never average them. Squaring solves that and, not coincidentally, hooks us straight into least squares.</p>
-<p><span class="math display">\[s^2 = \frac{\sum (x - \bar{x})^2}{n - 1}\]</span></p>
-<p>Let’s build it by hand and check against R:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>deviations <span class="ot">&lt;-</span> x <span class="sc">-</span> <span class="fu">mean</span>(x)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(deviations)                       <span class="co"># ~0, which is exactly the problem</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>SS <span class="ot">&lt;-</span> <span class="fu">sum</span>(deviations<span class="sc">^</span><span class="dv">2</span>)               <span class="co"># sum of squares - the numerator</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>n  <span class="ot">&lt;-</span> <span class="fu">length</span>(x)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">by_hand =</span> SS <span class="sc">/</span> (n <span class="sc">-</span> <span class="dv">1</span>), <span class="at">r_var =</span> <span class="fu">var</span>(x)) <span class="sc">|&gt;</span> <span class="fu">round2</span>()   <span class="co"># match</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div class="kable-table">
-<table class="caption-top table table-sm table-striped small">
-<thead>
-<tr class="header">
-<th style="text-align: right;">by_hand</th>
-<th style="text-align: right;">r_var</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: right;">143.84</td>
-<td style="text-align: right;">143.84</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<p>The numerator, <span class="math inline">\(\sum(x-\bar{x})^2\)</span>, is the <strong>sum of squares</strong> - a quantity you will meet on every page from here on (it is the same SS that regression and ANOVA minimize and partition). Variance is just the sum of squares, averaged.</p>
+<section id="the-recipes-are-still-there" class="level2">
+<h2 class="anchored" data-anchor-id="the-recipes-are-still-there">The recipes are still there</h2>
+<p>Reading the data rather than simulating it does not mean the simulation is hidden. Each loader carries a one-line recipe for every dataset - <code>ch06-study</code>, for instance, is recorded as:</p>
+<pre><code>set.seed(5); study ~ N(5,2); grade = 60 + 4*study + N(0,5)</code></pre>
+<p>and the full generating code, exactly as the chapters run it, lives in <a href="https://github.com/pem725/GradStats-Book/blob/main/setup/make_data.R"><code>setup/make_data.R</code></a>. If you want to rebuild everything from scratch in R, that one file does it:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"setup/make_data.R"</span>)   <span class="co"># rewrites every file in data/sim/</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="degrees-of-freedom-why-n-1" class="level2" data-number="3.5">
-<h2 data-number="3.5" class="anchored" data-anchor-id="degrees-of-freedom-why-n-1"><span class="header-section-number">3.5</span> Degrees of Freedom: Why <span class="math inline">\(n-1\)</span></h2>
-<p>Notice we divided by <span class="math inline">\(n - 1\)</span>, not <span class="math inline">\(n\)</span>. Here is the honest reason. To compute the deviations we first had to estimate the mean <em>from the same data</em>. Once the mean is fixed, only <span class="math inline">\(n-1\)</span> of the deviations are free to vary - the last one is forced, because they must sum to zero. We “spent” one <strong>degree of freedom</strong> estimating the mean, so we divide by what is left. Dividing by <span class="math inline">\(n\)</span> would systematically <em>underestimate</em> the true spread; the <span class="math inline">\(n-1\)</span> correction fixes that bias.</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># demonstrate the bias: divide by n vs n-1, averaged over many samples</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">11</span>)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>truth <span class="ot">&lt;-</span> <span class="dv">25</span>                                  <span class="co"># true variance (sd = 5)</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>est_n <span class="ot">&lt;-</span> <span class="fu">map_dbl</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5000</span>, \(i) {</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  s <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">10</span>, <span class="dv">0</span>, <span class="dv">5</span>)</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mean</span>((s <span class="sc">-</span> <span class="fu">mean</span>(s))<span class="sc">^</span><span class="dv">2</span>)                      <span class="co"># the n version</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>est_nm1 <span class="ot">&lt;-</span> <span class="fu">map_dbl</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5000</span>, \(i) <span class="fu">var</span>(<span class="fu">rnorm</span>(<span class="dv">10</span>, <span class="dv">0</span>, <span class="dv">5</span>)))   <span class="co"># the n-1 version</span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">divide_by_n =</span> <span class="fu">mean</span>(est_n),</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">divide_by_n_minus_1 =</span> <span class="fu">mean</span>(est_nm1),</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">truth =</span> truth) <span class="sc">|&gt;</span> <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div class="kable-table">
-<table class="caption-top table table-sm table-striped small">
-<thead>
-<tr class="header">
-<th style="text-align: right;">divide_by_n</th>
-<th style="text-align: right;">divide_by_n_minus_1</th>
-<th style="text-align: right;">truth</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: right;">22.55</td>
-<td style="text-align: right;">25.06</td>
-<td style="text-align: right;">25</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<p>Dividing by <span class="math inline">\(n\)</span> lands low; dividing by <span class="math inline">\(n-1\)</span> lands right on the truth. That is degrees of freedom earning their keep.</p>
+<section id="one-trap-worth-knowing-about" class="level2">
+<h2 class="anchored" data-anchor-id="one-trap-worth-knowing-about">One trap worth knowing about</h2>
+<p>A CSV file does not record the <strong>order of a categorical variable</strong>. Left alone, every language sorts categories alphabetically - so the four pets in the coding chapters come back as <code>cat, dog, fish, pig</code> instead of <code>cat, fish, pig, dog</code>, and the fertilizer doses in the ANOVA chapter come back as <code>high, low, none</code> instead of <code>none, low, high</code>.</p>
+<p>That is not a cosmetic problem. It silently reorders every coefficient in the model, so your output would have the right numbers attached to the wrong labels. Each loader fixes this for you: the ones that matter are listed in a <code>LEVELS</code> table at the top of each file, and <code>book_data()</code> applies them on the way in. If you load a CSV by hand instead, set the category order yourself.</p>
 </section>
-<section id="standard-deviation-back-to-human-units" class="level2" data-number="3.6">
-<h2 data-number="3.6" class="anchored" data-anchor-id="standard-deviation-back-to-human-units"><span class="header-section-number">3.6</span> Standard Deviation: Back to Human Units</h2>
-<p>Variance is in <em>squared</em> units (squared inches, squared dollars) - useful for math, useless for talking. Take its square root and you get the <strong>standard deviation</strong>, back in the original units and interpretable as “the typical distance from the mean”:</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Working in SPSS, Julia, or Python?
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>The code tabs below assume this chapter’s data is already loaded. Grab the one-file setup for your language from <a href="./setup.html">Getting the Book’s Data</a>, run it once, then load what you need by name - this chapter uses <code>ch03-spread</code>, <code>ch03-x</code>. For example, <code>book_data("ch03-spread")</code> in R, Julia, or Python, or <code>!bookdata name = "ch03-spread".</code> in SPSS. Every language reads the same shipped files, so your numbers will match the ones printed here exactly.</p>
-</div>
-</div>
-<div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="" aria-current="page">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">SPSS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Julia</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-4" role="tab" aria-controls="tabset-1-4" aria-selected="false" href="">Python</a></li></ul>
-<div class="tab-content">
-<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">sd_by_hand =</span> <span class="fu">sqrt</span>(<span class="fu">var</span>(x)), <span class="at">r_sd =</span> <span class="fu">sd</span>(x)) <span class="sc">|&gt;</span> <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div class="kable-table">
-<table class="caption-top table table-sm table-striped small">
-<thead>
-<tr class="header">
-<th style="text-align: right;">sd_by_hand</th>
-<th style="text-align: right;">r_sd</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: right;">11.99</td>
-<td style="text-align: right;">11.99</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-</div>
-<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
-<pre><code>DESCRIPTIVES VARIABLES=x
-  /STATISTICS=STDDEV VARIANCE.</code></pre>
-</div>
-<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Statistics</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">std</span>(df.x), <span class="fu">var</span>(df.x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>df.x.std(), df.x.var()         <span class="co"># pandas divides by n - 1, like R</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
-<p>For a roughly normal variable, about 68% of values fall within one standard deviation of the mean, and about 95% within two - a rule of thumb we will lean on hard when we standardize in the <a href="./06-zdistribution.html">z-distribution</a> chapter.</p>
-<div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Important</span>Variance Is Uncertainty
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Every inferential tool in this book is, at heart, a way of comparing variances: the variance we can <em>explain</em> against the variance we <em>cannot</em>. Regression’s <span class="math inline">\(R^2\)</span> is a ratio of variances. ANOVA’s <span class="math inline">\(F\)</span> is a ratio of variances. The standard error is built from variance. Master this chapter and the rest is bookkeeping. More differences to study, more variance, more to learn.</p>
-</div>
-</div>
-</section>
-<section id="challenge" class="level2" data-number="3.7">
-<h2 data-number="3.7" class="anchored" data-anchor-id="challenge"><span class="header-section-number">3.7</span> Challenge</h2>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Do One Yourself
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ol type="1">
-<li>Create two samples with the same mean but different spreads. Compute the variance and SD of each by hand (sum of squares over <span class="math inline">\(n-1\)</span>) and confirm against <code>var()</code> and <code>sd()</code>.</li>
-<li>Re-run the <span class="math inline">\(n\)</span> vs.&nbsp;<span class="math inline">\(n-1\)</span> simulation with sample size 3 instead of 10. Is the bias from dividing by <span class="math inline">\(n\)</span> bigger or smaller? Why does the correction matter more for tiny samples?</li>
-<li>For a right-skewed variable, report both the SD and the IQR. Which better conveys the “typical spread,” and why?</li>
-</ol>
-</div>
-</div>
-</section>
-<section id="where-we-go-next" class="level2" data-number="3.8">
-<h2 data-number="3.8" class="anchored" data-anchor-id="where-we-go-next"><span class="header-section-number">3.8</span> Where We Go Next</h2>
-<p>We now have distributions, centers, and spreads for a <em>single</em> variable. But science is about <strong>relationships</strong> - how one variable moves with another. To get there we need one more idea, and it is variance’s social twin: <a href="./07-covariance.html">covariance</a>. First, though, we take these tools inferential by standardizing everything onto one common ruler: the <a href="./06-zdistribution.html">z-distribution</a>.</p>
+<section id="the-real-datasets" class="level2">
+<h2 class="anchored" data-anchor-id="the-real-datasets">The real datasets</h2>
+<p>A few chapters use genuine data rather than simulated: high-school and college GPAs (<code>data/gpa.csv</code>), a 10-item scale from the graduate GLM course (<code>data/moddat2.csv</code>), a four-group dataset (<code>data/mod3data.csv</code>), Ben Wright’s Knox Cube Test responses (<code>data/knox.dat</code>), and some baseball and football tables. Those need no setup at all - read them directly in any language, exactly as the code tabs show.</p>
 
 
 </section>
@@ -1471,13 +1238,13 @@ window.Quarto = {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./03-CTmeasures.html" class="pagination-link" aria-label="The Best Guess">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">The Best Guess</span></span>
+      <a href="./three-languages.html" class="pagination-link" aria-label="The Same Analysis in R, SPSS, Julia, and Python">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">The Same Analysis in R, SPSS, Julia, and Python</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./05-datacleaning.html" class="pagination-link" aria-label="Cleaning House">
-        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Cleaning House</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./required-packages.html" class="pagination-link" aria-label="Setup and Required Packages">
+        <span class="nav-page-text">Setup and Required Packages</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

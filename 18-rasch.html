@@ -727,6 +727,12 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Getting the Book’s Data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./required-packages.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Setup and Required Packages</span></a>
   </div>
@@ -759,10 +765,8 @@ window.Quarto = {
   <li><a href="#the-rasch-model" id="toc-the-rasch-model" class="nav-link" data-scroll-target="#the-rasch-model"><span class="header-section-number">11.2</span> The Rasch Model</a></li>
   <li><a href="#wrights-data-the-knox-cube-test" id="toc-wrights-data-the-knox-cube-test" class="nav-link" data-scroll-target="#wrights-data-the-knox-cube-test"><span class="header-section-number">11.3</span> Wright’s Data: The Knox Cube Test</a></li>
   <li><a href="#the-engine-joint-maximum-likelihood-what-bigsteps-does" id="toc-the-engine-joint-maximum-likelihood-what-bigsteps-does" class="nav-link" data-scroll-target="#the-engine-joint-maximum-likelihood-what-bigsteps-does"><span class="header-section-number">11.4</span> The Engine: Joint Maximum Likelihood (What BIGSTEPS Does)</a></li>
-  <li><a href="#the-same-thirty-lines-in-python" id="toc-the-same-thirty-lines-in-python" class="nav-link" data-scroll-target="#the-same-thirty-lines-in-python"><span class="header-section-number">11.5</span> The Same Thirty Lines in Python</a></li>
-  <li><a href="#the-same-thirty-lines-in-julia" id="toc-the-same-thirty-lines-in-julia" class="nav-link" data-scroll-target="#the-same-thirty-lines-in-julia"><span class="header-section-number">11.6</span> The Same Thirty Lines in Julia</a></li>
-  <li><a href="#challenge" id="toc-challenge" class="nav-link" data-scroll-target="#challenge"><span class="header-section-number">11.7</span> Challenge</a></li>
-  <li><a href="#where-we-go-next" id="toc-where-we-go-next" class="nav-link" data-scroll-target="#where-we-go-next"><span class="header-section-number">11.8</span> Where We Go Next</a></li>
+  <li><a href="#challenge" id="toc-challenge" class="nav-link" data-scroll-target="#challenge"><span class="header-section-number">11.5</span> Challenge</a></li>
+  <li><a href="#where-we-go-next" id="toc-where-we-go-next" class="nav-link" data-scroll-target="#where-we-go-next"><span class="header-section-number">11.6</span> Where We Go Next</a></li>
   </ul>
 </nav>
     </div>
@@ -814,6 +818,19 @@ window.Quarto = {
 <h2 data-number="11.3" class="anchored" data-anchor-id="wrights-data-the-knox-cube-test"><span class="header-section-number">11.3</span> Wright’s Data: The Knox Cube Test</h2>
 <p>Wright’s running example in <em>Best Test Design</em> <span class="citation" data-cites="wright_best_1979">(<a href="#ref-wright_best_1979" role="doc-biblioref">Wright and Stone 1979</a>)</span> is the <strong>Knox Cube Test (KCT)</strong>: a child watches the examiner tap a sequence on four cubes, then tries to repeat it. Each of the 18 items is a tapping pattern, and the items are named by the taps - <code>1-4</code>, <code>2-3</code>, <code>1-3-2-4</code>, and so on. Longer sequences are harder, so the KCT is very nearly a perfect ladder of difficulty - which is exactly why Wright loved it for teaching.</p>
 <p>We use Wright’s <strong>actual data</strong>: 35 children, 18 items, the very responses from <em>Best Test Design</em>, stored as a plain text table (<code>data/knox.dat</code>). The children even keep their names - Richard, Tracie, Walter, and the rest.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Working in SPSS, Julia, or Python?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This chapter uses Ben Wright’s real Knox Cube Test responses, <code>data/knox.dat</code>, which every tab reads directly. See <a href="./setup.html">Getting the Book’s Data</a> if you want the setup files for your language.</p>
+</div>
+</div>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="" aria-current="page">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">SPSS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Julia</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-4" role="tab" aria-controls="tabset-1-4" aria-selected="false" href="">Python</a></li></ul>
 <div class="tab-content">
@@ -1126,69 +1143,78 @@ DESCRIPTIVES VARIABLES=i1 TO i18 /STATISTICS=SUM.</code></pre>
 * is shown in the R, Julia, and Python tabs.</code></pre>
 </div>
 <div id="tabset-3-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-3-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">rasch_jmle</span>(X; tol <span class="op">=</span> <span class="fl">1e-6</span>, maxit <span class="op">=</span> <span class="fl">300</span>)</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># drop persons/items with perfect or zero scores (no finite estimate)</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="cn">true</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>        ci <span class="op">=</span> <span class="fu">vec</span>(<span class="fu">sum</span>(X, dims <span class="op">=</span> <span class="fl">1</span>)); ri <span class="op">=</span> <span class="fu">vec</span>(<span class="fu">sum</span>(X, dims <span class="op">=</span> <span class="fl">2</span>))</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>        keepI <span class="op">=</span> (ci <span class="op">.&gt;</span> <span class="fl">0</span>) <span class="op">.&amp;</span> (ci <span class="op">.&lt;</span> <span class="fu">size</span>(X, <span class="fl">1</span>))</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>        keepP <span class="op">=</span> (ri <span class="op">.&gt;</span> <span class="fl">0</span>) <span class="op">.&amp;</span> (ri <span class="op">.&lt;</span> <span class="fu">size</span>(X, <span class="fl">2</span>))</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>        <span class="fu">all</span>(keepI) <span class="op">&amp;&amp;</span> <span class="fu">all</span>(keepP) <span class="op">&amp;&amp;</span> <span class="cf">break</span></span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>        X <span class="op">=</span> X[keepP, keepI]</span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    N, L <span class="op">=</span> <span class="fu">size</span>(X)</span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> <span class="fu">vec</span>(<span class="fu">sum</span>(X, dims <span class="op">=</span> <span class="fl">2</span>)); s <span class="op">=</span> <span class="fu">vec</span>(<span class="fu">sum</span>(X, dims <span class="op">=</span> <span class="fl">1</span>))</span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> <span class="fu">log</span>.(r <span class="op">./</span> (L <span class="op">.-</span> r))</span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    d <span class="op">=</span> <span class="fu">log</span>.((N <span class="op">.-</span> s) <span class="op">./</span> s); d <span class="op">.-=</span> <span class="fu">mean</span>(d)</span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">local</span> it</span>
-<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># the outer loop is sequential; the inner sweeps are independent</span></span>
-<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> outer it <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span>maxit</span>
-<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>        d0 <span class="op">=</span> <span class="fu">copy</span>(d)</span>
-<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>        b <span class="op">=</span> [bv <span class="op">+</span> (rv <span class="op">-</span> <span class="fu">sum</span>(<span class="fl">1</span> <span class="op">./</span> (<span class="fl">1</span> <span class="op">.+</span> <span class="fu">exp</span>.(<span class="fu">-</span>(bv <span class="op">.-</span> d))))) <span class="op">/</span></span>
-<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>                  <span class="fu">sum</span>((p <span class="op">-&gt;</span> <span class="fu">p*</span>(<span class="fl">1</span><span class="op">-</span>p)).(<span class="fl">1</span> <span class="op">./</span> (<span class="fl">1</span> <span class="op">.+</span> <span class="fu">exp</span>.(<span class="fu">-</span>(bv <span class="op">.-</span> d)))))</span>
-<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>             for (bv, rv) <span class="kw">in</span> <span class="fu">zip</span>(b, r)]</span>
-<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>        d <span class="op">=</span> [di <span class="op">-</span> (si <span class="op">-</span> <span class="fu">sum</span>(<span class="fl">1</span> <span class="op">./</span> (<span class="fl">1</span> <span class="op">.+</span> <span class="fu">exp</span>.(<span class="fu">-</span>(b <span class="op">.-</span> di))))) <span class="op">/</span></span>
-<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>                  <span class="fu">sum</span>((p <span class="op">-&gt;</span> <span class="fu">p*</span>(<span class="fl">1</span><span class="op">-</span>p)).(<span class="fl">1</span> <span class="op">./</span> (<span class="fl">1</span> <span class="op">.+</span> <span class="fu">exp</span>.(<span class="fu">-</span>(b <span class="op">.-</span> di)))))</span>
-<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>             for (di, si) <span class="kw">in</span> <span class="fu">zip</span>(d, s)]</span>
-<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>        d <span class="op">.-=</span> <span class="fu">mean</span>(d)</span>
-<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>        <span class="fu">maximum</span>(<span class="fu">abs</span>.(d <span class="op">.-</span> d0)) <span class="op">&lt;</span> tol <span class="op">&amp;&amp;</span> <span class="cf">break</span></span>
-<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
-<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>    (difficulty <span class="op">=</span> d, ability <span class="op">=</span> b, iterations <span class="op">=</span> it)</span>
-<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
-<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>fit <span class="op">=</span> <span class="fu">rasch_jmle</span>(X)</span>
-<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a><span class="fu">collect</span>(<span class="fu">zip</span>(taps, <span class="fu">round</span>.(fit.difficulty, digits <span class="op">=</span> <span class="fl">2</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Statistics</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">σ</span>(z) <span class="op">=</span> <span class="fl">1</span> <span class="op">/</span> (<span class="fl">1</span> <span class="op">+</span> <span class="fu">exp</span>(<span class="op">-</span>z))</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Wright's Knox Cube Test data: skip the header, drop the Name &amp; sex columns.</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>rows <span class="op">=</span> <span class="fu">split</span>.(<span class="fu">readlines</span>(<span class="st">"data/knox.dat"</span>)[<span class="fl">2</span><span class="op">:</span><span class="kw">end</span>])</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> [<span class="fu">parse</span>(<span class="dt">Int</span>, rows[i][j]) for i <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu">length</span>(rows), j <span class="kw">in</span> <span class="fl">3</span><span class="op">:</span><span class="fl">20</span>]</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">rasch_jmle</span>(X; tol<span class="op">=</span><span class="fl">1e-6</span>, maxit<span class="op">=</span><span class="fl">300</span>)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    X <span class="op">=</span> <span class="fu">float</span>.(X)</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="cn">true</span>                                    <span class="co"># drop perfect/zero rows &amp; cols</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>        ci <span class="op">=</span> <span class="fu">vec</span>(<span class="fu">sum</span>(X, dims<span class="op">=</span><span class="fl">1</span>)); ri <span class="op">=</span> <span class="fu">vec</span>(<span class="fu">sum</span>(X, dims<span class="op">=</span><span class="fl">2</span>))</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>        keepI <span class="op">=</span> (ci <span class="op">.&gt;</span> <span class="fl">0</span>) <span class="op">.&amp;</span> (ci <span class="op">.&lt;</span> <span class="fu">size</span>(X, <span class="fl">1</span>))</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>        keepP <span class="op">=</span> (ri <span class="op">.&gt;</span> <span class="fl">0</span>) <span class="op">.&amp;</span> (ri <span class="op">.&lt;</span> <span class="fu">size</span>(X, <span class="fl">2</span>))</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>        (<span class="fu">all</span>(keepI) <span class="op">&amp;&amp;</span> <span class="fu">all</span>(keepP)) <span class="op">&amp;&amp;</span> <span class="cf">break</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>        X <span class="op">=</span> X[keepP, keepI]</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>    N, L <span class="op">=</span> <span class="fu">size</span>(X)</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> <span class="fu">vec</span>(<span class="fu">sum</span>(X, dims<span class="op">=</span><span class="fl">2</span>)); s <span class="op">=</span> <span class="fu">vec</span>(<span class="fu">sum</span>(X, dims<span class="op">=</span><span class="fl">1</span>))</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> <span class="fu">log</span>.(r <span class="op">./</span> (L <span class="op">.-</span> r))                       <span class="co"># abilities from raw scores</span></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>    d <span class="op">=</span> <span class="fu">log</span>.((N <span class="op">.-</span> s) <span class="op">./</span> s); d <span class="op">.-=</span> <span class="fu">mean</span>(d)        <span class="co"># difficulties, centered</span></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span>maxit</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>        d0 <span class="op">=</span> <span class="fu">copy</span>(d)</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> v <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span>N</span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>            Pv <span class="op">=</span> <span class="fu">σ</span>.(b[v] <span class="op">.-</span> d)</span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>            b[v] <span class="op">+=</span> (r[v] <span class="op">-</span> <span class="fu">sum</span>(Pv)) <span class="op">/</span> <span class="fu">sum</span>(Pv <span class="op">.*</span> (<span class="fl">1</span> <span class="op">.-</span> Pv))</span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>        <span class="cf">end</span></span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span>L</span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>            Pi <span class="op">=</span> <span class="fu">σ</span>.(b <span class="op">.-</span> d[i])</span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>            d[i] <span class="op">-=</span> (s[i] <span class="op">-</span> <span class="fu">sum</span>(Pi)) <span class="op">/</span> <span class="fu">sum</span>(Pi <span class="op">.*</span> (<span class="fl">1</span> <span class="op">.-</span> Pi))</span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>        <span class="cf">end</span></span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>        d <span class="op">.-=</span> <span class="fu">mean</span>(d)                             <span class="co"># fix the origin</span></span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>        <span class="fu">maximum</span>(<span class="fu">abs</span>.(d <span class="op">.-</span> d0)) <span class="op">&lt;</span> tol <span class="op">&amp;&amp;</span> <span class="cf">break</span></span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> d, b</span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a>difficulty, ability <span class="op">=</span> <span class="fu">rasch_jmle</span>(X)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div id="tabset-3-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-4-tab">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> rasch_jmle(X, tol<span class="op">=</span><span class="fl">1e-6</span>, maxit<span class="op">=</span><span class="dv">300</span>):</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    X <span class="op">=</span> np.asarray(X, <span class="bu">float</span>)</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="va">True</span>:                                   <span class="co"># drop perfect/zero rows &amp; cols</span></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>        ci, ri <span class="op">=</span> X.<span class="bu">sum</span>(<span class="dv">0</span>), X.<span class="bu">sum</span>(<span class="dv">1</span>)</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>        keepI <span class="op">=</span> (ci <span class="op">&gt;</span> <span class="dv">0</span>) <span class="op">&amp;</span> (ci <span class="op">&lt;</span> X.shape[<span class="dv">0</span>])</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>        keepP <span class="op">=</span> (ri <span class="op">&gt;</span> <span class="dv">0</span>) <span class="op">&amp;</span> (ri <span class="op">&lt;</span> X.shape[<span class="dv">1</span>])</span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> keepI.<span class="bu">all</span>() <span class="kw">and</span> keepP.<span class="bu">all</span>():</span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span></span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>        X <span class="op">=</span> X[keepP][:, keepI]</span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    N, L <span class="op">=</span> X.shape</span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>    r, s <span class="op">=</span> X.<span class="bu">sum</span>(<span class="dv">1</span>), X.<span class="bu">sum</span>(<span class="dv">0</span>)</span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> np.log(r <span class="op">/</span> (L <span class="op">-</span> r))                       <span class="co"># abilities from raw scores</span></span>
-<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>    d <span class="op">=</span> np.log((N <span class="op">-</span> s) <span class="op">/</span> s)<span class="op">;</span> d <span class="op">-=</span> d.mean()        <span class="co"># difficulties, centered</span></span>
-<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> it <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, maxit <span class="op">+</span> <span class="dv">1</span>):</span>
-<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>        d0 <span class="op">=</span> d.copy()</span>
-<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> v <span class="kw">in</span> <span class="bu">range</span>(N):                        <span class="co"># the person sweep</span></span>
-<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>            Pv <span class="op">=</span> <span class="dv">1</span> <span class="op">/</span> (<span class="dv">1</span> <span class="op">+</span> np.exp(<span class="op">-</span>(b[v] <span class="op">-</span> d)))</span>
-<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>            b[v] <span class="op">+=</span> (r[v] <span class="op">-</span> Pv.<span class="bu">sum</span>()) <span class="op">/</span> (Pv <span class="op">*</span> (<span class="dv">1</span> <span class="op">-</span> Pv)).<span class="bu">sum</span>()</span>
-<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(L):                        <span class="co"># the item sweep</span></span>
-<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>            Pi <span class="op">=</span> <span class="dv">1</span> <span class="op">/</span> (<span class="dv">1</span> <span class="op">+</span> np.exp(<span class="op">-</span>(b <span class="op">-</span> d[i])))</span>
-<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>            d[i] <span class="op">-=</span> (s[i] <span class="op">-</span> Pi.<span class="bu">sum</span>()) <span class="op">/</span> (Pi <span class="op">*</span> (<span class="dv">1</span> <span class="op">-</span> Pi)).<span class="bu">sum</span>()</span>
-<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>        d <span class="op">-=</span> d.mean()                             <span class="co"># fix the origin</span></span>
-<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> np.<span class="bu">max</span>(np.<span class="bu">abs</span>(d <span class="op">-</span> d0)) <span class="op">&lt;</span> tol:</span>
-<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span></span>
-<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> d, b, it</span>
-<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>difficulty, ability, iterations <span class="op">=</span> rasch_jmle(X)</span>
-<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a><span class="bu">dict</span>(<span class="bu">zip</span>(taps, difficulty.<span class="bu">round</span>(<span class="dv">2</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Wright's Knox Cube Test data: skip the header, drop the Name &amp; sex columns.</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>rows <span class="op">=</span> [ln.split() <span class="cf">for</span> ln <span class="kw">in</span> <span class="bu">open</span>(<span class="st">"data/knox.dat"</span>)][<span class="dv">1</span>:]</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> np.array([[<span class="bu">int</span>(v) <span class="cf">for</span> v <span class="kw">in</span> r[<span class="dv">2</span>:]] <span class="cf">for</span> r <span class="kw">in</span> rows], <span class="bu">float</span>)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> rasch_jmle(X, tol<span class="op">=</span><span class="fl">1e-6</span>, maxit<span class="op">=</span><span class="dv">300</span>):</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    X <span class="op">=</span> np.asarray(X, <span class="bu">float</span>)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="va">True</span>:                                   <span class="co"># drop perfect/zero rows &amp; cols</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>        ci, ri <span class="op">=</span> X.<span class="bu">sum</span>(<span class="dv">0</span>), X.<span class="bu">sum</span>(<span class="dv">1</span>)</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>        keepI <span class="op">=</span> (ci <span class="op">&gt;</span> <span class="dv">0</span>) <span class="op">&amp;</span> (ci <span class="op">&lt;</span> X.shape[<span class="dv">0</span>])</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>        keepP <span class="op">=</span> (ri <span class="op">&gt;</span> <span class="dv">0</span>) <span class="op">&amp;</span> (ri <span class="op">&lt;</span> X.shape[<span class="dv">1</span>])</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> keepI.<span class="bu">all</span>() <span class="kw">and</span> keepP.<span class="bu">all</span>():</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>        X <span class="op">=</span> X[keepP][:, keepI]</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>    N, L <span class="op">=</span> X.shape</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>    r, s <span class="op">=</span> X.<span class="bu">sum</span>(<span class="dv">1</span>), X.<span class="bu">sum</span>(<span class="dv">0</span>)</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> np.log(r <span class="op">/</span> (L <span class="op">-</span> r))                       <span class="co"># abilities from raw scores</span></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>    d <span class="op">=</span> np.log((N <span class="op">-</span> s) <span class="op">/</span> s)<span class="op">;</span> d <span class="op">-=</span> d.mean()        <span class="co"># difficulties, centered</span></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(maxit):</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>        d0 <span class="op">=</span> d.copy()</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> v <span class="kw">in</span> <span class="bu">range</span>(N):</span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>            Pv <span class="op">=</span> <span class="dv">1</span> <span class="op">/</span> (<span class="dv">1</span> <span class="op">+</span> np.exp(<span class="op">-</span>(b[v] <span class="op">-</span> d)))</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>            b[v] <span class="op">+=</span> (r[v] <span class="op">-</span> Pv.<span class="bu">sum</span>()) <span class="op">/</span> (Pv <span class="op">*</span> (<span class="dv">1</span> <span class="op">-</span> Pv)).<span class="bu">sum</span>()</span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(L):</span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>            Pi <span class="op">=</span> <span class="dv">1</span> <span class="op">/</span> (<span class="dv">1</span> <span class="op">+</span> np.exp(<span class="op">-</span>(b <span class="op">-</span> d[i])))</span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>            d[i] <span class="op">-=</span> (s[i] <span class="op">-</span> Pi.<span class="bu">sum</span>()) <span class="op">/</span> (Pi <span class="op">*</span> (<span class="dv">1</span> <span class="op">-</span> Pi)).<span class="bu">sum</span>()</span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>        d <span class="op">-=</span> d.mean()                             <span class="co"># fix the origin</span></span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> np.<span class="bu">max</span>(np.<span class="bu">abs</span>(d <span class="op">-</span> d0)) <span class="op">&lt;</span> tol:</span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span></span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> d, b</span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>difficulty, ability <span class="op">=</span> rasch_jmle(X)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </div>
@@ -1263,85 +1289,7 @@ DESCRIPTIVES VARIABLES=i1 TO i18 /STATISTICS=SUM.</code></pre>
 </div>
 </div>
 </div>
-</section>
-<section id="the-same-thirty-lines-in-python" class="level2" data-number="11.5">
-<h2 data-number="11.5" class="anchored" data-anchor-id="the-same-thirty-lines-in-python"><span class="header-section-number">11.5</span> The Same Thirty Lines in Python</h2>
-<p>Nothing above was special to R. Here is the identical algorithm in Python with NumPy - same updates, same convergence, same estimates:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Wright's Knox Cube Test data: skip the header, drop the Name &amp; sex columns.</span></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>rows <span class="op">=</span> [ln.split() <span class="cf">for</span> ln <span class="kw">in</span> <span class="bu">open</span>(<span class="st">"data/knox.dat"</span>)][<span class="dv">1</span>:]</span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> np.array([[<span class="bu">int</span>(v) <span class="cf">for</span> v <span class="kw">in</span> r[<span class="dv">2</span>:]] <span class="cf">for</span> r <span class="kw">in</span> rows], <span class="bu">float</span>)</span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> rasch_jmle(X, tol<span class="op">=</span><span class="fl">1e-6</span>, maxit<span class="op">=</span><span class="dv">300</span>):</span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    X <span class="op">=</span> np.asarray(X, <span class="bu">float</span>)</span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="va">True</span>:                                   <span class="co"># drop perfect/zero rows &amp; cols</span></span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>        ci, ri <span class="op">=</span> X.<span class="bu">sum</span>(<span class="dv">0</span>), X.<span class="bu">sum</span>(<span class="dv">1</span>)</span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>        keepI <span class="op">=</span> (ci <span class="op">&gt;</span> <span class="dv">0</span>) <span class="op">&amp;</span> (ci <span class="op">&lt;</span> X.shape[<span class="dv">0</span>])</span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>        keepP <span class="op">=</span> (ri <span class="op">&gt;</span> <span class="dv">0</span>) <span class="op">&amp;</span> (ri <span class="op">&lt;</span> X.shape[<span class="dv">1</span>])</span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> keepI.<span class="bu">all</span>() <span class="kw">and</span> keepP.<span class="bu">all</span>():</span>
-<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span></span>
-<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>        X <span class="op">=</span> X[keepP][:, keepI]</span>
-<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>    N, L <span class="op">=</span> X.shape</span>
-<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>    r, s <span class="op">=</span> X.<span class="bu">sum</span>(<span class="dv">1</span>), X.<span class="bu">sum</span>(<span class="dv">0</span>)</span>
-<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> np.log(r <span class="op">/</span> (L <span class="op">-</span> r))                       <span class="co"># abilities from raw scores</span></span>
-<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>    d <span class="op">=</span> np.log((N <span class="op">-</span> s) <span class="op">/</span> s)<span class="op">;</span> d <span class="op">-=</span> d.mean()        <span class="co"># difficulties, centered</span></span>
-<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(maxit):</span>
-<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>        d0 <span class="op">=</span> d.copy()</span>
-<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> v <span class="kw">in</span> <span class="bu">range</span>(N):</span>
-<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>            Pv <span class="op">=</span> <span class="dv">1</span> <span class="op">/</span> (<span class="dv">1</span> <span class="op">+</span> np.exp(<span class="op">-</span>(b[v] <span class="op">-</span> d)))</span>
-<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>            b[v] <span class="op">+=</span> (r[v] <span class="op">-</span> Pv.<span class="bu">sum</span>()) <span class="op">/</span> (Pv <span class="op">*</span> (<span class="dv">1</span> <span class="op">-</span> Pv)).<span class="bu">sum</span>()</span>
-<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(L):</span>
-<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>            Pi <span class="op">=</span> <span class="dv">1</span> <span class="op">/</span> (<span class="dv">1</span> <span class="op">+</span> np.exp(<span class="op">-</span>(b <span class="op">-</span> d[i])))</span>
-<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>            d[i] <span class="op">-=</span> (s[i] <span class="op">-</span> Pi.<span class="bu">sum</span>()) <span class="op">/</span> (Pi <span class="op">*</span> (<span class="dv">1</span> <span class="op">-</span> Pi)).<span class="bu">sum</span>()</span>
-<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>        d <span class="op">-=</span> d.mean()                             <span class="co"># fix the origin</span></span>
-<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> np.<span class="bu">max</span>(np.<span class="bu">abs</span>(d <span class="op">-</span> d0)) <span class="op">&lt;</span> tol:</span>
-<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span></span>
-<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> d, b</span>
-<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a>difficulty, ability <span class="op">=</span> rasch_jmle(X)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="the-same-thirty-lines-in-julia" class="level2" data-number="11.6">
-<h2 data-number="11.6" class="anchored" data-anchor-id="the-same-thirty-lines-in-julia"><span class="header-section-number">11.6</span> The Same Thirty Lines in Julia</h2>
-<p>And in Julia, where the math reads almost like the equations themselves:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Statistics</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">σ</span>(z) <span class="op">=</span> <span class="fl">1</span> <span class="op">/</span> (<span class="fl">1</span> <span class="op">+</span> <span class="fu">exp</span>(<span class="op">-</span>z))</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Wright's Knox Cube Test data: skip the header, drop the Name &amp; sex columns.</span></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>rows <span class="op">=</span> <span class="fu">split</span>.(<span class="fu">readlines</span>(<span class="st">"data/knox.dat"</span>)[<span class="fl">2</span><span class="op">:</span><span class="kw">end</span>])</span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> [<span class="fu">parse</span>(<span class="dt">Int</span>, rows[i][j]) for i <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu">length</span>(rows), j <span class="kw">in</span> <span class="fl">3</span><span class="op">:</span><span class="fl">20</span>]</span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">rasch_jmle</span>(X; tol<span class="op">=</span><span class="fl">1e-6</span>, maxit<span class="op">=</span><span class="fl">300</span>)</span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    X <span class="op">=</span> <span class="fu">float</span>.(X)</span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="cn">true</span>                                    <span class="co"># drop perfect/zero rows &amp; cols</span></span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>        ci <span class="op">=</span> <span class="fu">vec</span>(<span class="fu">sum</span>(X, dims<span class="op">=</span><span class="fl">1</span>)); ri <span class="op">=</span> <span class="fu">vec</span>(<span class="fu">sum</span>(X, dims<span class="op">=</span><span class="fl">2</span>))</span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>        keepI <span class="op">=</span> (ci <span class="op">.&gt;</span> <span class="fl">0</span>) <span class="op">.&amp;</span> (ci <span class="op">.&lt;</span> <span class="fu">size</span>(X, <span class="fl">1</span>))</span>
-<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>        keepP <span class="op">=</span> (ri <span class="op">.&gt;</span> <span class="fl">0</span>) <span class="op">.&amp;</span> (ri <span class="op">.&lt;</span> <span class="fu">size</span>(X, <span class="fl">2</span>))</span>
-<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>        (<span class="fu">all</span>(keepI) <span class="op">&amp;&amp;</span> <span class="fu">all</span>(keepP)) <span class="op">&amp;&amp;</span> <span class="cf">break</span></span>
-<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>        X <span class="op">=</span> X[keepP, keepI]</span>
-<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
-<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>    N, L <span class="op">=</span> <span class="fu">size</span>(X)</span>
-<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> <span class="fu">vec</span>(<span class="fu">sum</span>(X, dims<span class="op">=</span><span class="fl">2</span>)); s <span class="op">=</span> <span class="fu">vec</span>(<span class="fu">sum</span>(X, dims<span class="op">=</span><span class="fl">1</span>))</span>
-<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> <span class="fu">log</span>.(r <span class="op">./</span> (L <span class="op">.-</span> r))                       <span class="co"># abilities from raw scores</span></span>
-<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>    d <span class="op">=</span> <span class="fu">log</span>.((N <span class="op">.-</span> s) <span class="op">./</span> s); d <span class="op">.-=</span> <span class="fu">mean</span>(d)        <span class="co"># difficulties, centered</span></span>
-<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span>maxit</span>
-<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>        d0 <span class="op">=</span> <span class="fu">copy</span>(d)</span>
-<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> v <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span>N</span>
-<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a>            Pv <span class="op">=</span> <span class="fu">σ</span>.(b[v] <span class="op">.-</span> d)</span>
-<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a>            b[v] <span class="op">+=</span> (r[v] <span class="op">-</span> <span class="fu">sum</span>(Pv)) <span class="op">/</span> <span class="fu">sum</span>(Pv <span class="op">.*</span> (<span class="fl">1</span> <span class="op">.-</span> Pv))</span>
-<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a>        <span class="cf">end</span></span>
-<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span>L</span>
-<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a>            Pi <span class="op">=</span> <span class="fu">σ</span>.(b <span class="op">.-</span> d[i])</span>
-<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a>            d[i] <span class="op">-=</span> (s[i] <span class="op">-</span> <span class="fu">sum</span>(Pi)) <span class="op">/</span> <span class="fu">sum</span>(Pi <span class="op">.*</span> (<span class="fl">1</span> <span class="op">.-</span> Pi))</span>
-<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a>        <span class="cf">end</span></span>
-<span id="cb21-31"><a href="#cb21-31" aria-hidden="true" tabindex="-1"></a>        d <span class="op">.-=</span> <span class="fu">mean</span>(d)                             <span class="co"># fix the origin</span></span>
-<span id="cb21-32"><a href="#cb21-32" aria-hidden="true" tabindex="-1"></a>        <span class="fu">maximum</span>(<span class="fu">abs</span>.(d <span class="op">.-</span> d0)) <span class="op">&lt;</span> tol <span class="op">&amp;&amp;</span> <span class="cf">break</span></span>
-<span id="cb21-33"><a href="#cb21-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
-<span id="cb21-34"><a href="#cb21-34" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> d, b</span>
-<span id="cb21-35"><a href="#cb21-35" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
-<span id="cb21-36"><a href="#cb21-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-37"><a href="#cb21-37" aria-hidden="true" tabindex="-1"></a>difficulty, ability <span class="op">=</span> <span class="fu">rasch_jmle</span>(X)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Three languages, one algorithm, identical numbers. That is the whole point Wright kept making: <strong>the measurement is in the mathematics, not the software.</strong> BIGSTEPS was never magic - it was this loop, run carefully.</p>
+<p>Click through those tabs and read them side by side. Same loop, same updates, same convergence, same estimates - only the punctuation changes. That is the whole point Wright kept making: <strong>the measurement is in the mathematics, not the software.</strong> BIGSTEPS was never magic; it was this loop, run carefully.</p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1369,8 +1317,8 @@ DESCRIPTIVES VARIABLES=i1 TO i18 /STATISTICS=SUM.</code></pre>
 </div>
 </div>
 </section>
-<section id="challenge" class="level2" data-number="11.7">
-<h2 data-number="11.7" class="anchored" data-anchor-id="challenge"><span class="header-section-number">11.7</span> Challenge</h2>
+<section id="challenge" class="level2" data-number="11.5">
+<h2 data-number="11.5" class="anchored" data-anchor-id="challenge"><span class="header-section-number">11.5</span> Challenge</h2>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1389,8 +1337,8 @@ DESCRIPTIVES VARIABLES=i1 TO i18 /STATISTICS=SUM.</code></pre>
 </div>
 </div>
 </section>
-<section id="where-we-go-next" class="level2" data-number="11.8">
-<h2 data-number="11.8" class="anchored" data-anchor-id="where-we-go-next"><span class="header-section-number">11.8</span> Where We Go Next</h2>
+<section id="where-we-go-next" class="level2" data-number="11.6">
+<h2 data-number="11.6" class="anchored" data-anchor-id="where-we-go-next"><span class="header-section-number">11.6</span> Where We Go Next</h2>
 <p>Wright’s dream - objective, sample-free measurement - is the aspiration behind every scale you will ever build or trust. With reliable, valid, <em>well-measured</em> variables in hand, we are almost ready to model relationships among them. One preparation step remains: combining our many measures into fewer, more dependable ones. That is <a href="./31-datareduction.html">data reduction</a>, the subject of the next part, and it is where we turn before the modeling begins. Ben Wright would tell you: get the measurement right first, and the models take care of themselves.</p>
 
 

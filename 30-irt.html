@@ -727,6 +727,12 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Getting the Book’s Data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./required-packages.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Setup and Required Packages</span></a>
   </div>
@@ -848,6 +854,19 @@ window.Quarto = {
 <h2 data-number="23.3" class="anchored" data-anchor-id="generalizability-reliability-grown-up"><span class="header-section-number">23.3</span> Generalizability: Reliability, Grown Up</h2>
 <p>Classical reliability (<a href="./10-reliability.html">Ch. 10</a>) splits observed variance into “true” and “error.” But error from where? It could come from the particular item you used, the rater who scored you, or the day you happened to show up. <strong>Generalizability theory</strong> treats each of these as a <strong>facet</strong> and estimates how much variance each contributes, turning “reliability” from a single number into an analysis of <em>sources</em>.</p>
 <p>The machinery is the <a href="./04-Dmeasures.html">variance-partitioning</a> you already know, run with <code>aov</code>. Simulate people crossed with items, then recover how much of the variance is real person differences versus item and residual noise:</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Working in SPSS, Julia, or Python?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The code tabs below assume this chapter’s data is already loaded. Grab the one-file setup for your language from <a href="./setup.html">Getting the Book’s Data</a>, run it once, then load what you need by name - this chapter uses <code>ch23-gtheory</code>. For example, <code>book_data("ch23-gtheory")</code> in R, Julia, or Python, or <code>!bookdata name = "ch23-gtheory".</code> in SPSS. Every language reads the same shipped files, so your numbers will match the ones printed here exactly.</p>
+</div>
+</div>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="" aria-current="page">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">SPSS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Julia</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-4" role="tab" aria-controls="tabset-1-4" aria-selected="false" href="">Python</a></li></ul>
 <div class="tab-content">
