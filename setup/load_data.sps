@@ -1,0 +1,102 @@
+* ---------------------------------------------------------------------------.
+* load_data.sps - the book's datasets, in SPSS.
+*
+* Run this file once (File > Open > Syntax, then Run All). It defines a macro
+* called !bookdata, after which any chapter's data is one line away:
+*
+*     !bookdata name = "ch06-study".
+*
+* The files in data/sim/ were generated once in R and are shared across all
+* four languages, which is the only way to guarantee you see the same numbers
+* the book prints. Random number generators are not portable - RV.NORMAL with
+* a given SET SEED does not match R's rnorm() - so re-simulating here would
+* give you statistically equivalent data with visibly different numbers.
+*
+* Set BOOKPATH below to wherever you unpacked the book's data folder.
+* ---------------------------------------------------------------------------.
+
+DEFINE !bookpath () "C:/GradStats-Book/data/sim" !ENDDEFINE.
+
+DEFINE !bookdata (name = !TOKENS(1))
+GET DATA /TYPE=TXT
+  /FILE = !QUOTE(!CONCAT(!UNQUOTE(!bookpath), "/", !UNQUOTE(!name), ".csv"))
+  /DELIMITERS = ","
+  /QUALIFIER = '"'
+  /FIRSTCASE = 2
+  /VARIABLES = ALL.
+DATASET NAME book WINDOW=FRONT.
+!ENDDEFINE.
+
+* ---------------------------------------------------------------------------.
+* Category order matters, and a CSV does not carry it. SPSS will order string
+* values alphabetically, which silently reorders every parameter estimate that
+* uses them. After loading one of the datasets below, run the matching RECODE
+* so the categories come back in the book's order.
+* ---------------------------------------------------------------------------.
+
+* ch16-pets and ch18-pets: pet should run cat < fish < pig < dog,
+* NOT the alphabetical cat < dog < fish < pig.
+DEFINE !petorder ()
+AUTORECODE VARIABLES = pet /INTO pet_n.
+RECODE pet_n (1=1)(3=2)(4=3)(2=4) INTO pet_ord.
+VALUE LABELS pet_ord 1 'cat' 2 'fish' 3 'pig' 4 'dog'.
+EXECUTE.
+!ENDDEFINE.
+
+* ch17-dose: dose should run none < low < high, NOT high < low < none.
+DEFINE !doseorder ()
+AUTORECODE VARIABLES = dose /INTO dose_n.
+RECODE dose_n (3=1)(2=2)(1=3) INTO dose_ord.
+VALUE LABELS dose_ord 1 'none' 2 'low' 3 'high'.
+EXECUTE.
+!ENDDEFINE.
+
+* ---------------------------------------------------------------------------.
+* What each dataset is, and how it was built.
+*
+*   intro-people          10 people: height in feet, weight in pounds.
+*   ch01-heights          set.seed(20); rnorm(500, 68, 4)
+*   ch01-skewed           set.seed(21); rexp(1000, rate = 1)
+*   ch01-shapes           set.seed(22); normal/uniform/binomial/Poisson, 1000 each
+*   ch02-x                c(3, 5, 5, 7, 20) - note the outlier
+*   ch02-income           c(30, 35, 40, 42, 45, 48, 5000)
+*   ch03-spread           set.seed(7); sd = 3 vs sd = 20, same mean of 100
+*   ch03-x                c(3, 5, 5, 7, 8, 9, 12, 40)
+*   ch04-dirty            impossible age, negative income, a 999 code, a stray 'b'
+*   ch05-scores           one SAT and one ACT score, with scale means and SDs
+*   ch05-pomp             a mood item (1-5) and a vitality item (1-7)
+*   ch06-study            set.seed(5); grade = 60 + 4*study + noise
+*   ch06-restriction      set.seed(2); y = 0.6*x + noise
+*   ch06-anscombe         Anscombe's quartet, stacked long
+*   ch07-nulldist         set.seed(1908); 10,000 means of n = 4 from N(20,4)
+*   ch09-ctt              set.seed(8); observed = truth + error
+*   ch09-items-tau        set.seed(9); six equally good items
+*   ch09-items-congeneric set.seed(3); five items, loadings .9 .8 .7 .5 .4
+*   ch09-attenuation      set.seed(10); true r = .6 seen through noisy sensors
+*   ch10-validity         set.seed(4); convergent and discriminant measures
+*   ch12-groups           set.seed(12); 40 control, 40 treatment, difference 0.6
+*   ch13-study            set.seed(14); score = 70 + 8*studied + noise
+*   ch14-toy              five points, checkable by hand
+*   ch15-tangled          set.seed(1936); predictors sharing a common 'base'
+*   ch15-typess           set.seed(42); x1 and x2 correlate ~.7
+*   ch16-pets             set.seed(1925); 'dogness' cut into four pet types
+*   ch17-dose             set.seed(17); three fertilizer doses, 30 plants each
+*   ch18-pets             set.seed(725); 200 pets
+*   ch18-unbalanced       set.seed(9); unequal cells - 20/30/40/10
+*   ch19-items            set.seed(7); six noisy views of one construct
+*   ch20-cfa              set.seed(2026); eight items from two correlated factors
+*   ch21-invariance       set.seed(1); group B answers 0.5 higher at the same trait
+*   ch22-lca              set.seed(2026); two classes differing in PATTERN
+*   ch23-gtheory          set.seed(2026); 120 people crossed with 12 items
+*   ch24-fork             set.seed(4); Z causes both X and Y
+*   ch24-pipe             set.seed(5); X -> M -> Y
+*   ch24-collider         set.seed(6); X and Y both cause Z
+*   ch25-skewed-sample    set.seed(42); 30 draws, right-skewed
+*   ch25-twogroups        set.seed(7); 15 per group, difference 0.8
+*   ch25-outlier          set.seed(1); 19 clean values plus one 250
+*   ch27-bdi              set.seed(2026); 1200 people, 21 graded items
+*   ch28-curiosity        set.seed(2026); twelve items from three factors
+*   ch29-missing          set.seed(2026); y missing more often when z is high
+*   appendix-d            set.seed(1); the four-language worked example
+*   appendix-items        set.seed(2); four items for the PCA example
+* ---------------------------------------------------------------------------.

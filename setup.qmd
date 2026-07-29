@@ -1,0 +1,48 @@
+# Getting the Book's Data {#setup .unnumbered}
+
+Every chapter in this book shows its analysis in four languages. The **R** tab runs live on this page, so R readers never have to think about where the data came from. If you are working in **SPSS, Julia, or Python**, you need the data first - and this page is how you get it.
+
+## The problem, stated honestly
+
+Most of the book's datasets are simulated. The obvious thing would be to hand you the simulation code in your language and let you run it. That does not work, and it is worth knowing why.
+
+**Random number generators are not portable.** `set.seed(5)` followed by `rnorm(100)` in R, `Random.seed!(5)` and `rand(Normal(), 100)` in Julia, and `default_rng(5).normal(size=100)` in NumPy produce three *completely different* sets of numbers. Same distribution, different draws. If you regenerated the data in your own language, every correlation, slope, and *p*-value you computed would be a little off from the ones printed here - and you would reasonably assume you had made a mistake.
+
+So we do the only thing that actually works: **we generated the data once, in R, and we ship it.** All four languages read the same files, so all four print the same numbers.
+
+## Four files, one per language
+
+Download the one for your language, put it beside the book's `data/` folder, and run it once.
+
+| Language | File | Use it like this |
+|---|---|---|
+| R | [`setup/load_data.R`](https://github.com/pem725/GradStats-Book/blob/main/setup/load_data.R) | `source("setup/load_data.R"); d <- book_data("ch06-study")` |
+| SPSS | [`setup/load_data.sps`](https://github.com/pem725/GradStats-Book/blob/main/setup/load_data.sps) | Run the file, then `!bookdata name = "ch06-study".` |
+| Julia | [`setup/load_data.jl`](https://github.com/pem725/GradStats-Book/blob/main/setup/load_data.jl) | `include("setup/load_data.jl"); d = book_data("ch06-study")` |
+| Python | [`setup/load_data.py`](https://github.com/pem725/GradStats-Book/blob/main/setup/load_data.py) | `from setup.load_data import book_data; d = book_data("ch06-study")` |
+
+Each chapter tells you which dataset it uses, in a note near the top.
+
+## The recipes are still there
+
+Reading the data rather than simulating it does not mean the simulation is hidden. Each loader carries a one-line recipe for every dataset - `ch06-study`, for instance, is recorded as:
+
+```
+set.seed(5); study ~ N(5,2); grade = 60 + 4*study + N(0,5)
+```
+
+and the full generating code, exactly as the chapters run it, lives in [`setup/make_data.R`](https://github.com/pem725/GradStats-Book/blob/main/setup/make_data.R). If you want to rebuild everything from scratch in R, that one file does it:
+
+```r
+source("setup/make_data.R")   # rewrites every file in data/sim/
+```
+
+## One trap worth knowing about
+
+A CSV file does not record the **order of a categorical variable**. Left alone, every language sorts categories alphabetically - so the four pets in the coding chapters come back as `cat, dog, fish, pig` instead of `cat, fish, pig, dog`, and the fertilizer doses in the ANOVA chapter come back as `high, low, none` instead of `none, low, high`.
+
+That is not a cosmetic problem. It silently reorders every coefficient in the model, so your output would have the right numbers attached to the wrong labels. Each loader fixes this for you: the ones that matter are listed in a `LEVELS` table at the top of each file, and `book_data()` applies them on the way in. If you load a CSV by hand instead, set the category order yourself.
+
+## The real datasets
+
+A few chapters use genuine data rather than simulated: high-school and college GPAs (`data/gpa.csv`), a 10-item scale from the graduate GLM course (`data/moddat2.csv`), a four-group dataset (`data/mod3data.csv`), Ben Wright's Knox Cube Test responses (`data/knox.dat`), and some baseball and football tables. Those need no setup at all - read them directly in any language, exactly as the code tabs show.

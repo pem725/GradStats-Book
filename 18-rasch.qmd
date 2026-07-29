@@ -28,6 +28,11 @@ Wright's running example in *Best Test Design* [@wright_best_1979] is the **Knox
 
 We use Wright's **actual data**: 35 children, 18 items, the very responses from *Best Test Design*, stored as a plain text table (`data/knox.dat`). The children even keep their names - Richard, Tracie, Walter, and the rest.
 
+::: {.callout-note}
+## Working in SPSS, Julia, or Python?
+This chapter uses Ben Wright's real Knox Cube Test responses, `data/knox.dat`, which every tab reads directly. See [Getting the Book's Data](setup.qmd) if you want the setup files for your language.
+:::
+
 ::: {.panel-tabset}
 ### R
 ```{r}
@@ -177,41 +182,51 @@ tibble(item = fit$items, difficulty = fit$difficulty) |> round2()
 ```
 ### Julia
 ```julia
-function rasch_jmle(X; tol = 1e-6, maxit = 300)
-    # drop persons/items with perfect or zero scores (no finite estimate)
-    while true
-        ci = vec(sum(X, dims = 1)); ri = vec(sum(X, dims = 2))
+using Statistics
+σ(z) = 1 / (1 + exp(-z))
+
+# Wright's Knox Cube Test data: skip the header, drop the Name & sex columns.
+rows = split.(readlines("data/knox.dat")[2:end])
+X = [parse(Int, rows[i][j]) for i in 1:length(rows), j in 3:20]
+
+function rasch_jmle(X; tol=1e-6, maxit=300)
+    X = float.(X)
+    while true                                    # drop perfect/zero rows & cols
+        ci = vec(sum(X, dims=1)); ri = vec(sum(X, dims=2))
         keepI = (ci .> 0) .& (ci .< size(X, 1))
         keepP = (ri .> 0) .& (ri .< size(X, 2))
-        all(keepI) && all(keepP) && break
+        (all(keepI) && all(keepP)) && break
         X = X[keepP, keepI]
     end
     N, L = size(X)
-    r = vec(sum(X, dims = 2)); s = vec(sum(X, dims = 1))
-    b = log.(r ./ (L .- r))
-    d = log.((N .- s) ./ s); d .-= mean(d)
-    local it
-    # the outer loop is sequential; the inner sweeps are independent
-    for outer it in 1:maxit
+    r = vec(sum(X, dims=2)); s = vec(sum(X, dims=1))
+    b = log.(r ./ (L .- r))                       # abilities from raw scores
+    d = log.((N .- s) ./ s); d .-= mean(d)        # difficulties, centered
+    for _ in 1:maxit
         d0 = copy(d)
-        b = [bv + (rv - sum(1 ./ (1 .+ exp.(-(bv .- d))))) /
-                  sum((p -> p*(1-p)).(1 ./ (1 .+ exp.(-(bv .- d)))))
-             for (bv, rv) in zip(b, r)]
-        d = [di - (si - sum(1 ./ (1 .+ exp.(-(b .- di))))) /
-                  sum((p -> p*(1-p)).(1 ./ (1 .+ exp.(-(b .- di)))))
-             for (di, si) in zip(d, s)]
-        d .-= mean(d)
+        for v in 1:N
+            Pv = σ.(b[v] .- d)
+            b[v] += (r[v] - sum(Pv)) / sum(Pv .* (1 .- Pv))
+        end
+        for i in 1:L
+            Pi = σ.(b .- d[i])
+            d[i] -= (s[i] - sum(Pi)) / sum(Pi .* (1 .- Pi))
+        end
+        d .-= mean(d)                             # fix the origin
         maximum(abs.(d .- d0)) < tol && break
     end
-    (difficulty = d, ability = b, iterations = it)
+    return d, b
 end
 
-fit = rasch_jmle(X)
-collect(zip(taps, round.(fit.difficulty, digits = 2)))
+difficulty, ability = rasch_jmle(X)
 ```
 ### Python
 ```python
 import numpy as np
+
+# Wright's Knox Cube Test data: skip the header, drop the Name & sex columns.
+rows = [ln.split() for ln in open("data/knox.dat")][1:]
+X = np.array([[int(v) for v in r[2:]] for r in rows], float)
 
 def rasch_jmle(X, tol=1e-6, maxit=300):
     X = np.asarray(X, float)
@@ -226,21 +241,20 @@ def rasch_jmle(X, tol=1e-6, maxit=300):
     r, s = X.sum(1), X.sum(0)
     b = np.log(r / (L - r))                       # abilities from raw scores
     d = np.log((N - s) / s); d -= d.mean()        # difficulties, centered
-    for it in range(1, maxit + 1):
+    for _ in range(maxit):
         d0 = d.copy()
-        for v in range(N):                        # the person sweep
+        for v in range(N):
             Pv = 1 / (1 + np.exp(-(b[v] - d)))
             b[v] += (r[v] - Pv.sum()) / (Pv * (1 - Pv)).sum()
-        for i in range(L):                        # the item sweep
+        for i in range(L):
             Pi = 1 / (1 + np.exp(-(b - d[i])))
             d[i] -= (s[i] - Pi.sum()) / (Pi * (1 - Pi)).sum()
         d -= d.mean()                             # fix the origin
         if np.max(np.abs(d - d0)) < tol:
             break
-    return d, b, it
+    return d, b
 
-difficulty, ability, iterations = rasch_jmle(X)
-dict(zip(taps, difficulty.round(2)))
+difficulty, ability = rasch_jmle(X)
 ```
 :::
 
@@ -290,91 +304,7 @@ len(ability), ability.min(), np.median(ability), ability.mean(), ability.max()
 ```
 :::
 
-## The Same Thirty Lines in Python
-
-Nothing above was special to R. Here is the identical algorithm in Python with NumPy - same updates, same convergence, same estimates:
-
-```python
-import numpy as np
-
-# Wright's Knox Cube Test data: skip the header, drop the Name & sex columns.
-rows = [ln.split() for ln in open("data/knox.dat")][1:]
-X = np.array([[int(v) for v in r[2:]] for r in rows], float)
-
-def rasch_jmle(X, tol=1e-6, maxit=300):
-    X = np.asarray(X, float)
-    while True:                                   # drop perfect/zero rows & cols
-        ci, ri = X.sum(0), X.sum(1)
-        keepI = (ci > 0) & (ci < X.shape[0])
-        keepP = (ri > 0) & (ri < X.shape[1])
-        if keepI.all() and keepP.all():
-            break
-        X = X[keepP][:, keepI]
-    N, L = X.shape
-    r, s = X.sum(1), X.sum(0)
-    b = np.log(r / (L - r))                       # abilities from raw scores
-    d = np.log((N - s) / s); d -= d.mean()        # difficulties, centered
-    for _ in range(maxit):
-        d0 = d.copy()
-        for v in range(N):
-            Pv = 1 / (1 + np.exp(-(b[v] - d)))
-            b[v] += (r[v] - Pv.sum()) / (Pv * (1 - Pv)).sum()
-        for i in range(L):
-            Pi = 1 / (1 + np.exp(-(b - d[i])))
-            d[i] -= (s[i] - Pi.sum()) / (Pi * (1 - Pi)).sum()
-        d -= d.mean()                             # fix the origin
-        if np.max(np.abs(d - d0)) < tol:
-            break
-    return d, b
-
-difficulty, ability = rasch_jmle(X)
-```
-
-## The Same Thirty Lines in Julia
-
-And in Julia, where the math reads almost like the equations themselves:
-
-```julia
-using Statistics
-σ(z) = 1 / (1 + exp(-z))
-
-# Wright's Knox Cube Test data: skip the header, drop the Name & sex columns.
-rows = split.(readlines("data/knox.dat")[2:end])
-X = [parse(Int, rows[i][j]) for i in 1:length(rows), j in 3:20]
-
-function rasch_jmle(X; tol=1e-6, maxit=300)
-    X = float.(X)
-    while true                                    # drop perfect/zero rows & cols
-        ci = vec(sum(X, dims=1)); ri = vec(sum(X, dims=2))
-        keepI = (ci .> 0) .& (ci .< size(X, 1))
-        keepP = (ri .> 0) .& (ri .< size(X, 2))
-        (all(keepI) && all(keepP)) && break
-        X = X[keepP, keepI]
-    end
-    N, L = size(X)
-    r = vec(sum(X, dims=2)); s = vec(sum(X, dims=1))
-    b = log.(r ./ (L .- r))                       # abilities from raw scores
-    d = log.((N .- s) ./ s); d .-= mean(d)        # difficulties, centered
-    for _ in 1:maxit
-        d0 = copy(d)
-        for v in 1:N
-            Pv = σ.(b[v] .- d)
-            b[v] += (r[v] - sum(Pv)) / sum(Pv .* (1 .- Pv))
-        end
-        for i in 1:L
-            Pi = σ.(b .- d[i])
-            d[i] -= (s[i] - sum(Pi)) / sum(Pi .* (1 .- Pi))
-        end
-        d .-= mean(d)                             # fix the origin
-        maximum(abs.(d .- d0)) < tol && break
-    end
-    return d, b
-end
-
-difficulty, ability = rasch_jmle(X)
-```
-
-Three languages, one algorithm, identical numbers. That is the whole point Wright kept making: **the measurement is in the mathematics, not the software.** BIGSTEPS was never magic - it was this loop, run carefully.
+Click through those tabs and read them side by side. Same loop, same updates, same convergence, same estimates - only the punctuation changes. That is the whole point Wright kept making: **the measurement is in the mathematics, not the software.** BIGSTEPS was never magic; it was this loop, run carefully.
 
 ::: {.callout-important}
 ## What the Real Tools Add
