@@ -41,22 +41,91 @@ img.quarto-cover-image,
 }
 
 // --- Tables --------------------------------------------------------------
-// Bootstrap already recolors .table for each theme; add zebra striping (which
-// Quarto's markdown/kable tables don't get by default) and a firmer header rule
-// so tables read cleanly on both light and dark.
+// Tables are the book's second kind of figure, so they get the same "card"
+// idea the plots do: a quiet frame that lifts the numbers off the prose. The
+// look is deliberately NOT the Bootstrap/kable default — zebra striping and a
+// full-bleed 100%-wide block are exactly what makes generic output look
+// generic. Instead: the table shrinks to fit its own contents, sits centered,
+// and separates rows with hairlines rather than stripes.
+//
+// Everything is built from rgba neutrals rather than fixed colours so the same
+// rules work on the light (flatly) and dark (darkly) themes.
+
 table.table {
-  border-radius: 0.4rem;
+  // hug the content and centre it, rather than stretching edge to edge
+  width: fit-content;
+  max-width: 100%;
+  margin: 1.5rem auto;
+
+  // the card
+  border: 1px solid rgba(128, 128, 128, 0.30);
+  border-radius: 0.6rem;
+  box-shadow: 0 1px 7px rgba(0, 0, 0, 0.11);
+  background-color: rgba(128, 128, 128, 0.035);
   overflow: hidden;
+
+  // separate + zero spacing lets the rounded corners actually clip
+  border-collapse: separate;
+  border-spacing: 0;
+
+  font-size: 0.92rem;
+  line-height: 1.4;
+
+  // undo Bootstrap's striping; the hairlines below do the work instead
+  --bs-table-bg: transparent;
+  --bs-table-accent-bg: transparent;
+  --bs-table-striped-bg: transparent;
+  --bs-table-striped-color: inherit;
 }
+
+// Column headers: small, spaced capitals sit quietly above the numbers
+// instead of competing with them.
 table.table > thead th {
-  border-bottom: 2px solid rgba(128, 128, 128, 0.55);
-  font-weight: 600;
+  padding: 0.62rem 0.95rem;
+  border-bottom: 2px solid rgba(128, 128, 128, 0.45);
+  background-color: rgba(128, 128, 128, 0.07);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  vertical-align: bottom;
 }
-table.table > tbody > tr:nth-of-type(odd) > * {
-  background-color: rgba(128, 128, 128, 0.08);
+
+table.table > tbody > td,
+table.table > tbody > tr > td {
+  padding: 0.44rem 0.95rem;
+  border-top: 1px solid rgba(128, 128, 128, 0.15);
+  // line the decimal points up: every digit gets the same width
+  font-variant-numeric: tabular-nums;
 }
-table.table > tbody > tr:hover > * {
-  background-color: rgba(128, 128, 128, 0.16);
+
+// no rule between the header and the first row - the header already has one
+table.table > tbody > tr:first-child > td {
+  border-top: none;
+}
+
+table.table > tbody > tr:hover > td {
+  background-color: rgba(128, 128, 128, 0.11);
+}
+
+// A wide table must still be reachable on a phone, so let its wrapper scroll
+// rather than forcing the page to.
+.kable-table {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+// Table captions read as labels, not body text.
+table.table > caption,
+caption {
+  caption-side: top;
+  padding: 0 0 0.4rem 0;
+  font-size: 0.85rem;
+  font-style: italic;
+  text-align: center;
+  color: inherit;
+  opacity: 0.75;
 }
 
 // --- Callouts: make the key term (the title) stand out ---------------------
