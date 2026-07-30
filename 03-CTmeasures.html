@@ -745,9 +745,10 @@ window.Quarto = {
   <li><a href="#learning-objectives" id="toc-learning-objectives" class="nav-link active" data-scroll-target="#learning-objectives"><span class="header-section-number">2.1</span> Learning Objectives</a></li>
   <li><a href="#three-ways-to-say-typical" id="toc-three-ways-to-say-typical" class="nav-link" data-scroll-target="#three-ways-to-say-typical"><span class="header-section-number">2.2</span> Three Ways to Say “Typical”</a></li>
   <li><a href="#why-the-mean-is-best-and-when-it-isnt" id="toc-why-the-mean-is-best-and-when-it-isnt" class="nav-link" data-scroll-target="#why-the-mean-is-best-and-when-it-isnt"><span class="header-section-number">2.3</span> Why the Mean Is “Best” (and When It Isn’t)</a></li>
-  <li><a href="#when-the-mean-lies" id="toc-when-the-mean-lies" class="nav-link" data-scroll-target="#when-the-mean-lies"><span class="header-section-number">2.4</span> When the Mean Lies</a></li>
-  <li><a href="#challenge" id="toc-challenge" class="nav-link" data-scroll-target="#challenge"><span class="header-section-number">2.5</span> Challenge</a></li>
-  <li><a href="#where-we-go-next" id="toc-where-we-go-next" class="nav-link" data-scroll-target="#where-we-go-next"><span class="header-section-number">2.6</span> Where We Go Next</a></li>
+  <li><a href="#why-the-bell-keeps-showing-up" id="toc-why-the-bell-keeps-showing-up" class="nav-link" data-scroll-target="#why-the-bell-keeps-showing-up"><span class="header-section-number">2.4</span> Why the Bell Keeps Showing Up</a></li>
+  <li><a href="#when-the-mean-lies" id="toc-when-the-mean-lies" class="nav-link" data-scroll-target="#when-the-mean-lies"><span class="header-section-number">2.5</span> When the Mean Lies</a></li>
+  <li><a href="#challenge" id="toc-challenge" class="nav-link" data-scroll-target="#challenge"><span class="header-section-number">2.6</span> Challenge</a></li>
+  <li><a href="#where-we-go-next" id="toc-where-we-go-next" class="nav-link" data-scroll-target="#where-we-go-next"><span class="header-section-number">2.7</span> Where We Go Next</a></li>
   </ul>
 </nav>
     </div>
@@ -905,16 +906,58 @@ window.Quarto = {
 <p>The valley of that curve sits <strong>exactly</strong> at the mean. That is not a coincidence - it is <em>the reason the mean matters</em>. When we do regression later and “minimize the sum of squared residuals,” we are doing this same thing in more dimensions. The mean is least-squares estimation with no predictors.</p>
 <p>The median has its own claim to fame: it minimizes the sum of <strong>absolute</strong> errors, <span class="math inline">\(\sum |x - c|\)</span>. Different penalty, different winner. And the mode simply asks “what shows up most?” - the only one of the three that makes sense for a categorical variable like ice-cream flavor.</p>
 </section>
-<section id="when-the-mean-lies" class="level2" data-number="2.4">
-<h2 data-number="2.4" class="anchored" data-anchor-id="when-the-mean-lies"><span class="header-section-number">2.4</span> When the Mean Lies</h2>
+<section id="why-the-bell-keeps-showing-up" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="why-the-bell-keeps-showing-up"><span class="header-section-number">2.4</span> Why the Bell Keeps Showing Up</h2>
+<p>We keep drawing bell curves, and you are entitled to ask why. Psychologists get told, often by people outside the field, that assuming a normal distribution is naive - that real behaviour is messy and the bell is a convenient fiction. That criticism deserves a real answer rather than a defensive one, and the answer is a demonstration you can run in three lines.</p>
+<p>Put a thousand people on the centre line of a football field. Each one takes sixteen steps. Every step is a shove of random size, somewhere between a metre left and a metre right, and <strong>every distance in that range is equally likely</strong>. Nothing here is bell-shaped: a single step is perfectly flat, with no preference for small shoves over large ones.</p>
+<p>Now look at where everybody ends up.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 1000 people, 16 steps each. One step is FLAT - any distance from -1 to 1 is</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># equally likely - so nothing about the ingredients is bell-shaped.</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>walk <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">person =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>) <span class="sc">|&gt;</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">position =</span> <span class="fu">map_dbl</span>(person, \(i) <span class="fu">sum</span>(<span class="fu">runif</span>(<span class="dv">16</span>, <span class="at">min =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">max =</span> <span class="dv">1</span>))))</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(walk, <span class="fu">aes</span>(<span class="at">x =</span> position)) <span class="sc">+</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">bins =</span> <span class="dv">30</span>,</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>                 <span class="at">fill =</span> <span class="st">"steelblue"</span>, <span class="at">colour =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># the normal curve implied by the spread we actually got</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> dnorm, <span class="at">args =</span> <span class="fu">list</span>(<span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="fu">sd</span>(walk<span class="sc">$</span>position)),</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>                <span class="at">colour =</span> <span class="st">"firebrick"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Sixteen flat random steps, and a bell appears anyway"</span>,</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"final position on the field"</span>, <span class="at">y =</span> <span class="st">"density"</span>) <span class="sc">+</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03-CTmeasures_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>A bell, and a close one. We did not assume it, choose it, or fit it - it fell out of adding.</p>
+<p>The mechanism is worth saying in plain words, because once you see it you will recognise it everywhere. To finish far to the right, a person needs <em>nearly every one of their sixteen steps</em> to push right. There is essentially one way to do that. To finish near the middle, the pushes need only roughly cancel, and there are an enormous number of ways for that to happen. Extremes require agreement; middles do not. Add up enough independent nudges and that lopsidedness in the counting <em>is</em> the bell.</p>
+<p>Here is why this matters for psychological science in particular. Look at what our measurements actually are:</p>
+<ul>
+<li>A <strong>scale score</strong> is the sum of a dozen item responses.</li>
+<li>A <strong>reaction time</strong> is the sum of perception, decision, and motor stages.</li>
+<li><strong>Height</strong> is the sum of many genetic and nutritional contributions.</li>
+<li>A <strong>difference between group means</strong> is built from sums.</li>
+</ul>
+<p>These are not variables we <em>hope</em> are normal. They are sums, and sums of many small independent influences are how bells get made. The normal distribution is not an assumption imposed on psychology from outside; for a great deal of what we measure, it is the arithmetic of measurement showing through.</p>
+<p>That is a genuine defence, and it has genuine limits, which we take up honestly when the normal becomes our working tool in the <a href="./06-zdistribution.html">z-distribution chapter</a>. For now, notice what the demonstration bought us: a reason the <em>mean</em> sits at the centre of so many distributions, and therefore a reason it so often earns its place as the best guess.</p>
+</section>
+<section id="when-the-mean-lies" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="when-the-mean-lies"><span class="header-section-number">2.5</span> When the Mean Lies</h2>
 <p>Look again at that outlier (20). Squaring errors makes the mean very sensitive to extreme values; one billionaire walks into the room and the “average” net worth becomes absurd. The median shrugs it off:</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">SPSS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">Julia</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-4" role="tab" aria-controls="tabset-2-4" aria-selected="false" href="">Python</a></li></ul>
 <div class="tab-content">
 <div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>income <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">30</span>, <span class="dv">35</span>, <span class="dv">40</span>, <span class="dv">42</span>, <span class="dv">45</span>, <span class="dv">48</span>, <span class="dv">5000</span>)   <span class="co"># thousands; one very rich person</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">mean =</span> <span class="fu">mean</span>(income), <span class="at">median =</span> <span class="fu">median</span>(income)) <span class="sc">|&gt;</span> <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>income <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">30</span>, <span class="dv">35</span>, <span class="dv">40</span>, <span class="dv">42</span>, <span class="dv">45</span>, <span class="dv">48</span>, <span class="dv">5000</span>)   <span class="co"># thousands; one very rich person</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">mean =</span> <span class="fu">mean</span>(income), <span class="at">median =</span> <span class="fu">median</span>(income)) <span class="sc">|&gt;</span> <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
@@ -939,13 +982,13 @@ window.Quarto = {
 <pre><code>FREQUENCIES VARIABLES=income /STATISTICS=MEAN MEDIAN.</code></pre>
 </div>
 <div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Statistics</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(df.income)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">median</span>(df.income)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Statistics</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(df.income)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">median</span>(df.income)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div id="tabset-2-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-4-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>df.income.mean()</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>df.income.median()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>df.income.mean()</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>df.income.median()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </div>
@@ -982,8 +1025,8 @@ window.Quarto = {
 </div>
 </div>
 </section>
-<section id="challenge" class="level2" data-number="2.5">
-<h2 data-number="2.5" class="anchored" data-anchor-id="challenge"><span class="header-section-number">2.5</span> Challenge</h2>
+<section id="challenge" class="level2" data-number="2.6">
+<h2 data-number="2.6" class="anchored" data-anchor-id="challenge"><span class="header-section-number">2.6</span> Challenge</h2>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1002,8 +1045,8 @@ window.Quarto = {
 </div>
 </div>
 </section>
-<section id="where-we-go-next" class="level2" data-number="2.6">
-<h2 data-number="2.6" class="anchored" data-anchor-id="where-we-go-next"><span class="header-section-number">2.6</span> Where We Go Next</h2>
+<section id="where-we-go-next" class="level2" data-number="2.7">
+<h2 data-number="2.7" class="anchored" data-anchor-id="where-we-go-next"><span class="header-section-number">2.7</span> Where We Go Next</h2>
 <p>A center is only half the story. Two distributions can share the same mean and be wildly different - one tightly packed, one spread all over. That spread <em>is</em> our uncertainty, and it is the single most important quantity in statistics. On to <a href="./04-Dmeasures.html">dispersion</a>.</p>
 
 

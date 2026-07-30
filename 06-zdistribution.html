@@ -745,11 +745,12 @@ window.Quarto = {
   <li><a href="#learning-objectives" id="toc-learning-objectives" class="nav-link active" data-scroll-target="#learning-objectives"><span class="header-section-number">5.1</span> Learning Objectives</a></li>
   <li><a href="#the-z-score-one-ruler-to-rule-them-all" id="toc-the-z-score-one-ruler-to-rule-them-all" class="nav-link" data-scroll-target="#the-z-score-one-ruler-to-rule-them-all"><span class="header-section-number">5.2</span> The Z-Score: One Ruler to Rule Them All</a></li>
   <li><a href="#the-standard-normal-distribution" id="toc-the-standard-normal-distribution" class="nav-link" data-scroll-target="#the-standard-normal-distribution"><span class="header-section-number">5.3</span> The Standard Normal Distribution</a></li>
-  <li><a href="#probability-is-area-and-r-is-your-z-table" id="toc-probability-is-area-and-r-is-your-z-table" class="nav-link" data-scroll-target="#probability-is-area-and-r-is-your-z-table"><span class="header-section-number">5.4</span> Probability Is Area (and R Is Your Z-Table)</a></li>
-  <li><a href="#percentiles-where-do-you-stand" id="toc-percentiles-where-do-you-stand" class="nav-link" data-scroll-target="#percentiles-where-do-you-stand"><span class="header-section-number">5.5</span> Percentiles: Where Do You Stand?</a></li>
-  <li><a href="#another-ruler-percent-of-maximum-possible-pomp" id="toc-another-ruler-percent-of-maximum-possible-pomp" class="nav-link" data-scroll-target="#another-ruler-percent-of-maximum-possible-pomp"><span class="header-section-number">5.6</span> Another Ruler: Percent of Maximum Possible (POMP)</a></li>
-  <li><a href="#challenge" id="toc-challenge" class="nav-link" data-scroll-target="#challenge"><span class="header-section-number">5.7</span> Challenge</a></li>
-  <li><a href="#where-we-go-next" id="toc-where-we-go-next" class="nav-link" data-scroll-target="#where-we-go-next"><span class="header-section-number">5.8</span> Where We Go Next</a></li>
+  <li><a href="#is-the-normal-assumption-defensible" id="toc-is-the-normal-assumption-defensible" class="nav-link" data-scroll-target="#is-the-normal-assumption-defensible"><span class="header-section-number">5.4</span> Is the Normal Assumption Defensible?</a></li>
+  <li><a href="#probability-is-area-and-r-is-your-z-table" id="toc-probability-is-area-and-r-is-your-z-table" class="nav-link" data-scroll-target="#probability-is-area-and-r-is-your-z-table"><span class="header-section-number">5.5</span> Probability Is Area (and R Is Your Z-Table)</a></li>
+  <li><a href="#percentiles-where-do-you-stand" id="toc-percentiles-where-do-you-stand" class="nav-link" data-scroll-target="#percentiles-where-do-you-stand"><span class="header-section-number">5.6</span> Percentiles: Where Do You Stand?</a></li>
+  <li><a href="#another-ruler-percent-of-maximum-possible-pomp" id="toc-another-ruler-percent-of-maximum-possible-pomp" class="nav-link" data-scroll-target="#another-ruler-percent-of-maximum-possible-pomp"><span class="header-section-number">5.7</span> Another Ruler: Percent of Maximum Possible (POMP)</a></li>
+  <li><a href="#challenge" id="toc-challenge" class="nav-link" data-scroll-target="#challenge"><span class="header-section-number">5.8</span> Challenge</a></li>
+  <li><a href="#where-we-go-next" id="toc-where-we-go-next" class="nav-link" data-scroll-target="#where-we-go-next"><span class="header-section-number">5.9</span> Where We Go Next</a></li>
   </ul>
 </nav>
     </div>
@@ -858,25 +859,82 @@ window.Quarto = {
 </div>
 <p>The famous <strong>68–95–99.7 rule</strong> lives here: about 68% of values fall between <span class="math inline">\(z=\pm1\)</span>, about 95% between <span class="math inline">\(z=\pm2\)</span>, and about 99.7% between <span class="math inline">\(z=\pm3\)</span>. Anything past <span class="math inline">\(z = \pm2\)</span> is already unusual; past <span class="math inline">\(\pm3\)</span>, rare.</p>
 </section>
-<section id="probability-is-area-and-r-is-your-z-table" class="level2" data-number="5.4">
-<h2 data-number="5.4" class="anchored" data-anchor-id="probability-is-area-and-r-is-your-z-table"><span class="header-section-number">5.4</span> Probability Is Area (and R Is Your Z-Table)</h2>
+<section id="is-the-normal-assumption-defensible" class="level2" data-number="5.4">
+<h2 data-number="5.4" class="anchored" data-anchor-id="is-the-normal-assumption-defensible"><span class="header-section-number">5.4</span> Is the Normal Assumption Defensible?</h2>
+<p>We are about to lean on this one curve for the rest of the book, so it is fair to stop and ask whether we are entitled to. In <a href="./03-CTmeasures.html">the best-guess chapter</a> we watched sixteen flat random steps add up into a bell. <strong>Adding</strong> is one route to the normal. There is a second, and it matters because a great deal of biology and behaviour does not add - it compounds.</p>
+<p>Suppose an outcome is produced by a dozen small effects that <strong>multiply</strong> rather than sum: each one raises or lowers the result by a few percent. Growth works like this. So do many dose-response and learning processes.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">5</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 1000 organisms. Growth is 12 small effects MULTIPLYING together - each one</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># adds somewhere between 0% and 10% - so nothing here is being summed.</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>growth <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">organism =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>) <span class="sc">|&gt;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">size =</span> <span class="fu">map_dbl</span>(organism, \(i) <span class="fu">prod</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="fu">runif</span>(<span class="dv">12</span>, <span class="at">min =</span> <span class="dv">0</span>, <span class="at">max =</span> <span class="fl">0.1</span>))))</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(growth, <span class="fu">aes</span>(<span class="at">x =</span> size)) <span class="sc">+</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">bins =</span> <span class="dv">30</span>,</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>                 <span class="at">fill =</span> <span class="st">"seagreen"</span>, <span class="at">colour =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> dnorm,</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>                <span class="at">args =</span> <span class="fu">list</span>(<span class="at">mean =</span> <span class="fu">mean</span>(growth<span class="sc">$</span>size), <span class="at">sd =</span> <span class="fu">sd</span>(growth<span class="sc">$</span>size)),</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>                <span class="at">colour =</span> <span class="st">"firebrick"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Twelve small effects multiplying - still a bell"</span>,</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"final size"</span>, <span class="at">y =</span> <span class="st">"density"</span>) <span class="sc">+</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="06-zdistribution_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>A bell again. The reason is quietly elegant: multiplying numbers close to 1 is <em>almost</em> the same as adding the small amounts. <span class="math inline">\(1.05 \times 1.03 = 1.0815\)</span>, and <span class="math inline">\(1 + 0.05 + 0.03 = 1.08\)</span>. Near enough that the addition argument takes over. So small multiplicative effects land in the same place small additive ones do.</p>
+<p>That gives us two honest mechanisms rather than a convention:</p>
+<ul>
+<li>Many small influences that <strong>add</strong> produce a normal.</li>
+<li>Many small influences that <strong>multiply</strong> produce a normal too, because small multiplications behave like addition.</li>
+</ul>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>What this argument does <em>not</em> license
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Being able to defend the normal is not the same as assuming it everywhere, and a psychologist who overclaims here deserves the criticism they will get. The argument fails in specific, recognisable ways:</p>
+<ul>
+<li><strong>When the effects are large and multiplicative.</strong> Multiply by 2 and 3 rather than 1.05 and 1.03 and the addition approximation collapses. You get a long right tail - incomes, city sizes, citation counts. Take logarithms and the normal returns, which is exactly why so much of economics is done in logs.</li>
+<li><strong>When the outcome is a count or a proportion.</strong> Number of symptoms endorsed, number of errors, percentage correct. These are bounded at zero, or at zero and one, and a bell drawn over them will predict values that cannot exist.</li>
+<li><strong>When one influence dominates.</strong> The bell needs <em>many</em> contributors of <em>comparable</em> size. If a single factor drives most of the variance, you get that factor’s shape, not a normal.</li>
+<li><strong>When observations are not independent.</strong> Students within classrooms, trials within a person, siblings within a family. The counting argument that produces the bell assumes the nudges are unrelated.</li>
+</ul>
+<p>There is also a distinction worth getting right, because it is the source of a great deal of needless worry. In regression and ANOVA, normality is an assumption about the <strong>residuals</strong> - what the model failed to explain - not about the raw outcome. A wildly skewed outcome can leave beautifully normal residuals, and a symmetric outcome can leave terrible ones. Look at what the model missed, not at the histogram of <span class="math inline">\(y\)</span>. We show you how in the <a href="./14-bivariateregression.html">regression chapter</a>, and what to do when it genuinely fails in <a href="./20-beyond.html">Beyond the Normal Curve</a>.</p>
+</div>
+</div>
+<p>So the honest position, and the one this book takes: the normal distribution earns its place through a mechanism you can demonstrate in three lines, it covers a great deal of what psychological science actually measures, and it has limits you should be able to name. That is a much stronger footing than either assuming it reflexively or abandoning it apologetically.</p>
+</section>
+<section id="probability-is-area-and-r-is-your-z-table" class="level2" data-number="5.5">
+<h2 data-number="5.5" class="anchored" data-anchor-id="probability-is-area-and-r-is-your-z-table"><span class="header-section-number">5.5</span> Probability Is Area (and R Is Your Z-Table)</h2>
 <p>Older books make you hunt through a printed <strong>z-table</strong> to convert a z-score into a probability. We have R, so we will never do that. Recall from the <a href="./02-distributions.html">distributions chapter</a> that probability is <em>area under the density curve</em>. Two functions give it to you instantly:</p>
 <ul>
 <li><code>pnorm(z)</code> - the area to the <strong>left</strong> of <code>z</code> (the cumulative probability).</li>
 <li><code>qnorm(p)</code> - the inverse: the z-score with area <code>p</code> to its left (a <strong>quantile</strong>).</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">question =</span> <span class="fu">c</span>(<span class="st">"P(Z &lt; 1): area to the left of z = 1"</span>,</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>               <span class="st">"P(Z &gt; 2): the upper tail beyond z = 2"</span>,</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>               <span class="st">"P(-2 &lt; Z &lt; 2): the middle ~95%"</span>,</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>               <span class="st">"which z cuts off the top 2.5%? (the famous 1.96)"</span>),</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">answer   =</span> <span class="fu">c</span>(<span class="fu">pnorm</span>(<span class="dv">1</span>),</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>               <span class="dv">1</span> <span class="sc">-</span> <span class="fu">pnorm</span>(<span class="dv">2</span>),</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>               <span class="fu">pnorm</span>(<span class="dv">2</span>) <span class="sc">-</span> <span class="fu">pnorm</span>(<span class="sc">-</span><span class="dv">2</span>),</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>               <span class="fu">qnorm</span>(<span class="fl">0.975</span>))</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">question =</span> <span class="fu">c</span>(<span class="st">"P(Z &lt; 1): area to the left of z = 1"</span>,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>               <span class="st">"P(Z &gt; 2): the upper tail beyond z = 2"</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>               <span class="st">"P(-2 &lt; Z &lt; 2): the middle ~95%"</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>               <span class="st">"which z cuts off the top 2.5%? (the famous 1.96)"</span>),</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">answer   =</span> <span class="fu">c</span>(<span class="fu">pnorm</span>(<span class="dv">1</span>),</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>               <span class="dv">1</span> <span class="sc">-</span> <span class="fu">pnorm</span>(<span class="dv">2</span>),</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>               <span class="fu">pnorm</span>(<span class="dv">2</span>) <span class="sc">-</span> <span class="fu">pnorm</span>(<span class="sc">-</span><span class="dv">2</span>),</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>               <span class="fu">qnorm</span>(<span class="fl">0.975</span>))</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
@@ -910,36 +968,36 @@ window.Quarto = {
 </div>
 <p>That last line is worth a star: <code>qnorm(0.975)</code> returns <strong>1.96</strong>, the number that shows up in every 95% confidence interval and two-tailed test you will ever run. It is not magic - it is just the z-score with 2.5% of the area beyond it in each tail.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># picture the "unusual" tails beyond +/- 1.96</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">z =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">4</span>, <span class="dv">4</span>, <span class="at">length.out =</span> <span class="dv">400</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">density =</span> <span class="fu">dnorm</span>(z)) <span class="sc">|&gt;</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> z, <span class="at">y =</span> density)) <span class="sc">+</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># shade each tail separately, or ggplot joins them across the middle</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_area</span>(<span class="at">data =</span> \(d) <span class="fu">filter</span>(d, <span class="fu">abs</span>(z) <span class="sc">&gt;=</span> <span class="fl">1.96</span>),</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>            <span class="fu">aes</span>(<span class="at">group =</span> z <span class="sc">&gt;</span> <span class="dv">0</span>), <span class="at">fill =</span> <span class="st">"red"</span>, <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">colour =</span> <span class="st">"steelblue"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">1.96</span>, <span class="fl">1.96</span>), <span class="at">colour =</span> <span class="st">"red"</span>,</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>             <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"The middle 95% and the 5% that would surprise us"</span>,</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"z"</span>, <span class="at">y =</span> <span class="st">"density"</span>) <span class="sc">+</span></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># picture the "unusual" tails beyond +/- 1.96</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">z =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">4</span>, <span class="dv">4</span>, <span class="at">length.out =</span> <span class="dv">400</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">density =</span> <span class="fu">dnorm</span>(z)) <span class="sc">|&gt;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> z, <span class="at">y =</span> density)) <span class="sc">+</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># shade each tail separately, or ggplot joins them across the middle</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_area</span>(<span class="at">data =</span> \(d) <span class="fu">filter</span>(d, <span class="fu">abs</span>(z) <span class="sc">&gt;=</span> <span class="fl">1.96</span>),</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>            <span class="fu">aes</span>(<span class="at">group =</span> z <span class="sc">&gt;</span> <span class="dv">0</span>), <span class="at">fill =</span> <span class="st">"red"</span>, <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">colour =</span> <span class="st">"steelblue"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">1.96</span>, <span class="fl">1.96</span>), <span class="at">colour =</span> <span class="st">"red"</span>,</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>             <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"The middle 95% and the 5% that would surprise us"</span>,</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"z"</span>, <span class="at">y =</span> <span class="st">"density"</span>) <span class="sc">+</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="06-zdistribution_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="06-zdistribution_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 </section>
-<section id="percentiles-where-do-you-stand" class="level2" data-number="5.5">
-<h2 data-number="5.5" class="anchored" data-anchor-id="percentiles-where-do-you-stand"><span class="header-section-number">5.5</span> Percentiles: Where Do You Stand?</h2>
+<section id="percentiles-where-do-you-stand" class="level2" data-number="5.6">
+<h2 data-number="5.6" class="anchored" data-anchor-id="percentiles-where-do-you-stand"><span class="header-section-number">5.6</span> Percentiles: Where Do You Stand?</h2>
 <p>Turn a z-score into a <strong>percentile</strong> with <code>pnorm()</code> and you can say exactly where an observation stands in its distribution:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">height =</span> <span class="dv">74</span>, <span class="at">mean =</span> <span class="dv">68</span>, <span class="at">sd =</span> <span class="dv">4</span>) <span class="sc">|&gt;</span>   <span class="co"># a 74-inch person</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">z =</span> (height <span class="sc">-</span> mean) <span class="sc">/</span> sd,</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">percentile =</span> <span class="fu">pnorm</span>(z) <span class="sc">*</span> <span class="dv">100</span>) <span class="sc">|&gt;</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">height =</span> <span class="dv">74</span>, <span class="at">mean =</span> <span class="dv">68</span>, <span class="at">sd =</span> <span class="dv">4</span>) <span class="sc">|&gt;</span>   <span class="co"># a 74-inch person</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">z =</span> (height <span class="sc">-</span> mean) <span class="sc">/</span> sd,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">percentile =</span> <span class="fu">pnorm</span>(z) <span class="sc">*</span> <span class="dv">100</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
@@ -967,8 +1025,8 @@ window.Quarto = {
 </div>
 <p>A z of 1.5 places this person around the 93rd percentile - taller than about 93% of the population. Percentile ranks, growth charts, and standardized-test scores are all <code>pnorm()</code> in another form.</p>
 </section>
-<section id="another-ruler-percent-of-maximum-possible-pomp" class="level2" data-number="5.6">
-<h2 data-number="5.6" class="anchored" data-anchor-id="another-ruler-percent-of-maximum-possible-pomp"><span class="header-section-number">5.6</span> Another Ruler: Percent of Maximum Possible (POMP)</h2>
+<section id="another-ruler-percent-of-maximum-possible-pomp" class="level2" data-number="5.7">
+<h2 data-number="5.7" class="anchored" data-anchor-id="another-ruler-percent-of-maximum-possible-pomp"><span class="header-section-number">5.7</span> Another Ruler: Percent of Maximum Possible (POMP)</h2>
 <p>The z-score compares a value to <em>its own sample</em> - to the mean and spread of the data you happened to collect. That is exactly right for asking “how unusual is this person?” But it carries a limitation: because z depends on the sample, the same raw score turns into a different z in a different sample, and z-scores from two different measures are not truly on the same footing.</p>
 <p>When the goal is to compare <em>measures</em> - say, is work engagement higher than well-being in this study? - a different ruler is more honest: <strong>POMP</strong>, the <strong>Percent Of Maximum Possible</strong>. POMP rescales a score to the range the instrument <em>could</em> produce, from its lowest possible value to its highest:</p>
 <p><span class="math display">\[\text{POMP} = 100 \times \frac{X - \text{min}}{\text{max} - \text{min}}\]</span></p>
@@ -991,16 +1049,16 @@ window.Quarto = {
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>pomp <span class="ot">&lt;-</span> <span class="cf">function</span>(x, lo, hi) <span class="dv">100</span> <span class="sc">*</span> (x <span class="sc">-</span> lo) <span class="sc">/</span> (hi <span class="sc">-</span> lo)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">measure =</span> <span class="fu">c</span>(<span class="st">"mood"</span>, <span class="st">"vitality"</span>),</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">score   =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">5</span>),      <span class="co"># answered on a 1-5 scale and a 1-7 scale</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">lo      =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>),</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">hi      =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">7</span>)</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">POMP =</span> <span class="fu">pomp</span>(score, lo, hi)) <span class="sc">|&gt;</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>pomp <span class="ot">&lt;-</span> <span class="cf">function</span>(x, lo, hi) <span class="dv">100</span> <span class="sc">*</span> (x <span class="sc">-</span> lo) <span class="sc">/</span> (hi <span class="sc">-</span> lo)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">measure =</span> <span class="fu">c</span>(<span class="st">"mood"</span>, <span class="st">"vitality"</span>),</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">score   =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">5</span>),      <span class="co"># answered on a 1-5 scale and a 1-7 scale</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">lo      =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">hi      =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">7</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">POMP =</span> <span class="fu">pomp</span>(score, lo, hi)) <span class="sc">|&gt;</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
@@ -1041,15 +1099,15 @@ COMPUTE vitality_POMP = 100 * (vitality - 1) / (7 - 1).
 EXECUTE.</code></pre>
 </div>
 <div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>mood_POMP     <span class="op">=</span> <span class="fl">100</span> <span class="op">.*</span> (df.mood     <span class="op">.-</span> <span class="fl">1</span>) <span class="op">./</span> (<span class="fl">5</span> <span class="op">-</span> <span class="fl">1</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>vitality_POMP <span class="op">=</span> <span class="fl">100</span> <span class="op">.*</span> (df.vitality <span class="op">.-</span> <span class="fl">1</span>) <span class="op">./</span> (<span class="fl">7</span> <span class="op">-</span> <span class="fl">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>mood_POMP     <span class="op">=</span> <span class="fl">100</span> <span class="op">.*</span> (df.mood     <span class="op">.-</span> <span class="fl">1</span>) <span class="op">./</span> (<span class="fl">5</span> <span class="op">-</span> <span class="fl">1</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>vitality_POMP <span class="op">=</span> <span class="fl">100</span> <span class="op">.*</span> (df.vitality <span class="op">.-</span> <span class="fl">1</span>) <span class="op">./</span> (<span class="fl">7</span> <span class="op">-</span> <span class="fl">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> pomp(x, lo, hi):</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">100</span> <span class="op">*</span> (x <span class="op">-</span> lo) <span class="op">/</span> (hi <span class="op">-</span> lo)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>mood_POMP     <span class="op">=</span> pomp(df.mood,     lo<span class="op">=</span><span class="dv">1</span>, hi<span class="op">=</span><span class="dv">5</span>)</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>vitality_POMP <span class="op">=</span> pomp(df.vitality, lo<span class="op">=</span><span class="dv">1</span>, hi<span class="op">=</span><span class="dv">7</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> pomp(x, lo, hi):</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">100</span> <span class="op">*</span> (x <span class="op">-</span> lo) <span class="op">/</span> (hi <span class="op">-</span> lo)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>mood_POMP     <span class="op">=</span> pomp(df.mood,     lo<span class="op">=</span><span class="dv">1</span>, hi<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>vitality_POMP <span class="op">=</span> pomp(df.vitality, lo<span class="op">=</span><span class="dv">1</span>, hi<span class="op">=</span><span class="dv">7</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </div>
@@ -1081,8 +1139,8 @@ EXECUTE.</code></pre>
 </div>
 </div>
 </section>
-<section id="challenge" class="level2" data-number="5.7">
-<h2 data-number="5.7" class="anchored" data-anchor-id="challenge"><span class="header-section-number">5.7</span> Challenge</h2>
+<section id="challenge" class="level2" data-number="5.8">
+<h2 data-number="5.8" class="anchored" data-anchor-id="challenge"><span class="header-section-number">5.8</span> Challenge</h2>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1101,8 +1159,8 @@ EXECUTE.</code></pre>
 </div>
 </div>
 </section>
-<section id="where-we-go-next" class="level2" data-number="5.8">
-<h2 data-number="5.8" class="anchored" data-anchor-id="where-we-go-next"><span class="header-section-number">5.8</span> Where We Go Next</h2>
+<section id="where-we-go-next" class="level2" data-number="5.9">
+<h2 data-number="5.9" class="anchored" data-anchor-id="where-we-go-next"><span class="header-section-number">5.9</span> Where We Go Next</h2>
 <p>We can now describe where a single value stands. Real science, though, asks how two variables move <em>together</em>. The tool that measures that shared movement - and the true engine under correlation and regression - is <a href="./07-covariance.html">covariance</a>.</p>
 
 
