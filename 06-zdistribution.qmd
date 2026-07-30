@@ -50,6 +50,53 @@ tibble(z = seq(-4, 4, length.out = 400)) |>
 
 The famous **68–95–99.7 rule** lives here: about 68% of values fall between $z=\pm1$, about 95% between $z=\pm2$, and about 99.7% between $z=\pm3$. Anything past $z = \pm2$ is already unusual; past $\pm3$, rare.
 
+## Is the Normal Assumption Defensible?
+
+We are about to lean on this one curve for the rest of the book, so it is fair to stop and ask whether we are entitled to. In [the best-guess chapter](03-CTmeasures.qmd) we watched sixteen flat random steps add up into a bell. **Adding** is one route to the normal. There is a second, and it matters because a great deal of biology and behaviour does not add - it compounds.
+
+Suppose an outcome is produced by a dozen small effects that **multiply** rather than sum: each one raises or lowers the result by a few percent. Growth works like this. So do many dose-response and learning processes.
+
+```{r}
+set.seed(5)
+
+# 1000 organisms. Growth is 12 small effects MULTIPLYING together - each one
+# adds somewhere between 0% and 10% - so nothing here is being summed.
+growth <- tibble(organism = 1:1000) |>
+  mutate(size = map_dbl(organism, \(i) prod(1 + runif(12, min = 0, max = 0.1))))
+
+ggplot(growth, aes(x = size)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 30,
+                 fill = "seagreen", colour = "white") +
+  stat_function(fun = dnorm,
+                args = list(mean = mean(growth$size), sd = sd(growth$size)),
+                colour = "firebrick", linewidth = 1) +
+  labs(title = "Twelve small effects multiplying - still a bell",
+       x = "final size", y = "density") +
+  theme_minimal()
+```
+
+A bell again. The reason is quietly elegant: multiplying numbers close to 1 is *almost* the same as adding the small amounts. $1.05 \times 1.03 = 1.0815$, and $1 + 0.05 + 0.03 = 1.08$. Near enough that the addition argument takes over. So small multiplicative effects land in the same place small additive ones do.
+
+That gives us two honest mechanisms rather than a convention:
+
+- Many small influences that **add** produce a normal.
+- Many small influences that **multiply** produce a normal too, because small multiplications behave like addition.
+
+::: {.callout-important}
+## What this argument does *not* license
+
+Being able to defend the normal is not the same as assuming it everywhere, and a psychologist who overclaims here deserves the criticism they will get. The argument fails in specific, recognisable ways:
+
+- **When the effects are large and multiplicative.** Multiply by 2 and 3 rather than 1.05 and 1.03 and the addition approximation collapses. You get a long right tail - incomes, city sizes, citation counts. Take logarithms and the normal returns, which is exactly why so much of economics is done in logs.
+- **When the outcome is a count or a proportion.** Number of symptoms endorsed, number of errors, percentage correct. These are bounded at zero, or at zero and one, and a bell drawn over them will predict values that cannot exist.
+- **When one influence dominates.** The bell needs *many* contributors of *comparable* size. If a single factor drives most of the variance, you get that factor's shape, not a normal.
+- **When observations are not independent.** Students within classrooms, trials within a person, siblings within a family. The counting argument that produces the bell assumes the nudges are unrelated.
+
+There is also a distinction worth getting right, because it is the source of a great deal of needless worry. In regression and ANOVA, normality is an assumption about the **residuals** - what the model failed to explain - not about the raw outcome. A wildly skewed outcome can leave beautifully normal residuals, and a symmetric outcome can leave terrible ones. Look at what the model missed, not at the histogram of $y$. We show you how in the [regression chapter](14-bivariateregression.qmd), and what to do when it genuinely fails in [Beyond the Normal Curve](20-beyond.qmd).
+:::
+
+So the honest position, and the one this book takes: the normal distribution earns its place through a mechanism you can demonstrate in three lines, it covers a great deal of what psychological science actually measures, and it has limits you should be able to name. That is a much stronger footing than either assuming it reflexively or abandoning it apologetically.
+
 ## Probability Is Area (and R Is Your Z-Table)
 
 Older books make you hunt through a printed **z-table** to convert a z-score into a probability. We have R, so we will never do that. Recall from the [distributions chapter](02-distributions.qmd) that probability is *area under the density curve*. Two functions give it to you instantly:

@@ -21,6 +21,30 @@ fmt_p <- function(p) {
   dplyr::if_else(p < .001, "< .001", sprintf("%.3f", p))
 }
 
+# --- Staying inside the normal family ---------------------------------------
+# This book keeps every distribution it draws in one family, so that a reader
+# never has to learn a second set of parameters just to see what "skewed"
+# means. A SKEW-NORMAL is a normal curve with one extra knob, alpha:
+#
+#     alpha = 0   ->  exactly the normal curve
+#     alpha > 0   ->  the right tail stretches out
+#     alpha < 0   ->  the left tail stretches out
+#
+# It is built from two ordinary normal draws, which is the whole point: skew
+# is not a different kind of thing, it is a normal that leans.
+rsnorm <- function(n, mean = 0, sd = 1, alpha = 0) {
+  delta <- alpha / sqrt(1 + alpha^2)
+  z0 <- abs(rnorm(n))            # a half-normal: the lean
+  z1 <- rnorm(n)                 # an ordinary normal: the symmetric part
+  mean + sd * (delta * z0 + sqrt(1 - delta^2) * z1)
+}
+
+# The matching density, so a histogram can always carry its theoretical curve.
+dsnorm <- function(x, mean = 0, sd = 1, alpha = 0) {
+  z <- (x - mean) / sd
+  2 / sd * dnorm(z) * pnorm(alpha * z)
+}
+
 # tidy2() is the one we use most: it takes a fitted model, turns it into a
 # tidy data frame with broom::tidy(), rounds the estimates to two decimals,
 # and formats the p-values. One call, house style applied.

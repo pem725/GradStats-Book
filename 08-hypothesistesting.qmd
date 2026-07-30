@@ -117,10 +117,15 @@ means <- tibble(
 )
 
 ggplot(means, aes(x = sample_mean)) +
-  geom_histogram(bins = 40, fill = "grey85", colour = "white") +
+  geom_histogram(aes(y = after_stat(density)), bins = 40,
+                 fill = "grey85", colour = "white") +
+  # We did not fit this curve - theory says the sampling distribution of the
+  # mean is normal, centred on mu, with SD equal to the standard error.
+  stat_function(fun = dnorm, args = list(mean = mu, sd = sigma / sqrt(n)),
+                colour = "firebrick", linewidth = 1) +
   geom_vline(xintercept = xbar, colour = "red", linewidth = 1.2) +
   labs(title = "Sampling distribution of the mean IF the null is true",
-       x = "sample mean", y = "count") +
+       x = "sample mean", y = "density") +
   theme_minimal()
 ```
 ### SPSS

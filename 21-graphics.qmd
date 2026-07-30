@@ -307,9 +307,14 @@ h <- read_csv("data/mlb_hitters_2026.csv", show_col_types = FALSE) |>
   filter(PA >= 50)
 
 ggplot(h, aes(OPS)) +
-  geom_histogram(bins = 30, fill = "steelblue", color = "white") +
+  geom_histogram(aes(y = after_stat(density)), bins = 30,
+                 fill = "steelblue", color = "white") +
+  # a normal with this data's own mean and SD - here the curve is a REFERENCE,
+  # not a claim: the gap between bars and curve is the interesting part
+  stat_function(fun = dnorm, args = list(mean = mean(h$OPS), sd = sd(h$OPS)),
+                colour = "grey30", linewidth = 0.9, linetype = "dashed") +
   geom_vline(xintercept = median(h$OPS), color = "firebrick", linewidth = 1) +
-  labs(x = "OPS", y = "hitters", title = "Most hitters are ordinary; a few are stars") +
+  labs(x = "OPS", y = "density", title = "Most hitters are ordinary; a few are stars") +
   theme_minimal(base_size = 12)
 ```
 ### SPSS

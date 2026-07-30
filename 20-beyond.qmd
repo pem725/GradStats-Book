@@ -44,7 +44,9 @@ library(tidyverse)    # dplyr, ggplot2, purrr, tibble, readr, stringr, forcats
 source("_common.R")   # book-wide helpers: round2(), fmt_p(), tidy2()
 
 set.seed(42)
-samp <- rexp(30, rate = 1/50)          # n = 30, right-skewed (non-normal) data
+# n = 30, drawn from a normal that leans hard right - skewed enough that the
+# normal-theory formula for a confidence interval is on shaky ground
+samp <- rsnorm(30, mean = 50, sd = 20, alpha = 8)
 
 B <- 2000
 boot_means <- map_dbl(1:B, \(b) mean(sample(samp, replace = TRUE)))  # resample & recompute
@@ -62,8 +64,10 @@ tibble(
 * SPSS has a genuine BOOTSTRAP subcommand (Bootstrapping add-on module),
 * which resamples and reports percentile intervals for most procedures.
 INPUT PROGRAM.
+COMPUTE #delta = 8 / SQRT(1 + 8**2).   /* alpha = 8 leans hard right */
 LOOP #i = 1 TO 30.
-  COMPUTE samp = RV.EXP(1 / 50).      /* n = 30, right-skewed */
+  COMPUTE samp = 50 + 20 * (#delta * ABS(RV.NORMAL(0,1))
+                            + SQRT(1 - #delta**2) * RV.NORMAL(0,1)).
   END CASE.
 END LOOP.
 END FILE.
@@ -78,7 +82,10 @@ DESCRIPTIVES VARIABLES=samp /STATISTICS=MEAN.
 ```julia
 using Random, Distributions, Statistics, StatsBase
 Random.seed!(42)
-samp = rand(Exponential(50), 30)         # n = 30, right-skewed data
+# n = 30 from a normal that leans hard right (alpha = 8)
+delta = 8 / sqrt(1 + 8^2)
+samp = 50 .+ 20 .* (delta .* abs.(rand(Normal(), 30)) .+
+                    sqrt(1 - delta^2) .* rand(Normal(), 30))
 
 boot_means = [mean(sample(samp, length(samp), replace = true)) for _ in 1:2000]
 
@@ -90,7 +97,10 @@ quantile(boot_means, 0.025), quantile(boot_means, 0.975)
 import numpy as np
 
 rng = np.random.default_rng(42)
-samp = rng.exponential(50, 30)           # n = 30, right-skewed data
+# n = 30 from a normal that leans hard right (alpha = 8)
+delta = 8 / np.sqrt(1 + 8**2)
+samp = 50 + 20 * (delta * np.abs(rng.normal(size=30)) +
+                  np.sqrt(1 - delta**2) * rng.normal(size=30))
 
 boot_means = np.array([rng.choice(samp, samp.size, replace=True).mean()
                        for _ in range(2000)])
@@ -108,11 +118,16 @@ That is the entire idea: `sample(samp, replace = TRUE)` inside `replicate()`, th
 #| fig-height: 4
 tibble(resampled_mean = boot_means) |>
   ggplot(aes(x = resampled_mean)) +
-  geom_histogram(bins = 40, fill = "grey80", colour = "white") +
+  geom_histogram(aes(y = after_stat(density)), bins = 40,
+                 fill = "grey80", colour = "white") +
+  # the normal the central limit theorem promises for a mean, for comparison
+  stat_function(fun = dnorm,
+                args = list(mean = mean(boot_means), sd = sd(boot_means)),
+                colour = "firebrick", linewidth = 1) +
   geom_vline(xintercept = quantile(boot_means, c(.025, .975)),
              colour = "red", linetype = "dashed", linewidth = 1) +
   geom_vline(xintercept = mean(samp), colour = "blue", linewidth = 1) +
-  labs(x = "resampled mean", y = "count") +
+  labs(x = "resampled mean", y = "density") +
   theme_minimal()
 ```
 ### SPSS

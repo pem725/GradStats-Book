@@ -113,10 +113,16 @@ A histogram slices the range of a variable into bins and counts how many observa
 ```{r}
 set.seed(20)
 heights <- tibble(height = rnorm(500, mean = 68, sd = 4))  # adult heights (inches)
+
 ggplot(heights, aes(x = height)) +
-  geom_histogram(bins = 30, fill = "steelblue", colour = "white") +
+  # y = density, not count, so the bars and the curve can share one axis
+  geom_histogram(aes(y = after_stat(density)), bins = 30,
+                 fill = "steelblue", colour = "white") +
+  # the theoretical curve, drawn straight from the parameters we simulated with
+  stat_function(fun = dnorm, args = list(mean = 68, sd = 4),
+                colour = "firebrick", linewidth = 1) +
   labs(title = "The distribution of 500 simulated heights",
-       x = "height (inches)", y = "count") +
+       x = "height (inches)", y = "density") +
   theme_minimal()
 ```
 ### SPSS
@@ -159,7 +165,21 @@ plt.show()
 ```
 :::
 
-That mound-shaped pile is the thing we spend the rest of the book reasoning about.
+That mound-shaped pile is the thing we spend the rest of the book reasoning about. Notice we drew two things: blue **bars** and a red **curve**. They are not the same kind of object, and confusing them causes more trouble than almost anything else at this stage, so let us be blunt about it.
+
+::: {.callout-important}
+## The bars are your data. The curve is your model.
+
+A **histogram** is a picture of *the data you actually collected*. Slice the range into bins, count how many observations land in each. Collect 500 more people and the bars change. Choose different bins and the bars change again. The histogram belongs to your sample.
+
+A **density curve** is a picture of *the idealized distribution you think produced that data*. It is a smooth mathematical function fixed entirely by its parameters - here a mean of 68 and a standard deviation of 4 - and it would be the same curve whether you collected 500 people or 5 million. The curve belongs to the model.
+
+They can be drawn on the same axes only if they use the same vertical scale. That is why we plotted `y = density` rather than the default count: on the density scale, the **total area** of the bars is 1, and the **total area** under the curve is 1 as well. Now they are comparable, and the question "does my data look like the model?" becomes a question you can answer by eye.
+
+One more consequence worth holding onto: on a density scale the height of the curve is **not** a probability. Probability is *area*, never height. We will lean on that hard in a moment.
+:::
+
+Throughout this book, when you see a histogram you will almost always see its curve too. The curve is drawn from theory, not fitted by eye, and it carries no error band - a theoretical distribution is exactly what its parameters say it is. (Later, when we fit *models* to data rather than draw distributions, error bands come back and they matter enormously.)
 
 ## Shapes
 
@@ -169,53 +189,88 @@ Distributions have shapes, and the shape tells a story. Three features do most o
 - **Spread** - how wide the pile is (the chapter after that).
 - **Symmetry** - whether the pile leans. A distribution with a long right tail is **right- (positively) skewed**; a long left tail is **left- (negatively) skewed**. Income is famously right-skewed: most people cluster low, a few soar high, and the mean gets dragged toward the millionaires.
 
+A skewed distribution is not a different species of thing. It is a normal curve that leans. We can build one out of nothing but ordinary normal draws, and doing so keeps us inside a single family for the whole book - one shape, one pair of familiar parameters, plus one knob for the lean:
+
+$$X = \delta\,|Z_0| + \sqrt{1-\delta^2}\;Z_1, \qquad \delta = \frac{\alpha}{\sqrt{1+\alpha^2}}$$
+
+Both $Z_0$ and $Z_1$ are standard normals. Folding one of them to be positive ($|Z_0|$) is what creates the lean; $\alpha$ controls how much. Set $\alpha = 0$ and the second term takes over completely, leaving you with exactly the normal curve you already know. This is the **skew-normal**, and `rsnorm()` in the book's `_common.R` is those two lines and nothing else.
+
 ::: {.panel-tabset}
 ### R
 ```{r}
 set.seed(21)
-skewed <- tibble(value = rexp(1000, rate = 1))   # a right-skewed variable
+# alpha = 6 leans hard to the right; alpha = 0 would give the plain normal
+skewed <- tibble(value = rsnorm(1000, mean = 0, sd = 1, alpha = 6))
+
 ggplot(skewed, aes(x = value)) +
-  geom_histogram(bins = 40, fill = "darkorange", colour = "white") +
-  labs(title = "A right-skewed distribution (long tail to the right)",
-       x = "value", y = "count") +
+  geom_histogram(aes(y = after_stat(density)), bins = 40,
+                 fill = "darkorange", colour = "white") +
+  stat_function(fun = dsnorm, args = list(mean = 0, sd = 1, alpha = 6),
+                colour = "firebrick", linewidth = 1) +
+  labs(title = "A right-skewed normal (long tail to the right)",
+       x = "value", y = "density") +
   theme_minimal()
 ```
 ### SPSS
 ```
-* A right-skewed variable: exponential with rate 1.
+* A right-skewed NORMAL: two standard normal draws, one of them folded
+* positive. delta = alpha / sqrt(1 + alpha**2); alpha = 6 leans right.
 INPUT PROGRAM.
+COMPUTE #alpha = 6.
+COMPUTE #delta = #alpha / SQRT(1 + #alpha**2).
 LOOP #i = 1 TO 1000.
-  COMPUTE value = RV.EXP(1).
+  COMPUTE z0 = ABS(RV.NORMAL(0, 1)).
+  COMPUTE z1 = RV.NORMAL(0, 1).
+  COMPUTE value = #delta * z0 + SQRT(1 - #delta**2) * z1.
   END CASE.
 END LOOP.
 END FILE.
 END INPUT PROGRAM.
 EXECUTE.
 
-GRAPH /HISTOGRAM = value
-  /TITLE = 'A right-skewed distribution (long tail to the right)'.
+* /NORMAL overlays the fitted normal curve on the histogram.
+GRAPH /HISTOGRAM(NORMAL) = value
+  /TITLE = 'A right-skewed normal (long tail to the right)'.
 ```
 ### Julia
 ```julia
 using Random, Distributions, Plots
 Random.seed!(21)
-value = rand(Exponential(1), 1000)         # a right-skewed variable
 
-histogram(value, bins = 40, legend = false,
-          title = "A right-skewed distribution (long tail to the right)",
-          xlabel = "value", ylabel = "count")
+# a skew-normal built from two ordinary normals
+alpha = 6
+delta = alpha / sqrt(1 + alpha^2)
+value = delta .* abs.(rand(Normal(), 1000)) .+
+        sqrt(1 - delta^2) .* rand(Normal(), 1000)
+
+histogram(value, bins = 40, normalize = :pdf, legend = false,
+          title = "A right-skewed normal (long tail to the right)",
+          xlabel = "value", ylabel = "density")
+# Distributions.jl ships the skew-normal, so the curve is one call
+plot!(x -> pdf(SkewNormal(0, 1, alpha), x), -2, 4, linewidth = 2)
 ```
 ### Python
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
 
-rng = np.random.default_rng(21)
-value = rng.exponential(1.0, 1000)         # a right-skewed variable
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import skewnorm
 
-plt.hist(value, bins=40, color="darkorange", edgecolor="white")
-plt.title("A right-skewed distribution (long tail to the right)")
-plt.xlabel("value"); plt.ylabel("count")
+rng = np.random.default_rng(21)
+
+# a skew-normal built from two ordinary normals
+alpha = 6
+delta = alpha / np.sqrt(1 + alpha**2)
+value = delta * np.abs(rng.normal(size=1000)) + \
+        np.sqrt(1 - delta**2) * rng.normal(size=1000)
+
+plt.hist(value, bins=40, density=True, color="darkorange", edgecolor="white")
+grid = np.linspace(-2, 4, 400)
+plt.plot(grid, skewnorm.pdf(grid, alpha), color="firebrick", linewidth=2)
+plt.title("A right-skewed normal (long tail to the right)")
+plt.xlabel("value"); plt.ylabel("density")
 plt.show()
 ```
 :::
@@ -231,23 +286,53 @@ A **distribution** is the full accounting of how often each value (or range of v
 - **Binomial** - the count of "successes" in a fixed number of yes/no trials (heads in 10 coin flips). `rbinom()`.
 - **Poisson** - the count of rare events in a fixed window (typos per page, emails per hour). `rpois()`.
 
+Each panel below carries its theoretical curve in red, alongside the 1000 values we drew. Look at the red marks before the grey bars: the curve is the shape itself, and the bars are one sample's noisy attempt at it.
+
+Two of these shapes are **continuous** (Normal, Uniform) - a value can land anywhere, so the curve is an unbroken line. Two are **discrete** (Binomial, Poisson) - you can flip 6 heads or 7, never 6.4 - so their "curve" is really a row of *points* sitting on the whole numbers, with nothing in between. That is why we drew them differently. It matters: for a continuous shape, probability is the area under a stretch of the curve; for a discrete one, probability sits right on each point and you simply add the points up.
+
 ::: {.panel-tabset}
 ### R
 ```{r}
 set.seed(22)
 # draw 1000 values from each of the four named shapes, then stack them
 # into one long tibble so ggplot can facet them side by side
-tibble(
+draws <- tibble(
   Normal   = rnorm(1000),
   Uniform  = runif(1000),
   Binomial = rbinom(1000, 10, .5),
   Poisson  = rpois(1000, 3)
 ) |>
-  pivot_longer(everything(), names_to = "shape", values_to = "value") |>
-  ggplot(aes(x = value)) +
-  geom_histogram(bins = 30, fill = "grey85", colour = "white") +
+  pivot_longer(everything(), names_to = "shape", values_to = "value")
+
+# Each shape's theoretical curve, computed from its parameters - not fitted.
+# The two continuous shapes get a smooth line; the two discrete ones get
+# points, because their probability sits only on whole numbers.
+smooth_curves <- bind_rows(
+  tibble(shape = "Normal",  value = seq(-4, 4, length.out = 300)) |>
+    mutate(density = dnorm(value)),
+  tibble(shape = "Uniform", value = seq(0, 1, length.out = 300)) |>
+    mutate(density = dunif(value))
+)
+point_curves <- bind_rows(
+  tibble(shape = "Binomial", value = 0:10) |> mutate(density = dbinom(value, 10, .5)),
+  tibble(shape = "Poisson",  value = 0:12) |> mutate(density = dpois(value, 3))
+)
+
+ggplot(draws, aes(x = value)) +
+  # continuous shapes: narrow bins
+  geom_histogram(data = \(d) filter(d, shape %in% c("Normal", "Uniform")),
+                 aes(y = after_stat(density)), bins = 30,
+                 fill = "grey85", colour = "white") +
+  # discrete shapes: one bin per whole number, or the density scale misleads
+  geom_histogram(data = \(d) filter(d, shape %in% c("Binomial", "Poisson")),
+                 aes(y = after_stat(density)), binwidth = 1,
+                 fill = "grey85", colour = "white") +
+  geom_line(data = smooth_curves, aes(y = density),
+            colour = "firebrick", linewidth = 1) +
+  geom_point(data = point_curves, aes(y = density),
+             colour = "firebrick", size = 1.8) +
   facet_wrap(~ shape, scales = "free") +
-  labs(x = NULL, y = "count") +
+  labs(x = NULL, y = "density") +
   theme_minimal()
 ```
 ### SPSS

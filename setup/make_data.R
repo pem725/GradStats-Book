@@ -15,6 +15,7 @@
 # ---------------------------------------------------------------------------
 
 library(tidyverse)
+source("_common.R")   # rsnorm(): the book stays in the normal family
 
 dir.create("data/sim", recursive = TRUE, showWarnings = FALSE)
 put <- function(x, name) {
@@ -34,7 +35,7 @@ put(tibble(
 set.seed(20)
 put(tibble(height = rnorm(500, mean = 68, sd = 4)), "ch01-heights")
 set.seed(21)
-put(tibble(value = rexp(1000, rate = 1)), "ch01-skewed")
+put(tibble(value = rsnorm(1000, mean = 0, sd = 1, alpha = 6)), "ch01-skewed")
 set.seed(22)
 put(tibble(Normal   = rnorm(1000),
            Uniform  = runif(1000),
@@ -218,7 +219,7 @@ put(tibble(X = Xc, Y = Yc, Z = Xc + Yc + rnorm(n)), "ch24-collider")
 
 ## Ch 25 - Beyond the Normal Curve ------------------------------------------
 set.seed(42)
-put(tibble(samp = rexp(30, rate = 1/50)), "ch25-skewed-sample")
+put(tibble(samp = rsnorm(30, mean = 50, sd = 20, alpha = 8)), "ch25-skewed-sample")
 set.seed(7)
 put(tibble(value = c(rnorm(15, mean = 0.0), rnorm(15, mean = 0.8)),
            group = rep(1:2, each = 15)), "ch25-twogroups")

@@ -23,10 +23,20 @@ d <- tibble(
 ) |>
   pivot_longer(everything(), names_to = "group", values_to = "value")
 
+# the theoretical curve for each group, from the parameters we simulated with
+curves <- bind_rows(
+  tibble(group = "tight (sd=3)",  value = seq(40, 160, length.out = 400)) |>
+    mutate(density = dnorm(value, mean = 100, sd = 3)),
+  tibble(group = "wide (sd=20)",  value = seq(40, 160, length.out = 400)) |>
+    mutate(density = dnorm(value, mean = 100, sd = 20))
+)
+
 ggplot(d, aes(value, fill = group)) +
-  geom_histogram(bins = 40, alpha = 0.6, position = "identity") +
+  geom_histogram(aes(y = after_stat(density)), bins = 40,
+                 alpha = 0.5, position = "identity") +
+  geom_line(data = curves, aes(y = density, colour = group), linewidth = 1) +
   labs(title = "Identical means (100), very different uncertainty",
-       x = "value", y = "count") +
+       x = "value", y = "density") +
   theme_minimal()
 
 d |>

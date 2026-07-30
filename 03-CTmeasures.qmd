@@ -81,6 +81,48 @@ The valley of that curve sits **exactly** at the mean. That is not a coincidence
 
 The median has its own claim to fame: it minimizes the sum of **absolute** errors, $\sum |x - c|$. Different penalty, different winner. And the mode simply asks "what shows up most?" - the only one of the three that makes sense for a categorical variable like ice-cream flavor.
 
+## Why the Bell Keeps Showing Up
+
+We keep drawing bell curves, and you are entitled to ask why. Psychologists get told, often by people outside the field, that assuming a normal distribution is naive - that real behaviour is messy and the bell is a convenient fiction. That criticism deserves a real answer rather than a defensive one, and the answer is a demonstration you can run in three lines.
+
+Put a thousand people on the centre line of a football field. Each one takes sixteen steps. Every step is a shove of random size, somewhere between a metre left and a metre right, and **every distance in that range is equally likely**. Nothing here is bell-shaped: a single step is perfectly flat, with no preference for small shoves over large ones.
+
+Now look at where everybody ends up.
+
+```{r}
+set.seed(2)
+
+# 1000 people, 16 steps each. One step is FLAT - any distance from -1 to 1 is
+# equally likely - so nothing about the ingredients is bell-shaped.
+walk <- tibble(person = 1:1000) |>
+  mutate(position = map_dbl(person, \(i) sum(runif(16, min = -1, max = 1))))
+
+ggplot(walk, aes(x = position)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 30,
+                 fill = "steelblue", colour = "white") +
+  # the normal curve implied by the spread we actually got
+  stat_function(fun = dnorm, args = list(mean = 0, sd = sd(walk$position)),
+                colour = "firebrick", linewidth = 1) +
+  labs(title = "Sixteen flat random steps, and a bell appears anyway",
+       x = "final position on the field", y = "density") +
+  theme_minimal()
+```
+
+A bell, and a close one. We did not assume it, choose it, or fit it - it fell out of adding.
+
+The mechanism is worth saying in plain words, because once you see it you will recognise it everywhere. To finish far to the right, a person needs *nearly every one of their sixteen steps* to push right. There is essentially one way to do that. To finish near the middle, the pushes need only roughly cancel, and there are an enormous number of ways for that to happen. Extremes require agreement; middles do not. Add up enough independent nudges and that lopsidedness in the counting *is* the bell.
+
+Here is why this matters for psychological science in particular. Look at what our measurements actually are:
+
+- A **scale score** is the sum of a dozen item responses.
+- A **reaction time** is the sum of perception, decision, and motor stages.
+- **Height** is the sum of many genetic and nutritional contributions.
+- A **difference between group means** is built from sums.
+
+These are not variables we *hope* are normal. They are sums, and sums of many small independent influences are how bells get made. The normal distribution is not an assumption imposed on psychology from outside; for a great deal of what we measure, it is the arithmetic of measurement showing through.
+
+That is a genuine defence, and it has genuine limits, which we take up honestly when the normal becomes our working tool in the [z-distribution chapter](06-zdistribution.qmd). For now, notice what the demonstration bought us: a reason the *mean* sits at the centre of so many distributions, and therefore a reason it so often earns its place as the best guess.
+
 ## When the Mean Lies
 
 Look again at that outlier (20). Squaring errors makes the mean very sensitive to extreme values; one billionaire walks into the room and the "average" net worth becomes absurd. The median shrugs it off:
