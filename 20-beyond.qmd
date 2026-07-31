@@ -263,7 +263,8 @@ COMPUTE id = $CASENUM.
 EXECUTE.
 
 * For each case i, the mean of everything except i:
-AGGREGATE OUTFILE=* MODE=ADDVARIABLES /BREAK= /grand=SUM(samp) /n=N.
+COMPUTE whole = 1.
+AGGREGATE OUTFILE=* MODE=ADDVARIABLES /BREAK=whole /grand=SUM(samp) /n=N.
 COMPUTE loo_mean = (grand - samp) / (n - 1).
 EXECUTE.
 
@@ -502,7 +503,8 @@ END INPUT PROGRAM.
 EXECUTE.
 
 * Normalise, then plot.
-AGGREGATE OUTFILE=* MODE=ADDVARIABLES /BREAK= /tot=SUM(post).
+COMPUTE whole = 1.
+AGGREGATE OUTFILE=* MODE=ADDVARIABLES /BREAK=whole /tot=SUM(post).
 COMPUTE post = post / tot.
 EXECUTE.
 
