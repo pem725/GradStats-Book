@@ -39,13 +39,15 @@ Is a 1350 SAT better than a 30 ACT? On their own scales, who could say. In z-uni
 Standardize a normal variable and you get *the* **standard normal distribution**: a bell curve with mean 0 and standard deviation 1. It never changes, which is exactly why it is useful - we can chart it once and reuse it forever.
 
 ```{r}
+#| label: fig-z-standard
+#| fig-cap: "The standard normal, with dotted lines marking z = -2, -1, 0, 1 and 2."
 tibble(z = seq(-4, 4, length.out = 400)) |>
   mutate(density = dnorm(z)) |>
   ggplot(aes(x = z, y = density)) +
   geom_vline(xintercept = -2:2, linetype = "dotted", colour = "grey60") +
   geom_line(colour = "steelblue", linewidth = 1) +
-  labs(title = "The standard normal: mean 0, sd 1", x = "z", y = "density") +
-  theme_minimal()
+  labs(x = "z", y = "density") +
+  theme_book()
 ```
 
 The famous **68–95–99.7 rule** lives here: about 68% of values fall between $z=\pm1$, about 95% between $z=\pm2$, and about 99.7% between $z=\pm3$. Anything past $z = \pm2$ is already unusual; past $\pm3$, rare.
@@ -57,6 +59,8 @@ We are about to lean on this one curve for the rest of the book, so it is fair t
 Suppose an outcome is produced by a dozen small effects that **multiply** rather than sum: each one raises or lowers the result by a few percent. Growth works like this. So do many dose-response and learning processes.
 
 ```{r}
+#| label: fig-multiplicative
+#| fig-cap: "Growth produced by twelve small multiplicative effects. Multiplying numbers close to 1 behaves almost exactly like adding them, so the bell appears here too."
 set.seed(5)
 
 # 1000 organisms. Growth is 12 small effects MULTIPLYING together - each one
@@ -70,9 +74,8 @@ ggplot(growth, aes(x = size)) +
   stat_function(fun = dnorm,
                 args = list(mean = mean(growth$size), sd = sd(growth$size)),
                 colour = "firebrick", linewidth = 1) +
-  labs(title = "Twelve small effects multiplying - still a bell",
-       x = "final size", y = "density") +
-  theme_minimal()
+  labs(x = "final size", y = "density") +
+  theme_book()
 ```
 
 A bell again. The reason is quietly elegant: multiplying numbers close to 1 is *almost* the same as adding the small amounts. $1.05 \times 1.03 = 1.0815$, and $1 + 0.05 + 0.03 = 1.08$. Near enough that the addition argument takes over. So small multiplicative effects land in the same place small additive ones do.
@@ -121,6 +124,8 @@ tibble(
 That last line is worth a star: `qnorm(0.975)` returns **1.96**, the number that shows up in every 95% confidence interval and two-tailed test you will ever run. It is not magic - it is just the z-score with 2.5% of the area beyond it in each tail.
 
 ```{r}
+#| label: fig-z-tails
+#| fig-cap: "The standard normal with the tails beyond z = plus or minus 1.96 shaded. Between them those tails hold 5% of the area."
 # picture the "unusual" tails beyond +/- 1.96
 tibble(z = seq(-4, 4, length.out = 400)) |>
   mutate(density = dnorm(z)) |>
@@ -131,9 +136,8 @@ tibble(z = seq(-4, 4, length.out = 400)) |>
   geom_line(colour = "steelblue", linewidth = 1) +
   geom_vline(xintercept = c(-1.96, 1.96), colour = "red",
              linetype = "dashed", linewidth = 1) +
-  labs(title = "The middle 95% and the 5% that would surprise us",
-       x = "z", y = "density") +
-  theme_minimal()
+  labs(x = "z", y = "density") +
+  theme_book()
 ```
 
 ## Percentiles: Where Do You Stand?

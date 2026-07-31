@@ -30,7 +30,9 @@ where $b$ is the **slope** (how much $y$ changes for a one-unit change in $x$) a
 Let's make some data and look at it. We will keep it tiny - five points - so you can check every number by hand.
 
 ```{r}
+#| label: fig-toy-points
 #| message: false
+#| fig-cap: "Five points, few enough that every number in this chapter can be checked by hand."
 library(tidyverse)    # dplyr, ggplot2, purrr, tibble, readr, stringr, forcats
 library(broom)        # tidy(), glance(), augment() for model output
 source("_common.R")   # book-wide helpers: round2(), fmt_p(), tidy2()
@@ -43,8 +45,7 @@ toy <- tibble(
 ggplot(toy, aes(x = x, y = y)) +
   geom_point(size = 3) +
   coord_cartesian(xlim = c(0, 6)) +
-  labs(title = "Five points and the line that fits them best") +
-  theme_minimal()
+  theme_book()
 ```
 
 Now we fit the model. In R, the workhorse is `lm()` (for **l**inear **m**odel). The formula `y ~ x` reads "y is predicted by x."
@@ -59,15 +60,19 @@ The real GPA data is `data/gpa.csv`.
 ::: {.panel-tabset}
 ### R
 ```{r}
+#| label: fig-toy-fit
 #| message: false
+#| fig-cap: "The same five points with the least-squares line through them."
 lm1 <- lm(y ~ x, data = toy)
 
 ggplot(toy, aes(x = x, y = y)) +
   geom_smooth(method = "lm", se = FALSE, colour = "red") +
   geom_point(size = 3) +
   coord_cartesian(xlim = c(0, 6)) +
-  theme_minimal()
+  theme_book()
+```
 
+```{r}
 tidy2(lm1)              # the coefficient table
 glance(lm1) |> round2() # R-squared, residual SE, overall F
 ```
@@ -103,15 +108,16 @@ $$e = y - \hat{y}$$
 Let's draw those distances.
 
 ```{r}
+#| label: fig-residuals
 #| message: false
+#| fig-cap: "The residuals drawn as vertical segments. Least squares is the line that makes the sum of their squares as small as it can be."
 augment(lm1) |>          # broom adds .fitted and .resid as columns
   ggplot(aes(x = x, y = y)) +
   geom_segment(aes(xend = x, yend = .fitted), colour = "blue", linewidth = 1) +
   geom_smooth(method = "lm", se = FALSE, colour = "red") +
   geom_point(size = 3) +
   coord_cartesian(xlim = c(0, 6)) +
-  labs(title = "Residuals: the vertical gaps the line leaves behind") +
-  theme_minimal()
+  theme_book()
 ```
 
 Here are the residuals themselves:
@@ -295,7 +301,9 @@ Five points are great for hand calculation but a little silly. Let's use a real 
 ::: {.panel-tabset}
 ### R
 ```{r}
+#| label: fig-gpa
 #| message: false
+#| fig-cap: "College GPA against high-school GPA for 100 students, with the fitted line."
 gpa <- read_csv("data/gpa.csv", show_col_types = FALSE)
 glimpse(gpa)
 
@@ -304,9 +312,10 @@ lm3 <- lm(CollegeGPA ~ HSGPA, data = gpa)
 ggplot(gpa, aes(x = HSGPA, y = CollegeGPA)) +
   geom_point(colour = "grey40", size = 2) +
   geom_smooth(method = "lm", se = FALSE, colour = "red") +
-  labs(title = "Predicting college GPA from high-school GPA") +
-  theme_minimal()
+  theme_book()
+```
 
+```{r}
 tidy2(lm3)
 glance(lm3) |> round2()
 ```

@@ -344,7 +344,9 @@ So when we say *variable*, we mean a characteristic we want to understand better
 ::: {.panel-tabset}
 ### R
 ```{r}
+#| label: fig-intro-heights
 #| message: false
+#| fig-cap: "Ten measured heights. With a sample this small, the histogram is about all the shape you can honestly claim."
 # ten people, measured twice: height in feet and weight in pounds
 people <- tibble(
   height = c(5.5, 6.0, 5.8, 5.9, 6.1, 5.7, 5.6, 5.9, 6.2, 5.8),
@@ -354,7 +356,7 @@ people <- tibble(
 # plot the heights
 ggplot(people, aes(x = height)) +
   geom_histogram(bins = 8, fill = "steelblue", colour = "white") +
-  theme_minimal()
+  theme_book()
 ```
 ### SPSS
 ```
@@ -440,6 +442,8 @@ That is the vocabulary. Here it is in one place, for when you want to check a wo
 ::: {.panel-tabset}
 ### R
 ```{r}
+#| label: fig-intro-flavors
+#| fig-cap: "A world where everyone orders chocolate: perfect prediction, and no need for statistics."
 # Start with a small, manageable sample size
 N <- 100
 
@@ -451,8 +455,10 @@ ic_prefs <- tibble(id = 1:N, flavor = factor(rep("chocolate", N), levels = flavo
 
 ggplot(ic_prefs, aes(x = flavor)) +
   geom_bar(fill = "chocolate") +
-  theme_minimal()
+  theme_book()
+```
 
+```{r}
 # 1000 people who pick chocolate almost every time
 tibble(flavor = sample(flavors, 1000, replace = TRUE,
                        prob = c(0.95, 0.01, 0.01, 0.01, 0.01))) |>
@@ -462,7 +468,6 @@ tibble(flavor = sample(flavors, 1000, replace = TRUE,
 tibble(flavor = sample(flavors, 1000, replace = TRUE,
                        prob = c(0.5, 0.1, 0.1, 0.1, 0.2))) |>
   count(flavor)
-
 ```
 ### SPSS
 ```
@@ -532,8 +537,6 @@ Each require some must start with the first general principle - uncertainty or r
 ::: {.panel-tabset}
 ### R
 ```{r}
-#| echo: false
-#| message: false
 people |>
   summarise(
     mean   = mean(weight),
@@ -541,11 +544,17 @@ people |>
     sd     = sd(weight)
   ) |>
   round2()
+```
 
+```{r}
+#| label: fig-intro-weights
+#| echo: false
+#| message: false
+#| fig-cap: "The ten weights whose mean we are asking you to guess."
 ggplot(people, aes(x = weight)) +
   geom_histogram(bins = 8, fill = "steelblue", colour = "white") +
   labs(x = "weight (lbs)", y = "count") +
-  theme_minimal()
+  theme_book()
 ```
 ### SPSS
 ```

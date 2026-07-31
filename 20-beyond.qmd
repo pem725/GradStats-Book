@@ -114,6 +114,7 @@ That is the entire idea: `sample(samp, replace = TRUE)` inside `replicate()`, th
 ::: {.panel-tabset}
 ### R
 ```{r}
+#| label: fig-bootstrap
 #| fig-cap: "The bootstrap sampling distribution of the mean, with the percentile 95% interval."
 #| fig-height: 4
 tibble(resampled_mean = boot_means) |>
@@ -128,7 +129,7 @@ tibble(resampled_mean = boot_means) |>
              colour = "red", linetype = "dashed", linewidth = 1) +
   geom_vline(xintercept = mean(samp), colour = "blue", linewidth = 1) +
   labs(x = "resampled mean", y = "density") +
-  theme_minimal()
+  theme_book()
 ```
 ### SPSS
 ```
@@ -471,6 +472,7 @@ You do not need fancy software to see the machine turn. Take the oldest example 
 ::: {.panel-tabset}
 ### R
 ```{r}
+#| label: fig-posterior
 #| fig-cap: "Grid-approximation posterior for a proportion after 6 successes in 9 trials."
 #| fig-height: 4
 posterior <- tibble(theta = seq(0, 1, length.out = 1000)) |>
@@ -484,7 +486,7 @@ posterior <- tibble(theta = seq(0, 1, length.out = 1000)) |>
 ggplot(posterior, aes(x = theta, y = post)) +
   geom_line(colour = "blue", linewidth = 1) +
   labs(x = expression(theta ~ "(the proportion)"), y = "posterior density") +
-  theme_minimal()
+  theme_book()
 ```
 ### SPSS
 ```

@@ -21,6 +21,15 @@ fmt_p <- function(p) {
   dplyr::if_else(p < .001, "< .001", sprintf("%.3f", p))
 }
 
+# --- The book's figure theme ------------------------------------------------
+# Every plot in the book ends with theme_book() rather than theme_minimal(),
+# so type size and styling are set in ONE place instead of drifting chapter to
+# chapter. Figure titles live in the chunk's fig-cap, not inside the plot, so
+# they are real searchable text and Quarto can number and cross-reference them.
+theme_book <- function(base_size = 12) {
+  ggplot2::theme_minimal(base_size = base_size)
+}
+
 # --- Staying inside the normal family ---------------------------------------
 # This book keeps every distribution it draws in one family, so that a reader
 # never has to learn a second set of parameters just to see what "skewed"

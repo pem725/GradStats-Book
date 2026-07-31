@@ -12,7 +12,9 @@ If you remember one chapter from this book, make it this one. Back in the introd
 ## Same Center, Different Worlds
 
 ```{r}
+#| label: fig-spread
 #| message: false
+#| fig-cap: "Two distributions with the same mean and very different spread, each with its own theoretical curve. The spread is the uncertainty."
 library(tidyverse)    # dplyr, ggplot2, purrr, tibble, readr, stringr, forcats
 source("_common.R")   # book-wide helpers: round2(), fmt_p(), tidy2()
 
@@ -35,10 +37,11 @@ ggplot(d, aes(value, fill = group)) +
   geom_histogram(aes(y = after_stat(density)), bins = 40,
                  alpha = 0.5, position = "identity") +
   geom_line(data = curves, aes(y = density, colour = group), linewidth = 1) +
-  labs(title = "Identical means (100), very different uncertainty",
-       x = "value", y = "density") +
-  theme_minimal()
+  labs(x = "value", y = "density") +
+  theme_book()
+```
 
+```{r}
 d |>
   summarise(mean = mean(value), .by = group) |>
   round2()

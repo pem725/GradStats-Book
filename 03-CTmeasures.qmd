@@ -60,6 +60,8 @@ df.x.mode()[0]                 # mode() returns every tie; take the first
 Here is the deep idea that ties this chapter to the entire rest of the book. Suppose you must pick a single number $c$ to guess every value, and you will be penalized by the **squared** error of each guess. Which $c$ minimizes your total penalty? Let's just try every candidate and see:
 
 ```{r}
+#| label: fig-least-squares
+#| fig-cap: "Total squared error for every candidate guess. The valley sits exactly at the mean, which is what makes the mean the least-squares best guess."
 # try every candidate guess and record its total squared error
 guesses <- tibble(guess = seq(0, 20, by = 0.1)) |>
   mutate(sse = map_dbl(guess, \(g) sum((x - g)^2)))
@@ -70,10 +72,11 @@ ggplot(guesses, aes(x = guess, y = sse)) +
   geom_line(colour = "steelblue", linewidth = 1) +
   geom_vline(xintercept = mean(x), colour = "red",
              linetype = "dashed", linewidth = 1) +
-  labs(title = "The mean minimizes squared error",
-       x = "guess (c)", y = "sum of squared errors") +
-  theme_minimal()
+  labs(x = "guess (c)", y = "sum of squared errors") +
+  theme_book()
+```
 
+```{r}
 tibble(best_guess = best, the_mean = mean(x)) |> round2()
 ```
 
@@ -90,6 +93,8 @@ Put a thousand people on the centre line of a football field. Each one takes six
 Now look at where everybody ends up.
 
 ```{r}
+#| label: fig-random-walk
+#| fig-cap: "One thousand people take sixteen steps each, every step equally likely to be any distance between -1 and 1. Nothing about a single step is bell-shaped; adding them is what makes the bell."
 set.seed(2)
 
 # 1000 people, 16 steps each. One step is FLAT - any distance from -1 to 1 is
@@ -103,9 +108,8 @@ ggplot(walk, aes(x = position)) +
   # the normal curve implied by the spread we actually got
   stat_function(fun = dnorm, args = list(mean = 0, sd = sd(walk$position)),
                 colour = "firebrick", linewidth = 1) +
-  labs(title = "Sixteen flat random steps, and a bell appears anyway",
-       x = "final position on the field", y = "density") +
-  theme_minimal()
+  labs(x = "final position on the field", y = "density") +
+  theme_book()
 ```
 
 A bell, and a close one. We did not assume it, choose it, or fit it - it fell out of adding.

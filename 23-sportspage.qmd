@@ -31,6 +31,7 @@ This chapter uses `data/mlb_hitters_2026.csv` directly - no setup needed. See [G
 ::: {.panel-tabset}
 ### R
 ```{r}
+#| label: fig-funnel
 #| fig-cap: "OPS vs. plate appearances. Every extreme lives on the left — where the sample is tiny."
 #| fig-height: 3.6
 #| message: false
@@ -44,9 +45,8 @@ league_median <- h |> filter(PA >= 200) |> summarise(m = median(OPS)) |> pull(m)
 ggplot(h, aes(PA, OPS)) +
   geom_point(alpha = 0.35, color = "steelblue") +
   geom_hline(yintercept = league_median, color = "firebrick", linewidth = 0.8) +
-  labs(x = "Plate appearances", y = "OPS",
-       title = "The funnel: extremes only survive at small samples") +
-  theme_minimal(base_size = 12)
+  labs(x = "Plate appearances", y = "OPS") +
+  theme_book()
 ```
 ### SPSS
 ```

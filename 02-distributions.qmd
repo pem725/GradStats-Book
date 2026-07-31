@@ -111,6 +111,8 @@ A histogram slices the range of a variable into bins and counts how many observa
 ::: {.panel-tabset}
 ### R
 ```{r}
+#| label: fig-heights
+#| fig-cap: "Five hundred simulated adult heights, with the normal curve they were drawn from. The bars are the sample; the curve is the model."
 set.seed(20)
 heights <- tibble(height = rnorm(500, mean = 68, sd = 4))  # adult heights (inches)
 
@@ -121,9 +123,8 @@ ggplot(heights, aes(x = height)) +
   # the theoretical curve, drawn straight from the parameters we simulated with
   stat_function(fun = dnorm, args = list(mean = 68, sd = 4),
                 colour = "firebrick", linewidth = 1) +
-  labs(title = "The distribution of 500 simulated heights",
-       x = "height (inches)", y = "density") +
-  theme_minimal()
+  labs(x = "height (inches)", y = "density") +
+  theme_book()
 ```
 ### SPSS
 ```
@@ -198,6 +199,8 @@ Both $Z_0$ and $Z_1$ are standard normals. Folding one of them to be positive ($
 ::: {.panel-tabset}
 ### R
 ```{r}
+#| label: fig-skew-normal
+#| fig-cap: "A skew-normal with alpha = 6 - still a bell, but leaning right. Set alpha to zero and the red curve becomes the ordinary normal."
 set.seed(21)
 # alpha = 6 leans hard to the right; alpha = 0 would give the plain normal
 skewed <- tibble(value = rsnorm(1000, mean = 0, sd = 1, alpha = 6))
@@ -207,9 +210,8 @@ ggplot(skewed, aes(x = value)) +
                  fill = "darkorange", colour = "white") +
   stat_function(fun = dsnorm, args = list(mean = 0, sd = 1, alpha = 6),
                 colour = "firebrick", linewidth = 1) +
-  labs(title = "A right-skewed normal (long tail to the right)",
-       x = "value", y = "density") +
-  theme_minimal()
+  labs(x = "value", y = "density") +
+  theme_book()
 ```
 ### SPSS
 ```
@@ -293,6 +295,8 @@ Two of these shapes are **continuous** (Normal, Uniform) - a value can land anyw
 ::: {.panel-tabset}
 ### R
 ```{r}
+#| label: fig-four-shapes
+#| fig-cap: "Four named distributions, each carrying its theoretical curve. Normal and Uniform are continuous, so the curve is an unbroken line; Binomial and Poisson are discrete, so their probability sits on the whole numbers as points."
 set.seed(22)
 # draw 1000 values from each of the four named shapes, then stack them
 # into one long tibble so ggplot can facet them side by side
@@ -333,7 +337,7 @@ ggplot(draws, aes(x = value)) +
              colour = "firebrick", size = 1.8) +
   facet_wrap(~ shape, scales = "free") +
   labs(x = NULL, y = "density") +
-  theme_minimal()
+  theme_book()
 ```
 ### SPSS
 ```
@@ -396,13 +400,15 @@ For a continuous variable, asking "what is the probability of *exactly* 68.0000 
 ::: {.panel-tabset}
 ### R
 ```{r}
+#| label: fig-standard-normal
+#| fig-cap: "The standard normal density. The height of the curve is not a probability - probability is the area under a stretch of it."
 tibble(z = seq(-4, 4, length.out = 400)) |>
   mutate(density = dnorm(z)) |>
   ggplot(aes(x = z, y = density)) +
   geom_line(colour = "steelblue", linewidth = 1) +
   geom_vline(xintercept = 0, linetype = "dashed") +
-  labs(title = "The standard normal PDF", x = "z", y = "density") +
-  theme_minimal()
+  labs(x = "z", y = "density") +
+  theme_book()
 ```
 ### SPSS
 ```

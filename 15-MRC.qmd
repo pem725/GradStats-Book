@@ -234,15 +234,16 @@ glance(lm3) |>
 Let us watch the VIF at work directly. As two predictors become more correlated, the VIF explodes:
 
 ```{r}
+#| label: fig-vif
+#| fig-cap: "The variance inflation factor as two predictors grow more correlated. Past about .95 it climbs steeply; the dashed line marks the rough VIF = 10 rule of thumb."
 tibble(r = seq(0, 0.99, length.out = 500)) |>
   mutate(VIF = 1 / (1 - r^2)) |>
   ggplot(aes(x = r, y = VIF)) +
   # a common (rough) rule-of-thumb threshold
   geom_hline(yintercept = 10, colour = "red", linetype = "dashed") +
   geom_line(linewidth = 1) +
-  labs(title = "Collinearity inflates the variance of your estimates",
-       x = "correlation between X1 and X2", y = "VIF") +
-  theme_minimal()
+  labs(x = "correlation between X1 and X2", y = "VIF") +
+  theme_book()
 ```
 
 Past a correlation of about 0.95 the curve rises very steeply. A predictor that is 95% predictable from the others carries almost no *unique* information, so the model cannot pin down its slope. The red line marks a rough $\text{VIF} = 10$ rule of thumb, but treat it as a warning sign, not a hard rule.

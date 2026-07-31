@@ -109,6 +109,8 @@ So a sample mean of 22 sits exactly one standard error above the null value, and
 ::: {.panel-tabset}
 ### R
 ```{r}
+#| label: fig-null-distribution
+#| fig-cap: "Ten thousand sample means drawn from the null world, with the curve theory predicts: normal, centred on mu, with a standard deviation of sigma over the square root of n. The red line marks the mean we actually observed."
 # Simulate 10,000 sample means from the H0 world and see where 22 lands
 set.seed(1908)  # the year Gosset published "Student's" t
 
@@ -124,9 +126,8 @@ ggplot(means, aes(x = sample_mean)) +
   stat_function(fun = dnorm, args = list(mean = mu, sd = sigma / sqrt(n)),
                 colour = "firebrick", linewidth = 1) +
   geom_vline(xintercept = xbar, colour = "red", linewidth = 1.2) +
-  labs(title = "Sampling distribution of the mean IF the null is true",
-       x = "sample mean", y = "density") +
-  theme_minimal()
+  labs(x = "sample mean", y = "density") +
+  theme_book()
 ```
 ### SPSS
 ```

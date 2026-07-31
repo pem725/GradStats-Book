@@ -18,6 +18,7 @@ $$P(x_{ij}=1) = \frac{1}{1 + e^{-a_i(\theta_j - b_i)}}$$
 The clearest way to feel the difference is to *look* at the items. An item's **characteristic curve** plots the probability of a correct/endorsed response against ability $\theta$. Difficulty slides the curve left-right; discrimination changes its steepness:
 
 ```{r}
+#| label: fig-icc
 #| fig-cap: "Item characteristic curves. Location = difficulty; steepness = discrimination."
 #| fig-height: 3.8
 #| message: false
@@ -45,7 +46,7 @@ crossing(theta = seq(-4, 4, length.out = 300), items) |>
   ) +
   coord_cartesian(ylim = c(0, 1)) +
   labs(x = expression(theta ~ "(ability)"), y = "P(correct)") +
-  theme_minimal() +
+  theme_book() +
   theme(legend.position = "top")
 ```
 
