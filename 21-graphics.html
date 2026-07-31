@@ -832,7 +832,8 @@ window.Quarto = {
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
 <pre><code>* A trend over time wants a line.
 GET DATA /TYPE=TXT /FILE='data/mlb_league_by_year.csv'
-  /DELIMITERS=',' /FIRSTCASE=2.
+  /DELIMITERS=',' /QUALIFIER='"' /FIRSTCASE=2
+  /VARIABLES=year F16.6 OPS F16.6 K_PA F16.6 BB_PA F16.6 HR_PA F16.6 AVG F16.6 ERA F16.6 K_9 F16.6 BB_9 F16.6 HR_9 F16.6.
 
 GRAPH /LINE(SIMPLE) = VALUE(K_9) BY year
   /TITLE = 'The strikeout revolution'.</code></pre>
@@ -1075,11 +1076,14 @@ END GPL.</code></pre>
 <div id="tabset-5-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-2-tab">
 <pre><code>* Rank, don't pie: a sorted horizontal bar chart of bust rate by team.
 GET DATA /TYPE=TXT /FILE='data/nfl_draft_by_team.csv'
-  /DELIMITERS=',' /FIRSTCASE=2.
+  /DELIMITERS=',' /QUALIFIER='"' /FIRSTCASE=2
+  /VARIABLES=team A24 n_picks F16.6 n_judged F16.6 n_hof F16.6 n_bust_a F16.6 n_bust_b F16.6 n_bust_c F16.6 n_triple_bust F16.6 n_clean_hit F16.6 rate_bust_a F16.6 rate_bust_b F16.6 rate_bust_c F16.6 rate_triple_bust F16.6 rate_clean_hit F16.6 hof_per_pick F16.6.
 
 SORT CASES BY rate_bust_a (A).
 
-GRAPH /BAR(SIMPLE) = VALUE(rate_bust_a) BY team
+* MEAN() rather than VALUE() here: each team has exactly one row, so the
+* two are identical, and MEAN() is accepted by every SPSS-family engine.
+GRAPH /BAR(SIMPLE) = MEAN(rate_bust_a) BY team
   /TITLE = 'Draft busts by team'.
 * In the chart editor, transpose to horizontal so the team labels stay
 * readable - the equivalent of coord_flip().</code></pre>
@@ -1139,7 +1143,8 @@ GRAPH /BAR(SIMPLE) = VALUE(rate_bust_a) BY team
 <div id="tabset-6-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-2-tab">
 <pre><code>* Show the distribution, not just the mean.
 GET DATA /TYPE=TXT /FILE='data/mlb_hitters_2026.csv'
-  /DELIMITERS=',' /FIRSTCASE=2.
+  /DELIMITERS=',' /QUALIFIER='"' /FIRSTCASE=2
+  /VARIABLES=pid F16.6 name A24 team A24 PA F16.6 AB F16.6 H F16.6 HR F16.6 BB F16.6 SO F16.6 AVG F16.6 OBP F16.6 SLG F16.6 OPS F16.6.
 SELECT IF (PA &gt;= 50).
 EXECUTE.
 

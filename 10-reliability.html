@@ -1262,7 +1262,10 @@ CORRELATIONS /VARIABLES=Ox Oy.</code></pre>
 * with the rest, then report alpha. RELIABILITY does the keying check for
 * you through the corrected item-total correlations - any NEGATIVE value
 * flags an item to reverse before you trust the alpha.
-GET DATA /TYPE=TXT /FILE='data/moddat2.csv' /DELIMITERS=',' /FIRSTCASE=2.
+GET DATA /TYPE=TXT /FILE='data/moddat2.csv'
+  /DELIMITERS=',' /QUALIFIER='"' /FIRSTCASE=2
+  /VARIABLES=x1 F16.6 x2 F16.6 x3 F16.6 x4 F16.6 x5 F16.6 x6 F16.6 x7 F16.6
+             x8 F16.6 x9 F16.6 x10 F16.6 sex A8 y1 F16.6 y2 F16.6.
 
 RELIABILITY
   /VARIABLES=x1 x2 x3 x4 x5 x6 x7 x8 x9 x10

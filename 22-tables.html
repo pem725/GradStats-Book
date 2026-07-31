@@ -850,7 +850,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
 <pre><code>* Summarise 42 years down to five decade averages.
 GET DATA /TYPE=TXT /FILE='data/mlb_league_by_year.csv'
-  /DELIMITERS=',' /FIRSTCASE=2.
+  /DELIMITERS=',' /QUALIFIER='"' /FIRSTCASE=2
+  /VARIABLES=year F16.6 OPS F16.6 K_PA F16.6 BB_PA F16.6 HR_PA F16.6 AVG F16.6 ERA F16.6 K_9 F16.6 BB_9 F16.6 HR_9 F16.6.
 
 COMPUTE decade = TRUNC(year / 10) * 10.
 FORMATS decade (F4.0).
@@ -942,7 +943,8 @@ MEANS TABLES=K_9 BB_9 HR_9 AVG BY decade
 <div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
 <pre><code>* False precision: every digit the machine produced.
 GET DATA /TYPE=TXT /FILE='data/nfl_draft_by_team.csv'
-  /DELIMITERS=',' /FIRSTCASE=2.
+  /DELIMITERS=',' /QUALIFIER='"' /FIRSTCASE=2
+  /VARIABLES=team A24 n_picks F16.6 n_judged F16.6 n_hof F16.6 n_bust_a F16.6 n_bust_b F16.6 n_bust_c F16.6 n_triple_bust F16.6 n_clean_hit F16.6 rate_bust_a F16.6 rate_bust_b F16.6 rate_bust_c F16.6 rate_triple_bust F16.6 rate_clean_hit F16.6 hof_per_pick F16.6.
 
 SORT CASES BY rate_bust_a (D).
 * SPSS shows whatever the variable's FORMAT allows - widen it and the

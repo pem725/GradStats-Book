@@ -844,8 +844,13 @@ window.Quarto = {
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
 <pre><code>* OPS against plate appearances, with a reference line at the league median
 * among hitters with 200+ PA.
+* GET DATA reads columns POSITIONALLY, so every column in the file has to be
+* named - listing only PA and OPS would silently read the first two columns
+* (pid and name) under those names instead.
 GET DATA /TYPE=TXT /FILE='data/mlb_hitters_2026.csv'
-  /DELIMITERS=',' /FIRSTCASE=2 /VARIABLES=PA F8.0 OPS F8.3.
+  /DELIMITERS=',' /QUALIFIER='"' /FIRSTCASE=2
+  /VARIABLES=pid F16.6 name A24 team A24 PA F16.6 AB F16.6 H F16.6 HR F16.6
+             BB F16.6 SO F16.6 AVG F16.6 OBP F16.6 SLG F16.6 OPS F16.6.
 
 * First find the median among the qualified hitters.
 TEMPORARY.
