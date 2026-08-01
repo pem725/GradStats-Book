@@ -845,7 +845,8 @@ Figure&nbsp;28.1: OPS vs.&nbsp;plate appearances. Every extreme lives on the lef
 </div>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
-<pre><code>* OPS against plate appearances, with a reference line at the league median
+<div class="cell">
+<pre class="pspp cell-code"><code>* OPS against plate appearances, with a reference line at the league median
 * among hitters with 200+ PA.
 * GET DATA reads columns POSITIONALLY, so every column in the file has to be
 * named - listing only PA and OPS would silently read the first two columns
@@ -862,8 +863,10 @@ FREQUENCIES VARIABLES=OPS /STATISTICS=MEDIAN.
 
 GRAPH /SCATTERPLOT(BIVAR) = PA WITH OPS.</code></pre>
 </div>
+</div>
 <div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Statistics</span>, <span class="bu">Plots</span></span>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Statistics</span>, <span class="bu">Plots</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>h <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/mlb_hitters_2026.csv"</span>, DataFrame)   <span class="co"># a partial season</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>league_median <span class="op">=</span> <span class="fu">median</span>(h.OPS[h.PA <span class="op">.&gt;=</span> <span class="fl">200</span>])</span>
@@ -872,20 +875,26 @@ GRAPH /SCATTERPLOT(BIVAR) = PA WITH OPS.</code></pre>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        xlabel <span class="op">=</span> <span class="st">"Plate appearances"</span>, ylabel <span class="op">=</span> <span class="st">"OPS"</span>,</span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        title <span class="op">=</span> <span class="st">"The funnel: extremes only survive at small samples"</span>)</span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="fu">hline!</span>([league_median], color <span class="op">=</span> <span class="op">:</span>firebrick, linewidth <span class="op">=</span> <span class="fl">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Segmentation fault (core dumped)</code></pre>
+</div>
+</div>
 </div>
 <div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>h <span class="op">=</span> pd.read_csv(<span class="st">"data/mlb_hitters_2026.csv"</span>)           <span class="co"># a partial season</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>league_median <span class="op">=</span> h.loc[h.PA <span class="op">&gt;=</span> <span class="dv">200</span>, <span class="st">"OPS"</span>].median()</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>plt.scatter(h.PA, h.OPS, alpha<span class="op">=</span><span class="fl">0.35</span>, color<span class="op">=</span><span class="st">"steelblue"</span>)</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>plt.axhline(league_median, color<span class="op">=</span><span class="st">"firebrick"</span>, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Plate appearances"</span>)<span class="op">;</span> plt.ylabel(<span class="st">"OPS"</span>)</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"The funnel: extremes only survive at small samples"</span>)</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>h <span class="op">=</span> pd.read_csv(<span class="st">"data/mlb_hitters_2026.csv"</span>)           <span class="co"># a partial season</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>league_median <span class="op">=</span> h.loc[h.PA <span class="op">&gt;=</span> <span class="dv">200</span>, <span class="st">"OPS"</span>].median()</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>plt.scatter(h.PA, h.OPS, alpha<span class="op">=</span><span class="fl">0.35</span>, color<span class="op">=</span><span class="st">"steelblue"</span>)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>plt.axhline(league_median, color<span class="op">=</span><span class="st">"firebrick"</span>, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Plate appearances"</span>)<span class="op">;</span> plt.ylabel(<span class="st">"OPS"</span>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"The funnel: extremes only survive at small samples"</span>)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </div>
 </div>
 </div>
@@ -895,14 +904,14 @@ GRAPH /SCATTERPLOT(BIVAR) = PA WITH OPS.</code></pre>
 <div class="tab-content">
 <div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>h <span class="sc">|&gt;</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">sd_OPS_under_20_PA =</span> <span class="fu">sd</span>(OPS[PA <span class="sc">&lt;</span> <span class="dv">20</span>]),      <span class="co"># tiny samples: huge spread</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">sd_OPS_over_200_PA =</span> <span class="fu">sd</span>(OPS[PA <span class="sc">&gt;=</span> <span class="dv">200</span>]),    <span class="co"># big samples: tight</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">best_OPS           =</span> <span class="fu">max</span>(OPS),</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">its_plate_appearances =</span> PA[<span class="fu">which.max</span>(OPS)]</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>h <span class="sc">|&gt;</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">sd_OPS_under_20_PA =</span> <span class="fu">sd</span>(OPS[PA <span class="sc">&lt;</span> <span class="dv">20</span>]),      <span class="co"># tiny samples: huge spread</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">sd_OPS_over_200_PA =</span> <span class="fu">sd</span>(OPS[PA <span class="sc">&gt;=</span> <span class="dv">200</span>]),    <span class="co"># big samples: tight</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">best_OPS           =</span> <span class="fu">max</span>(OPS),</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">its_plate_appearances =</span> PA[<span class="fu">which.max</span>(OPS)]</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
@@ -934,7 +943,11 @@ GRAPH /SCATTERPLOT(BIVAR) = PA WITH OPS.</code></pre>
 </div>
 </div>
 <div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
-<pre><code>* Spread of OPS at small vs large samples, and the season's best mark.
+<div class="cell">
+<pre class="pspp cell-code"><code>GET DATA /TYPE=TXT /FILE='data/mlb_hitters_2026.csv'
+  /DELIMITERS=',' /QUALIFIER='"' /FIRSTCASE=2
+  /VARIABLES=pid F16.6 name A24 team A24 PA F16.6 AB F16.6 H F16.6 HR F16.6 BB F16.6 SO F16.6 AVG F16.6 OBP F16.6 SLG F16.6 OPS F16.6.
+* Spread of OPS at small vs large samples, and the season's best mark.
 TEMPORARY.
 SELECT IF (PA &lt; 20).
 DESCRIPTIVES VARIABLES=OPS /STATISTICS=STDDEV.
@@ -947,20 +960,35 @@ DESCRIPTIVES VARIABLES=OPS /STATISTICS=STDDEV.
 SORT CASES BY OPS (D).
 LIST VARIABLES=OPS PA /CASES=1.</code></pre>
 </div>
+</div>
 <div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Statistics</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">std</span>(h.OPS[h.PA <span class="op">.&lt;</span> <span class="fl">20</span>])        <span class="co"># tiny samples: huge spread</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">std</span>(h.OPS[h.PA <span class="op">.&gt;=</span> <span class="fl">200</span>])      <span class="co"># big samples: tight</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>best <span class="op">=</span> <span class="fu">argmax</span>(h.OPS)</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>h.OPS[best], h.PA[best]       <span class="co"># the best mark, and how few chances made it</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Statistics</span>, <span class="bu">Plots</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>h <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/mlb_hitters_2026.csv"</span>, DataFrame)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Statistics</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">std</span>(h.OPS[h.PA <span class="op">.&lt;</span> <span class="fl">20</span>])        <span class="co"># tiny samples: huge spread</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="fu">std</span>(h.OPS[h.PA <span class="op">.&gt;=</span> <span class="fl">200</span>])      <span class="co"># big samples: tight</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>best <span class="op">=</span> <span class="fu">argmax</span>(h.OPS)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>h.OPS[best], h.PA[best]       <span class="co"># the best mark, and how few chances made it</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Segmentation fault (core dumped)</code></pre>
+</div>
+</div>
 </div>
 <div id="tabset-2-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-4-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>h.loc[h.PA <span class="op">&lt;</span> <span class="dv">20</span>, <span class="st">"OPS"</span>].std()      <span class="co"># tiny samples: huge spread</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>h.loc[h.PA <span class="op">&gt;=</span> <span class="dv">200</span>, <span class="st">"OPS"</span>].std()   <span class="co"># big samples: tight</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>best <span class="op">=</span> h.OPS.idxmax()</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>h.loc[best, [<span class="st">"OPS"</span>, <span class="st">"PA"</span>]]        <span class="co"># the best mark, and how few chances made it</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>h <span class="op">=</span> pd.read_csv(<span class="st">"data/mlb_hitters_2026.csv"</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>h.loc[h.PA <span class="op">&lt;</span> <span class="dv">20</span>, <span class="st">"OPS"</span>].std()      <span class="co"># tiny samples: huge spread</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>h.loc[h.PA <span class="op">&gt;=</span> <span class="dv">200</span>, <span class="st">"OPS"</span>].std()   <span class="co"># big samples: tight</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>best <span class="op">=</span> h.OPS.idxmax()</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>h.loc[best, [<span class="st">"OPS"</span>, <span class="st">"PA"</span>]]        <span class="co"># the best mark, and how few chances made it</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </div>
 </div>
 </div>
