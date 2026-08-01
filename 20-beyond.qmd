@@ -23,6 +23,26 @@ Classical training fuses these into one motion (compute $t$, read $p$, declare s
 
 ## Part 1 · Resampling: Let the Data Be Their Own Population
 
+::: {.callout-important}
+## Why the four tabs in this chapter do *not* agree
+
+Everywhere else in this book, the R, SPSS, Julia and Python tabs print the
+same numbers, because they read the same shipped data. This chapter is the
+exception, and the reason is the point of the chapter.
+
+Resampling gets its answer by drawing at random - thousands of times. The
+*sample* is shared here, exactly as elsewhere. The *draws* are not, because
+each language has its own random number generator, and no seed makes them
+agree. So the bootstrap standard error will differ in the third digit
+between tabs, and the permutation p-value will wobble around.
+
+That is not a defect to apologise for. It is the honest face of the method:
+**run a bootstrap twice and you get two slightly different answers.** If
+that bothers you, raise the number of resamples and watch the disagreement
+shrink - which is itself the best demonstration of what those 2000 replicates
+are buying you. What must not move is the conclusion.
+:::
+
 The logic is simpler than it first appears. A statistic (a mean, a slope, an indirect effect) has a **sampling distribution**: the spread of values it would take across repeated samples from the population. Classical theory *derives* that spread from formulas that assume normality and large $n$. **Resampling estimates it directly**, by treating your one sample as a stand-in for the population and drawing new samples from it.
 
 > When data sets are small, the usual methods... may be inappropriate (because of distributional characteristics) or insensitive. Bootstrapping, jackknifing and other methods of resampling may be helpful. - McKnight, McKnight & Figueredo, *Australasian Evaluation Society*, 1997
@@ -60,32 +80,22 @@ tibble(
   round2()
 ```
 ### SPSS
-```
-* SPSS has a genuine BOOTSTRAP subcommand (Bootstrapping add-on module),
-* which resamples and reports percentile intervals for most procedures.
-INPUT PROGRAM.
-COMPUTE #delta = 8 / SQRT(1 + 8**2).   /* alpha = 8 leans hard right */
-LOOP #i = 1 TO 30.
-  COMPUTE samp = 50 + 20 * (#delta * ABS(RV.NORMAL(0,1))
-                            + SQRT(1 - #delta**2) * RV.NORMAL(0,1)).
-  END CASE.
-END LOOP.
-END FILE.
-END INPUT PROGRAM.
-EXECUTE.
+```{pspp}
+* Real SPSS bootstraps with the Bootstrapping add-on module:
+*   BOOTSTRAP /SAMPLING METHOD=SIMPLE /VARIABLES TARGET=samp
+*     /CRITERIA CILEVEL=95 NSAMPLES=2000 CITYPE=PERCENTILE.
+*   DESCRIPTIVES VARIABLES=samp /STATISTICS=MEAN.
+* PSPP has not implemented BOOTSTRAP, so what runs here is the estimate the
+* bootstrap is built around - the sample mean and its normal-theory interval.
+INSERT FILE='data/sim/ch25-skewed-sample.sps'.
 
-BOOTSTRAP /SAMPLING METHOD=SIMPLE /VARIABLES TARGET=samp
-  /CRITERIA CILEVEL=95 NSAMPLES=2000 CITYPE=PERCENTILE.
-DESCRIPTIVES VARIABLES=samp /STATISTICS=MEAN.
+EXAMINE VARIABLES=samp /STATISTICS=DESCRIPTIVES.
 ```
 ### Julia
-```julia
-using Random, Distributions, Statistics, StatsBase
+```{julia}
+using CSV, DataFrames, Random, Statistics, StatsBase
 Random.seed!(42)
-# n = 30 from a normal that leans hard right (alpha = 8)
-delta = 8 / sqrt(1 + 8^2)
-samp = 50 .+ 20 .* (delta .* abs.(rand(Normal(), 30)) .+
-                    sqrt(1 - delta^2) .* rand(Normal(), 30))
+samp = CSV.read("data/sim/ch25-skewed-sample.csv", DataFrame).samp
 
 boot_means = [mean(sample(samp, length(samp), replace = true)) for _ in 1:2000]
 
@@ -93,14 +103,11 @@ mean(samp), std(boot_means),
 quantile(boot_means, 0.025), quantile(boot_means, 0.975)
 ```
 ### Python
-```python
-import numpy as np
+```{python}
+import numpy as np, pandas as pd
 
 rng = np.random.default_rng(42)
-# n = 30 from a normal that leans hard right (alpha = 8)
-delta = 8 / np.sqrt(1 + 8**2)
-samp = 50 + 20 * (delta * np.abs(rng.normal(size=30)) +
-                  np.sqrt(1 - delta**2) * rng.normal(size=30))
+samp = pd.read_csv("data/sim/ch25-skewed-sample.csv").samp.to_numpy()
 
 boot_means = np.array([rng.choice(samp, samp.size, replace=True).mean()
                        for _ in range(2000)])
@@ -132,27 +139,35 @@ tibble(resampled_mean = boot_means) |>
   theme_book()
 ```
 ### SPSS
-```
-* SPSS reports the bootstrap interval as a table rather than drawing the
-* resampling distribution. To picture it, save the bootstrap estimates and
-* histogram them:
-BOOTSTRAP /SAMPLING METHOD=SIMPLE /VARIABLES TARGET=samp
-  /CRITERIA NSAMPLES=2000
-  /SAVE BOOTSTRAPESTIMATES.
+```{pspp}
+* With the Bootstrapping module you would save the resampled estimates and
+* histogram them. Without it, the honest picture PSPP can draw is the sample
+* the bootstrap resamples FROM.
+INSERT FILE='data/sim/ch25-skewed-sample.sps'.
 
-GRAPH /HISTOGRAM = BootstrapMean.
+GRAPH /HISTOGRAM(NORMAL) = samp.
 ```
 ### Julia
-```julia
-using Plots
+```{julia}
+using CSV, DataFrames, Random, Statistics, StatsBase, Plots
+Random.seed!(42)
+samp = CSV.read("data/sim/ch25-skewed-sample.csv", DataFrame).samp
+boot_means = [mean(sample(samp, length(samp), replace = true)) for _ in 1:2000]
+
 histogram(boot_means, bins = 40, legend = false,
           xlabel = "resampled mean", ylabel = "count")
 vline!(quantile(boot_means, [0.025, 0.975]), color = :red, linestyle = :dash)
 vline!([mean(samp)], color = :blue, linewidth = 2)
 ```
 ### Python
-```python
+```{python}
+import numpy as np, pandas as pd
 import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(42)
+samp = pd.read_csv("data/sim/ch25-skewed-sample.csv").samp.to_numpy()
+boot_means = np.array([rng.choice(samp, samp.size, replace=True).mean()
+                       for _ in range(2000)])
 
 plt.hist(boot_means, bins=40, color="lightgrey", edgecolor="white")
 for q in np.quantile(boot_means, [0.025, 0.975]):
@@ -192,48 +207,46 @@ tibble(observed_diff = obs,
   round2()
 ```
 ### SPSS
-```
-* Base SPSS has no permutation test. The Exact Tests add-on module gives
-* exact/Monte-Carlo p-values for many nonparametric procedures, which is
-* the same logic applied to rank tests:
+```{pspp}
+* Base SPSS has no mean-difference permutation test. The Exact Tests module
+* applies the same shuffling logic to rank procedures, and PSPP can run the
+* Monte-Carlo Mann-Whitney, which is that idea on ranks:
+INSERT FILE='data/sim/ch25-twogroups.sps'.
+
 NPAR TESTS
   /M-W = value BY group(1 2)
-  /MISSING ANALYSIS
-  /METHOD=MC CIN(99) SAMPLES(5000).
-
-* A mean-difference permutation test as written in the other tabs has no
-* base-SPSS equivalent; it needs the Python or R integration plug-in.
+  /MISSING ANALYSIS.
 ```
 ### Julia
-```julia
-using Random, Distributions, Statistics
+```{julia}
+using CSV, DataFrames, Random, Statistics
 Random.seed!(7)
-value = vcat(rand(Normal(0.0), 15), rand(Normal(0.8), 15))
-group = repeat([1, 2], inner = 15)
+d = CSV.read("data/sim/ch25-twogroups.csv", DataFrame)
+value, group = d.value, d.group
 
 obs = mean(value[group .== 2]) - mean(value[group .== 1])
 
 perm = [begin
-          s = shuffle(group)                        # shuffle labels
+          s = shuffle(group)
           mean(value[s .== 2]) - mean(value[s .== 1])
         end for _ in 1:5000]
 
-obs, mean(abs.(perm) .>= abs(obs))                  # two-sided p-value
+obs, mean(abs.(perm) .>= abs(obs))        # two-sided p-value
 ```
 ### Python
-```python
-import numpy as np
+```{python}
+import numpy as np, pandas as pd
 
 rng = np.random.default_rng(7)
-value = np.concatenate([rng.normal(0.0, 1, 15), rng.normal(0.8, 1, 15)])
-group = np.repeat([1, 2], 15)
+d = pd.read_csv("data/sim/ch25-twogroups.csv")
+value, group = d.value.to_numpy(), d.group.to_numpy()
 
 obs = value[group == 2].mean() - value[group == 1].mean()
 
 perm = np.array([(lambda s: value[s == 2].mean() - value[s == 1].mean())
                  (rng.permutation(group)) for _ in range(5000)])
 
-obs, (np.abs(perm) >= abs(obs)).mean()              # two-sided p-value
+obs, (np.abs(perm) >= abs(obs)).mean()    # two-sided p-value
 ```
 :::
 
@@ -256,14 +269,11 @@ tibble(
   round2()
 ```
 ### SPSS
-```
-* Base SPSS has no jackknife. The leave-one-out logic is easy to write by
-* hand, though: drop each case in turn and recompute the mean.
-* (SPSS's BOOTSTRAP module covers the same ground more directly.)
-COMPUTE id = $CASENUM.
-EXECUTE.
+```{pspp}
+* Base SPSS has no jackknife, but leave-one-out is easy arithmetic: the mean
+* without case i is (total - x_i) / (n - 1).
+INSERT FILE='data/sim/ch25-skewed-sample.sps'.
 
-* For each case i, the mean of everything except i:
 COMPUTE whole = 1.
 AGGREGATE OUTFILE=* MODE=ADDVARIABLES /BREAK=whole /grand=SUM(samp) /n=N.
 COMPUTE loo_mean = (grand - samp) / (n - 1).
@@ -272,18 +282,24 @@ EXECUTE.
 DESCRIPTIVES VARIABLES=loo_mean /STATISTICS=MEAN STDDEV.
 ```
 ### Julia
-```julia
+```{julia}
+using CSV, DataFrames, Statistics
+samp = CSV.read("data/sim/ch25-skewed-sample.csv", DataFrame).samp
+
 jk = [mean(samp[setdiff(1:end, i)]) for i in eachindex(samp)]
 n  = length(samp)
 
-mean(jk), sqrt((n - 1) * mean((jk .- mean(jk)).^2))     # jackknife mean and SE
+mean(jk), sqrt((n - 1) * mean((jk .- mean(jk)).^2))   # jackknife mean and SE
 ```
 ### Python
-```python
+```{python}
+import numpy as np, pandas as pd
+samp = pd.read_csv("data/sim/ch25-skewed-sample.csv").samp.to_numpy()
+
 jk = np.array([np.delete(samp, i).mean() for i in range(samp.size)])
 n = samp.size
 
-jk.mean(), np.sqrt((n - 1) * ((jk - jk.mean())**2).mean())  # jackknife mean, SE
+jk.mean(), np.sqrt((n - 1) * ((jk - jk.mean())**2).mean())   # mean and SE
 ```
 :::
 
@@ -314,40 +330,25 @@ tibble(
   round2()
 ```
 ### SPSS
-```
-* Nineteen clean observations and one data-entry error.
-INPUT PROGRAM.
-LOOP #i = 1 TO 19.
-  COMPUTE z = RV.NORMAL(100, 10).
-  END CASE.
-END LOOP.
-COMPUTE z = 250.
-END CASE.
-END FILE.
-END INPUT PROGRAM.
-EXECUTE.
+```{pspp}
+* Nineteen clean observations and one data-entry error. EXAMINE reports the
+* mean, median, the 5% trimmed mean and the SD in one table.
+INSERT FILE='data/sim/ch25-outlier.sps'.
 
-* EXAMINE reports the mean, median, the 5% trimmed mean, and the SD.
 EXAMINE VARIABLES=z /STATISTICS=DESCRIPTIVES.
-
-* MAD has no base-SPSS keyword; compute it from the median directly:
-* COMPUTE absdev = ABS(z - <median>).  then take the median of absdev,
-* multiplied by 1.4826 for consistency with the SD under normality.
 ```
 ### Julia
-```julia
-using Statistics, StatsBase
-Random.seed!(1)
-z = vcat(rand(Normal(100, 10), 19), 250.0)   # 19 good values + 1 gross outlier
+```{julia}
+using CSV, DataFrames, Statistics, StatsBase
+z = CSV.read("data/sim/ch25-outlier.csv", DataFrame).z
 
 mean(z), median(z), mean(trim(z, prop = 0.10)), std(z), mad(z)
 ```
 ### Python
-```python
+```{python}
+import numpy as np, pandas as pd
 from scipy import stats
-
-rng = np.random.default_rng(1)
-z = np.append(rng.normal(100, 10, 19), 250)  # 19 good values + 1 gross outlier
+z = pd.read_csv("data/sim/ch25-outlier.csv").z.to_numpy()
 
 (z.mean(), np.median(z), stats.trim_mean(z, 0.10),
  z.std(ddof=1), stats.median_abs_deviation(z, scale="normal"))
@@ -402,7 +403,7 @@ tibble(
   round2()
 ```
 ### SPSS
-```
+```{pspp}
 * Bayes' rule applied to a screening question: given power, alpha, and a
 * prior, what is the posterior probability the hypothesis is true?
 DATA LIST FREE /power alpha prior.
@@ -415,13 +416,13 @@ EXECUTE.
 LIST VARIABLES=power alpha prior posterior.
 ```
 ### Julia
-```julia
+```{julia}
 power, alpha, prior = 0.99, 0.01, 0.02   # very high power, strict alpha, rare idea
 
 posterior = (power * prior) / (power * prior + alpha * (1 - prior))
 ```
 ### Python
-```python
+```{python}
 power, alpha, prior = 0.99, 0.01, 0.02   # very high power, strict alpha, rare idea
 
 posterior = (power * prior) / (power * prior + alpha * (1 - prior))
@@ -440,7 +441,7 @@ tibble(power = 0.95, alpha = 0.05, prior = 0.01) |>
   round2()
 ```
 ### SPSS
-```
+```{pspp}
 * Modest power, ordinary screening, a rarer idea.
 DATA LIST FREE /power alpha prior.
 BEGIN DATA
@@ -452,12 +453,12 @@ EXECUTE.
 LIST VARIABLES=posterior.
 ```
 ### Julia
-```julia
+```{julia}
 power, alpha, prior = 0.95, 0.05, 0.01
 (power * prior) / (power * prior + alpha * (1 - prior))
 ```
 ### Python
-```python
+```{python}
 power, alpha, prior = 0.95, 0.05, 0.01
 (power * prior) / (power * prior + alpha * (1 - prior))
 ```
@@ -489,7 +490,7 @@ ggplot(posterior, aes(x = theta, y = post)) +
   theme_book()
 ```
 ### SPSS
-```
+```{pspp}
 * Grid approximation of a posterior for a proportion after 6 successes
 * in 9 trials, with a Beta(2,2) prior.
 INPUT PROGRAM.
@@ -513,7 +514,7 @@ EXECUTE.
 GRAPH /LINE(SIMPLE) = VALUE(post) BY theta.
 ```
 ### Julia
-```julia
+```{julia}
 using Distributions, Plots
 theta = range(0, 1, length = 1000)
 prior = pdf.(Beta(2, 2), theta)                   # weakly informative
@@ -524,7 +525,7 @@ plot(theta, post, linewidth = 2, legend = false,
      xlabel = "theta (the proportion)", ylabel = "posterior density")
 ```
 ### Python
-```python
+```{python}
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import beta, binom
@@ -557,7 +558,7 @@ tibble(
   round2()
 ```
 ### SPSS
-```
+```{pspp}
 * Sampling from the grid posterior needs a weighted draw, which base SPSS
 * does not offer directly. The posterior mean and quantiles can instead be
 * read off the grid itself, which is exact rather than simulated:
@@ -572,17 +573,28 @@ SELECT IF (cum_post >= 0.025 AND cum_post <= 0.975).
 DESCRIPTIVES VARIABLES=theta /STATISTICS=MINIMUM MAXIMUM.
 ```
 ### Julia
-```julia
-using StatsBase
-draws = sample(collect(theta), Weights(post), 100_000)
+```{julia}
+using Distributions, StatsBase, Statistics
+theta = range(0, 1, length = 1000)
+prior = pdf.(Beta(2, 2), theta)
+like  = [pdf(Binomial(9, t), 6) for t in theta]
+post  = like .* prior; post ./= sum(post)
 
+draws = sample(collect(theta), Weights(post), 100_000)
 mean(draws), quantile(draws, 0.025), quantile(draws, 0.975)
 ```
 ### Python
-```python
+```{python}
+import numpy as np
+from scipy.stats import beta, binom
+
+theta = np.linspace(0, 1, 1000)
+prior = beta.pdf(theta, 2, 2)
+like  = binom.pmf(6, 9, theta)
+post  = like * prior; post /= post.sum()
+
 rng = np.random.default_rng()
 draws = rng.choice(theta, 100_000, p=post)
-
 draws.mean(), *np.quantile(draws, [0.025, 0.975])
 ```
 :::
@@ -598,7 +610,7 @@ rope_lo <- 0.45; rope_hi <- 0.55   # "practically a fair coin"
 tibble(p_inside_rope = mean(draws > rope_lo & draws < rope_hi)) |> round2()
 ```
 ### SPSS
-```
+```{pspp}
 * The posterior probability inside a region of practical equivalence
 * (here 0.45 to 0.55, "practically a fair coin"). On the grid this is
 * simply the posterior mass between those two values.
@@ -607,12 +619,26 @@ SELECT IF (theta > 0.45 AND theta < 0.55).
 DESCRIPTIVES VARIABLES=post /STATISTICS=SUM.
 ```
 ### Julia
-```julia
+```{julia}
+using Distributions, StatsBase, Statistics
+theta = range(0, 1, length = 1000)
+post  = [pdf(Binomial(9, t), 6) for t in theta] .* pdf.(Beta(2, 2), theta)
+post ./= sum(post)
+draws = sample(collect(theta), Weights(post), 100_000)
+
 rope_lo, rope_hi = 0.45, 0.55        # "practically a fair coin"
 mean(rope_lo .< draws .< rope_hi)     # posterior probability inside the ROPE
 ```
 ### Python
-```python
+```{python}
+import numpy as np
+from scipy.stats import beta, binom
+
+theta = np.linspace(0, 1, 1000)
+post = binom.pmf(6, 9, theta) * beta.pdf(theta, 2, 2); post /= post.sum()
+rng = np.random.default_rng()
+draws = rng.choice(theta, 100_000, p=post)
+
 rope_lo, rope_hi = 0.45, 0.55        # "practically a fair coin"
 ((draws > rope_lo) & (draws < rope_hi)).mean()   # probability inside the ROPE
 ```
