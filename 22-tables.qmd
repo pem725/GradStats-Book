@@ -42,7 +42,7 @@ knitr::kable(dec, digits = c(0, 2, 2, 2, 3),
              caption = "MLB by the decade: the strikeout climb, in exact numbers.")
 ```
 ### SPSS
-```
+```{pspp}
 * Summarise 42 years down to five decade averages.
 GET DATA /TYPE=TXT /FILE='data/mlb_league_by_year.csv'
   /DELIMITERS=',' /QUALIFIER='"' /FIRSTCASE=2
@@ -56,7 +56,7 @@ MEANS TABLES=K_9 BB_9 HR_9 AVG BY decade
   /CELLS=MEAN.
 ```
 ### Julia
-```julia
+```{julia}
 using CSV, DataFrames, Statistics
 mlb = CSV.read("data/mlb_league_by_year.csv", DataFrame)
 mlb.decade = string.(fld.(mlb.year, 10) .* 10, "s")
@@ -65,7 +65,7 @@ combine(groupby(mlb, :decade),
         [:K_9, :BB_9, :HR_9, :AVG] .=> mean .=> [:K_9, :BB_9, :HR_9, :AVG])
 ```
 ### Python
-```python
+```{python}
 import pandas as pd
 
 mlb = pd.read_csv("data/mlb_league_by_year.csv")
@@ -97,7 +97,7 @@ knitr::kable(head(worst, 4), row.names = FALSE,
              caption = "Too many digits — implies a precision the data don't have.")
 ```
 ### SPSS
-```
+```{pspp}
 * False precision: every digit the machine produced.
 GET DATA /TYPE=TXT /FILE='data/nfl_draft_by_team.csv'
   /DELIMITERS=',' /QUALIFIER='"' /FIRSTCASE=2
@@ -110,8 +110,8 @@ FORMATS rate_bust_a rate_clean_hit (F8.4).
 LIST VARIABLES=team n_picks rate_bust_a rate_clean_hit /CASES=4.
 ```
 ### Julia
-```julia
-using CSV, DataFrames
+```{julia}
+using CSV, DataFrames, Plots
 nfl = CSV.read("data/nfl_draft_by_team.csv", DataFrame)
 worst = sort(select(nfl, :team, :n_picks, :rate_bust_a, :rate_clean_hit),
              :rate_bust_a, rev = true)
@@ -119,7 +119,9 @@ worst = sort(select(nfl, :team, :n_picks, :rate_bust_a, :rate_clean_hit),
 first(worst, 4)          # too many digits for what the data can support
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
+import matplotlib.pyplot as plt
 nfl = pd.read_csv("data/nfl_draft_by_team.csv")
 worst = (nfl.sort_values("rate_bust_a", ascending=False)
             [["team", "n_picks", "rate_bust_a", "rate_clean_hit"]])
@@ -140,7 +142,10 @@ knitr::kable(head(worst, 4), row.names = FALSE,
              caption = "Rounded to whole percentages — easier to read, honest about precision.")
 ```
 ### SPSS
-```
+```{pspp}
+GET DATA /TYPE=TXT /FILE='data/nfl_draft_by_team.csv'
+  /DELIMITERS=',' /QUALIFIER='"' /FIRSTCASE=2
+  /VARIABLES=team A24 n_picks F16.6 n_judged F16.6 n_hof F16.6 n_bust_a F16.6 n_bust_b F16.6 n_bust_c F16.6 n_triple_bust F16.6 n_clean_hit F16.6 rate_bust_a F16.6 rate_bust_b F16.6 rate_bust_c F16.6 rate_triple_bust F16.6 rate_clean_hit F16.6 hof_per_pick F16.6.
 * Honest precision: whole percentages, rounded to what the sample supports.
 COMPUTE rate_bust_a    = RND(100 * rate_bust_a).
 COMPUTE rate_clean_hit = RND(100 * rate_clean_hit).
@@ -152,14 +157,25 @@ EXECUTE.
 LIST VARIABLES=team n_picks rate_bust_a rate_clean_hit /CASES=4.
 ```
 ### Julia
-```julia
+```{julia}
+using CSV, DataFrames, Plots
+nfl = CSV.read("data/nfl_draft_by_team.csv", DataFrame)
+worst = sort(select(nfl, :team, :n_picks, :rate_bust_a, :rate_clean_hit),
+             :rate_bust_a, rev = true)
+
 worst.rate_bust_a    = round.(100 .* worst.rate_bust_a)
 worst.rate_clean_hit = round.(100 .* worst.rate_clean_hit)
 
 first(worst, 4)          # easier to read AND more truthful
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
+import matplotlib.pyplot as plt
+nfl = pd.read_csv("data/nfl_draft_by_team.csv")
+worst = (nfl.sort_values("rate_bust_a", ascending=False)
+            [["team", "n_picks", "rate_bust_a", "rate_clean_hit"]])
+
 worst = worst.assign(
     rate_bust_a=lambda d: (100 * d.rate_bust_a).round(),
     rate_clean_hit=lambda d: (100 * d.rate_clean_hit).round())
@@ -188,7 +204,10 @@ knitr::kable(ends, row.names = FALSE,
              caption = "The two ends of the ranking — the comparison the reader wanted.")
 ```
 ### SPSS
-```
+```{pspp}
+GET DATA /TYPE=TXT /FILE='data/nfl_draft_by_team.csv'
+  /DELIMITERS=',' /QUALIFIER='"' /FIRSTCASE=2
+  /VARIABLES=team A24 n_picks F16.6 n_judged F16.6 n_hof F16.6 n_bust_a F16.6 n_bust_b F16.6 n_bust_c F16.6 n_triple_bust F16.6 n_clean_hit F16.6 rate_bust_a F16.6 rate_bust_b F16.6 rate_bust_c F16.6 rate_triple_bust F16.6 rate_clean_hit F16.6 hof_per_pick F16.6.
 * Show the two ends of the ranking, not all 32 rows.
 * Flag the top and bottom five, then list only those.
 COMPUTE rank_bust = $CASENUM.
@@ -203,14 +222,27 @@ SELECT IF (ends > 0).
 LIST VARIABLES=ends team n_picks rate_bust_a.
 ```
 ### Julia
-```julia
+```{julia}
+using CSV, DataFrames, Plots
+nfl = CSV.read("data/nfl_draft_by_team.csv", DataFrame)
+worst = sort(select(nfl, :team, :n_picks, :rate_bust_a, :rate_clean_hit),
+             :rate_bust_a, rev = true)
+
+worst.rate_bust_a = round.(100 .* worst.rate_bust_a)
 ends = vcat(transform(first(worst, 5), :team => ByRow(_ -> "Worst drafters") => :group),
             transform(last(worst, 5),  :team => ByRow(_ -> "Best drafters")  => :group))
 
 select(ends, :group, :team, :n_picks, :rate_bust_a)
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
+import matplotlib.pyplot as plt
+nfl = pd.read_csv("data/nfl_draft_by_team.csv")
+worst = (nfl.sort_values("rate_bust_a", ascending=False)
+            [["team", "n_picks", "rate_bust_a", "rate_clean_hit"]])
+
+worst = worst.assign(rate_bust_a=lambda d: (100 * d.rate_bust_a).round())
 ends = pd.concat([worst.head(5).assign(group="Worst drafters"),
                   worst.tail(5).assign(group="Best drafters")])
 

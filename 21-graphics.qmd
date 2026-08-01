@@ -40,7 +40,7 @@ ggplot(mlb, aes(year, K_9)) +
   theme_book()
 ```
 ### SPSS
-```
+```{pspp}
 * A trend over time wants a line.
 GET DATA /TYPE=TXT /FILE='data/mlb_league_by_year.csv'
   /DELIMITERS=',' /QUALIFIER='"' /FIRSTCASE=2
@@ -49,7 +49,7 @@ GET DATA /TYPE=TXT /FILE='data/mlb_league_by_year.csv'
 GRAPH /LINE(SIMPLE) = VALUE(K_9) BY year.
 ```
 ### Julia
-```julia
+```{julia}
 using CSV, DataFrames, Plots
 mlb = CSV.read("data/mlb_league_by_year.csv", DataFrame)
 
@@ -57,7 +57,7 @@ plot(mlb.year, mlb.K_9, linewidth = 2, marker = :circle, legend = false,
      ylabel = "Strikeouts per 9 innings", title = "The strikeout revolution")
 ```
 ### Python
-```python
+```{python}
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -90,7 +90,10 @@ ggplot(mlb, aes(year, AVG)) +
   theme_book()
 ```
 ### SPSS
-```
+```{pspp}
+GET DATA /TYPE=TXT /FILE='data/mlb_league_by_year.csv'
+  /DELIMITERS=',' /QUALIFIER='"' /FIRSTCASE=2
+  /VARIABLES=year F16.6 OPS F16.6 K_PA F16.6 BB_PA F16.6 HR_PA F16.6 AVG F16.6 ERA F16.6 K_9 F16.6 BB_9 F16.6 HR_9 F16.6.
 * Dishonest axis: zoom the y scale tight and a 15-point drift looks
 * like a cliff. In the chart editor you would set the y-axis minimum to
 * .242 and maximum to .258; in syntax, GGRAPH carries the scale range.
@@ -108,13 +111,20 @@ BEGIN GPL
 END GPL.
 ```
 ### Julia
-```julia
+```{julia}
+using CSV, DataFrames, Plots
+mlb = CSV.read("data/mlb_league_by_year.csv", DataFrame)
+
 plot(mlb.year, mlb.AVG, linewidth = 2, color = :firebrick, legend = false,
      ylims = (0.242, 0.258),          # axis zoomed to the data
      ylabel = "AVG", title = "\"Hitting is DEAD\"")
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
+import matplotlib.pyplot as plt
+mlb = pd.read_csv("data/mlb_league_by_year.csv")
+
 plt.plot(mlb.year, mlb.AVG, color="firebrick", linewidth=2)
 plt.ylim(0.242, 0.258)                # axis zoomed to the data
 plt.ylabel("AVG"); plt.title('"Hitting is DEAD"')
@@ -138,7 +148,10 @@ ggplot(mlb, aes(year, AVG)) +
   theme_book()
 ```
 ### SPSS
-```
+```{pspp}
+GET DATA /TYPE=TXT /FILE='data/mlb_league_by_year.csv'
+  /DELIMITERS=',' /QUALIFIER='"' /FIRSTCASE=2
+  /VARIABLES=year F16.6 OPS F16.6 K_PA F16.6 BB_PA F16.6 HR_PA F16.6 AVG F16.6 ERA F16.6 K_9 F16.6 BB_9 F16.6 HR_9 F16.6.
 * Honest axis: from a meaningful zero, the same drift is a gentle slope.
 GGRAPH
   /GRAPHDATASET NAME="g" VARIABLES=year AVG
@@ -154,13 +167,20 @@ BEGIN GPL
 END GPL.
 ```
 ### Julia
-```julia
+```{julia}
+using CSV, DataFrames, Plots
+mlb = CSV.read("data/mlb_league_by_year.csv", DataFrame)
+
 plot(mlb.year, mlb.AVG, linewidth = 2, color = :firebrick, legend = false,
      ylims = (0, 0.3),                # axis from a meaningful zero
      ylabel = "AVG", title = "\"Hitting drifted down a bit\"")
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
+import matplotlib.pyplot as plt
+mlb = pd.read_csv("data/mlb_league_by_year.csv")
+
 plt.plot(mlb.year, mlb.AVG, color="firebrick", linewidth=2)
 plt.ylim(0, 0.3)                      # axis from a meaningful zero
 plt.ylabel("AVG"); plt.title('"Hitting drifted down a bit"')
@@ -197,38 +217,42 @@ ggplot(long, aes(year, rate)) +
   theme_book()
 ```
 ### SPSS
-```
-* Small multiples: three league trends, one panel each.
-* SPSS facets with a PANEL clause inside GGRAPH. The data must be stacked
-* long first (one row per year per series).
+```{pspp}
+#| eval: false
+* Valid SPSS, shown rather than run: PSPP has implemented neither
+* VARSTOCASES (which stacks the three rate columns into long form) nor
+* GGRAPH's PANEL clause, which is how SPSS draws small multiples.
+GET DATA /TYPE=TXT /FILE='data/mlb_league_by_year.csv'
+  /DELIMITERS=',' /QUALIFIER='"' /FIRSTCASE=2
+  /VARIABLES=year F16.6 K_PA F16.6 BB_PA F16.6 HR_PA F16.6.
+
 VARSTOCASES /MAKE rate FROM K_PA BB_PA HR_PA /INDEX=kind.
 
-GGRAPH
-  /GRAPHDATASET NAME="g" VARIABLES=year rate kind
+GGRAPH /GRAPHDATASET NAME="g" VARIABLES=year rate kind
   /GRAPHSPEC SOURCE=INLINE.
 BEGIN GPL
   SOURCE: s=userSource(id("g"))
   DATA: year=col(source(s), name("year"))
   DATA: rate=col(source(s), name("rate"))
   DATA: kind=col(source(s), name("kind"), unit.category())
-  GUIDE: axis(dim(1), label("year"))
-  GUIDE: axis(dim(2), label("per plate appearance"))
   ELEMENT: line(position(year*rate*kind))
 END GPL.
 ```
 ### Julia
-```julia
-using DataFrames, Plots
-long = stack(select(mlb, :year, :K_PA, :BB_PA, :HR_PA),
-             [:K_PA, :BB_PA, :HR_PA], :year,
-             variable_name = :kind, value_name = :rate)
+```{julia}
+using CSV, DataFrames, Plots
+mlb = CSV.read("data/mlb_league_by_year.csv", DataFrame)
 
 # one panel per series
-plot([plot(g.year, g.rate, title = string(first(g.kind)), legend = false)
-      for g in groupby(long, :kind)]..., layout = (1, 3))
+plot([plot(mlb.year, mlb[!, c], title = String(c), legend = false)
+      for c in [:K_PA, :BB_PA, :HR_PA]]..., layout = (1, 3))
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
+import matplotlib.pyplot as plt
+mlb = pd.read_csv("data/mlb_league_by_year.csv")
+
 long = mlb.melt(id_vars="year", value_vars=["K_PA", "BB_PA", "HR_PA"],
                 var_name="kind", value_name="rate")
 
@@ -263,7 +287,7 @@ ggplot(nfl, aes(x = fct_reorder(team, rate_bust_a), y = rate_bust_a)) +
   theme_book()
 ```
 ### SPSS
-```
+```{pspp}
 * Rank, don't pie: a sorted horizontal bar chart of bust rate by team.
 GET DATA /TYPE=TXT /FILE='data/nfl_draft_by_team.csv'
   /DELIMITERS=',' /QUALIFIER='"' /FIRSTCASE=2
@@ -278,22 +302,24 @@ GRAPH /BAR(SIMPLE) = MEAN(rate_bust_a) BY team.
 * readable - the equivalent of coord_flip().
 ```
 ### Julia
-```julia
+```{julia}
 using CSV, DataFrames, Plots
 nfl = CSV.read("data/nfl_draft_by_team.csv", DataFrame)
-sort!(nfl, :rate_bust_a)                       # sorted: the ranking IS the message
+sort!(nfl, :rate_bust_a)          # sorted: the ranking IS the message
 
 bar(nfl.team, nfl.rate_bust_a, orientation = :horizontal, legend = false,
-    xlabel = "Bust rate (no Pro Bowl)", title = "Draft busts by team")
+    xlabel = "Bust rate (no Pro Bowl)")
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
+import matplotlib.pyplot as plt
 nfl = pd.read_csv("data/nfl_draft_by_team.csv")
-nfl = nfl.sort_values("rate_bust_a")           # sorted: the ranking IS the message
+nfl = nfl.sort_values("rate_bust_a")   # sorted: the ranking IS the message
 
 plt.figure(figsize=(6, 8))
-plt.barh(nfl.team, nfl.rate_bust_a, color="0.35")   # horizontal: labels readable
-plt.xlabel("Bust rate (no Pro Bowl)"); plt.title("Draft busts by team")
+plt.barh(nfl.team, nfl.rate_bust_a, color="0.35")
+plt.xlabel("Bust rate (no Pro Bowl)")
 plt.tight_layout(); plt.show()
 ```
 :::
@@ -326,7 +352,7 @@ ggplot(h, aes(OPS)) +
   theme_book()
 ```
 ### SPSS
-```
+```{pspp}
 * Show the distribution, not just the mean.
 GET DATA /TYPE=TXT /FILE='data/mlb_hitters_2026.csv'
   /DELIMITERS=',' /QUALIFIER='"' /FIRSTCASE=2
@@ -337,7 +363,7 @@ EXECUTE.
 FREQUENCIES VARIABLES=OPS /STATISTICS=MEDIAN /HISTOGRAM.
 ```
 ### Julia
-```julia
+```{julia}
 using CSV, DataFrames, Statistics, Plots
 h = filter(:PA => >=(50), CSV.read("data/mlb_hitters_2026.csv", DataFrame))
 
@@ -346,7 +372,10 @@ histogram(h.OPS, bins = 30, legend = false, xlabel = "OPS", ylabel = "hitters",
 vline!([median(h.OPS)], color = :firebrick, linewidth = 2)
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
+import matplotlib.pyplot as plt
+
 h = pd.read_csv("data/mlb_hitters_2026.csv").query("PA >= 50")
 
 plt.hist(h.OPS, bins=30, color="steelblue", edgecolor="white")
@@ -372,7 +401,10 @@ ggplot(h, aes(OBP, SLG)) +
   theme_book()
 ```
 ### SPSS
-```
+```{pspp}
+GET DATA /TYPE=TXT /FILE='data/mlb_hitters_2026.csv'
+  /DELIMITERS=',' /QUALIFIER='"' /FIRSTCASE=2
+  /VARIABLES=pid F16.6 name A24 team A24 PA F16.6 AB F16.6 H F16.6 HR F16.6 BB F16.6 SO F16.6 AVG F16.6 OBP F16.6 SLG F16.6 OPS F16.6.
 * Transparency tames overplotting. SPSS sets marker transparency in the
 * chart editor, or through GGRAPH's transparency() aesthetic.
 GGRAPH
@@ -388,12 +420,19 @@ BEGIN GPL
 END GPL.
 ```
 ### Julia
-```julia
+```{julia}
+using CSV, DataFrames, Statistics, Plots
+h = CSV.read("data/mlb_hitters_2026.csv", DataFrame)
+
 scatter(h.OBP, h.SLG, alpha = 0.35, legend = false,   # alpha tames overplotting
         xlabel = "On-base percentage", ylabel = "Slugging percentage")
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
+import matplotlib.pyplot as plt
+h = pd.read_csv("data/mlb_hitters_2026.csv")
+
 plt.scatter(h.OBP, h.SLG, alpha=0.35, color="steelblue")  # tames overplotting
 plt.xlabel("On-base percentage"); plt.ylabel("Slugging percentage")
 plt.show()

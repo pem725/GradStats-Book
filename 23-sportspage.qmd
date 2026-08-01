@@ -49,7 +49,7 @@ ggplot(h, aes(PA, OPS)) +
   theme_book()
 ```
 ### SPSS
-```
+```{pspp}
 * OPS against plate appearances, with a reference line at the league median
 * among hitters with 200+ PA.
 * GET DATA reads columns POSITIONALLY, so every column in the file has to be
@@ -68,7 +68,7 @@ FREQUENCIES VARIABLES=OPS /STATISTICS=MEDIAN.
 GRAPH /SCATTERPLOT(BIVAR) = PA WITH OPS.
 ```
 ### Julia
-```julia
+```{julia}
 using CSV, DataFrames, Statistics, Plots
 h = CSV.read("data/mlb_hitters_2026.csv", DataFrame)   # a partial season
 
@@ -80,7 +80,7 @@ scatter(h.PA, h.OPS, alpha = 0.35, legend = false,
 hline!([league_median], color = :firebrick, linewidth = 2)
 ```
 ### Python
-```python
+```{python}
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -111,7 +111,10 @@ h |>
   round2()
 ```
 ### SPSS
-```
+```{pspp}
+GET DATA /TYPE=TXT /FILE='data/mlb_hitters_2026.csv'
+  /DELIMITERS=',' /QUALIFIER='"' /FIRSTCASE=2
+  /VARIABLES=pid F16.6 name A24 team A24 PA F16.6 AB F16.6 H F16.6 HR F16.6 BB F16.6 SO F16.6 AVG F16.6 OBP F16.6 SLG F16.6 OPS F16.6.
 * Spread of OPS at small vs large samples, and the season's best mark.
 TEMPORARY.
 SELECT IF (PA < 20).
@@ -126,7 +129,10 @@ SORT CASES BY OPS (D).
 LIST VARIABLES=OPS PA /CASES=1.
 ```
 ### Julia
-```julia
+```{julia}
+using CSV, DataFrames, Statistics, Plots
+h = CSV.read("data/mlb_hitters_2026.csv", DataFrame)
+
 using Statistics
 std(h.OPS[h.PA .< 20])        # tiny samples: huge spread
 std(h.OPS[h.PA .>= 200])      # big samples: tight
@@ -135,7 +141,11 @@ best = argmax(h.OPS)
 h.OPS[best], h.PA[best]       # the best mark, and how few chances made it
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
+import matplotlib.pyplot as plt
+h = pd.read_csv("data/mlb_hitters_2026.csv")
+
 h.loc[h.PA < 20, "OPS"].std()      # tiny samples: huge spread
 h.loc[h.PA >= 200, "OPS"].std()   # big samples: tight
 
