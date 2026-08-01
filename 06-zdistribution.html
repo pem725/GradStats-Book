@@ -1106,21 +1106,39 @@ Figure&nbsp;5.3: The standard normal with the tails beyond z = plus or minus 1.9
 </div>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
-<pre><code>* POMP: 100 * (score - min) / (max - min), using each scale's theoretical min and max.
-COMPUTE mood_POMP     = 100 * (mood - 1) / (5 - 1).
-COMPUTE vitality_POMP = 100 * (vitality - 1) / (7 - 1).
-EXECUTE.</code></pre>
+<div class="cell">
+<pre class="pspp cell-code"><code>* POMP: 100 * (score - min) / (max - min), using each scale's own
+* theoretical minimum and maximum, which travel with the data.
+INSERT FILE='data/sim/ch05-pomp.sps'.
+
+COMPUTE POMP = 100 * (score - lo) / (hi - lo).
+EXECUTE.
+LIST VARIABLES=measure score lo hi POMP.</code></pre>
+</div>
 </div>
 <div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>mood_POMP     <span class="op">=</span> <span class="fl">100</span> <span class="op">.*</span> (df.mood     <span class="op">.-</span> <span class="fl">1</span>) <span class="op">./</span> (<span class="fl">5</span> <span class="op">-</span> <span class="fl">1</span>)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>vitality_POMP <span class="op">=</span> <span class="fl">100</span> <span class="op">.*</span> (df.vitality <span class="op">.-</span> <span class="fl">1</span>) <span class="op">./</span> (<span class="fl">7</span> <span class="op">-</span> <span class="fl">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch05-pomp.csv"</span>, DataFrame)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>df.POMP <span class="op">=</span> <span class="fl">100</span> <span class="op">.*</span> (df.score <span class="op">.-</span> df.lo) <span class="op">./</span> (df.hi <span class="op">.-</span> df.lo)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Segmentation fault (core dumped)</code></pre>
+</div>
+</div>
 </div>
 <div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> pomp(x, lo, hi):</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">100</span> <span class="op">*</span> (x <span class="op">-</span> lo) <span class="op">/</span> (hi <span class="op">-</span> lo)</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>mood_POMP     <span class="op">=</span> pomp(df.mood,     lo<span class="op">=</span><span class="dv">1</span>, hi<span class="op">=</span><span class="dv">5</span>)</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>vitality_POMP <span class="op">=</span> pomp(df.vitality, lo<span class="op">=</span><span class="dv">1</span>, hi<span class="op">=</span><span class="dv">7</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"data/sim/ch05-pomp.csv"</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> pomp(x, lo, hi):</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">100</span> <span class="op">*</span> (x <span class="op">-</span> lo) <span class="op">/</span> (hi <span class="op">-</span> lo)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"POMP"</span>] <span class="op">=</span> pomp(df.score, df.lo, df.hi)</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </div>
 </div>
 </div>

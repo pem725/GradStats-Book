@@ -870,7 +870,10 @@ $ group  &lt;chr&gt; "A", "A", "b", "B", "A", "B", "A"</code></pre>
 </div>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
-<pre><code>* Recode impossible and coded-missing values to system-missing.
+<div class="cell">
+<pre class="pspp cell-code"><code>INSERT FILE='data/sim/ch04-dirty.sps'.
+
+* Recode impossible and coded-missing values to system-missing.
 RECODE age (121 THRU HIGHEST=SYSMIS).
 RECODE income (LOWEST THRU -0.001=SYSMIS) (999=SYSMIS).
 * Fix "b" and stray spaces in group.
@@ -879,20 +882,32 @@ EXECUTE.
 * Frequency table of the cleaned group variable (missing shown by default).
 FREQUENCIES VARIABLES=group.</code></pre>
 </div>
+</div>
 <div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">DataFrames</span>, <span class="bu">StatsBase</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>df.age    <span class="op">=</span> [<span class="fu">ismissing</span>(x) <span class="op">||</span> x <span class="op">&gt;</span> <span class="fl">120</span> ? <span class="cn">missing</span> <span class="op">:</span> x for x <span class="kw">in</span> df.age]                <span class="co"># no one is 220</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>df.income <span class="op">=</span> [<span class="fu">ismissing</span>(x) <span class="op">||</span> x <span class="op">&lt;</span> <span class="fl">0</span> <span class="op">||</span> x <span class="op">==</span> <span class="fl">999</span> ? <span class="cn">missing</span> <span class="op">:</span> x for x <span class="kw">in</span> df.income]   <span class="co"># impossible; 999 a code</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>df.group  <span class="op">=</span> <span class="fu">uppercase</span>.(<span class="fu">strip</span>.(<span class="fu">string</span>.(df.group)))                                  <span class="co"># fix "b" and stray spaces</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">countmap</span>(df.group)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">StatsBase</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch04-dirty.csv"</span>, DataFrame)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>df.age    <span class="op">=</span> [<span class="fu">ismissing</span>(x) <span class="op">||</span> x <span class="op">&gt;</span> <span class="fl">120</span> ? <span class="cn">missing</span> <span class="op">:</span> x for x <span class="kw">in</span> df.age]                <span class="co"># no one is 220</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>df.income <span class="op">=</span> [<span class="fu">ismissing</span>(x) <span class="op">||</span> x <span class="op">&lt;</span> <span class="fl">0</span> <span class="op">||</span> x <span class="op">==</span> <span class="fl">999</span> ? <span class="cn">missing</span> <span class="op">:</span> x for x <span class="kw">in</span> df.income]   <span class="co"># impossible; 999 a code</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>df.group  <span class="op">=</span> <span class="fu">uppercase</span>.(<span class="fu">strip</span>.(<span class="fu">string</span>.(df.group)))                                  <span class="co"># fix "b" and stray spaces</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="fu">countmap</span>(df.group)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Segmentation fault (core dumped)</code></pre>
+</div>
+</div>
 </div>
 <div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>df.loc[df.age <span class="op">&gt;</span> <span class="dv">120</span>, <span class="st">"age"</span>]      <span class="op">=</span> np.nan     <span class="co"># no one is 220</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>df.loc[df.income <span class="op">&lt;</span> <span class="dv">0</span>, <span class="st">"income"</span>]  <span class="op">=</span> np.nan     <span class="co"># negative income is impossible here</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>df.loc[df.income <span class="op">==</span> <span class="dv">999</span>, <span class="st">"income"</span>] <span class="op">=</span> np.nan   <span class="co"># 999 was a "missing" code, not a value</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>df.group <span class="op">=</span> df.group.astype(<span class="bu">str</span>).<span class="bu">str</span>.strip().<span class="bu">str</span>.upper()   <span class="co"># fix "b" and stray spaces</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>df.group.value_counts(dropna<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np, pandas <span class="im">as</span> pd</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"data/sim/ch04-dirty.csv"</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>df.loc[df.age <span class="op">&gt;</span> <span class="dv">120</span>, <span class="st">"age"</span>]      <span class="op">=</span> np.nan     <span class="co"># no one is 220</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>df.loc[df.income <span class="op">&lt;</span> <span class="dv">0</span>, <span class="st">"income"</span>]  <span class="op">=</span> np.nan     <span class="co"># negative income is impossible here</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>df.loc[df.income <span class="op">==</span> <span class="dv">999</span>, <span class="st">"income"</span>] <span class="op">=</span> np.nan   <span class="co"># 999 was a "missing" code, not a value</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>df.group <span class="op">=</span> df.group.astype(<span class="bu">str</span>).<span class="bu">str</span>.strip().<span class="bu">str</span>.upper()   <span class="co"># fix "b" and stray spaces</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>df.group.value_counts(dropna<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </div>
 </div>
 </div>
@@ -911,8 +926,8 @@ FREQUENCIES VARIABLES=group.</code></pre>
 <div class="tab-content">
 <div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># how much is missing, and where?</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>dat <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), \(v) <span class="fu">sum</span>(<span class="fu">is.na</span>(v))))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># how much is missing, and where?</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>dat <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), \(v) <span class="fu">sum</span>(<span class="fu">is.na</span>(v))))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
@@ -936,15 +951,33 @@ FREQUENCIES VARIABLES=group.</code></pre>
 </div>
 </div>
 <div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
-<pre><code>* How much is missing, and where (missing-value analysis over all variables).
-MVA VARIABLES=ALL.</code></pre>
+<div class="cell">
+<pre class="pspp cell-code"><code>* Real SPSS answers this with MVA VARIABLES=ALL, a dedicated missing-value
+* analysis. PSPP has not implemented MVA, and FREQUENCIES reports the same
+* valid/missing counts, so that is what runs here.
+INSERT FILE='data/sim/ch04-dirty.sps'.
+
+FREQUENCIES VARIABLES=age income group.</code></pre>
+</div>
 </div>
 <div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">DataFrames</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">describe</span>(df, <span class="op">:</span>nmissing)     <span class="co"># how much is missing, and where?</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch04-dirty.csv"</span>, DataFrame)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">describe</span>(df, <span class="op">:</span>nmissing)     <span class="co"># how much is missing, and where?</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Segmentation fault (core dumped)</code></pre>
+</div>
+</div>
 </div>
 <div id="tabset-2-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-4-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>df.isna().<span class="bu">sum</span>()                <span class="co"># how much is missing, and where?</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"data/sim/ch04-dirty.csv"</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>df.isna().<span class="bu">sum</span>()                <span class="co"># how much is missing, and where?</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </div>
 </div>
 </div>
@@ -954,9 +987,9 @@ MVA VARIABLES=ALL.</code></pre>
 <h2 data-number="4.6" class="anchored" data-anchor-id="outliers-investigate-dont-reflexively-delete"><span class="header-section-number">4.6</span> Outliers: Investigate, Don’t Reflexively Delete</h2>
 <p>An outlier is not automatically an error. It might be your most important data point (the one patient who responded, the fraud you were hired to find). The rule: <strong>investigate before you act.</strong> A value can be (1) an impossible error - fix or remove it; (2) a real but extreme observation - keep it, and consider a robust method or a transformation; or (3) genuinely interesting - study it. Deleting outliers just because they are inconvenient turns honest data into a misleading result.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">income =</span> <span class="fu">c</span>(<span class="dv">52</span>, <span class="dv">61</span>, <span class="dv">48</span>, <span class="dv">55</span>, <span class="dv">60</span>, <span class="dv">58</span>, <span class="dv">300</span>)) <span class="sc">|&gt;</span>   <span class="co"># 300 stands out</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">z =</span> (income <span class="sc">-</span> <span class="fu">mean</span>(income)) <span class="sc">/</span> <span class="fu">sd</span>(income)) <span class="sc">|&gt;</span> <span class="co"># z-scores flag the extreme</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">income =</span> <span class="fu">c</span>(<span class="dv">52</span>, <span class="dv">61</span>, <span class="dv">48</span>, <span class="dv">55</span>, <span class="dv">60</span>, <span class="dv">58</span>, <span class="dv">300</span>)) <span class="sc">|&gt;</span>   <span class="co"># 300 stands out</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">z =</span> (income <span class="sc">-</span> <span class="fu">mean</span>(income)) <span class="sc">/</span> <span class="fu">sd</span>(income)) <span class="sc">|&gt;</span> <span class="co"># z-scores flag the extreme</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
