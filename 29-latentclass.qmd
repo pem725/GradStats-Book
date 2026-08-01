@@ -51,53 +51,24 @@ cls <- sample(1:2, N, replace = TRUE, prob = prev)
 X <- do.call(rbind, map(cls, \(k) rbinom(J, 1, rho[k, ])))
 ```
 ### SPSS
-```
-* Two latent classes that differ in PATTERN: items 7-8 are reversed, so
-* the classes are not simply "more" vs "less" symptomatic.
-INPUT PROGRAM.
-LOOP #i = 1 TO 800.
-  COMPUTE cls = 1 + (RV.UNIFORM(0,1) < 0.65).
-  VECTOR x(8).
-  LOOP #j = 1 TO 8.
-    DO IF (cls = 1).
-      COMPUTE #p = 0.80.
-      IF (#j >= 7) #p = 0.30.
-    ELSE.
-      COMPUTE #p = 0.20.
-      IF (#j >= 7) #p = 0.70.
-    END IF.
-    COMPUTE x(#j) = RV.UNIFORM(0,1) < #p.
-  END LOOP.
-  END CASE.
-END LOOP.
-END FILE.
-END INPUT PROGRAM.
-EXECUTE.
+```{pspp}
+* The book's two-class data: 800 people, 8 binary items, with items 7-8
+* reversed so the classes differ in PATTERN rather than severity.
+INSERT FILE='data/sim/ch22-lca.sps'.
+
+DESCRIPTIVES VARIABLES=x1 TO x8 /STATISTICS=MEAN.
 ```
 ### Julia
-```julia
-using Random, Distributions
-Random.seed!(2026)
-N, J = 800, 8
-prev = [0.35, 0.65]
-rho  = [fill(0.80, J), fill(0.20, J)]
-rho[1][7:8] .= 0.30; rho[2][7:8] .= 0.70   # reverse two items
-
-cls = rand(Categorical(prev), N)
-X = [rand() < rho[cls[i]][j] ? 1 : 0 for i in 1:N, j in 1:J]
+```{julia}
+using CSV, DataFrames
+X = Matrix(CSV.read("data/sim/ch22-lca.csv", DataFrame))
+size(X)            # 800 people by 8 binary items
 ```
 ### Python
-```python
-import numpy as np
-
-rng = np.random.default_rng(2026)
-N, J = 800, 8
-prev = [0.35, 0.65]
-rho = np.vstack([np.full(J, 0.80), np.full(J, 0.20)])
-rho[0, 6:8] = 0.30; rho[1, 6:8] = 0.70     # reverse two items
-
-cls = rng.choice([0, 1], N, p=prev)
-X = (rng.random((N, J)) < rho[cls]).astype(int)
+```{python}
+import pandas as pd
+X = pd.read_csv("data/sim/ch22-lca.csv").values
+X.shape            # 800 people by 8 binary items
 ```
 :::
 
@@ -135,28 +106,28 @@ cat("converged in", fit$iterations, "iterations\n")
 tibble(class = seq_along(fit$prevalence), prevalence = fit$prevalence) |> round2()
 ```
 ### SPSS
-```
-* Base SPSS has no latent class analysis. The nearest built-in relative is
-* TwoStep Cluster (CLUSTER / TWOSTEP), which groups cases but does not
-* estimate class-conditional item probabilities or class membership
-* posteriors the way an LCA does.
+```{pspp}
+* Base SPSS has no latent class analysis, and neither does PSPP. A genuine
+* LCA needs Latent GOLD, Mplus, or R's poLCA; SPSS's own nearest relative is
+* TwoStep Cluster, which groups cases but estimates no class-conditional item
+* probabilities and no membership posteriors.
 *
-* A genuine LCA in the SPSS world needs the Latent GOLD plug-in, Mplus, or
-* R's poLCA. The from-scratch EM estimator is shown in the R, Julia, and
-* Python tabs.
-TWOSTEP CLUSTER
-  /CATEGORICAL VARIABLES=x1 x2 x3 x4 x5 x6 x7 x8
-  /CRITERIA NUMCLUSTERS(2).
+* What SPSS CAN show is the raw endorsement rate of each item, which is the
+* marginal the mixture model decomposes:
+INSERT FILE='data/sim/ch22-lca.sps'.
+
+DESCRIPTIVES VARIABLES=x1 TO x8 /STATISTICS=MEAN.
 ```
 ### Julia
-```julia
-using Statistics
+```{julia}
+using CSV, DataFrames, Statistics
+X = Matrix(CSV.read("data/sim/ch22-lca.csv", DataFrame))
+
 function lca_em(X, K = 2; tol = 1e-6, maxit = 500)
     N, J = size(X)
     pi_ = fill(1/K, K)
-    p   = rand(K, J) .* 0.6 .+ 0.2
-    ll_old = -Inf
-    # EM is sequential: each sweep starts from the previous estimates
+    p   = reshape(range(0.3, 0.7, length = K*J), K, J)
+    ll_old = -Inf; res = nothing
     for it in 1:maxit
         loglik = [log(pi_[k]) + sum(X[i,j]*log(p[k,j]) + (1-X[i,j])*log(1-p[k,j])
                                     for j in 1:J) for i in 1:N, k in 1:K]
@@ -165,38 +136,42 @@ function lca_em(X, K = 2; tol = 1e-6, maxit = 500)
         pi_  = vec(mean(post, dims = 1))
         p    = (post' * X) ./ sum(post, dims = 1)'
         ll   = sum(m .+ log.(sum(exp.(loglik .- m), dims = 2)))
-        abs(ll - ll_old) < tol && return (prevalence = pi_, item_prob = p, iterations = it)
+        res  = (prevalence = pi_, item_prob = p, iterations = it)
+        abs(ll - ll_old) < tol && break
         ll_old = ll
     end
+    res
 end
 
 fit = lca_em(X, 2)
-fit.prevalence                     # recovered class sizes (true: .35 / .65)
+
+fit.prevalence     # recovered class sizes (true: .35 / .65)
 ```
 ### Python
-```python
-import numpy as np
+```{python}
+import numpy as np, pandas as pd
+X = pd.read_csv("data/sim/ch22-lca.csv").values
 
 def lca_em(X, K=2, tol=1e-6, maxit=500):
     N, J = X.shape
-    rng = np.random.default_rng(1)
     pi_ = np.full(K, 1 / K)
-    p = rng.uniform(0.2, 0.8, (K, J))
+    p = np.linspace(0.3, 0.7, K * J).reshape(K, J)
     ll_old = -np.inf
-    # EM is sequential: each sweep starts from the previous estimates
     for it in range(1, maxit + 1):
-        loglik = (np.log(pi_) + X @ np.log(p).T + (1 - X) @ np.log(1 - p).T)
+        loglik = np.log(pi_) + X @ np.log(p).T + (1 - X) @ np.log(1 - p).T
         m = loglik.max(axis=1, keepdims=True)
         post = np.exp(loglik - m); post /= post.sum(axis=1, keepdims=True)
         pi_ = post.mean(axis=0)
         p = (post.T @ X) / post.sum(axis=0)[:, None]
         ll = float((m + np.log(np.exp(loglik - m).sum(axis=1, keepdims=True))).sum())
         if abs(ll - ll_old) < tol:
-            return dict(prevalence=pi_, item_prob=p, iterations=it)
+            break
         ll_old = ll
+    return dict(prevalence=pi_, item_prob=p, iterations=it)
 
 fit = lca_em(X, 2)
-fit["prevalence"]                  # recovered class sizes (true: .35 / .65)
+
+fit["prevalence"]  # recovered class sizes (true: .35 / .65)
 ```
 :::
 
@@ -212,23 +187,65 @@ fit$item_prob |>
   round2()
 ```
 ### SPSS
-```
+```{pspp}
 * The item-probability profiles - the DEFINITIONS of the two kinds - are
-* what an LCA reports and TwoStep Cluster does not. See the note in the
-* previous SPSS tab; use Latent GOLD, Mplus, or R's poLCA for these.
-*
-* The closest built-in summary is the endorsement rate of each item within
-* each cluster:
-MEANS TABLES=x1 x2 x3 x4 x5 x6 x7 x8 BY TSC_Predicted
-  /CELLS=MEAN.
+* exactly what an LCA produces and SPSS cannot. See the note above; the R,
+* Julia and Python tabs estimate them from scratch with EM.
 ```
 ### Julia
-```julia
-fit.item_prob                      # rows = classes, columns = items 1..8
+```{julia}
+using CSV, DataFrames, Statistics
+X = Matrix(CSV.read("data/sim/ch22-lca.csv", DataFrame))
+
+function lca_em(X, K = 2; tol = 1e-6, maxit = 500)
+    N, J = size(X)
+    pi_ = fill(1/K, K)
+    p   = reshape(range(0.3, 0.7, length = K*J), K, J)
+    ll_old = -Inf; res = nothing
+    for it in 1:maxit
+        loglik = [log(pi_[k]) + sum(X[i,j]*log(p[k,j]) + (1-X[i,j])*log(1-p[k,j])
+                                    for j in 1:J) for i in 1:N, k in 1:K]
+        m    = maximum(loglik, dims = 2)
+        post = exp.(loglik .- m); post ./= sum(post, dims = 2)
+        pi_  = vec(mean(post, dims = 1))
+        p    = (post' * X) ./ sum(post, dims = 1)'
+        ll   = sum(m .+ log.(sum(exp.(loglik .- m), dims = 2)))
+        res  = (prevalence = pi_, item_prob = p, iterations = it)
+        abs(ll - ll_old) < tol && break
+        ll_old = ll
+    end
+    res
+end
+
+fit = lca_em(X, 2)
+
+fit.item_prob      # rows = classes, columns = items 1..8
 ```
 ### Python
-```python
-fit["item_prob"].round(2)          # rows = classes, columns = items 1..8
+```{python}
+import numpy as np, pandas as pd
+X = pd.read_csv("data/sim/ch22-lca.csv").values
+
+def lca_em(X, K=2, tol=1e-6, maxit=500):
+    N, J = X.shape
+    pi_ = np.full(K, 1 / K)
+    p = np.linspace(0.3, 0.7, K * J).reshape(K, J)
+    ll_old = -np.inf
+    for it in range(1, maxit + 1):
+        loglik = np.log(pi_) + X @ np.log(p).T + (1 - X) @ np.log(1 - p).T
+        m = loglik.max(axis=1, keepdims=True)
+        post = np.exp(loglik - m); post /= post.sum(axis=1, keepdims=True)
+        pi_ = post.mean(axis=0)
+        p = (post.T @ X) / post.sum(axis=0)[:, None]
+        ll = float((m + np.log(np.exp(loglik - m).sum(axis=1, keepdims=True))).sum())
+        if abs(ll - ll_old) < tol:
+            break
+        ll_old = ll
+    return dict(prevalence=pi_, item_prob=p, iterations=it)
+
+fit = lca_em(X, 2)
+
+fit["item_prob"].round(2)   # rows = classes, columns = items 1..8
 ```
 :::
 

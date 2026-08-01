@@ -62,41 +62,24 @@ ctt |>
   round2()
 ```
 ### SPSS
-```
-* Build a world where we KNOW the true scores, then confirm that
-* reliability is the true-score share of the observed variance.
-INPUT PROGRAM.
-LOOP #i = 1 TO 1000.
-  COMPUTE truth = RV.NORMAL(100, 15).
-  COMPUTE error = RV.NORMAL(0, 8).
-  COMPUTE observed = truth + error.
-  END CASE.
-END LOOP.
-END FILE.
-END INPUT PROGRAM.
-EXECUTE.
+```{pspp}
+* The book's own true/error/observed scores. Reliability is the true-score
+* share of the observed variance, read off the two variances below.
+INSERT FILE='data/sim/ch09-ctt.sps'.
 
 DESCRIPTIVES VARIABLES=truth observed /STATISTICS=VARIANCE.
-* reliability = VAR(truth) / VAR(observed), read off the table above.
 ```
 ### Julia
-```julia
-using Random, Distributions, Statistics, DataFrames
-Random.seed!(8)
-ctt = DataFrame(truth = rand(Normal(100, 15), 1000),
-                error = rand(Normal(0, 8), 1000))
-ctt.observed = ctt.truth .+ ctt.error
+```{julia}
+using CSV, DataFrames, Statistics
+ctt = CSV.read("data/sim/ch09-ctt.csv", DataFrame)
 
 var(ctt.truth) / var(ctt.observed)      # the true-score share of the variance
 ```
 ### Python
-```python
-import numpy as np, pandas as pd
-
-rng = np.random.default_rng(8)
-ctt = pd.DataFrame({"truth": rng.normal(100, 15, 1000),
-                    "error": rng.normal(0, 8, 1000)})
-ctt["observed"] = ctt.truth + ctt.error
+```{python}
+import pandas as pd
+ctt = pd.read_csv("data/sim/ch09-ctt.csv")
 
 ctt.truth.var() / ctt.observed.var()    # the true-score share of the variance
 ```
@@ -134,7 +117,8 @@ var_total <- var(rowSums(items))
 tibble(cronbach_alpha = (k / (k - 1)) * (1 - var_items / var_total)) |> round2()
 ```
 ### SPSS
-```
+```{pspp}
+INSERT FILE='data/sim/ch09-items-tau.sps'.
 * Cronbach's alpha for six items sharing a common factor.
 * NOTE (for Jeff): this is the section reserved for your SPSS review -
 * RELIABILITY is the workhorse, and its output reports raw alpha plus the
@@ -145,11 +129,9 @@ RELIABILITY
   /SUMMARY=TOTAL.
 ```
 ### Julia
-```julia
-using Random, Distributions, Statistics, DataFrames
-Random.seed!(9)
-common = rand(Normal(), 500)
-items = DataFrame([Symbol("item", i) => common .+ rand(Normal(), 500) for i in 1:6])
+```{julia}
+using CSV, DataFrames, Statistics
+items = CSV.read("data/sim/ch09-items-tau.csv", DataFrame)
 
 k = ncol(items)
 var_items = sum(var(col) for col in eachcol(items))
@@ -158,12 +140,9 @@ var_total = var(sum(eachcol(items)))
 (k / (k - 1)) * (1 - var_items / var_total)
 ```
 ### Python
-```python
-import numpy as np, pandas as pd
-
-rng = np.random.default_rng(9)
-common = rng.normal(size=500)
-items = pd.DataFrame({f"item{i+1}": common + rng.normal(size=500) for i in range(6)})
+```{python}
+import pandas as pd
+items = pd.read_csv("data/sim/ch09-items-tau.csv")
 
 k = items.shape[1]
 var_items = items.var().sum()
@@ -208,7 +187,8 @@ omega <- sum(lam)^2 / (sum(lam)^2 + sum(psi))    # McDonald's omega
 tibble(cronbach_alpha = alpha, mcdonald_omega = omega) |> round2()
 ```
 ### SPSS
-```
+```{pspp}
+INSERT FILE='data/sim/ch09-items-congeneric.sps'.
 * Alpha assumes tau-equivalence; with unequal loadings it UNDERSTATES
 * reliability, and McDonald's omega is the right coefficient.
 * RELIABILITY gives alpha directly.
@@ -226,15 +206,9 @@ FACTOR
   /PRINT INITIAL EXTRACTION.
 ```
 ### Julia
-```julia
-using MultivariateStats
-Random.seed!(3)
-N = 500
-Tval  = rand(Normal(), N)
-lambda = [0.9, 0.8, 0.7, 0.5, 0.4]        # congeneric: unequal item quality
-items = DataFrame([Symbol("item", i) =>
-          lambda[i] .* Tval .+ rand(Normal(0, sqrt(1 - lambda[i]^2)), N)
-          for i in 1:5])
+```{julia}
+using CSV, DataFrames, Statistics, MultivariateStats
+items = CSV.read("data/sim/ch09-items-congeneric.csv", DataFrame)
 
 k = ncol(items)
 alpha = (k / (k - 1)) *
@@ -247,16 +221,10 @@ omega = sum(lam)^2 / (sum(lam)^2 + sum(psi))
 alpha, omega
 ```
 ### Python
-```python
+```{python}
 import numpy as np, pandas as pd
 from sklearn.decomposition import FactorAnalysis
-
-rng = np.random.default_rng(3)
-N = 500
-Tval = rng.normal(size=N)
-lam_true = [0.9, 0.8, 0.7, 0.5, 0.4]      # congeneric: unequal item quality
-items = pd.DataFrame({f"item{i+1}": l * Tval + rng.normal(0, np.sqrt(1 - l**2), N)
-                      for i, l in enumerate(lam_true)})
+items = pd.read_csv("data/sim/ch09-items-congeneric.csv")
 
 k = items.shape[1]
 alpha = (k / (k - 1)) * (1 - items.var().sum() / items.sum(axis=1).var())
@@ -291,7 +259,7 @@ att |>
   round2()
 ```
 ### SPSS
-```
+```{pspp}
 * Attenuation: unreliable sensors shrink the correlation you can observe.
 INPUT PROGRAM.
 LOOP #i = 1 TO 1000.
@@ -310,24 +278,18 @@ CORRELATIONS /VARIABLES=Tx Ty.
 CORRELATIONS /VARIABLES=Ox Oy.
 ```
 ### Julia
-```julia
-Random.seed!(10)
-att = DataFrame(Tx = rand(Normal(), 1000))
-att.Ty = 0.6 .* att.Tx .+ rand(Normal(0, 0.8), 1000)   # true correlation ~ .6
-att.Ox = att.Tx .+ rand(Normal(), 1000)                # noisy sensors
-att.Oy = att.Ty .+ rand(Normal(), 1000)
+```{julia}
+using CSV, DataFrames, Statistics
+att = CSV.read("data/sim/ch09-attenuation.csv", DataFrame)
 
-cor(att.Tx, att.Ty), cor(att.Ox, att.Oy)
+cor(att.Tx, att.Ty), cor(att.Ox, att.Oy)   # true, then observed through noise
 ```
 ### Python
-```python
-rng = np.random.default_rng(10)
-att = pd.DataFrame({"Tx": rng.normal(size=1000)})
-att["Ty"] = 0.6 * att.Tx + rng.normal(0, 0.8, 1000)    # true correlation ~ .6
-att["Ox"] = att.Tx + rng.normal(size=1000)             # noisy sensors
-att["Oy"] = att.Ty + rng.normal(size=1000)
+```{python}
+import pandas as pd
+att = pd.read_csv("data/sim/ch09-attenuation.csv")
 
-att.Tx.corr(att.Ty), att.Ox.corr(att.Oy)
+att.Tx.corr(att.Ty), att.Ox.corr(att.Oy)   # true, then observed through noise
 ```
 :::
 
