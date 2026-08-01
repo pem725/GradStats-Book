@@ -14,6 +14,20 @@
 # Sourced by _common.R, so any chapter that sources that gets these too.
 # ---------------------------------------------------------------------------
 
+# Is this interpreter actually on the machine doing the build?
+#
+# The book should render for anyone who clones it, whether or not they have
+# PSPP, Julia and Python installed. When an interpreter is missing we fall
+# back to showing the code as static text - exactly what the book did before
+# these engines existed - rather than failing the build. That also means CI
+# can gain the toolchains one at a time without ever going red.
+.book_have <- function(cmd) nzchar(Sys.which(cmd)[[1]])
+
+.book_static <- function(options, why) {
+  message("  [", options$engine, "] ", why, " - showing code without running it")
+  knitr::engine_output(options, options$code, NULL)
+}
+
 .book_fig_dir <- function() {
   d <- file.path("_figs")
   dir.create(d, showWarnings = FALSE, recursive = TRUE)
@@ -71,6 +85,7 @@ knitr::knit_engines$set(pspp = function(options) {
   if (isFALSE(options$eval)) {
     return(knitr::engine_output(options, options$code, NULL))
   }
+  if (!.book_have("pspp")) return(.book_static(options, "PSPP not installed"))
 
   code <- paste(options$code, collapse = "\n")
   f <- tempfile(fileext = ".sps")
@@ -104,6 +119,7 @@ knitr::knit_engines$set(julia = function(options) {
   if (isFALSE(options$eval)) {
     return(knitr::engine_output(options, options$code, NULL))
   }
+  if (!.book_have("julia")) return(.book_static(options, "Julia not installed"))
 
   fig <- .book_fig_path(options)
   code <- paste(options$code, collapse = "\n")
@@ -134,6 +150,13 @@ knitr::knit_engines$set(python = function(options) {
   if (isFALSE(options$eval)) {
     return(knitr::engine_output(options, options$code, NULL))
   }
+  # Insist on the book's own virtualenv rather than whatever python3 happens to
+  # be on PATH: a bare system Python has none of the packages these tabs import,
+  # and would fill the page with import tracebacks instead of output.
+  py <- file.path(getwd(), ".venv", "bin", "python")
+  if (!file.exists(py)) {
+    return(.book_static(options, "the book's .venv is not set up"))
+  }
 
   fig <- .book_fig_path(options)
   code <- paste(options$code, collapse = "\n")
@@ -147,8 +170,6 @@ knitr::knit_engines$set(python = function(options) {
   f <- tempfile(fileext = ".py")
   writeLines(wrapped, f)
 
-  py <- file.path(getwd(), ".venv", "bin", "python")
-  if (!file.exists(py)) py <- "python3"
   out <- suppressWarnings(
     system2(py, f, stdout = TRUE, stderr = TRUE))
   .book_output(options, out, if (file.exists(fig)) fig else NULL)
