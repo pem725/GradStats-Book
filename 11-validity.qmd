@@ -51,21 +51,28 @@ v |>
 ```
 
 ### SPSS
-```
+```{pspp}
+INSERT FILE='data/sim/ch10-validity.sps'.
 * Convergent vs discriminant validity as a correlation matrix.
 CORRELATIONS
   /VARIABLES=new_scale old_scale verbal.
 ```
 
 ### Julia
-```julia
+```{julia}
+using CSV, DataFrames
+df = CSV.read("data/sim/ch10-validity.csv", DataFrame)
+
 using Statistics
 # correlation matrix of the three measures
 cor(Matrix(df[:, [:new_scale, :old_scale, :verbal]]))
 ```
 
 ### Python
-```python
+```{python}
+import pandas as pd
+df = pd.read_csv("data/sim/ch10-validity.csv")
+
 # correlation matrix of the three measures
 df[["new_scale", "old_scale", "verbal"]].corr().round(2)
 ```

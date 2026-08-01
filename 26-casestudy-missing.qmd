@@ -88,20 +88,27 @@ tibble(
   round2()
 ```
 ### SPSS
-```
+```{pspp}
+INSERT FILE='data/sim/ch29-missing.sps'.
 * Full-data slope of y on z.
 REGRESSION /STATISTICS COEFF R ANOVA /DEPENDENT y /METHOD=ENTER z.
 * Complete-case slope of y_obs on z (SPSS drops missing listwise by default).
 REGRESSION /STATISTICS COEFF R ANOVA /DEPENDENT y_obs /METHOD=ENTER z.
 ```
 ### Julia
-```julia
+```{julia}
+using CSV, DataFrames
+df = CSV.read("data/sim/ch29-missing.csv", DataFrame)
+
 using GLM, DataFrames
 slope_full          = coef(lm(@formula(y ~ z), df))[2]                        # the truth
 slope_complete_case = coef(lm(@formula(y_obs ~ z), dropmissing(df, :y_obs)))[2]  # barely moved
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
+df = pd.read_csv("data/sim/ch29-missing.csv")
+
 import statsmodels.formula.api as smf
 # patsy drops rows with missing values, so the second fit is complete-case.
 slope_full          = smf.ols("y ~ z", data=df).fit().params["z"]       # the truth

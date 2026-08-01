@@ -101,16 +101,23 @@ aov(growth ~ dose, data = d) |>
   round2()
 ```
 ### SPSS
-```
+```{pspp}
+INSERT FILE='data/sim/ch17-dose.sps'.
 ONEWAY growth BY dose /STATISTICS DESCRIPTIVES /POSTHOC=TUKEY.
 ```
 ### Julia
-```julia
+```{julia}
+using CSV, DataFrames
+df = CSV.read("data/sim/ch17-dose.csv", DataFrame)
+
 using GLM
 ftest(lm(@formula(growth ~ dose), df).model)
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
+df = pd.read_csv("data/sim/ch17-dose.csv")
+
 import statsmodels.formula.api as smf
 from statsmodels.stats.anova import anova_lm
 anova_lm(smf.ols("growth ~ dose", data=df).fit())
@@ -138,16 +145,23 @@ tibble(
   round2()
 ```
 ### SPSS
-```
+```{pspp}
+INSERT FILE='data/sim/ch17-dose.sps'.
 REGRESSION /STATISTICS COEFF R ANOVA /DEPENDENT growth /METHOD=ENTER dose.
 ```
 ### Julia
-```julia
+```{julia}
+using CSV, DataFrames
+df = CSV.read("data/sim/ch17-dose.csv", DataFrame)
+
 using GLM
 coeftable(lm(@formula(growth ~ dose), df))
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
+df = pd.read_csv("data/sim/ch17-dose.csv")
+
 import statsmodels.formula.api as smf
 from statsmodels.stats.anova import anova_lm
 fit = smf.ols("growth ~ dose", data=df).fit()

@@ -39,17 +39,24 @@ d |>
   round2()
 ```
 ### SPSS
-```
+```{pspp}
+INSERT FILE='data/sim/ch13-study.sps'.
 * point-biserial correlation: just Pearson r with a 0/1 variable.
 CORRELATIONS /VARIABLES=score studied.
 ```
 ### Julia
-```julia
+```{julia}
+using CSV, DataFrames
+df = CSV.read("data/sim/ch13-study.csv", DataFrame)
+
 using Statistics
 cor(df.score, df.studied)   # point-biserial: just Pearson r!
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
+df = pd.read_csv("data/sim/ch13-study.csv")
+
 df.score.corr(df.studied)      # point-biserial: just Pearson r!
 ```
 :::
@@ -80,7 +87,8 @@ tibble(
   round2()
 ```
 ### SPSS
-```
+```{pspp}
+INSERT FILE='data/sim/ch13-study.sps'.
 * (a) test the point-biserial correlation.
 CORRELATIONS /VARIABLES=score studied.
 * (b) the classic two-sample t-test (pooled variance).
@@ -89,7 +97,10 @@ T-TEST GROUPS=studied(0 1) /VARIABLES=score.
 REGRESSION /STATISTICS COEFF R ANOVA /DEPENDENT score /METHOD=ENTER studied.
 ```
 ### Julia
-```julia
+```{julia}
+using CSV, DataFrames
+df = CSV.read("data/sim/ch13-study.csv", DataFrame)
+
 using HypothesisTests, GLM
 # (a) test the point-biserial correlation
 CorrelationTest(df.score, df.studied)
@@ -99,7 +110,10 @@ EqualVarianceTTest(df.score[df.studied .== 0], df.score[df.studied .== 1])
 coeftable(lm(@formula(score ~ studied), df))
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
+df = pd.read_csv("data/sim/ch13-study.csv")
+
 from scipy import stats
 import statsmodels.formula.api as smf
 

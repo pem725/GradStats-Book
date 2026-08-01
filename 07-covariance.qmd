@@ -46,18 +46,25 @@ d |>
   round2()   # match
 ```
 ### SPSS
-```
+```{pspp}
+INSERT FILE='data/sim/ch06-study.sps'.
 CORRELATIONS
   /VARIABLES=study grade
   /STATISTICS=XPROD.
 ```
 ### Julia
-```julia
+```{julia}
+using CSV, DataFrames
+df = CSV.read("data/sim/ch06-study.csv", DataFrame)
+
 using Statistics
 cov(df.study, df.grade)
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
+df = pd.read_csv("data/sim/ch06-study.csv")
+
 df.study.cov(df.grade)
 ```
 :::
@@ -100,17 +107,24 @@ d |>
   round2()   # match
 ```
 ### SPSS
-```
+```{pspp}
+INSERT FILE='data/sim/ch06-study.sps'.
 CORRELATIONS
   /VARIABLES=study grade.
 ```
 ### Julia
-```julia
+```{julia}
+using CSV, DataFrames
+df = CSV.read("data/sim/ch06-study.csv", DataFrame)
+
 using Statistics
 cor(df.study, df.grade)
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
+df = pd.read_csv("data/sim/ch06-study.csv")
+
 df.study.corr(df.grade)
 ```
 :::
@@ -244,20 +258,27 @@ d |>
   round2()
 ```
 ### SPSS
-```
+```{pspp}
+INSERT FILE='data/sim/ch06-study.sps'.
 REGRESSION
   /STATISTICS COEFF R ANOVA
   /DEPENDENT grade
   /METHOD=ENTER study.
 ```
 ### Julia
-```julia
+```{julia}
+using CSV, DataFrames
+df = CSV.read("data/sim/ch06-study.csv", DataFrame)
+
 using GLM
 m = lm(@formula(grade ~ study), df)
 coeftable(m)
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
+df = pd.read_csv("data/sim/ch06-study.csv")
+
 import statsmodels.formula.api as smf
 b_from_cov = df.study.cov(df.grade) / df.study.var()
 smf.ols("grade ~ study", data=df).fit().params

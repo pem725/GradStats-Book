@@ -50,21 +50,28 @@ tibble(method = c("t-test", "ANOVA", "regression"),
 all.equal(p_ttest, p_anova) && all.equal(p_ttest, p_regr)
 ```
 ### SPSS
-```
+```{pspp}
+INSERT FILE='data/sim/ch12-groups.sps'.
 * Same question, three ways: t-test, ANOVA, regression.
 T-TEST GROUPS=group('control' 'treatment') /VARIABLES=y.
 ONEWAY y BY group /STATISTICS DESCRIPTIVES.
 REGRESSION /STATISTICS COEFF R ANOVA /DEPENDENT y /METHOD=ENTER group.
 ```
 ### Julia
-```julia
+```{julia}
+using CSV, DataFrames
+df = CSV.read("data/sim/ch12-groups.csv", DataFrame)
+
 using HypothesisTests, GLM
 EqualVarianceTTest(df.y[df.group .== "control"], df.y[df.group .== "treatment"])
 ftest(lm(@formula(y ~ group), df).model)
 coeftable(lm(@formula(y ~ group), df))
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
+df = pd.read_csv("data/sim/ch12-groups.csv")
+
 from scipy import stats
 import statsmodels.formula.api as smf
 from statsmodels.stats.anova import anova_lm

@@ -48,15 +48,22 @@ lm_pet <- lm(happy ~ pet, data = d)
 tidy2(lm_pet)
 ```
 ### SPSS
-```
+```{pspp}
+INSERT FILE='data/sim/ch16-pets.sps'.
 ONEWAY happy BY pet /STATISTICS DESCRIPTIVES.
 ```
 ### Julia
-```julia
+```{julia}
+using CSV, DataFrames
+df = CSV.read("data/sim/ch16-pets.csv", DataFrame)
+
 using GLM; ftest(lm(@formula(happy ~ pet), df).model)
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
+df = pd.read_csv("data/sim/ch16-pets.csv")
+
 import statsmodels.formula.api as smf
 smf.ols("happy ~ pet", data=df).fit().params.round(3)
 ```
@@ -182,15 +189,22 @@ lm_fac <- lm(sad ~ pet * mess, data = d)
 tidy2(lm_fac)
 ```
 ### SPSS
-```
+```{pspp}
+INSERT FILE='data/sim/ch16-pets.sps'.
 UNIANOVA sad BY pet mess /DESIGN=pet mess pet*mess.
 ```
 ### Julia
-```julia
+```{julia}
+using CSV, DataFrames
+df = CSV.read("data/sim/ch16-pets.csv", DataFrame)
+
 using GLM; lm(@formula(sad ~ pet * mess), df)
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
+df = pd.read_csv("data/sim/ch16-pets.csv")
+
 import statsmodels.formula.api as smf
 smf.ols("sad ~ pet * mess", data=df).fit().params.round(3)
 ```
@@ -212,15 +226,22 @@ glm_fit <- glm(passed ~ x, family = binomial, data = d)
 tidy2(glm_fit)
 ```
 ### SPSS
-```
+```{pspp}
+INSERT FILE='data/sim/ch16-pets.sps'.
 LOGISTIC REGRESSION VARIABLES passed WITH x.
 ```
 ### Julia
-```julia
+```{julia}
+using CSV, DataFrames
+df = CSV.read("data/sim/ch16-pets.csv", DataFrame)
+
 using GLM; glm(@formula(passed ~ x), df, Binomial(), LogitLink())
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
+df = pd.read_csv("data/sim/ch16-pets.csv")
+
 import statsmodels.formula.api as smf
 smf.logit("passed ~ x", data=df).fit().params.round(3)
 ```

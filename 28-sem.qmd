@@ -50,7 +50,8 @@ unclass(fa$loadings) |> as_tibble(rownames = "item") |> round2()
 ```
 
 ### SPSS
-```
+```{pspp}
+INSERT FILE='data/sim/ch20-cfa.sps'.
 * ML factor analysis as a CFA proxy; a true CFA uses AMOS or the CFA/OMS approach.
 FACTOR
   /VARIABLES a1 a2 a3 a4 b1 b2 b3 b4
@@ -60,7 +61,10 @@ FACTOR
 ```
 
 ### Julia
-```julia
+```{julia}
+using CSV, DataFrames
+df = CSV.read("data/sim/ch20-cfa.csv", DataFrame)
+
 using MultivariateStats
 # ML factor analysis on the eight items (variables in columns)
 items = Matrix(df[:, [:a1, :a2, :a3, :a4, :b1, :b2, :b3, :b4]])
@@ -68,7 +72,10 @@ fit(FactorAnalysis, items'; maxoutdim = 2)
 ```
 
 ### Python
-```python
+```{python}
+import pandas as pd
+df = pd.read_csv("data/sim/ch20-cfa.csv")
+
 from sklearn.decomposition import FactorAnalysis
 
 # ML factor analysis on the eight items (items in columns).

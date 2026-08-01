@@ -48,7 +48,8 @@ t.test(composite ~ grp, data = d) |>
   round2()
 ```
 ### SPSS
-```
+```{pspp}
+INSERT FILE='data/sim/ch21-invariance.sps'.
 * Assumes the active dataset holds the true trait, the composite score, and the group factor grp.
 * Group means: true trait (equal by construction) and observed composite, by group.
 MEANS TABLES=trait composite BY grp /CELLS=MEAN STDDEV COUNT.
@@ -56,7 +57,10 @@ MEANS TABLES=trait composite BY grp /CELLS=MEAN STDDEV COUNT.
 T-TEST GROUPS=grp('A' 'B') /VARIABLES=composite.
 ```
 ### Julia
-```julia
+```{julia}
+using CSV, DataFrames
+df = CSV.read("data/sim/ch21-invariance.csv", DataFrame)
+
 using Statistics, DataFrames, HypothesisTests
 # Assumes df holds :trait, :composite, and the group factor :grp.
 # Group means: true trait (equal by construction) and observed composite, by group.
@@ -65,7 +69,10 @@ combine(groupby(df, :grp), :trait => mean, :composite => mean)
 UnequalVarianceTTest(df.composite[df.grp .== "A"], df.composite[df.grp .== "B"])
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
+df = pd.read_csv("data/sim/ch21-invariance.csv")
+
 from scipy import stats
 # df holds trait, composite, and the group factor grp.
 # Group means: true trait (equal by construction) and observed composite.

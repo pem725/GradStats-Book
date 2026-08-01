@@ -102,16 +102,23 @@ tibble(component = paste0("PC", seq_along(pc$sdev)), eigenvalue = pc$sdev^2) |>
   round2()
 ```
 ### SPSS
-```
+```{pspp}
+INSERT FILE='data/sim/ch19-items.sps'.
 FACTOR /VARIABLES x1 x2 x3 x4 x5 x6 /EXTRACTION PC /PRINT INITIAL EXTRACTION /PLOT EIGEN.
 ```
 ### Julia
-```julia
+```{julia}
+using CSV, DataFrames
+items = CSV.read("data/sim/ch19-items.csv", DataFrame)
+
 using MultivariateStats
 fit(PCA, Matrix(items)'; maxoutdim=6)
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
+items = pd.read_csv("data/sim/ch19-items.csv")
+
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 z = StandardScaler().fit_transform(items)
@@ -132,16 +139,23 @@ fa1 <- factanal(items, factors = 1)
 tibble(item = names(items), loading = as.numeric(fa1$loadings)) |> round2()
 ```
 ### SPSS
-```
+```{pspp}
+INSERT FILE='data/sim/ch19-items.sps'.
 FACTOR /VARIABLES x1 x2 x3 x4 x5 x6 /EXTRACTION ML /CRITERIA FACTORS(1) /ROTATION VARIMAX.
 ```
 ### Julia
-```julia
+```{julia}
+using CSV, DataFrames
+items = CSV.read("data/sim/ch19-items.csv", DataFrame)
+
 using MultivariateStats
 fit(FactorAnalysis, Matrix(items)'; maxoutdim=1)
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
+items = pd.read_csv("data/sim/ch19-items.csv")
+
 from sklearn.decomposition import FactorAnalysis
 fa1 = FactorAnalysis(n_components=1).fit(items)
 fa1.components_.round(2)            # all items load on the common factor

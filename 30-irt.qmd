@@ -92,7 +92,8 @@ v_i <- (ms[2] - v_e) / np       # item variance
 tibble(person = v_p, item = v_i, residual = v_e) |> round2()
 ```
 ### SPSS
-```
+```{pspp}
+INSERT FILE='data/sim/ch23-gtheory.sps'.
 * Data assumed present as the active dataset with columns score, p (person), i (item).
 * VARCOMP returns the person, item, and residual variance components directly,
 * no hand EMS math from mean squares.
@@ -101,7 +102,10 @@ VARCOMP score BY p i
   /METHOD = REML.
 ```
 ### Julia
-```julia
+```{julia}
+using CSV, DataFrames
+df = CSV.read("data/sim/ch23-gtheory.csv", DataFrame)
+
 using MixedModels
 
 # df is a DataFrame with columns score, p (person), i (item).
@@ -110,7 +114,10 @@ using MixedModels
 fit(MixedModel, @formula(score ~ 1 + (1|p) + (1|i)), df)
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
+df = pd.read_csv("data/sim/ch23-gtheory.csv")
+
 import numpy as np
 import statsmodels.formula.api as smf
 
