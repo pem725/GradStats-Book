@@ -25,7 +25,10 @@ dir.create("data/sim", recursive = TRUE, showWarnings = FALSE)
 # requires an explicit /VARIABLES list with a format for every column - so we
 # generate that list here, where we still know the column types.
 put <- function(x, name) {
-  readr::write_csv(x, file.path("data/sim", paste0(name, ".csv")))
+  # na = "" rather than the default "NA": an empty field is the portable
+  # convention every language reads as missing. Julia's CSV.jl treats a
+  # literal "NA" as text, which silently turns a numeric column into strings.
+  readr::write_csv(x, file.path("data/sim", paste0(name, ".csv")), na = "")
 
   spss_name <- gsub("[^A-Za-z0-9_]", "_", names(x))
   spss_fmt  <- if_else(map_lgl(x, is.numeric), "F16.6", "A24")

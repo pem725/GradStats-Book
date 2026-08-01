@@ -184,26 +184,35 @@ tibble(
 ```
 
 ### SPSS
-```
-* POMP: 100 * (score - min) / (max - min), using each scale's theoretical min and max.
-COMPUTE mood_POMP     = 100 * (mood - 1) / (5 - 1).
-COMPUTE vitality_POMP = 100 * (vitality - 1) / (7 - 1).
+```{pspp}
+* POMP: 100 * (score - min) / (max - min), using each scale's own
+* theoretical minimum and maximum, which travel with the data.
+INSERT FILE='data/sim/ch05-pomp.sps'.
+
+COMPUTE POMP = 100 * (score - lo) / (hi - lo).
 EXECUTE.
+LIST VARIABLES=measure score lo hi POMP.
 ```
 
 ### Julia
-```julia
-mood_POMP     = 100 .* (df.mood     .- 1) ./ (5 - 1)
-vitality_POMP = 100 .* (df.vitality .- 1) ./ (7 - 1)
+```{julia}
+using CSV, DataFrames
+df = CSV.read("data/sim/ch05-pomp.csv", DataFrame)
+
+df.POMP = 100 .* (df.score .- df.lo) ./ (df.hi .- df.lo)
+df
 ```
 
 ### Python
-```python
+```{python}
+import pandas as pd
+df = pd.read_csv("data/sim/ch05-pomp.csv")
+
 def pomp(x, lo, hi):
     return 100 * (x - lo) / (hi - lo)
 
-mood_POMP     = pomp(df.mood,     lo=1, hi=5)
-vitality_POMP = pomp(df.vitality, lo=1, hi=7)
+df["POMP"] = pomp(df.score, df.lo, df.hi)
+df
 ```
 :::
 

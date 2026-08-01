@@ -57,7 +57,9 @@ dat <- dat |>
 dat |> count(group)
 ```
 ### SPSS
-```
+```{pspp}
+INSERT FILE='data/sim/ch04-dirty.sps'.
+
 * Recode impossible and coded-missing values to system-missing.
 RECODE age (121 THRU HIGHEST=SYSMIS).
 RECODE income (LOWEST THRU -0.001=SYSMIS) (999=SYSMIS).
@@ -68,16 +70,20 @@ EXECUTE.
 FREQUENCIES VARIABLES=group.
 ```
 ### Julia
-```julia
-using DataFrames, StatsBase
+```{julia}
+using CSV, DataFrames, StatsBase
+df = CSV.read("data/sim/ch04-dirty.csv", DataFrame)
+
 df.age    = [ismissing(x) || x > 120 ? missing : x for x in df.age]                # no one is 220
 df.income = [ismissing(x) || x < 0 || x == 999 ? missing : x for x in df.income]   # impossible; 999 a code
 df.group  = uppercase.(strip.(string.(df.group)))                                  # fix "b" and stray spaces
 countmap(df.group)
 ```
 ### Python
-```python
-import numpy as np
+```{python}
+import numpy as np, pandas as pd
+df = pd.read_csv("data/sim/ch04-dirty.csv")
+
 df.loc[df.age > 120, "age"]      = np.nan     # no one is 220
 df.loc[df.income < 0, "income"]  = np.nan     # negative income is impossible here
 df.loc[df.income == 999, "income"] = np.nan   # 999 was a "missing" code, not a value
@@ -103,17 +109,26 @@ Once the sentinels are cleaned, you are left with genuine gaps. How you should h
 dat |> summarise(across(everything(), \(v) sum(is.na(v))))
 ```
 ### SPSS
-```
-* How much is missing, and where (missing-value analysis over all variables).
-MVA VARIABLES=ALL.
+```{pspp}
+* Real SPSS answers this with MVA VARIABLES=ALL, a dedicated missing-value
+* analysis. PSPP has not implemented MVA, and FREQUENCIES reports the same
+* valid/missing counts, so that is what runs here.
+INSERT FILE='data/sim/ch04-dirty.sps'.
+
+FREQUENCIES VARIABLES=age income group.
 ```
 ### Julia
-```julia
-using DataFrames
+```{julia}
+using CSV, DataFrames
+df = CSV.read("data/sim/ch04-dirty.csv", DataFrame)
+
 describe(df, :nmissing)     # how much is missing, and where?
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
+df = pd.read_csv("data/sim/ch04-dirty.csv")
+
 df.isna().sum()                # how much is missing, and where?
 ```
 :::
