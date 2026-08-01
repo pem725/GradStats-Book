@@ -46,8 +46,7 @@ GET DATA /TYPE=TXT /FILE='data/mlb_league_by_year.csv'
   /DELIMITERS=',' /QUALIFIER='"' /FIRSTCASE=2
   /VARIABLES=year F16.6 OPS F16.6 K_PA F16.6 BB_PA F16.6 HR_PA F16.6 AVG F16.6 ERA F16.6 K_9 F16.6 BB_9 F16.6 HR_9 F16.6.
 
-GRAPH /LINE(SIMPLE) = VALUE(K_9) BY year
-  /TITLE = 'The strikeout revolution'.
+GRAPH /LINE(SIMPLE) = VALUE(K_9) BY year.
 ```
 ### Julia
 ```julia
@@ -274,8 +273,7 @@ SORT CASES BY rate_bust_a (A).
 
 * MEAN() rather than VALUE() here: each team has exactly one row, so the
 * two are identical, and MEAN() is accepted by every SPSS-family engine.
-GRAPH /BAR(SIMPLE) = MEAN(rate_bust_a) BY team
-  /TITLE = 'Draft busts by team'.
+GRAPH /BAR(SIMPLE) = MEAN(rate_bust_a) BY team.
 * In the chart editor, transpose to horizontal so the team labels stay
 * readable - the equivalent of coord_flip().
 ```

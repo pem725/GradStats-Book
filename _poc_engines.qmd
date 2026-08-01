@@ -1,0 +1,64 @@
+---
+title: "Proof of concept: four live languages, figures included"
+---
+
+```{r}
+#| include: false
+library(tidyverse)
+source("_common.R")
+source("setup/load_data.R")
+source("_engines.R")
+```
+
+The same histogram, drawn four times by four different programs.
+
+## R
+
+```{r}
+#| label: poc-r
+d <- book_data("ch01-heights")
+ggplot(d, aes(x = height)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 30,
+                 fill = "steelblue", colour = "white") +
+  stat_function(fun = dnorm, args = list(mean = 68, sd = 4),
+                colour = "firebrick", linewidth = 1) +
+  labs(x = "height (inches)", y = "density") +
+  theme_book()
+```
+
+## SPSS (via PSPP)
+
+```{pspp}
+#| label: poc-spss
+INSERT FILE='data/sim/ch01-heights.sps'.
+GRAPH /HISTOGRAM = height.
+```
+
+## Julia
+
+```{julia}
+#| label: poc-julia
+using CSV, DataFrames, Plots, Distributions
+d = CSV.read("data/sim/ch01-heights.csv", DataFrame)
+
+histogram(d.height, bins = 30, normalize = :pdf, legend = false,
+          xlabel = "height (inches)", ylabel = "density")
+plot!(x -> pdf(Normal(68, 4), x), 54, 82, linewidth = 2, color = :firebrick)
+```
+
+## Python
+
+```{python}
+#| label: poc-python
+import pandas as pd, numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import norm
+
+d = pd.read_csv("data/sim/ch01-heights.csv")
+
+plt.hist(d.height, bins=30, density=True, color="steelblue", edgecolor="white")
+grid = np.linspace(54, 82, 400)
+plt.plot(grid, norm.pdf(grid, 68, 4), color="firebrick", linewidth=2)
+plt.xlabel("height (inches)"); plt.ylabel("density")
+plt.show()
+```

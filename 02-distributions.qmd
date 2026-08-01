@@ -13,7 +13,7 @@ Time to play in data land! We began our journey with a promise to help you under
 
 Everything we wish to understand about people or things comes in the form of a variable. If I want to know why people like chocolate ice cream, I must assign some form of numerical value to "like" such that I can learn from my observations. Why?  Learning via these methods require data.  Each variable is a set of observations. We assign numbers to observations and these observations serve as our data. Each variable is unique. Some variables contain data that represent a singular characteristic of a person or thing; other variables contain data that represent multiple characteristics. These characteristics we often call constructs in psychological science. From this point forward, we shall refer to the underlying characteristic that we measure as the construct.
 
-Let's examine this a bit more closely. Consider two variables height and weight. Height is a variable that contains data representing a singular characteristic of a person - the length of the person's body when standing. Changes in height measures a singular characteristic of a person that can be altered only by skeletal growth/decay. Weight, on the other hand, contains data representing a single characteristic (mass) but determined by many contributing factors (e.g., water, fat, muscle, bone, etc.). Combined, height and weight make a composite variable called Body Mass Index (BMI) - [an often used but derided](https://www.health.harvard.edu/blog/how-useful-is-the-body-mass-index-bmi-201603309339) predictor of health and well-being.
+Let's examine this a bit more closely. Consider two variables height and weight. Height is a variable that contains data representing a singular characteristic of a person - the length of the person's body when standing. Changes in height measures a singular characteristic of a person that can be altered only by skeletal growth/decay. Weight, on the other hand, contains data representing a single characteristic (mass) but determined by many contributing factors (e.g., water, fat, muscle, bone, etc.). Combined, height and weight make a composite variable called Body Mass Index (BMI) - [an often used but derided](https://www.health.harvard.edu/blog/how-useful-is-the-body-mass-index-bmi-201603302500) predictor of health and well-being.
 
 
 |                    | Singular Construct | Multiple Constructs |
@@ -65,7 +65,7 @@ as.integer(flavor)                 # the codes R uses under the hood
 tibble(flavor) |> count(flavor)    # what we actually care about: the counts
 ```
 ### SPSS
-```
+```{pspp}
 * Categories live as string values with VALUE LABELS attached; the labels
 * travel with the data the way an R factor's levels do.
 DATA LIST LIST /flavor (A6).
@@ -83,7 +83,7 @@ AUTORECODE VARIABLES=flavor /INTO flavor_code.
 FREQUENCIES VARIABLES=flavor.
 ```
 ### Julia
-```julia
+```{julia}
 using CategoricalArrays, DataFrames
 flavor = categorical(["choc", "van", "choc", "straw", "van"],
                      levels = ["choc", "van", "straw"])
@@ -91,7 +91,7 @@ levelcode.(flavor)                  # the codes Julia uses under the hood
 combine(groupby(DataFrame(flavor = flavor), :flavor), nrow => :n)
 ```
 ### Python
-```python
+```{python}
 import pandas as pd
 flavor = pd.Categorical(["choc", "van", "choc", "straw", "van"],
                         categories=["choc", "van", "straw"])
@@ -127,41 +127,37 @@ ggplot(heights, aes(x = height)) +
   theme_book()
 ```
 ### SPSS
-```
-* Build 500 simulated adult heights, then draw the histogram.
-INPUT PROGRAM.
-LOOP #i = 1 TO 500.
-  COMPUTE height = RV.NORMAL(68, 4).
-  END CASE.
-END LOOP.
-END FILE.
-END INPUT PROGRAM.
-EXECUTE.
+```{pspp}
+* The book's own 500 heights, then the histogram with a normal curve on it.
+* (NORMAL) asks SPSS to overlay the fitted normal, the same curve the R tab
+* draws from the parameters.
+INSERT FILE='data/sim/ch01-heights.sps'.
 
-GRAPH /HISTOGRAM = height
-  /TITLE = 'The distribution of 500 simulated heights'.
+GRAPH /HISTOGRAM(NORMAL) = height.
 ```
 ### Julia
-```julia
-using Random, Distributions, Plots
-Random.seed!(20)
-height = rand(Normal(68, 4), 500)          # adult heights (inches)
+```{julia}
+using CSV, DataFrames, Plots, Distributions
+d = CSV.read("data/sim/ch01-heights.csv", DataFrame)   # the book's heights
 
-histogram(height, bins = 30, legend = false,
-          title = "The distribution of 500 simulated heights",
-          xlabel = "height (inches)", ylabel = "count")
+histogram(d.height, bins = 30, normalize = :pdf, legend = false,
+          xlabel = "height (inches)", ylabel = "density")
+plot!(x -> pdf(Normal(68, 4), x), 54, 82, linewidth = 2, color = :firebrick)
 ```
 ### Python
-```python
+```{python}
 import numpy as np
 import matplotlib.pyplot as plt
 
-rng = np.random.default_rng(20)
-height = rng.normal(68, 4, 500)            # adult heights (inches)
+import pandas as pd
+from scipy.stats import norm
 
-plt.hist(height, bins=30, color="steelblue", edgecolor="white")
-plt.title("The distribution of 500 simulated heights")
-plt.xlabel("height (inches)"); plt.ylabel("count")
+d = pd.read_csv("data/sim/ch01-heights.csv")   # the book's heights
+
+plt.hist(d.height, bins=30, density=True, color="steelblue", edgecolor="white")
+grid = np.linspace(54, 82, 400)
+plt.plot(grid, norm.pdf(grid, 68, 4), color="firebrick", linewidth=2)
+plt.xlabel("height (inches)"); plt.ylabel("density")
 plt.show()
 ```
 :::
@@ -214,59 +210,37 @@ ggplot(skewed, aes(x = value)) +
   theme_book()
 ```
 ### SPSS
-```
-* A right-skewed NORMAL: two standard normal draws, one of them folded
-* positive. delta = alpha / sqrt(1 + alpha**2); alpha = 6 leans right.
-INPUT PROGRAM.
-COMPUTE #alpha = 6.
-COMPUTE #delta = #alpha / SQRT(1 + #alpha**2).
-LOOP #i = 1 TO 1000.
-  COMPUTE z0 = ABS(RV.NORMAL(0, 1)).
-  COMPUTE z1 = RV.NORMAL(0, 1).
-  COMPUTE value = #delta * z0 + SQRT(1 - #delta**2) * z1.
-  END CASE.
-END LOOP.
-END FILE.
-END INPUT PROGRAM.
-EXECUTE.
+```{pspp}
+* The book's skew-normal draws. The construction - two normal draws, one of
+* them folded positive - is spelled out in the R tab; here we read the same
+* 1000 values so the picture matches.
+INSERT FILE='data/sim/ch01-skewed.sps'.
 
-* /NORMAL overlays the fitted normal curve on the histogram.
-GRAPH /HISTOGRAM(NORMAL) = value
-  /TITLE = 'A right-skewed normal (long tail to the right)'.
+GRAPH /HISTOGRAM(NORMAL) = value.
 ```
 ### Julia
-```julia
-using Random, Distributions, Plots
-Random.seed!(21)
+```{julia}
+using CSV, DataFrames, Plots, Distributions
+d = CSV.read("data/sim/ch01-skewed.csv", DataFrame)   # the book's skew-normal
+alpha = 6                                             # the lean it was built with
 
-# a skew-normal built from two ordinary normals
-alpha = 6
-delta = alpha / sqrt(1 + alpha^2)
-value = delta .* abs.(rand(Normal(), 1000)) .+
-        sqrt(1 - delta^2) .* rand(Normal(), 1000)
-
-histogram(value, bins = 40, normalize = :pdf, legend = false,
-          title = "A right-skewed normal (long tail to the right)",
+histogram(d.value, bins = 40, normalize = :pdf, legend = false,
           xlabel = "value", ylabel = "density")
 # Distributions.jl ships the skew-normal, so the curve is one call
-plot!(x -> pdf(SkewNormal(0, 1, alpha), x), -2, 4, linewidth = 2)
+plot!(x -> pdf(SkewNormal(0, 1, alpha), x), -2, 4,
+      linewidth = 2, color = :firebrick)
 ```
 ### Python
-```python
-import numpy as np
-import matplotlib.pyplot as plt
-
+```{python}
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import skewnorm
 
-rng = np.random.default_rng(21)
+import pandas as pd
 
-# a skew-normal built from two ordinary normals
-alpha = 6
-delta = alpha / np.sqrt(1 + alpha**2)
-value = delta * np.abs(rng.normal(size=1000)) + \
-        np.sqrt(1 - delta**2) * rng.normal(size=1000)
+d = pd.read_csv("data/sim/ch01-skewed.csv")   # the book's skew-normal
+value = d.value
+alpha = 6                                    # the lean it was built with
 
 plt.hist(value, bins=40, density=True, color="darkorange", edgecolor="white")
 grid = np.linspace(-2, 4, 400)
@@ -340,50 +314,36 @@ ggplot(draws, aes(x = value)) +
   theme_book()
 ```
 ### SPSS
-```
-* Draw 1000 values from each of the four named shapes.
-INPUT PROGRAM.
-LOOP #i = 1 TO 1000.
-  COMPUTE Normal   = RV.NORMAL(0, 1).
-  COMPUTE Uniform  = RV.UNIFORM(0, 1).
-  COMPUTE Binomial = RV.BINOM(10, 0.5).
-  COMPUTE Poisson  = RV.POISSON(3).
-  END CASE.
-END LOOP.
-END FILE.
-END INPUT PROGRAM.
-EXECUTE.
+```{pspp}
+* The book's own 1000 draws from each shape. SPSS has no faceting, so each
+* shape gets its own GRAPH command.
+INSERT FILE='data/sim/ch01-shapes.sps'.
 
-* SPSS has no faceting, so each shape gets its own GRAPH command.
-GRAPH /HISTOGRAM = Normal   /TITLE = 'Normal'.
-GRAPH /HISTOGRAM = Uniform  /TITLE = 'Uniform'.
-GRAPH /HISTOGRAM = Binomial /TITLE = 'Binomial'.
-GRAPH /HISTOGRAM = Poisson  /TITLE = 'Poisson'.
+GRAPH /HISTOGRAM(NORMAL) = Normal.
+GRAPH /HISTOGRAM = Uniform.
+GRAPH /HISTOGRAM = Binomial.
+GRAPH /HISTOGRAM = Poisson.
 ```
 ### Julia
-```julia
-using Random, Distributions, Plots
-Random.seed!(22)
+```{julia}
+using CSV, DataFrames, Plots
+d = CSV.read("data/sim/ch01-shapes.csv", DataFrame)   # the book's draws
 
-shapes = ["Normal"   => rand(Normal(0, 1), 1000),
-          "Uniform"  => rand(Uniform(0, 1), 1000),
-          "Binomial" => rand(Binomial(10, 0.5), 1000),
-          "Poisson"  => rand(Poisson(3), 1000)]
+shapes = [n => d[!, n] for n in ["Normal", "Uniform", "Binomial", "Poisson"]]
 
 # one panel per shape, laid out 2 x 2
 plot([histogram(v, bins = 30, title = k, legend = false) for (k, v) in shapes]...,
      layout = (2, 2))
 ```
 ### Python
-```python
+```{python}
 import numpy as np
 import matplotlib.pyplot as plt
 
-rng = np.random.default_rng(22)
-shapes = {"Normal":   rng.normal(0, 1, 1000),
-          "Uniform":  rng.uniform(0, 1, 1000),
-          "Binomial": rng.binomial(10, 0.5, 1000),
-          "Poisson":  rng.poisson(3, 1000)}
+import pandas as pd
+
+d = pd.read_csv("data/sim/ch01-shapes.csv")   # the book's draws
+shapes = {n: d[n] for n in ["Normal", "Uniform", "Binomial", "Poisson"]}
 
 fig, axes = plt.subplots(2, 2)             # one panel per shape
 for ax, (name, v) in zip(axes.flat, shapes.items()):
@@ -411,7 +371,11 @@ tibble(z = seq(-4, 4, length.out = 400)) |>
   theme_book()
 ```
 ### SPSS
-```
+```{pspp}
+#| eval: false
+* Valid SPSS, but shown rather than run: PSPP (the free engine this book uses
+* to execute its SPSS tabs) has not implemented GRAPH /LINE.
+*
 * The standard normal density across a grid of z values from -4 to 4.
 INPUT PROGRAM.
 LOOP #i = -400 TO 400.
@@ -423,11 +387,10 @@ END FILE.
 END INPUT PROGRAM.
 EXECUTE.
 
-GRAPH /LINE(SIMPLE) = VALUE(density) BY z
-  /TITLE = 'The standard normal PDF'.
+GRAPH /LINE(SIMPLE) = VALUE(density) BY z.
 ```
 ### Julia
-```julia
+```{julia}
 using Distributions, Plots
 z = range(-4, 4, length = 400)
 
@@ -436,7 +399,7 @@ plot(z, pdf.(Normal(0, 1), z), linewidth = 2, legend = false,
 vline!([0], linestyle = :dash, color = :grey)
 ```
 ### Python
-```python
+```{python}
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import norm

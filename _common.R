@@ -21,6 +21,14 @@ fmt_p <- function(p) {
   dplyr::if_else(p < .001, "< .001", sprintf("%.3f", p))
 }
 
+# --- Live SPSS, Julia and Python ---------------------------------------------
+# Register the knitr engines that let the non-R code tabs actually run. Guarded
+# so that sourcing this file outside a render (setup/make_data.R does) does not
+# try to touch knitr.
+if (isTRUE(getOption("knitr.in.progress")) && file.exists("_engines.R")) {
+  source("_engines.R")
+}
+
 # --- The book's figure theme ------------------------------------------------
 # Every plot in the book ends with theme_book() rather than theme_minimal(),
 # so type size and styling are set in ONE place instead of drifting chapter to
