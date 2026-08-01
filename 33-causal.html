@@ -848,49 +848,44 @@ window.Quarto = {
 </div>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
-<pre><code>* The Fork: Z causes both X and Y, so X and Y correlate with no arrow
-* between them. Controlling Z makes the association vanish.
-INPUT PROGRAM.
-LOOP #i = 1 TO 2000.
-  COMPUTE Z = RV.NORMAL(0, 1).
-  COMPUTE X = Z + RV.NORMAL(0, 1).
-  COMPUTE Y = Z + RV.NORMAL(0, 1).
-  END CASE.
-END LOOP.
-END FILE.
-END INPUT PROGRAM.
-EXECUTE.
+<div class="cell">
+<pre class="pspp cell-code"><code>* PSPP has not implemented PARTIAL CORR, but a partial correlation IS the
+* correlation between two sets of residuals, so we can build it directly -
+* which is exactly what the R tab does.
+INSERT FILE='data/sim/ch24-fork.sps'.
 
-* Naive association.
+* The naive association.
 CORRELATIONS /VARIABLES=X Y.
-* Partial correlation controlling Z - the same thing as correlating residuals.
-PARTIAL CORR /VARIABLES=X Y BY Z.</code></pre>
+
+* Now control Z and correlate what is left over.
+REGRESSION /DEPENDENT X /METHOD=ENTER Z /SAVE RESID.
+REGRESSION /DEPENDENT Y /METHOD=ENTER Z /SAVE RESID.
+CORRELATIONS /VARIABLES=RES1 RES2.</code></pre>
+</div>
 </div>
 <div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Random</span>, <span class="bu">Distributions</span>, <span class="bu">Statistics</span>, <span class="bu">GLM</span>, <span class="bu">DataFrames</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="bu">Random</span>.<span class="fu">seed!</span>(<span class="fl">4</span>)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="fl">2000</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>fork <span class="op">=</span> <span class="fu">DataFrame</span>(Z <span class="op">=</span> <span class="fu">rand</span>(<span class="fu">Normal</span>(), n))</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>fork.X <span class="op">=</span> fork.Z <span class="op">.+</span> <span class="fu">rand</span>(<span class="fu">Normal</span>(), n)</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>fork.Y <span class="op">=</span> fork.Z <span class="op">.+</span> <span class="fu">rand</span>(<span class="fu">Normal</span>(), n)</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(fork.X, fork.Y)                                  <span class="co"># spurious association</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(<span class="fu">residuals</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(X <span class="op">~</span> Z), fork)),</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">residuals</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(Y <span class="op">~</span> Z), fork)))            <span class="co"># control Z: it vanishes</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Statistics</span>, <span class="bu">GLM</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>fork <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch24-fork.csv"</span>, DataFrame)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(fork.X, fork.Y)                       <span class="co"># spurious association</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(<span class="fu">residuals</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(X <span class="op">~</span> Z), fork)),</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">residuals</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(Y <span class="op">~</span> Z), fork)))   <span class="co"># control Z: it vanishes</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Segmentation fault (core dumped)</code></pre>
+</div>
+</div>
 </div>
 <div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np, pandas <span class="im">as</span> pd</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">4</span>)</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="dv">2000</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>fork <span class="op">=</span> pd.DataFrame({<span class="st">"Z"</span>: rng.normal(size<span class="op">=</span>n)})</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>fork[<span class="st">"X"</span>] <span class="op">=</span> fork.Z <span class="op">+</span> rng.normal(size<span class="op">=</span>n)</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>fork[<span class="st">"Y"</span>] <span class="op">=</span> fork.Z <span class="op">+</span> rng.normal(size<span class="op">=</span>n)</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>fork.X.corr(fork.Y)                                  <span class="co"># spurious association</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>np.corrcoef(smf.ols(<span class="st">"X ~ Z"</span>, fork).fit().resid,</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>            smf.ols(<span class="st">"Y ~ Z"</span>, fork).fit().resid)[<span class="dv">0</span>, <span class="dv">1</span>]   <span class="co"># control Z: it vanishes</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np, pandas <span class="im">as</span> pd</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>fork <span class="op">=</span> pd.read_csv(<span class="st">"data/sim/ch24-fork.csv"</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>fork.X.corr(fork.Y)                       <span class="co"># spurious association</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>np.corrcoef(smf.ols(<span class="st">"X ~ Z"</span>, fork).fit().resid,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>            smf.ols(<span class="st">"Y ~ Z"</span>, fork).fit().resid)[<span class="dv">0</span>, <span class="dv">1</span>]   <span class="co"># control Z: it vanishes</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </div>
 </div>
 </div>
@@ -900,16 +895,16 @@ PARTIAL CORR /VARIABLES=X Y BY Z.</code></pre>
 <div class="tab-content">
 <div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">5</span>)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>pipe <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">X =</span> <span class="fu">rnorm</span>(n)) <span class="sc">|&gt;</span>              <span class="co"># the effect runs X -&gt; M -&gt; Y</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">M =</span> X <span class="sc">+</span> <span class="fu">rnorm</span>(n), <span class="at">Y =</span> M <span class="sc">+</span> <span class="fu">rnorm</span>(n))</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>pipe <span class="sc">|&gt;</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">naive   =</span> <span class="fu">cor</span>(X, Y),                     <span class="co"># the real, total effect</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">control =</span> <span class="fu">cor</span>(<span class="fu">resid</span>(<span class="fu">lm</span>(X <span class="sc">~</span> M)), <span class="fu">resid</span>(<span class="fu">lm</span>(Y <span class="sc">~</span> M)))   <span class="co"># control M: effect blocked</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">5</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>pipe <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">X =</span> <span class="fu">rnorm</span>(n)) <span class="sc">|&gt;</span>              <span class="co"># the effect runs X -&gt; M -&gt; Y</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">M =</span> X <span class="sc">+</span> <span class="fu">rnorm</span>(n), <span class="at">Y =</span> M <span class="sc">+</span> <span class="fu">rnorm</span>(n))</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>pipe <span class="sc">|&gt;</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">naive   =</span> <span class="fu">cor</span>(X, Y),                     <span class="co"># the real, total effect</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">control =</span> <span class="fu">cor</span>(<span class="fu">resid</span>(<span class="fu">lm</span>(X <span class="sc">~</span> M)), <span class="fu">resid</span>(<span class="fu">lm</span>(Y <span class="sc">~</span> M)))   <span class="co"># control M: effect blocked</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
@@ -931,41 +926,44 @@ PARTIAL CORR /VARIABLES=X Y BY Z.</code></pre>
 </div>
 </div>
 <div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
-<pre><code>* The Pipe: the effect runs X -&gt; M -&gt; Y. Controlling M blocks the very
-* effect you were trying to measure (post-treatment bias).
-INPUT PROGRAM.
-LOOP #i = 1 TO 2000.
-  COMPUTE X = RV.NORMAL(0, 1).
-  COMPUTE M = X + RV.NORMAL(0, 1).
-  COMPUTE Y = M + RV.NORMAL(0, 1).
-  END CASE.
-END LOOP.
-END FILE.
-END INPUT PROGRAM.
-EXECUTE.
+<div class="cell">
+<pre class="pspp cell-code"><code>* PSPP has not implemented PARTIAL CORR, but a partial correlation IS the
+* correlation between two sets of residuals, so we can build it directly -
+* which is exactly what the R tab does.
+INSERT FILE='data/sim/ch24-pipe.sps'.
 
+* The naive association.
 CORRELATIONS /VARIABLES=X Y.
-PARTIAL CORR /VARIABLES=X Y BY M.</code></pre>
+
+* Now control M and correlate what is left over.
+REGRESSION /DEPENDENT X /METHOD=ENTER M /SAVE RESID.
+REGRESSION /DEPENDENT Y /METHOD=ENTER M /SAVE RESID.
+CORRELATIONS /VARIABLES=RES1 RES2.</code></pre>
+</div>
 </div>
 <div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="bu">Random</span>.<span class="fu">seed!</span>(<span class="fl">5</span>)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>pipe <span class="op">=</span> <span class="fu">DataFrame</span>(X <span class="op">=</span> <span class="fu">rand</span>(<span class="fu">Normal</span>(), n))</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>pipe.M <span class="op">=</span> pipe.X <span class="op">.+</span> <span class="fu">rand</span>(<span class="fu">Normal</span>(), n)</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>pipe.Y <span class="op">=</span> pipe.M <span class="op">.+</span> <span class="fu">rand</span>(<span class="fu">Normal</span>(), n)</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(pipe.X, pipe.Y)                                  <span class="co"># the real, total effect</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(<span class="fu">residuals</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(X <span class="op">~</span> M), pipe)),</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">residuals</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(Y <span class="op">~</span> M), pipe)))            <span class="co"># control M: effect blocked</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Statistics</span>, <span class="bu">GLM</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>pipe <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch24-pipe.csv"</span>, DataFrame)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(pipe.X, pipe.Y)                       <span class="co"># the real, total effect</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(<span class="fu">residuals</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(X <span class="op">~</span> M), pipe)),</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">residuals</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(Y <span class="op">~</span> M), pipe)))   <span class="co"># control M: effect blocked</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Segmentation fault (core dumped)</code></pre>
+</div>
+</div>
 </div>
 <div id="tabset-2-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-4-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">5</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>pipe <span class="op">=</span> pd.DataFrame({<span class="st">"X"</span>: rng.normal(size<span class="op">=</span>n)})</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>pipe[<span class="st">"M"</span>] <span class="op">=</span> pipe.X <span class="op">+</span> rng.normal(size<span class="op">=</span>n)</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>pipe[<span class="st">"Y"</span>] <span class="op">=</span> pipe.M <span class="op">+</span> rng.normal(size<span class="op">=</span>n)</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>pipe.X.corr(pipe.Y)                                  <span class="co"># the real, total effect</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>np.corrcoef(smf.ols(<span class="st">"X ~ M"</span>, pipe).fit().resid,</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>            smf.ols(<span class="st">"Y ~ M"</span>, pipe).fit().resid)[<span class="dv">0</span>, <span class="dv">1</span>]   <span class="co"># control M: blocked</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np, pandas <span class="im">as</span> pd</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>pipe <span class="op">=</span> pd.read_csv(<span class="st">"data/sim/ch24-pipe.csv"</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>pipe.X.corr(pipe.Y)                       <span class="co"># the real, total effect</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>np.corrcoef(smf.ols(<span class="st">"X ~ M"</span>, pipe).fit().resid,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>            smf.ols(<span class="st">"Y ~ M"</span>, pipe).fit().resid)[<span class="dv">0</span>, <span class="dv">1</span>]   <span class="co"># control M: effect blocked</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </div>
 </div>
 </div>
@@ -975,16 +973,16 @@ PARTIAL CORR /VARIABLES=X Y BY M.</code></pre>
 <div class="tab-content">
 <div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">6</span>)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>collider <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">X =</span> <span class="fu">rnorm</span>(n), <span class="at">Y =</span> <span class="fu">rnorm</span>(n)) <span class="sc">|&gt;</span>   <span class="co"># X and Y both cause Z</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Z =</span> X <span class="sc">+</span> Y <span class="sc">+</span> <span class="fu">rnorm</span>(n))</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>collider <span class="sc">|&gt;</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">naive   =</span> <span class="fu">cor</span>(X, Y),                            <span class="co"># correctly ~ 0</span></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">control =</span> <span class="fu">cor</span>(<span class="fu">resid</span>(<span class="fu">lm</span>(X <span class="sc">~</span> Z)), <span class="fu">resid</span>(<span class="fu">lm</span>(Y <span class="sc">~</span> Z)))   <span class="co"># control Z: spurious!</span></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">6</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>collider <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">X =</span> <span class="fu">rnorm</span>(n), <span class="at">Y =</span> <span class="fu">rnorm</span>(n)) <span class="sc">|&gt;</span>   <span class="co"># X and Y both cause Z</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Z =</span> X <span class="sc">+</span> Y <span class="sc">+</span> <span class="fu">rnorm</span>(n))</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>collider <span class="sc">|&gt;</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">naive   =</span> <span class="fu">cor</span>(X, Y),                            <span class="co"># correctly ~ 0</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">control =</span> <span class="fu">cor</span>(<span class="fu">resid</span>(<span class="fu">lm</span>(X <span class="sc">~</span> Z)), <span class="fu">resid</span>(<span class="fu">lm</span>(Y <span class="sc">~</span> Z)))   <span class="co"># control Z: spurious!</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
@@ -1006,39 +1004,44 @@ PARTIAL CORR /VARIABLES=X Y BY M.</code></pre>
 </div>
 </div>
 <div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
-<pre><code>* The Collider: X and Y both cause Z and are genuinely unrelated.
-* Conditioning on Z CREATES an association that was never there.
-INPUT PROGRAM.
-LOOP #i = 1 TO 2000.
-  COMPUTE X = RV.NORMAL(0, 1).
-  COMPUTE Y = RV.NORMAL(0, 1).
-  COMPUTE Z = X + Y + RV.NORMAL(0, 1).
-  END CASE.
-END LOOP.
-END FILE.
-END INPUT PROGRAM.
-EXECUTE.
+<div class="cell">
+<pre class="pspp cell-code"><code>* PSPP has not implemented PARTIAL CORR, but a partial correlation IS the
+* correlation between two sets of residuals, so we can build it directly -
+* which is exactly what the R tab does.
+INSERT FILE='data/sim/ch24-collider.sps'.
 
+* The naive association.
 CORRELATIONS /VARIABLES=X Y.
-PARTIAL CORR /VARIABLES=X Y BY Z.</code></pre>
+
+* Now control Z and correlate what is left over.
+REGRESSION /DEPENDENT X /METHOD=ENTER Z /SAVE RESID.
+REGRESSION /DEPENDENT Y /METHOD=ENTER Z /SAVE RESID.
+CORRELATIONS /VARIABLES=RES1 RES2.</code></pre>
+</div>
 </div>
 <div id="tabset-3-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-3-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="bu">Random</span>.<span class="fu">seed!</span>(<span class="fl">6</span>)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>collider <span class="op">=</span> <span class="fu">DataFrame</span>(X <span class="op">=</span> <span class="fu">rand</span>(<span class="fu">Normal</span>(), n), Y <span class="op">=</span> <span class="fu">rand</span>(<span class="fu">Normal</span>(), n))</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>collider.Z <span class="op">=</span> collider.X <span class="op">.+</span> collider.Y <span class="op">.+</span> <span class="fu">rand</span>(<span class="fu">Normal</span>(), n)</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(collider.X, collider.Y)                          <span class="co"># correctly ~ 0</span></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(<span class="fu">residuals</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(X <span class="op">~</span> Z), collider)),</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">residuals</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(Y <span class="op">~</span> Z), collider)))        <span class="co"># control Z: spurious!</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Statistics</span>, <span class="bu">GLM</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>collider <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch24-collider.csv"</span>, DataFrame)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(collider.X, collider.Y)                       <span class="co"># correctly ~ 0</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(<span class="fu">residuals</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(X <span class="op">~</span> Z), collider)),</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">residuals</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(Y <span class="op">~</span> Z), collider)))   <span class="co"># control Z: spurious!</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Segmentation fault (core dumped)</code></pre>
+</div>
+</div>
 </div>
 <div id="tabset-3-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-4-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">6</span>)</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>collider <span class="op">=</span> pd.DataFrame({<span class="st">"X"</span>: rng.normal(size<span class="op">=</span>n), <span class="st">"Y"</span>: rng.normal(size<span class="op">=</span>n)})</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>collider[<span class="st">"Z"</span>] <span class="op">=</span> collider.X <span class="op">+</span> collider.Y <span class="op">+</span> rng.normal(size<span class="op">=</span>n)</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>collider.X.corr(collider.Y)                          <span class="co"># correctly ~ 0</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>np.corrcoef(smf.ols(<span class="st">"X ~ Z"</span>, collider).fit().resid,</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>            smf.ols(<span class="st">"Y ~ Z"</span>, collider).fit().resid)[<span class="dv">0</span>, <span class="dv">1</span>]   <span class="co"># control Z: spurious!</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np, pandas <span class="im">as</span> pd</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>collider <span class="op">=</span> pd.read_csv(<span class="st">"data/sim/ch24-collider.csv"</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>collider.X.corr(collider.Y)                       <span class="co"># correctly ~ 0</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>np.corrcoef(smf.ols(<span class="st">"X ~ Z"</span>, collider).fit().resid,</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>            smf.ols(<span class="st">"Y ~ Z"</span>, collider).fit().resid)[<span class="dv">0</span>, <span class="dv">1</span>]   <span class="co"># control Z: spurious!</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </div>
 </div>
 </div>
@@ -1067,16 +1070,16 @@ PARTIAL CORR /VARIABLES=X Y BY Z.</code></pre>
 <section id="the-back-door-criterion" class="level2" data-number="24.4">
 <h2 data-number="24.4" class="anchored" data-anchor-id="the-back-door-criterion"><span class="header-section-number">24.4</span> The Back-Door Criterion</h2>
 <p>Given a DAG, <em>which</em> variables must you control to estimate the causal effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span>? The <strong>back-door criterion</strong> answers it: block every “back-door path” - every non-causal path from <span class="math inline">\(X\)</span> to <span class="math inline">\(Y\)</span> that begins with an arrow <em>into</em> <span class="math inline">\(X\)</span> - by controlling confounders, while being careful not to open any colliders. For anything but the simplest graph this is easy to get wrong by hand, so the <code>dagitty</code> package (which the course uses) computes the adjustment set for you:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The real tool (needs dagitty — shown, not run on the book's server)</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dagitty)</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>dag <span class="ot">&lt;-</span> <span class="fu">dagitty</span>(<span class="st">"dag{ X -&gt; Y ; X &lt;- Z -&gt; Y }"</span>)     <span class="co"># a fork: Z confounds X and Y</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="fu">adjustmentSets</span>(dag, <span class="at">exposure =</span> <span class="st">"X"</span>, <span class="at">outcome =</span> <span class="st">"Y"</span>)   <span class="co"># -&gt; { Z }: control Z, nothing else</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The real tool (needs dagitty — shown, not run on the book's server)</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dagitty)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>dag <span class="ot">&lt;-</span> <span class="fu">dagitty</span>(<span class="st">"dag{ X -&gt; Y ; X &lt;- Z -&gt; Y }"</span>)     <span class="co"># a fork: Z confounds X and Y</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="fu">adjustmentSets</span>(dag, <span class="at">exposure =</span> <span class="st">"X"</span>, <span class="at">outcome =</span> <span class="st">"Y"</span>)   <span class="co"># -&gt; { Z }: control Z, nothing else</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The output is the set of variables to put in your regression. Sometimes it is empty (no adjustment needed); sometimes there is more than one valid set; sometimes it warns you that the effect is <em>not identifiable</em> from the data you have. All of that is causal information you cannot get from the numbers alone.</p>
 </section>
 <section id="a-dag-makes-testable-predictions" class="level2" data-number="24.5">
 <h2 data-number="24.5" class="anchored" data-anchor-id="a-dag-makes-testable-predictions"><span class="header-section-number">24.5</span> A DAG Makes Testable Predictions</h2>
 <p>A DAG is an assumption, but not an untestable one. Every DAG implies a set of <strong>conditional independencies</strong> - statements like “<span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> should be independent once we account for <span class="math inline">\(C\)</span>” - that the data can confirm or refute:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">impliedConditionalIndependencies</span>(dag)   <span class="co"># the testable implications of your DAG</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">impliedConditionalIndependencies</span>(dag)   <span class="co"># the testable implications of your DAG</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>If the data violate an independence your DAG predicts, the DAG is wrong and needs revising. This is how a causal model earns trust: not by fitting the data (any flexible model can do that), but by surviving the specific predictions it makes. It is the same discipline the <a href="./23-sportspage.html">Sports Page chapter</a> preached, applied to causal structure.</p>
 </section>
 <section id="dags-and-sem-two-notations-one-idea" class="level2" data-number="24.6">
