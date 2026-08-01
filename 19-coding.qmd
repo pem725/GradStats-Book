@@ -51,19 +51,27 @@ means <- d |>
 means |> round2()
 ```
 ### SPSS
-```
+```{pspp}
 * Group means of happy by pet.
 MEANS TABLES=happy BY pet
   /CELLS=MEAN STDDEV COUNT.
 ```
 ### Julia
-```julia
-using Statistics, DataFrames
+```{julia}
+using CSV, DataFrames, CategoricalArrays, GLM, StatsModels, Statistics
+df = CSV.read("data/sim/ch18-pets.csv", DataFrame)
+df.pet = categorical(df.pet; levels = ["cat", "fish", "pig", "dog"])
+
 combine(groupby(df, :pet), :happy => mean)
 ```
 ### Python
-```python
-df.groupby("pet")["happy"].mean()
+```{python}
+import pandas as pd
+import statsmodels.formula.api as smf
+df = pd.read_csv("data/sim/ch18-pets.csv")
+df["pet"] = pd.Categorical(df.pet, categories=["cat","fish","pig","dog"])
+
+df.groupby("pet", observed=True)["happy"].mean()
 ```
 :::
 
@@ -81,21 +89,29 @@ m_dummy <- lm(happy ~ pet, data = d)
 tidy2(m_dummy)
 ```
 ### SPSS
-```
+```{pspp}
 * Dummy / reference coding, reference = dog (4th category).
 UNIANOVA happy BY pet
   /CONTRAST(pet)=SIMPLE(4)
   /PRINT=PARAMETER.
 ```
 ### Julia
-```julia
-using GLM, StatsModels
+```{julia}
+using CSV, DataFrames, CategoricalArrays, GLM, StatsModels, Statistics
+df = CSV.read("data/sim/ch18-pets.csv", DataFrame)
+df.pet = categorical(df.pet; levels = ["cat", "fish", "pig", "dog"])
+
 m_dummy = lm(@formula(happy ~ pet), df,
              contrasts = Dict(:pet => DummyCoding(base = "dog")))
+coeftable(m_dummy)
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
 import statsmodels.formula.api as smf
+df = pd.read_csv("data/sim/ch18-pets.csv")
+df["pet"] = pd.Categorical(df.pet, categories=["cat","fish","pig","dog"])
+
 m_dummy = smf.ols("happy ~ C(pet, Treatment(reference='dog'))", data=df).fit()
 m_dummy.params.round(3)
 ```
@@ -137,22 +153,30 @@ m_eff <- lm(happy ~ pet, data = d)
 tidy2(m_eff)
 ```
 ### SPSS
-```
+```{pspp}
 * Effects / deviation coding (each group vs the grand mean).
 UNIANOVA happy BY pet
   /CONTRAST(pet)=DEVIATION
   /PRINT=PARAMETER.
 ```
 ### Julia
-```julia
-using GLM, StatsModels
+```{julia}
+using CSV, DataFrames, CategoricalArrays, GLM, StatsModels, Statistics
+df = CSV.read("data/sim/ch18-pets.csv", DataFrame)
+df.pet = categorical(df.pet; levels = ["cat", "fish", "pig", "dog"])
+
 m_eff = lm(@formula(happy ~ pet), df,
            contrasts = Dict(:pet => EffectsCoding()))
+coeftable(m_eff)
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
 import statsmodels.formula.api as smf
-m_eff = smf.ols("happy ~ C(pet, Sum)", data=df).fit()   # each group vs the grand mean
+df = pd.read_csv("data/sim/ch18-pets.csv")
+df["pet"] = pd.Categorical(df.pet, categories=["cat","fish","pig","dog"])
+
+m_eff = smf.ols("happy ~ C(pet, Sum)", data=df).fit()   # each group vs grand mean
 m_eff.params.round(3)
 ```
 :::
@@ -255,21 +279,29 @@ m_helm <- lm(happy ~ pet, data = d)
 tidy2(m_helm)
 ```
 ### SPSS
-```
+```{pspp}
 * Helmert contrasts.
 UNIANOVA happy BY pet
   /CONTRAST(pet)=HELMERT
   /PRINT=PARAMETER.
 ```
 ### Julia
-```julia
-using GLM, StatsModels
+```{julia}
+using CSV, DataFrames, CategoricalArrays, GLM, StatsModels, Statistics
+df = CSV.read("data/sim/ch18-pets.csv", DataFrame)
+df.pet = categorical(df.pet; levels = ["cat", "fish", "pig", "dog"])
+
 m_helm = lm(@formula(happy ~ pet), df,
             contrasts = Dict(:pet => HelmertCoding()))
+coeftable(m_helm)
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
 import statsmodels.formula.api as smf
+df = pd.read_csv("data/sim/ch18-pets.csv")
+df["pet"] = pd.Categorical(df.pet, categories=["cat","fish","pig","dog"])
+
 # Helmert: each level against the mean of the levels before it.
 m_helm = smf.ols("happy ~ C(pet, Helmert)", data=df).fit()
 m_helm.params.round(3)
@@ -307,7 +339,7 @@ m_con <- lm(happy ~ pet, data = d)
 tidy2(m_con)
 ```
 ### SPSS
-```
+```{pspp}
 * Custom orthogonal contrasts:
 *   usual (cat,fish) vs unusual (pig,dog); cat vs fish; pig vs dog.
 UNIANOVA happy BY pet
@@ -315,16 +347,26 @@ UNIANOVA happy BY pet
   /PRINT=PARAMETER.
 ```
 ### Julia
-```julia
-using GLM, StatsModels
+```{julia}
+using CSV, DataFrames, CategoricalArrays, GLM, StatsModels, Statistics
+df = CSV.read("data/sim/ch18-pets.csv", DataFrame)
+df.pet = categorical(df.pet; levels = ["cat", "fish", "pig", "dog"])
+
 m_con = lm(@formula(happy ~ pet), df,
            contrasts = Dict(:pet => HypothesisCoding(
-               [0.5 0.5 -0.5 -0.5; 0.5 -0.5 0 0; 0 0 0.5 -0.5])))
+               [0.5 0.5 -0.5 -0.5; 0.5 -0.5 0 0; 0 0 0.5 -0.5];
+               levels = ["cat", "fish", "pig", "dog"],
+               labels = ["usual_vs_unusual", "cat_vs_fish", "pig_vs_dog"])))
+coeftable(m_con)
 ```
 ### Python
-```python
-import numpy as np
+```{python}
+import pandas as pd
 import statsmodels.formula.api as smf
+df = pd.read_csv("data/sim/ch18-pets.csv")
+df["pet"] = pd.Categorical(df.pet, categories=["cat","fish","pig","dog"])
+
+import numpy as np
 from patsy.contrasts import ContrastMatrix
 
 # rows = cat, fish, pig, dog; columns = the three contrasts
@@ -375,23 +417,33 @@ m_nonsense <- lm(happy ~ pet, data = d)
 tidy2(m_nonsense)
 ```
 ### SPSS
-```
+```{pspp}
 * Nonsense coding: arbitrary contrast coefficients with no meaning.
 UNIANOVA happy BY pet
   /CONTRAST(pet)=SPECIAL(3 -7 2.5 0.1  1 1 -2 4  -5 2 8 -1)
   /PRINT=PARAMETER.
 ```
 ### Julia
-```julia
-using GLM, StatsModels
+```{julia}
+using CSV, DataFrames, CategoricalArrays, GLM, StatsModels, Statistics
+df = CSV.read("data/sim/ch18-pets.csv", DataFrame)
+df.pet = categorical(df.pet; levels = ["cat", "fish", "pig", "dog"])
+
 m_nonsense = lm(@formula(happy ~ pet), df,
                 contrasts = Dict(:pet => HypothesisCoding(
-                    [3 -7 2.5 0.1; 1 1 -2 4; -5 2 8 -1])))
+                    [3.0 -7.0 2.5 0.1; 1.0 1.0 -2.0 4.0; -5.0 2.0 8.0 -1.0];
+                    levels = ["cat", "fish", "pig", "dog"],
+                    labels = ["huh", "wat", "lol"])))
+coeftable(m_nonsense)
 ```
 ### Python
-```python
-import numpy as np
+```{python}
+import pandas as pd
 import statsmodels.formula.api as smf
+df = pd.read_csv("data/sim/ch18-pets.csv")
+df["pet"] = pd.Categorical(df.pet, categories=["cat","fish","pig","dog"])
+
+import numpy as np
 from patsy.contrasts import ContrastMatrix
 
 # Nonsense coding: arbitrary contrast coefficients with no meaning.
@@ -455,22 +507,31 @@ group3 |> round2()     # the four real group means, and unequal cell sizes
 mu3 <- group3 |> pull(mean, name = grp)
 ```
 ### SPSS
-```
+```{pspp}
 * Group means and cell sizes of y1 by grp.
 MEANS TABLES=y1 BY grp
   /CELLS=MEAN STDDEV COUNT.
 ```
 ### Julia
-```julia
-using Statistics, DataFrames
-combine(groupby(df, :grp), :y1 => mean)
+```{julia}
+using CSV, DataFrames, CategoricalArrays, GLM, StatsModels, Statistics
+d3 = CSV.read("data/mod3data.csv", DataFrame)
+# f3 is coded 2,3,4,5 - R's factor(labels=) maps the SORTED values in order
+d3.grp = categorical(map(f -> Dict(2=>"A", 3=>"B", 4=>"C", 5=>"D")[f], d3.f3);
+                     levels = ["A", "B", "C", "D"])
+
+combine(groupby(d3, :grp), :y1 => mean, nrow => :n)
 ```
 ### Python
-```python
+```{python}
 import pandas as pd
+import statsmodels.formula.api as smf
 d3 = pd.read_csv("data/mod3data.csv")
-d3["grp"] = pd.Categorical(d3.f3).rename_categories(["A", "B", "C", "D"])
-d3.groupby("grp")["y1"].agg(["mean", "size"])   # means and unequal cell sizes
+# f3 is coded 2,3,4,5 - R's factor(labels=) maps the SORTED values in order
+d3["grp"] = pd.Categorical(d3.f3.map({2:"A", 3:"B", 4:"C", 5:"D"}),
+                           categories=["A","B","C","D"])
+
+d3.groupby("grp", observed=True)["y1"].agg(["mean", "size"])
 ```
 :::
 
@@ -489,21 +550,33 @@ c(intercept_is_A    = all.equal(cr[["(Intercept)"]], mu3[["A"]]),
   grp2_is_B_minus_A = all.equal(cr[["grp2"]], mu3[["B"]] - mu3[["A"]]))
 ```
 ### SPSS
-```
+```{pspp}
 * Dummy / reference coding, reference = group A (1st category).
 UNIANOVA y1 BY grp
   /CONTRAST(grp)=SIMPLE(1)
   /PRINT=PARAMETER.
 ```
 ### Julia
-```julia
-using GLM, StatsModels
-m_real = lm(@formula(y1 ~ grp), df,
+```{julia}
+using CSV, DataFrames, CategoricalArrays, GLM, StatsModels, Statistics
+d3 = CSV.read("data/mod3data.csv", DataFrame)
+# f3 is coded 2,3,4,5 - R's factor(labels=) maps the SORTED values in order
+d3.grp = categorical(map(f -> Dict(2=>"A", 3=>"B", 4=>"C", 5=>"D")[f], d3.f3);
+                     levels = ["A", "B", "C", "D"])
+
+m_real = lm(@formula(y1 ~ grp), d3,
             contrasts = Dict(:grp => DummyCoding(base = "A")))
+coeftable(m_real)
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
 import statsmodels.formula.api as smf
+d3 = pd.read_csv("data/mod3data.csv")
+# f3 is coded 2,3,4,5 - R's factor(labels=) maps the SORTED values in order
+d3["grp"] = pd.Categorical(d3.f3.map({2:"A", 3:"B", 4:"C", 5:"D"}),
+                           categories=["A","B","C","D"])
+
 m_real = smf.ols("y1 ~ C(grp, Treatment(reference='A'))", data=d3).fit()
 m_real.params.round(3)         # intercept = mean of A; next term = B - A
 ```
@@ -520,23 +593,35 @@ m_real_eff <- lm(y1 ~ grp, data = d3)
 all.equal(tidy(m_real_eff)$estimate[1], mean(mu3))
 ```
 ### SPSS
-```
+```{pspp}
 * Effects / deviation coding (each group vs the grand mean).
 UNIANOVA y1 BY grp
   /CONTRAST(grp)=DEVIATION
   /PRINT=PARAMETER.
 ```
 ### Julia
-```julia
-using GLM, StatsModels
-m_real_eff = lm(@formula(y1 ~ grp), df,
+```{julia}
+using CSV, DataFrames, CategoricalArrays, GLM, StatsModels, Statistics
+d3 = CSV.read("data/mod3data.csv", DataFrame)
+# f3 is coded 2,3,4,5 - R's factor(labels=) maps the SORTED values in order
+d3.grp = categorical(map(f -> Dict(2=>"A", 3=>"B", 4=>"C", 5=>"D")[f], d3.f3);
+                     levels = ["A", "B", "C", "D"])
+
+m_real_eff = lm(@formula(y1 ~ grp), d3,
                 contrasts = Dict(:grp => EffectsCoding()))
+coeftable(m_real_eff)
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
 import statsmodels.formula.api as smf
+d3 = pd.read_csv("data/mod3data.csv")
+# f3 is coded 2,3,4,5 - R's factor(labels=) maps the SORTED values in order
+d3["grp"] = pd.Categorical(d3.f3.map({2:"A", 3:"B", 4:"C", 5:"D"}),
+                           categories=["A","B","C","D"])
+
 m_real_eff = smf.ols("y1 ~ C(grp, Sum)", data=d3).fit()
-m_real_eff.params[0]           # intercept = unweighted mean of the four means
+m_real_eff.params.iloc[0]      # intercept = unweighted mean of the four means
 ```
 :::
 

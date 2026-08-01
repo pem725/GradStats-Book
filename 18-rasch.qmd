@@ -55,7 +55,7 @@ colnames(X) <- taps
 X[1:6, 1:9]   # a corner: the first children, the easiest items
 ```
 ### SPSS
-```
+```{pspp}
 * Reading Wright's Knox Cube Test responses: 35 children (rows) by 18
 * tapping items (columns), 1 = repeated the pattern correctly.
 * GET DATA needs a format after EVERY name - the "i1 TO i18" shorthand that
@@ -69,23 +69,20 @@ GET DATA /TYPE=TXT /FILE='data/knox.dat'
 LIST VARIABLES=Name i1 TO i9 /CASES=6.
 ```
 ### Julia
-```julia
-using DelimitedFiles, DataFrames
-raw = readdlm("data/knox.dat", header = true)
-kct = DataFrame(raw[1], vec(raw[2]))
-
+```{julia}
+using DelimitedFiles, Statistics
+rows = split.(readlines("data/knox.dat")[2:end])
+X = [parse(Int, rows[i][j]) for i in 1:length(rows), j in 3:20]
 taps = ["1-4","2-3","1-2-4","1-3-4","2-1-4","3-4-1","1-4-3-2","1-4-2-3",
         "1-3-2-4","2-4-3-1","1-3-1-2-4","1-3-2-4-3","1-4-3-2-4","1-4-2-3-4-1",
         "1-3-2-4-1-3","1-4-2-3-1-4","1-4-3-1-2-4","4-1-3-4-2-1-4"]
 
-X = Matrix(select(kct, r"^i\d+$"))
 X[1:6, 1:9]        # a corner: the first children, the easiest items
 ```
 ### Python
-```python
+```{python}
 import numpy as np
 
-# skip the header, drop the Name and sex columns
 rows = [ln.split() for ln in open("data/knox.dat")][1:]
 X = np.array([[int(v) for v in r[2:]] for r in rows], float)
 
@@ -106,18 +103,34 @@ Before we estimate anything, look at the item margins - how many of the 35 child
 tibble(item = colnames(X), passes = colSums(X))
 ```
 ### SPSS
-```
+```{pspp}
 * Passes per item, easy (left) to hard (right). Everyone passes the first
 * three and no one passes the last - those carry no information about
 * DIFFERENCES, and cannot get a finite logit.
 DESCRIPTIVES VARIABLES=i1 TO i18 /STATISTICS=SUM.
 ```
 ### Julia
-```julia
+```{julia}
+using DelimitedFiles, Statistics
+rows = split.(readlines("data/knox.dat")[2:end])
+X = [parse(Int, rows[i][j]) for i in 1:length(rows), j in 3:20]
+taps = ["1-4","2-3","1-2-4","1-3-4","2-1-4","3-4-1","1-4-3-2","1-4-2-3",
+        "1-3-2-4","2-4-3-1","1-3-1-2-4","1-3-2-4-3","1-4-3-2-4","1-4-2-3-4-1",
+        "1-3-2-4-1-3","1-4-2-3-1-4","1-4-3-1-2-4","4-1-3-4-2-1-4"]
+
 [(taps[j], sum(X[:, j])) for j in 1:size(X, 2)]
 ```
 ### Python
-```python
+```{python}
+import numpy as np
+
+rows = [ln.split() for ln in open("data/knox.dat")][1:]
+X = np.array([[int(v) for v in r[2:]] for r in rows], float)
+
+taps = ["1-4","2-3","1-2-4","1-3-4","2-1-4","3-4-1","1-4-3-2","1-4-2-3",
+        "1-3-2-4","2-4-3-1","1-3-1-2-4","1-3-2-4-3","1-4-3-2-4","1-4-2-3-4-1",
+        "1-3-2-4-1-3","1-4-2-3-1-4","1-4-3-1-2-4","4-1-3-4-2-1-4"]
+
 dict(zip(taps, X.sum(axis=0).astype(int)))
 ```
 :::
@@ -176,7 +189,7 @@ fit <- rasch_jmle(X)
 tibble(item = fit$items, difficulty = fit$difficulty) |> round2()
 ```
 ### SPSS
-```
+```{pspp}
 * Base SPSS has no Rasch or IRT procedure. Item calibration needs a
 * dedicated engine - Winsteps/BIGSTEPS (Wright's own), ConQuest, or R's
 * eRm/TAM - or the SPSS Python/R integration plug-in calling one of those.
@@ -185,56 +198,61 @@ tibble(item = fit$items, difficulty = fit$difficulty) |> round2()
 * is shown in the R, Julia, and Python tabs.
 ```
 ### Julia
-```julia
-using Statistics
-σ(z) = 1 / (1 + exp(-z))
-
-# Wright's Knox Cube Test data: skip the header, drop the Name & sex columns.
+```{julia}
+using DelimitedFiles, Statistics
 rows = split.(readlines("data/knox.dat")[2:end])
 X = [parse(Int, rows[i][j]) for i in 1:length(rows), j in 3:20]
+taps = ["1-4","2-3","1-2-4","1-3-4","2-1-4","3-4-1","1-4-3-2","1-4-2-3",
+        "1-3-2-4","2-4-3-1","1-3-1-2-4","1-3-2-4-3","1-4-3-2-4","1-4-2-3-4-1",
+        "1-3-2-4-1-3","1-4-2-3-1-4","1-4-3-1-2-4","4-1-3-4-2-1-4"]
 
-function rasch_jmle(X; tol=1e-6, maxit=300)
+σ(z) = 1 / (1 + exp(-z))
+
+function rasch_jmle(X; tol = 1e-6, maxit = 300)
     X = float.(X)
-    while true                                    # drop perfect/zero rows & cols
-        ci = vec(sum(X, dims=1)); ri = vec(sum(X, dims=2))
+    while true
+        ci = vec(sum(X, dims = 1)); ri = vec(sum(X, dims = 2))
         keepI = (ci .> 0) .& (ci .< size(X, 1))
         keepP = (ri .> 0) .& (ri .< size(X, 2))
         (all(keepI) && all(keepP)) && break
         X = X[keepP, keepI]
     end
     N, L = size(X)
-    r = vec(sum(X, dims=2)); s = vec(sum(X, dims=1))
-    b = log.(r ./ (L .- r))                       # abilities from raw scores
-    d = log.((N .- s) ./ s); d .-= mean(d)        # difficulties, centered
-    for _ in 1:maxit
+    r = vec(sum(X, dims = 2)); s = vec(sum(X, dims = 1))
+    b = log.(r ./ (L .- r))
+    d = log.((N .- s) ./ s); d .-= mean(d)
+    it = 0
+    for outer it in 1:maxit
         d0 = copy(d)
         for v in 1:N
-            Pv = σ.(b[v] .- d)
-            b[v] += (r[v] - sum(Pv)) / sum(Pv .* (1 .- Pv))
+            Pv = σ.(b[v] .- d); b[v] += (r[v] - sum(Pv)) / sum(Pv .* (1 .- Pv))
         end
         for i in 1:L
-            Pi = σ.(b .- d[i])
-            d[i] -= (s[i] - sum(Pi)) / sum(Pi .* (1 .- Pi))
+            Pi = σ.(b .- d[i]); d[i] -= (s[i] - sum(Pi)) / sum(Pi .* (1 .- Pi))
         end
-        d .-= mean(d)                             # fix the origin
+        d .-= mean(d)
         maximum(abs.(d .- d0)) < tol && break
     end
-    return d, b
+    (difficulty = d, ability = b, iterations = it)
 end
 
-difficulty, ability = rasch_jmle(X)
+fit = rasch_jmle(X)
+collect(zip(taps, round.(fit.difficulty, digits = 2)))
 ```
 ### Python
-```python
+```{python}
 import numpy as np
 
-# Wright's Knox Cube Test data: skip the header, drop the Name & sex columns.
 rows = [ln.split() for ln in open("data/knox.dat")][1:]
 X = np.array([[int(v) for v in r[2:]] for r in rows], float)
 
+taps = ["1-4","2-3","1-2-4","1-3-4","2-1-4","3-4-1","1-4-3-2","1-4-2-3",
+        "1-3-2-4","2-4-3-1","1-3-1-2-4","1-3-2-4-3","1-4-3-2-4","1-4-2-3-4-1",
+        "1-3-2-4-1-3","1-4-2-3-1-4","1-4-3-1-2-4","4-1-3-4-2-1-4"]
+
 def rasch_jmle(X, tol=1e-6, maxit=300):
     X = np.asarray(X, float)
-    while True:                                   # drop perfect/zero rows & cols
+    while True:
         ci, ri = X.sum(0), X.sum(1)
         keepI = (ci > 0) & (ci < X.shape[0])
         keepP = (ri > 0) & (ri < X.shape[1])
@@ -243,9 +261,9 @@ def rasch_jmle(X, tol=1e-6, maxit=300):
         X = X[keepP][:, keepI]
     N, L = X.shape
     r, s = X.sum(1), X.sum(0)
-    b = np.log(r / (L - r))                       # abilities from raw scores
-    d = np.log((N - s) / s); d -= d.mean()        # difficulties, centered
-    for _ in range(maxit):
+    b = np.log(r / (L - r))
+    d = np.log((N - s) / s); d -= d.mean()
+    for it in range(1, maxit + 1):
         d0 = d.copy()
         for v in range(N):
             Pv = 1 / (1 + np.exp(-(b[v] - d)))
@@ -253,12 +271,13 @@ def rasch_jmle(X, tol=1e-6, maxit=300):
         for i in range(L):
             Pi = 1 / (1 + np.exp(-(b - d[i])))
             d[i] -= (s[i] - Pi.sum()) / (Pi * (1 - Pi)).sum()
-        d -= d.mean()                             # fix the origin
+        d -= d.mean()
         if np.max(np.abs(d - d0)) < tol:
             break
-    return d, b
+    return d, b, it
 
-difficulty, ability = rasch_jmle(X)
+difficulty, ability, iterations = rasch_jmle(X)
+dict(zip(taps, difficulty.round(2)))
 ```
 :::
 
@@ -281,7 +300,7 @@ tibble(ability = fit$ability) |>
   round2()
 ```
 ### SPSS
-```
+```{pspp}
 * Base SPSS has no Rasch or IRT procedure. Item calibration needs a
 * dedicated engine - Winsteps/BIGSTEPS (Wright's own), ConQuest, or R's
 * eRm/TAM - or the SPSS Python/R integration plug-in calling one of those.
@@ -290,8 +309,45 @@ tibble(ability = fit$ability) |>
 * is shown in the R, Julia, and Python tabs.
 ```
 ### Julia
-```julia
-using Statistics
+```{julia}
+using DelimitedFiles, Statistics
+rows = split.(readlines("data/knox.dat")[2:end])
+X = [parse(Int, rows[i][j]) for i in 1:length(rows), j in 3:20]
+taps = ["1-4","2-3","1-2-4","1-3-4","2-1-4","3-4-1","1-4-3-2","1-4-2-3",
+        "1-3-2-4","2-4-3-1","1-3-1-2-4","1-3-2-4-3","1-4-3-2-4","1-4-2-3-4-1",
+        "1-3-2-4-1-3","1-4-2-3-1-4","1-4-3-1-2-4","4-1-3-4-2-1-4"]
+
+σ(z) = 1 / (1 + exp(-z))
+
+function rasch_jmle(X; tol = 1e-6, maxit = 300)
+    X = float.(X)
+    while true
+        ci = vec(sum(X, dims = 1)); ri = vec(sum(X, dims = 2))
+        keepI = (ci .> 0) .& (ci .< size(X, 1))
+        keepP = (ri .> 0) .& (ri .< size(X, 2))
+        (all(keepI) && all(keepP)) && break
+        X = X[keepP, keepI]
+    end
+    N, L = size(X)
+    r = vec(sum(X, dims = 2)); s = vec(sum(X, dims = 1))
+    b = log.(r ./ (L .- r))
+    d = log.((N .- s) ./ s); d .-= mean(d)
+    it = 0
+    for outer it in 1:maxit
+        d0 = copy(d)
+        for v in 1:N
+            Pv = σ.(b[v] .- d); b[v] += (r[v] - sum(Pv)) / sum(Pv .* (1 .- Pv))
+        end
+        for i in 1:L
+            Pi = σ.(b .- d[i]); d[i] -= (s[i] - sum(Pi)) / sum(Pi .* (1 .- Pi))
+        end
+        d .-= mean(d)
+        maximum(abs.(d .- d0)) < tol && break
+    end
+    (difficulty = d, ability = b, iterations = it)
+end
+
+fit = rasch_jmle(X)
 println("Converged in ", fit.iterations, " iterations.")
 
 # the 35 children, measured in logits on the item scale
@@ -299,11 +355,46 @@ length(fit.ability), minimum(fit.ability), median(fit.ability),
 mean(fit.ability), maximum(fit.ability)
 ```
 ### Python
-```python
+```{python}
+import numpy as np
+
+rows = [ln.split() for ln in open("data/knox.dat")][1:]
+X = np.array([[int(v) for v in r[2:]] for r in rows], float)
+
+taps = ["1-4","2-3","1-2-4","1-3-4","2-1-4","3-4-1","1-4-3-2","1-4-2-3",
+        "1-3-2-4","2-4-3-1","1-3-1-2-4","1-3-2-4-3","1-4-3-2-4","1-4-2-3-4-1",
+        "1-3-2-4-1-3","1-4-2-3-1-4","1-4-3-1-2-4","4-1-3-4-2-1-4"]
+
+def rasch_jmle(X, tol=1e-6, maxit=300):
+    X = np.asarray(X, float)
+    while True:
+        ci, ri = X.sum(0), X.sum(1)
+        keepI = (ci > 0) & (ci < X.shape[0])
+        keepP = (ri > 0) & (ri < X.shape[1])
+        if keepI.all() and keepP.all():
+            break
+        X = X[keepP][:, keepI]
+    N, L = X.shape
+    r, s = X.sum(1), X.sum(0)
+    b = np.log(r / (L - r))
+    d = np.log((N - s) / s); d -= d.mean()
+    for it in range(1, maxit + 1):
+        d0 = d.copy()
+        for v in range(N):
+            Pv = 1 / (1 + np.exp(-(b[v] - d)))
+            b[v] += (r[v] - Pv.sum()) / (Pv * (1 - Pv)).sum()
+        for i in range(L):
+            Pi = 1 / (1 + np.exp(-(b - d[i])))
+            d[i] -= (s[i] - Pi.sum()) / (Pi * (1 - Pi)).sum()
+        d -= d.mean()
+        if np.max(np.abs(d - d0)) < tol:
+            break
+    return d, b, it
+
+difficulty, ability, iterations = rasch_jmle(X)
 print(f"Converged in {iterations} iterations.")
 
 # the 35 children, measured in logits on the item scale
-import numpy as np
 len(ability), ability.min(), np.median(ability), ability.mean(), ability.max()
 ```
 :::
