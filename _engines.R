@@ -122,21 +122,37 @@ knitr::knit_engines$set(julia = function(options) {
   if (!.book_have("julia")) return(.book_static(options, "Julia not installed"))
 
   fig <- .book_fig_path(options)
-  code <- paste(options$code, collapse = "\n")
-  wrapped <- paste0(
-    'ENV["GKSwstype"] = "100"\n',
-    code, "\n",
-    'try\n',
-    '  if isdefined(Main, :Plots) && Plots.current() !== nothing\n',
-    '    Plots.savefig(Plots.current(), "', fig, '")\n',
-    '  end\n',
-    'catch\n',
-    'end\n')
-  f <- tempfile(fileext = ".jl")
-  writeLines(wrapped, f)
+
+  # The book's Julia tabs are written the way you would type them at the REPL:
+  # a bare `mean(df.x)` on its own line is meant to show its answer. A script
+  # does not do that, so we evaluate the chunk one top-level expression at a
+  # time and display whatever each one returns.
+  user <- tempfile(fileext = ".jl")
+  writeLines(paste(options$code, collapse = "\n"), user)
+
+  runner <- tempfile(fileext = ".jl")
+  writeLines(c(
+    'ENV["GKSwstype"] = "100"',
+    sprintf('src = read("%s", String)', user),
+    'parsed = Meta.parseall(src)',
+    'silent = (:(=), :using, :import, :function, :macro, :const, :struct, :module)',
+    'for ex in parsed.args',
+    '    isa(ex, LineNumberNode) && continue',
+    '    val = Core.eval(Main, ex)',
+    '    # assignments and imports stay quiet, the way they do in R and Python;',
+    '    # a bare expression shows its value, the way it would at the REPL',
+    '    (isa(ex, Expr) && ex.head in silent) && continue',
+    '    val === nothing || display(val)',
+    'end',
+    'try',
+    '    if isdefined(Main, :Plots) && Plots.current() !== nothing',
+    sprintf('        Plots.savefig(Plots.current(), "%s")', fig),
+    '    end',
+    'catch',
+    'end'), runner)
 
   out <- suppressWarnings(
-    system2("julia", c("--project=.", "--startup-file=no", f),
+    system2("julia", c("--project=.", "--startup-file=no", runner),
             stdout = TRUE, stderr = TRUE))
   .book_output(options, out, if (file.exists(fig)) fig else NULL)
 })
@@ -159,18 +175,30 @@ knitr::knit_engines$set(python = function(options) {
   }
 
   fig <- .book_fig_path(options)
-  code <- paste(options$code, collapse = "\n")
-  wrapped <- paste0(
-    "import matplotlib\n",
-    "matplotlib.use('Agg')\n",
-    "import matplotlib.pyplot as _plt\n",
-    code, "\n",
-    "if _plt.get_fignums():\n",
-    "    _plt.savefig('", fig, "', dpi = 150, bbox_inches = 'tight')\n")
-  f <- tempfile(fileext = ".py")
-  writeLines(wrapped, f)
+
+  # Same problem as Julia: the book's Python tabs are written REPL-style, where
+  # a bare `df.x.mean()` shows its value. Scripts stay silent. Compiling each
+  # top-level statement in "single" mode restores the REPL's echo, so the tabs
+  # need no print() calls bolted on.
+  user <- tempfile(fileext = ".py")
+  writeLines(paste(options$code, collapse = "\n"), user)
+
+  runner <- tempfile(fileext = ".py")
+  writeLines(c(
+    "import ast, matplotlib",
+    "matplotlib.use('Agg')",
+    "import matplotlib.pyplot as _plt",
+    sprintf("_src = open(%s).read()", shQuote(user)),
+    "_g = {'__name__': '__main__'}",
+    "for _node in ast.parse(_src).body:",
+    "    _mod = ast.Interactive(body=[_node])",
+    "    ast.fix_missing_locations(_mod)",
+    sprintf("    exec(compile(_mod, %s, 'single'), _g)", shQuote(user)),
+    "if _plt.get_fignums():",
+    sprintf("    _plt.savefig(%s, dpi=150, bbox_inches='tight')", shQuote(fig))
+  ), runner)
 
   out <- suppressWarnings(
-    system2(py, f, stdout = TRUE, stderr = TRUE))
+    system2(py, runner, stdout = TRUE, stderr = TRUE))
   .book_output(options, out, if (file.exists(fig)) fig else NULL)
 })

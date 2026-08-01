@@ -33,18 +33,24 @@ mode_val <- tibble(x) |> count(x) |> slice_max(n) |> pull(x)
 tibble(mean = mean(x), median = median(x), mode = mode_val) |> round2()
 ```
 ### SPSS
-```
+```{pspp}
+INSERT FILE='data/sim/ch02-x.sps'.
 FREQUENCIES VARIABLES=x /STATISTICS=MEAN MEDIAN MODE.
 ```
 ### Julia
-```julia
-using Statistics, StatsBase
+```{julia}
+using CSV, DataFrames, Statistics, StatsBase
+df = CSV.read("data/sim/ch02-x.csv", DataFrame)
+
 mean(df.x)
 median(df.x)
 mode(df.x)
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
+df = pd.read_csv("data/sim/ch02-x.csv")
+
 df.x.mean()
 df.x.median()
 df.x.mode()[0]                 # mode() returns every tie; take the first
@@ -138,17 +144,23 @@ income <- c(30, 35, 40, 42, 45, 48, 5000)   # thousands; one very rich person
 tibble(mean = mean(income), median = median(income)) |> round2()
 ```
 ### SPSS
-```
+```{pspp}
+INSERT FILE='data/sim/ch02-income.sps'.
 FREQUENCIES VARIABLES=income /STATISTICS=MEAN MEDIAN.
 ```
 ### Julia
-```julia
-using Statistics
+```{julia}
+using CSV, DataFrames, Statistics
+df = CSV.read("data/sim/ch02-income.csv", DataFrame)
+
 mean(df.income)
 median(df.income)
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
+df = pd.read_csv("data/sim/ch02-income.csv")
+
 df.income.mean()
 df.income.median()
 ```

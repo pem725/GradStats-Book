@@ -116,17 +116,23 @@ The code tabs below assume this chapter's data is already loaded. Grab the one-f
 tibble(sd_by_hand = sqrt(var(x)), r_sd = sd(x)) |> round2()
 ```
 ### SPSS
-```
+```{pspp}
+INSERT FILE='data/sim/ch03-x.sps'.
 DESCRIPTIVES VARIABLES=x
   /STATISTICS=STDDEV VARIANCE.
 ```
 ### Julia
-```julia
-using Statistics
+```{julia}
+using CSV, DataFrames, Statistics
+df = CSV.read("data/sim/ch03-x.csv", DataFrame)
+
 std(df.x), var(df.x)
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
+df = pd.read_csv("data/sim/ch03-x.csv")
+
 df.x.std(), df.x.var()         # pandas divides by n - 1, like R
 ```
 :::
