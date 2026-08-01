@@ -44,16 +44,23 @@ dat <- tibble(
 dat |> cor() |> as_tibble(rownames = "variable") |> round2()
 ```
 ### SPSS
-```
+```{pspp}
+INSERT FILE='data/sim/ch15-tangled.sps'.
 CORRELATIONS /VARIABLES=y x1 x2.
 ```
 ### Julia
-```julia
+```{julia}
+using CSV, DataFrames
+df = CSV.read("data/sim/ch15-tangled.csv", DataFrame)
+
 using Statistics
 cor(Matrix(df))
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
+df = pd.read_csv("data/sim/ch15-tangled.csv")
+
 df.corr().round(2)
 ```
 :::
@@ -67,16 +74,23 @@ lm3 <- lm(y ~ x1 + x2, data = dat)
 tidy2(lm3)
 ```
 ### SPSS
-```
+```{pspp}
+INSERT FILE='data/sim/ch15-tangled.sps'.
 REGRESSION /STATISTICS COEFF R ANOVA /DEPENDENT y /METHOD=ENTER x1 x2.
 ```
 ### Julia
-```julia
+```{julia}
+using CSV, DataFrames
+df = CSV.read("data/sim/ch15-tangled.csv", DataFrame)
+
 using GLM
 coeftable(lm(@formula(y ~ x1 + x2), df))
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
+df = pd.read_csv("data/sim/ch15-tangled.csv")
+
 import statsmodels.formula.api as smf
 smf.ols("y ~ x1 + x2", data=df).fit().params
 ```
@@ -121,12 +135,16 @@ lm3z <- lm(y ~ x1 + x2, data = datz)
 tidy2(lm3z) |> filter(term == "x1")   # compare to beta above
 ```
 ### SPSS
-```
+```{pspp}
+INSERT FILE='data/sim/ch15-tangled.sps'.
 * REGRESSION prints the standardized Beta by default.
 REGRESSION /STATISTICS COEFF R ANOVA /DEPENDENT y /METHOD=ENTER x1 x2.
 ```
 ### Julia
-```julia
+```{julia}
+using CSV, DataFrames
+df = CSV.read("data/sim/ch15-tangled.csv", DataFrame)
+
 using GLM, Statistics
 df.zy  = (df.y  .- mean(df.y))  ./ std(df.y)
 df.zx1 = (df.x1 .- mean(df.x1)) ./ std(df.x1)
@@ -134,7 +152,10 @@ df.zx2 = (df.x2 .- mean(df.x2)) ./ std(df.x2)
 coeftable(lm(@formula(zy ~ zx1 + zx2), df))
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
+df = pd.read_csv("data/sim/ch15-tangled.csv")
+
 import statsmodels.formula.api as smf
 zd = df.apply(lambda v: (v - v.mean()) / v.std())   # z-score every column
 smf.ols("y ~ x1 + x2", data=zd).fit().params
@@ -273,21 +294,34 @@ anova(lm(y ~ x2 + x1, data = d2)) |>
   tidy() |> slice(1:2) |> select(term, sumsq) |> round2()
 ```
 ### SPSS
-```
+```{pspp}
+INSERT FILE='data/sim/ch15-typess.sps'.
 * Type I (sequential) sums of squares; DESIGN order sets the entry order.
 UNIANOVA y WITH x1 x2 /METHOD=SSTYPE(1) /DESIGN=x1 x2.
 UNIANOVA y WITH x1 x2 /METHOD=SSTYPE(1) /DESIGN=x2 x1.
 ```
 ### Julia
-```julia
-using GLM, StatsModels
-# R's anova() gives Type I (sequential) sums of squares, so the split
-# depends on term order; swap the formula terms to change the credit.
-anova(lm(@formula(y ~ x1 + x2), df))
-anova(lm(@formula(y ~ x2 + x1), df))
+```{julia}
+using CSV, DataFrames
+df = CSV.read("data/sim/ch15-typess.csv", DataFrame)
+
+using GLM
+# Julia's GLM has no anova() table. Its equivalent is ftest() over NESTED
+# models, which is what a Type I split really is: add one term at a time and
+# ask what each addition bought. Swap the order and the credit moves.
+ftest(lm(@formula(y ~ 1), df).model,
+      lm(@formula(y ~ x1), df).model,
+      lm(@formula(y ~ x1 + x2), df).model)
+
+ftest(lm(@formula(y ~ 1), df).model,
+      lm(@formula(y ~ x2), df).model,
+      lm(@formula(y ~ x2 + x1), df).model)
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
+df = pd.read_csv("data/sim/ch15-typess.csv")
+
 import statsmodels.formula.api as smf
 from statsmodels.stats.anova import anova_lm
 
@@ -316,20 +350,30 @@ tibble(x1_unique = x1_unique,   # what x1 adds, controlling x2
   round2()
 ```
 ### SPSS
-```
+```{pspp}
+INSERT FILE='data/sim/ch15-typess.sps'.
 * Type III (unique / "each last") sums of squares; SPSS's default.
 UNIANOVA y WITH x1 x2 /METHOD=SSTYPE(3) /DESIGN=x1 x2.
 ```
 ### Julia
-```julia
-using GLM, StatsModels
-# Type III (unique) sums of squares: each term controlling for all others.
-# SPSS defaults to Type III; R's anova() gives Type I, so build it from
-# the full model down (drop one term at a time), as the R tab does.
-anova(lm(@formula(y ~ x1 + x2), df))
+```{julia}
+using CSV, DataFrames
+df = CSV.read("data/sim/ch15-typess.csv", DataFrame)
+
+using GLM
+# Type III (unique): compare the FULL model against the model with one term
+# dropped, which is exactly "what does this predictor add, controlling for
+# everything else".
+full = lm(@formula(y ~ x1 + x2), df)
+
+ftest(lm(@formula(y ~ x2), df).model, full.model)   # what x1 adds
+ftest(lm(@formula(y ~ x1), df).model, full.model)   # what x2 adds
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
+df = pd.read_csv("data/sim/ch15-typess.csv")
+
 import statsmodels.formula.api as smf
 from statsmodels.stats.anova import anova_lm
 
@@ -405,17 +449,22 @@ tidy2(fit)
 glance(fit) |> select(r.squared, adj.r.squared) |> round2()
 ```
 ### SPSS
-```
+```{pspp}
+GET DATA /TYPE=TXT /FILE='data/gpa.csv'
+  /DELIMITERS=',' /QUALIFIER='"' /FIRSTCASE=2
+  /VARIABLES=CollegeGPA F16.6 HSGPA F16.6 SATtotal F16.6 QLOR F16.6.
 REGRESSION /STATISTICS COEFF R ANOVA
   /DEPENDENT CollegeGPA /METHOD=ENTER HSGPA SATtotal QLOR.
 ```
 ### Julia
-```julia
-using GLM
-coeftable(lm(@formula(CollegeGPA ~ HSGPA + SATtotal + QLOR), df))
+```{julia}
+using CSV, DataFrames, GLM
+gpa = CSV.read("data/gpa.csv", DataFrame)
+
+coeftable(lm(@formula(CollegeGPA ~ HSGPA + SATtotal + QLOR), gpa))
 ```
 ### Python
-```python
+```{python}
 import pandas as pd
 import statsmodels.formula.api as smf
 gpa = pd.read_csv("data/gpa.csv")

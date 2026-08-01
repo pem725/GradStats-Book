@@ -53,44 +53,37 @@ tibble(factor_number = seq_along(ev), eigenvalue = ev) |>
   theme_book()
 ```
 ### SPSS
-```
+```{pspp}
 * Twelve items built from three hidden factors, then the scree plot.
-* (Assumes item1 to item12 are already the active dataset.)
+INSERT FILE='data/sim/ch28-curiosity.sps'.
+
 FACTOR
-  /VARIABLES item1 TO item12
+  /VARIABLES item1 item2 item3 item4 item5 item6
+             item7 item8 item9 item10 item11 item12
   /EXTRACTION PC
   /PRINT INITIAL EXTRACTION
   /PLOT EIGEN.
 ```
 ### Julia
-```julia
-using Random, Distributions, Statistics, LinearAlgebra, DataFrames, Plots
-Random.seed!(2026)
-N, load = 500, 0.75
-F = [rand(Normal(), N) for _ in 1:3]                # three hidden factors
-mk(f) = load .* f .+ rand(Normal(0, sqrt(1 - load^2)), N)
+```{julia}
+using CSV, DataFrames, Statistics, LinearAlgebra, Plots
+items = CSV.read("data/sim/ch28-curiosity.csv", DataFrame)
 
-items = DataFrame([Symbol("item", i) => mk(F[cld(i, 4)]) for i in 1:12])
-ev = eigvals(cor(Matrix(items))) |> reverse         # eigenvalues, largest first
+ev = reverse(eigvals(cor(Matrix(items))))    # eigenvalues, largest first
 
-plot(1:12, ev, marker = :circle, legend = false,
+plot(1:length(ev), ev, marker = :circle, legend = false,
      xlabel = "Factor number", ylabel = "Eigenvalue")
-hline!([1], linestyle = :dash, color = :firebrick)  # Kaiser's "keep it if > 1"
+hline!([1], linestyle = :dash, color = :firebrick)   # Kaiser's "keep it if > 1"
 ```
 ### Python
-```python
+```{python}
 import numpy as np, pandas as pd
 import matplotlib.pyplot as plt
 
-rng = np.random.default_rng(2026)
-N, load = 500, 0.75
-F = [rng.normal(size=N) for _ in range(3)]          # three hidden factors
-mk = lambda f: load * f + rng.normal(0, np.sqrt(1 - load**2), N)
-
-items = pd.DataFrame({f"item{i+1}": mk(F[i // 4]) for i in range(12)})
+items = pd.read_csv("data/sim/ch28-curiosity.csv")
 ev = np.sort(np.linalg.eigvals(items.corr()).real)[::-1]
 
-plt.plot(range(1, 13), ev, marker="o", color="steelblue")
+plt.plot(range(1, len(ev) + 1), ev, marker="o", color="steelblue")
 plt.axhline(1, linestyle="--", color="firebrick")   # Kaiser's "keep it if > 1"
 plt.xlabel("Factor number"); plt.ylabel("Eigenvalue")
 plt.show()
@@ -104,17 +97,26 @@ plt.show()
 tibble(factors_above_1 = sum(ev > 1))
 ```
 ### SPSS
-```
-* How many factors the data suggest: count the eigenvalues above 1.
-* SPSS reports this directly in the FACTOR output above - the number of
-* components retained under the default Kaiser (eigenvalue > 1) rule.
+```{pspp}
+* How many factors the data suggest: the count of eigenvalues above 1.
+* FACTOR reports this directly - it is the number of components retained
+* under the default Kaiser rule in the output above.
 ```
 ### Julia
-```julia
+```{julia}
+using CSV, DataFrames, Statistics, LinearAlgebra
+items = CSV.read("data/sim/ch28-curiosity.csv", DataFrame)
+ev = reverse(eigvals(cor(Matrix(items))))
+
 count(>(1), ev)                 # how many factors the data suggest
 ```
 ### Python
-```python
+```{python}
+import numpy as np, pandas as pd
+
+items = pd.read_csv("data/sim/ch28-curiosity.csv")
+ev = np.sort(np.linalg.eigvals(items.corr()).real)[::-1]
+
 (ev > 1).sum()                  # how many factors the data suggest
 ```
 :::

@@ -77,20 +77,27 @@ tidy2(lm1)              # the coefficient table
 glance(lm1) |> round2() # R-squared, residual SE, overall F
 ```
 ### SPSS
-```
+```{pspp}
+INSERT FILE='data/sim/ch14-toy.sps'.
 REGRESSION
   /STATISTICS COEFF R ANOVA
   /DEPENDENT y
   /METHOD=ENTER x.
 ```
 ### Julia
-```julia
+```{julia}
+using CSV, DataFrames
+df = CSV.read("data/sim/ch14-toy.csv", DataFrame)
+
 using GLM
 m1 = lm(@formula(y ~ x), df)
 coeftable(m1)
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
+df = pd.read_csv("data/sim/ch14-toy.csv")
+
 import statsmodels.formula.api as smf
 m1 = smf.ols("y ~ x", data=df).fit()
 m1.summary()
@@ -264,7 +271,8 @@ lm2 <- lm(y ~ x - 1, data = toy_z)
 tidy2(lm2)
 ```
 ### SPSS
-```
+```{pspp}
+INSERT FILE='data/sim/ch14-toy.sps'.
 * SPSS prints the standardized Beta in the coefficients table by default,
 * so the ordinary regression yields the standardized slope with no extra steps.
 REGRESSION
@@ -273,7 +281,10 @@ REGRESSION
   /METHOD=ENTER x.
 ```
 ### Julia
-```julia
+```{julia}
+using CSV, DataFrames
+df = CSV.read("data/sim/ch14-toy.csv", DataFrame)
+
 using GLM, Statistics
 z(v) = (v .- mean(v)) ./ std(v)
 df2 = DataFrame(y = z(df.y), x = z(df.x))
@@ -281,7 +292,10 @@ lm2 = lm(@formula(y ~ x - 1), df2)
 coeftable(lm2)
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
+df = pd.read_csv("data/sim/ch14-toy.csv")
+
 import statsmodels.formula.api as smf
 
 def z(v):
@@ -320,20 +334,25 @@ tidy2(lm3)
 glance(lm3) |> round2()
 ```
 ### SPSS
-```
+```{pspp}
+GET DATA /TYPE=TXT /FILE='data/gpa.csv'
+  /DELIMITERS=',' /QUALIFIER='"' /FIRSTCASE=2
+  /VARIABLES=CollegeGPA F16.6 HSGPA F16.6 SATtotal F16.6 QLOR F16.6.
 REGRESSION
   /STATISTICS COEFF R ANOVA
   /DEPENDENT CollegeGPA
   /METHOD=ENTER HSGPA.
 ```
 ### Julia
-```julia
-using GLM
-lm3 = lm(@formula(CollegeGPA ~ HSGPA), df)
+```{julia}
+using CSV, DataFrames, GLM
+gpa = CSV.read("data/gpa.csv", DataFrame)
+
+lm3 = lm(@formula(CollegeGPA ~ HSGPA), gpa)
 coeftable(lm3)
 ```
 ### Python
-```python
+```{python}
 import pandas as pd
 import statsmodels.formula.api as smf
 gpa = pd.read_csv("data/gpa.csv")

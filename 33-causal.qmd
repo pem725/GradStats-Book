@@ -46,50 +46,36 @@ fork |>
   round2()
 ```
 ### SPSS
-```
-* The Fork: Z causes both X and Y, so X and Y correlate with no arrow
-* between them. Controlling Z makes the association vanish.
-INPUT PROGRAM.
-LOOP #i = 1 TO 2000.
-  COMPUTE Z = RV.NORMAL(0, 1).
-  COMPUTE X = Z + RV.NORMAL(0, 1).
-  COMPUTE Y = Z + RV.NORMAL(0, 1).
-  END CASE.
-END LOOP.
-END FILE.
-END INPUT PROGRAM.
-EXECUTE.
+```{pspp}
+* PSPP has not implemented PARTIAL CORR, but a partial correlation IS the
+* correlation between two sets of residuals, so we can build it directly -
+* which is exactly what the R tab does.
+INSERT FILE='data/sim/ch24-fork.sps'.
 
-* Naive association.
+* The naive association.
 CORRELATIONS /VARIABLES=X Y.
-* Partial correlation controlling Z - the same thing as correlating residuals.
-PARTIAL CORR /VARIABLES=X Y BY Z.
+
+* Now control Z and correlate what is left over.
+REGRESSION /DEPENDENT X /METHOD=ENTER Z /SAVE RESID.
+REGRESSION /DEPENDENT Y /METHOD=ENTER Z /SAVE RESID.
+CORRELATIONS /VARIABLES=RES1 RES2.
 ```
 ### Julia
-```julia
-using Random, Distributions, Statistics, GLM, DataFrames
-Random.seed!(4)
-n = 2000
-fork = DataFrame(Z = rand(Normal(), n))
-fork.X = fork.Z .+ rand(Normal(), n)
-fork.Y = fork.Z .+ rand(Normal(), n)
+```{julia}
+using CSV, DataFrames, Statistics, GLM
+fork = CSV.read("data/sim/ch24-fork.csv", DataFrame)
 
-cor(fork.X, fork.Y)                                  # spurious association
+cor(fork.X, fork.Y)                       # spurious association
 cor(residuals(lm(@formula(X ~ Z), fork)),
-    residuals(lm(@formula(Y ~ Z), fork)))            # control Z: it vanishes
+    residuals(lm(@formula(Y ~ Z), fork)))   # control Z: it vanishes
 ```
 ### Python
-```python
+```{python}
 import numpy as np, pandas as pd
 import statsmodels.formula.api as smf
+fork = pd.read_csv("data/sim/ch24-fork.csv")
 
-rng = np.random.default_rng(4)
-n = 2000
-fork = pd.DataFrame({"Z": rng.normal(size=n)})
-fork["X"] = fork.Z + rng.normal(size=n)
-fork["Y"] = fork.Z + rng.normal(size=n)
-
-fork.X.corr(fork.Y)                                  # spurious association
+fork.X.corr(fork.Y)                       # spurious association
 np.corrcoef(smf.ols("X ~ Z", fork).fit().resid,
             smf.ols("Y ~ Z", fork).fit().resid)[0, 1]   # control Z: it vanishes
 ```
@@ -112,44 +98,38 @@ pipe |>
   round2()
 ```
 ### SPSS
-```
-* The Pipe: the effect runs X -> M -> Y. Controlling M blocks the very
-* effect you were trying to measure (post-treatment bias).
-INPUT PROGRAM.
-LOOP #i = 1 TO 2000.
-  COMPUTE X = RV.NORMAL(0, 1).
-  COMPUTE M = X + RV.NORMAL(0, 1).
-  COMPUTE Y = M + RV.NORMAL(0, 1).
-  END CASE.
-END LOOP.
-END FILE.
-END INPUT PROGRAM.
-EXECUTE.
+```{pspp}
+* PSPP has not implemented PARTIAL CORR, but a partial correlation IS the
+* correlation between two sets of residuals, so we can build it directly -
+* which is exactly what the R tab does.
+INSERT FILE='data/sim/ch24-pipe.sps'.
 
+* The naive association.
 CORRELATIONS /VARIABLES=X Y.
-PARTIAL CORR /VARIABLES=X Y BY M.
+
+* Now control M and correlate what is left over.
+REGRESSION /DEPENDENT X /METHOD=ENTER M /SAVE RESID.
+REGRESSION /DEPENDENT Y /METHOD=ENTER M /SAVE RESID.
+CORRELATIONS /VARIABLES=RES1 RES2.
 ```
 ### Julia
-```julia
-Random.seed!(5)
-pipe = DataFrame(X = rand(Normal(), n))
-pipe.M = pipe.X .+ rand(Normal(), n)
-pipe.Y = pipe.M .+ rand(Normal(), n)
+```{julia}
+using CSV, DataFrames, Statistics, GLM
+pipe = CSV.read("data/sim/ch24-pipe.csv", DataFrame)
 
-cor(pipe.X, pipe.Y)                                  # the real, total effect
+cor(pipe.X, pipe.Y)                       # the real, total effect
 cor(residuals(lm(@formula(X ~ M), pipe)),
-    residuals(lm(@formula(Y ~ M), pipe)))            # control M: effect blocked
+    residuals(lm(@formula(Y ~ M), pipe)))   # control M: effect blocked
 ```
 ### Python
-```python
-rng = np.random.default_rng(5)
-pipe = pd.DataFrame({"X": rng.normal(size=n)})
-pipe["M"] = pipe.X + rng.normal(size=n)
-pipe["Y"] = pipe.M + rng.normal(size=n)
+```{python}
+import numpy as np, pandas as pd
+import statsmodels.formula.api as smf
+pipe = pd.read_csv("data/sim/ch24-pipe.csv")
 
-pipe.X.corr(pipe.Y)                                  # the real, total effect
+pipe.X.corr(pipe.Y)                       # the real, total effect
 np.corrcoef(smf.ols("X ~ M", pipe).fit().resid,
-            smf.ols("Y ~ M", pipe).fit().resid)[0, 1]   # control M: blocked
+            smf.ols("Y ~ M", pipe).fit().resid)[0, 1]   # control M: effect blocked
 ```
 :::
 
@@ -170,40 +150,36 @@ collider |>
   round2()
 ```
 ### SPSS
-```
-* The Collider: X and Y both cause Z and are genuinely unrelated.
-* Conditioning on Z CREATES an association that was never there.
-INPUT PROGRAM.
-LOOP #i = 1 TO 2000.
-  COMPUTE X = RV.NORMAL(0, 1).
-  COMPUTE Y = RV.NORMAL(0, 1).
-  COMPUTE Z = X + Y + RV.NORMAL(0, 1).
-  END CASE.
-END LOOP.
-END FILE.
-END INPUT PROGRAM.
-EXECUTE.
+```{pspp}
+* PSPP has not implemented PARTIAL CORR, but a partial correlation IS the
+* correlation between two sets of residuals, so we can build it directly -
+* which is exactly what the R tab does.
+INSERT FILE='data/sim/ch24-collider.sps'.
 
+* The naive association.
 CORRELATIONS /VARIABLES=X Y.
-PARTIAL CORR /VARIABLES=X Y BY Z.
+
+* Now control Z and correlate what is left over.
+REGRESSION /DEPENDENT X /METHOD=ENTER Z /SAVE RESID.
+REGRESSION /DEPENDENT Y /METHOD=ENTER Z /SAVE RESID.
+CORRELATIONS /VARIABLES=RES1 RES2.
 ```
 ### Julia
-```julia
-Random.seed!(6)
-collider = DataFrame(X = rand(Normal(), n), Y = rand(Normal(), n))
-collider.Z = collider.X .+ collider.Y .+ rand(Normal(), n)
+```{julia}
+using CSV, DataFrames, Statistics, GLM
+collider = CSV.read("data/sim/ch24-collider.csv", DataFrame)
 
-cor(collider.X, collider.Y)                          # correctly ~ 0
+cor(collider.X, collider.Y)                       # correctly ~ 0
 cor(residuals(lm(@formula(X ~ Z), collider)),
-    residuals(lm(@formula(Y ~ Z), collider)))        # control Z: spurious!
+    residuals(lm(@formula(Y ~ Z), collider)))   # control Z: spurious!
 ```
 ### Python
-```python
-rng = np.random.default_rng(6)
-collider = pd.DataFrame({"X": rng.normal(size=n), "Y": rng.normal(size=n)})
-collider["Z"] = collider.X + collider.Y + rng.normal(size=n)
+```{python}
+import numpy as np, pandas as pd
+import statsmodels.formula.api as smf
+collider = pd.read_csv("data/sim/ch24-collider.csv")
 
-collider.X.corr(collider.Y)                          # correctly ~ 0
+collider.X.corr(collider.Y)                       # correctly ~ 0
 np.corrcoef(smf.ols("X ~ Z", collider).fit().resid,
             smf.ols("Y ~ Z", collider).fit().resid)[0, 1]   # control Z: spurious!
 ```
