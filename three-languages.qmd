@@ -40,17 +40,25 @@ d |>
   round2()
 ```
 ### SPSS
-```
+```{pspp}
+INSERT FILE='data/sim/appendix-d.sps'.
 DESCRIPTIVES VARIABLES=x y
   /STATISTICS=MEAN STDDEV MIN MAX.
 ```
 ### Julia
-```julia
-using Statistics, DataFrames
+```{julia}
+using CSV, DataFrames, CategoricalArrays
+d = CSV.read("data/sim/appendix-d.csv", DataFrame)
+d.group = categorical(d.group)
+
+using Statistics
 describe(d[:, [:x, :y]], :mean, :std, :min, :max)
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
+d = pd.read_csv("data/sim/appendix-d.csv")
+
 d[["x", "y"]].describe().loc[["mean", "std", "min", "max"]]
 ```
 :::
@@ -63,17 +71,25 @@ d[["x", "y"]].describe().loc[["mean", "std", "min", "max"]]
 d |> summarise(r = cor(x, y)) |> round2()
 ```
 ### SPSS
-```
+```{pspp}
+INSERT FILE='data/sim/appendix-d.sps'.
 CORRELATIONS
   /VARIABLES=x y.
 ```
 ### Julia
-```julia
+```{julia}
+using CSV, DataFrames, CategoricalArrays
+d = CSV.read("data/sim/appendix-d.csv", DataFrame)
+d.group = categorical(d.group)
+
 using Statistics
 cor(d.x, d.y)
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
+d = pd.read_csv("data/sim/appendix-d.csv")
+
 d.x.corr(d.y)
 ```
 :::
@@ -89,17 +105,25 @@ t.test(y ~ group, data = d) |>
   round2()
 ```
 ### SPSS
-```
+```{pspp}
+INSERT FILE='data/sim/appendix-d.sps'.
 T-TEST GROUPS=group('A' 'B')
   /VARIABLES=y.
 ```
 ### Julia
-```julia
+```{julia}
+using CSV, DataFrames, CategoricalArrays
+d = CSV.read("data/sim/appendix-d.csv", DataFrame)
+d.group = categorical(d.group)
+
 using HypothesisTests
 UnequalVarianceTTest(d.y[d.group .== "A"], d.y[d.group .== "B"])
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
+d = pd.read_csv("data/sim/appendix-d.csv")
+
 from scipy import stats
 stats.ttest_ind(d.y[d.group == "A"], d.y[d.group == "B"], equal_var=False)
 ```
@@ -113,20 +137,28 @@ stats.ttest_ind(d.y[d.group == "A"], d.y[d.group == "B"], equal_var=False)
 tidy2(lm(y ~ x, data = d))
 ```
 ### SPSS
-```
+```{pspp}
+INSERT FILE='data/sim/appendix-d.sps'.
 REGRESSION
   /DEPENDENT y
   /METHOD=ENTER x.
 ```
 ### Julia
-```julia
-using GLM, DataFrames
+```{julia}
+using CSV, DataFrames, CategoricalArrays
+d = CSV.read("data/sim/appendix-d.csv", DataFrame)
+d.group = categorical(d.group)
+
+using GLM
 coeftable(lm(@formula(y ~ x), d))
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
+d = pd.read_csv("data/sim/appendix-d.csv")
+
 import statsmodels.formula.api as smf
-smf.ols("y ~ x", data=d).fit().summary()
+print(smf.ols("y ~ x", data=d).fit().summary())
 ```
 :::
 
@@ -141,21 +173,29 @@ aov(y ~ group, data = d) |>
   round2()
 ```
 ### SPSS
-```
+```{pspp}
+INSERT FILE='data/sim/appendix-d.sps'.
 ONEWAY y BY group
   /STATISTICS DESCRIPTIVES.
 ```
 ### Julia
-```julia
+```{julia}
+using CSV, DataFrames, CategoricalArrays
+d = CSV.read("data/sim/appendix-d.csv", DataFrame)
+d.group = categorical(d.group)
+
 using GLM
 m = lm(@formula(y ~ group), d)
 ftest(m.model)          # overall F test for the group effect
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
+d = pd.read_csv("data/sim/appendix-d.csv")
+
 import statsmodels.formula.api as smf
 from statsmodels.stats.anova import anova_lm
-anova_lm(smf.ols("y ~ group", data=d).fit())   # overall F test for the group effect
+anova_lm(smf.ols("y ~ group", data=d).fit())   # overall F for the group effect
 ```
 :::
 
@@ -175,23 +215,39 @@ tibble(component  = paste0("PC", 1:4),
   round2()
 ```
 ### SPSS
-```
+```{pspp}
+INSERT FILE='data/sim/appendix-items.sps'.
 FACTOR
-  /VARIABLES x1 x2 x3 x4
+  /VARIABLES item1 item2 item3 item4
   /EXTRACTION PC
+  /PRINT INITIAL EXTRACTION
   /ROTATION VARIMAX.
 ```
 ### Julia
-```julia
-using MultivariateStats
-M = fit(PCA, Matrix(it)'; maxoutdim = 4)
+```{julia}
+using CSV, DataFrames, MultivariateStats, Statistics
+it = CSV.read("data/sim/appendix-items.csv", DataFrame)
+
+# standardise first, so these are eigenvalues of the CORRELATION matrix -
+# the same thing prcomp(scale. = TRUE) and StandardScaler give the other tabs
+X = Matrix(it)
+Z = (X .- mean(X, dims = 1)) ./ std(X, dims = 1)
+
+M = fit(PCA, Z'; maxoutdim = 4)
 principalvars(M)        # variance along each component
 ```
 ### Python
-```python
+```{python}
+import pandas as pd
 from sklearn.decomposition import PCA
-from sklearn.preprocessing import StandardScaler
-z = StandardScaler().fit_transform(it)
+
+it = pd.read_csv("data/sim/appendix-items.csv")
+
+# standardise with the SAMPLE sd (n - 1). StandardScaler divides by the
+# population sd, which would shift every eigenvalue by a factor of n/(n-1)
+# and quietly disagree with the R and Julia tabs.
+z = (it - it.mean()) / it.std()
+
 PCA().fit(z).explained_variance_    # variance along each component
 ```
 :::
