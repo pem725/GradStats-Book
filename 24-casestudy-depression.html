@@ -1043,7 +1043,8 @@ LIST VARIABLES=total.</code></pre>
 </div>
 </div>
 <div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
-<pre><code>* Simulate 1200 people answering 21 graded (0..3) BDI-II-like items from a
+<div class="cell">
+<pre class="pspp cell-code"><code>* Simulate 1200 people answering 21 graded (0..3) BDI-II-like items from a
 * single latent severity dimension, then pull two who both scored 15.
 * (Item names s1 to s21; theta is the person's latent severity.)
 INPUT PROGRAM.
@@ -1067,50 +1068,64 @@ TEMPORARY.
 SELECT IF (total = 15).
 LIST VARIABLES=s1 TO s21 /CASES=2.</code></pre>
 </div>
+</div>
 <div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Random</span>, <span class="bu">Distributions</span>, <span class="bu">DataFrames</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="bu">Random</span>.<span class="fu">seed!</span>(<span class="fl">2026</span>)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>N, k <span class="op">=</span> <span class="fl">1200</span>, <span class="fl">21</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>symptoms <span class="op">=</span> [<span class="st">"sadness"</span>,<span class="st">"pessimism"</span>,<span class="st">"past_failure"</span>,<span class="st">"loss_pleasure"</span>,<span class="st">"guilt"</span>,</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>            <span class="st">"punishment"</span>,<span class="st">"self_dislike"</span>,<span class="st">"self_critical"</span>,<span class="st">"suicidal"</span>,<span class="st">"crying"</span>,</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>            <span class="st">"agitation"</span>,<span class="st">"loss_interest"</span>,<span class="st">"indecision"</span>,<span class="st">"worthlessness"</span>,</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>            <span class="st">"loss_energy"</span>,<span class="st">"sleep"</span>,<span class="st">"irritability"</span>,<span class="st">"appetite"</span>,<span class="st">"concentration"</span>,</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>            <span class="st">"tiredness"</span>,<span class="st">"loss_sex_interest"</span>]</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>theta <span class="op">=</span> <span class="fu">rand</span>(<span class="fu">Normal</span>(<span class="op">-</span><span class="fl">0.5</span>, <span class="fl">1</span>), N)</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>diff  <span class="op">=</span> <span class="fu">sort</span>(<span class="fu">rand</span>(<span class="fu">Normal</span>(<span class="fl">2.6</span>, <span class="fl">1.3</span>), k))</span>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch27-bdi.csv"</span>, DataFrame)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Random</span>, <span class="bu">Distributions</span>, <span class="bu">DataFrames</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="bu">Random</span>.<span class="fu">seed!</span>(<span class="fl">2026</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>N, k <span class="op">=</span> <span class="fl">1200</span>, <span class="fl">21</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>symptoms <span class="op">=</span> [<span class="st">"sadness"</span>,<span class="st">"pessimism"</span>,<span class="st">"past_failure"</span>,<span class="st">"loss_pleasure"</span>,<span class="st">"guilt"</span>,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>            <span class="st">"punishment"</span>,<span class="st">"self_dislike"</span>,<span class="st">"self_critical"</span>,<span class="st">"suicidal"</span>,<span class="st">"crying"</span>,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>            <span class="st">"agitation"</span>,<span class="st">"loss_interest"</span>,<span class="st">"indecision"</span>,<span class="st">"worthlessness"</span>,</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>            <span class="st">"loss_energy"</span>,<span class="st">"sleep"</span>,<span class="st">"irritability"</span>,<span class="st">"appetite"</span>,<span class="st">"concentration"</span>,</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>            <span class="st">"tiredness"</span>,<span class="st">"loss_sex_interest"</span>]</span>
 <span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>bdi <span class="op">=</span> <span class="fu">DataFrame</span>([<span class="fu">Symbol</span>(symptoms[j]) <span class="op">=&gt;</span></span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>        [<span class="fu">sum</span>(<span class="fu">rand</span>() <span class="op">&lt;</span> <span class="fl">1</span><span class="op">/</span>(<span class="fl">1</span><span class="fu">+exp</span>(<span class="fu">-</span>(t <span class="op">-</span> (diff[j] <span class="op">+</span> s)))) for s <span class="kw">in</span> (<span class="op">-</span><span class="fl">1.1</span>, <span class="fl">0</span>, <span class="fl">1.1</span>))</span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>         for t <span class="kw">in</span> theta] for j <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span>k])</span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>totals <span class="op">=</span> <span class="fu">sum</span>(<span class="fu">eachcol</span>(bdi))</span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>pair <span class="op">=</span> <span class="fu">findall</span>(<span class="op">==</span>(<span class="fl">15</span>), totals)[<span class="fl">1</span><span class="op">:</span><span class="fl">2</span>]</span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>bdi[pair, <span class="op">:</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>theta <span class="op">=</span> <span class="fu">rand</span>(<span class="fu">Normal</span>(<span class="op">-</span><span class="fl">0.5</span>, <span class="fl">1</span>), N)</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>diff  <span class="op">=</span> <span class="fu">sort</span>(<span class="fu">rand</span>(<span class="fu">Normal</span>(<span class="fl">2.6</span>, <span class="fl">1.3</span>), k))</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>bdi <span class="op">=</span> <span class="fu">DataFrame</span>([<span class="fu">Symbol</span>(symptoms[j]) <span class="op">=&gt;</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>        [<span class="fu">sum</span>(<span class="fu">rand</span>() <span class="op">&lt;</span> <span class="fl">1</span><span class="op">/</span>(<span class="fl">1</span><span class="fu">+exp</span>(<span class="fu">-</span>(t <span class="op">-</span> (diff[j] <span class="op">+</span> s)))) for s <span class="kw">in</span> (<span class="op">-</span><span class="fl">1.1</span>, <span class="fl">0</span>, <span class="fl">1.1</span>))</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>         for t <span class="kw">in</span> theta] for j <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span>k])</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>totals <span class="op">=</span> <span class="fu">sum</span>(<span class="fu">eachcol</span>(bdi))</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>pair <span class="op">=</span> <span class="fu">findall</span>(<span class="op">==</span>(<span class="fl">15</span>), totals)[<span class="fl">1</span><span class="op">:</span><span class="fl">2</span>]</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>bdi[pair, <span class="op">:</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Segmentation fault (core dumped)</code></pre>
+</div>
+</div>
 </div>
 <div id="tabset-2-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-4-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np, pandas <span class="im">as</span> pd</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">2026</span>)</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>N, k <span class="op">=</span> <span class="dv">1200</span>, <span class="dv">21</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>symptoms <span class="op">=</span> [<span class="st">"sadness"</span>,<span class="st">"pessimism"</span>,<span class="st">"past_failure"</span>,<span class="st">"loss_pleasure"</span>,<span class="st">"guilt"</span>,</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>            <span class="st">"punishment"</span>,<span class="st">"self_dislike"</span>,<span class="st">"self_critical"</span>,<span class="st">"suicidal"</span>,<span class="st">"crying"</span>,</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>            <span class="st">"agitation"</span>,<span class="st">"loss_interest"</span>,<span class="st">"indecision"</span>,<span class="st">"worthlessness"</span>,</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>            <span class="st">"loss_energy"</span>,<span class="st">"sleep"</span>,<span class="st">"irritability"</span>,<span class="st">"appetite"</span>,<span class="st">"concentration"</span>,</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>            <span class="st">"tiredness"</span>,<span class="st">"loss_sex_interest"</span>]</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>theta <span class="op">=</span> rng.normal(<span class="op">-</span><span class="fl">0.5</span>, <span class="dv">1</span>, N)</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>diff  <span class="op">=</span> np.sort(rng.normal(<span class="fl">2.6</span>, <span class="fl">1.3</span>, k))</span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> item(j):                                   <span class="co"># P(score &gt;= 1, 2, 3)</span></span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    p <span class="op">=</span> <span class="dv">1</span> <span class="op">/</span> (<span class="dv">1</span> <span class="op">+</span> np.exp(<span class="op">-</span>(theta[:, <span class="va">None</span>] <span class="op">-</span> (diff[j] <span class="op">+</span> np.array([<span class="op">-</span><span class="fl">1.1</span>, <span class="dv">0</span>, <span class="fl">1.1</span>])))))</span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (rng.random((N, <span class="dv">3</span>)) <span class="op">&lt;</span> p).<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>bdi <span class="op">=</span> pd.DataFrame({s: item(j) <span class="cf">for</span> j, s <span class="kw">in</span> <span class="bu">enumerate</span>(symptoms)})</span>
-<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>totals <span class="op">=</span> bdi.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>pair <span class="op">=</span> totals[totals <span class="op">==</span> <span class="dv">15</span>].index[:<span class="dv">2</span>]           <span class="co"># two people, identical total</span></span>
-<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>bdi.loc[pair].T</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"data/sim/ch27-bdi.csv"</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np, pandas <span class="im">as</span> pd</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">2026</span>)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>N, k <span class="op">=</span> <span class="dv">1200</span>, <span class="dv">21</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>symptoms <span class="op">=</span> [<span class="st">"sadness"</span>,<span class="st">"pessimism"</span>,<span class="st">"past_failure"</span>,<span class="st">"loss_pleasure"</span>,<span class="st">"guilt"</span>,</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>            <span class="st">"punishment"</span>,<span class="st">"self_dislike"</span>,<span class="st">"self_critical"</span>,<span class="st">"suicidal"</span>,<span class="st">"crying"</span>,</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>            <span class="st">"agitation"</span>,<span class="st">"loss_interest"</span>,<span class="st">"indecision"</span>,<span class="st">"worthlessness"</span>,</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>            <span class="st">"loss_energy"</span>,<span class="st">"sleep"</span>,<span class="st">"irritability"</span>,<span class="st">"appetite"</span>,<span class="st">"concentration"</span>,</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>            <span class="st">"tiredness"</span>,<span class="st">"loss_sex_interest"</span>]</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>theta <span class="op">=</span> rng.normal(<span class="op">-</span><span class="fl">0.5</span>, <span class="dv">1</span>, N)</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>diff  <span class="op">=</span> np.sort(rng.normal(<span class="fl">2.6</span>, <span class="fl">1.3</span>, k))</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> item(j):                                   <span class="co"># P(score &gt;= 1, 2, 3)</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    p <span class="op">=</span> <span class="dv">1</span> <span class="op">/</span> (<span class="dv">1</span> <span class="op">+</span> np.exp(<span class="op">-</span>(theta[:, <span class="va">None</span>] <span class="op">-</span> (diff[j] <span class="op">+</span> np.array([<span class="op">-</span><span class="fl">1.1</span>, <span class="dv">0</span>, <span class="fl">1.1</span>])))))</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (rng.random((N, <span class="dv">3</span>)) <span class="op">&lt;</span> p).<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>bdi <span class="op">=</span> pd.DataFrame({s: item(j) <span class="cf">for</span> j, s <span class="kw">in</span> <span class="bu">enumerate</span>(symptoms)})</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>totals <span class="op">=</span> bdi.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>pair <span class="op">=</span> totals[totals <span class="op">==</span> <span class="dv">15</span>].index[:<span class="dv">2</span>]           <span class="co"># two people, identical total</span></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>bdi.loc[pair].T</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </div>
 </div>
 </div>
@@ -1124,14 +1139,14 @@ LIST VARIABLES=s1 TO s21 /CASES=2.</code></pre>
 <div class="tab-content">
 <div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>key <span class="ot">&lt;-</span> bdi <span class="sc">|&gt;</span> <span class="fu">unite</span>(<span class="st">"profile"</span>, <span class="fu">everything</span>(), <span class="at">sep =</span> <span class="st">"-"</span>) <span class="sc">|&gt;</span> <span class="fu">pull</span>(profile)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">people            =</span> <span class="fu">nrow</span>(bdi),</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">distinct_profiles =</span> <span class="fu">n_distinct</span>(key),</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">pct_unique        =</span> <span class="dv">100</span> <span class="sc">*</span> <span class="fu">mean</span>(<span class="sc">!</span>(<span class="fu">duplicated</span>(key) <span class="sc">|</span> <span class="fu">duplicated</span>(key, <span class="at">fromLast =</span> <span class="cn">TRUE</span>)))</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>key <span class="ot">&lt;-</span> bdi <span class="sc">|&gt;</span> <span class="fu">unite</span>(<span class="st">"profile"</span>, <span class="fu">everything</span>(), <span class="at">sep =</span> <span class="st">"-"</span>) <span class="sc">|&gt;</span> <span class="fu">pull</span>(profile)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">people            =</span> <span class="fu">nrow</span>(bdi),</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">distinct_profiles =</span> <span class="fu">n_distinct</span>(key),</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">pct_unique        =</span> <span class="dv">100</span> <span class="sc">*</span> <span class="fu">mean</span>(<span class="sc">!</span>(<span class="fu">duplicated</span>(key) <span class="sc">|</span> <span class="fu">duplicated</span>(key, <span class="at">fromLast =</span> <span class="cn">TRUE</span>)))</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
@@ -1155,30 +1170,41 @@ LIST VARIABLES=s1 TO s21 /CASES=2.</code></pre>
 </div>
 </div>
 <div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
-<pre><code>* How many distinct 21-item profiles actually occur among 1200 people?
-* Concatenate the items into a single key, then count distinct keys.
-STRING profile (A63).
-COMPUTE profile = CONCAT(STRING(s1,F1), '-', STRING(s2,F1), '-', STRING(s3,F1)).
-* ... continue for s4 to s21 ...
+<div class="cell">
+<pre class="pspp cell-code"><code>* The book's simulated BDI-II-like responses: 1200 people, 21 items scored
+* 0-3. Pull two people who both scored exactly 15.
+INSERT FILE='data/sim/ch27-bdi.sps'.
+
+COMPUTE total = SUM(sadness TO loss_sex_interest).
 EXECUTE.
 
-AGGREGATE OUTFILE=* MODE=ADDVARIABLES
-  /BREAK=profile
-  /n_sharing=N.
-
-FREQUENCIES VARIABLES=n_sharing.</code></pre>
+TEMPORARY.
+SELECT IF (total = 15).
+LIST VARIABLES=sadness pessimism past_failure loss_pleasure guilt /CASES=2.</code></pre>
+</div>
 </div>
 <div id="tabset-3-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-3-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">StatsBase</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>key <span class="op">=</span> [<span class="fu">join</span>(r, <span class="st">"-"</span>) for r <span class="kw">in</span> <span class="fu">eachrow</span>(bdi)]</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(bdi), <span class="fu">length</span>(<span class="fu">unique</span>(key)),</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="fl">100</span> <span class="op">*</span> <span class="fu">mean</span>(<span class="fu">values</span>(<span class="fu">countmap</span>(key))[<span class="fu">indexin</span>(key, <span class="fu">collect</span>(<span class="fu">keys</span>(<span class="fu">countmap</span>(key))))] <span class="op">.==</span> <span class="fl">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>bdi <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch27-bdi.csv"</span>, DataFrame)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>totals <span class="op">=</span> <span class="fu">sum</span>(<span class="fu">eachcol</span>(bdi))</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>pair <span class="op">=</span> <span class="fu">findall</span>(<span class="op">==</span>(<span class="fl">15</span>), totals)[<span class="fl">1</span><span class="op">:</span><span class="fl">2</span>]     <span class="co"># two people, identical total of 15</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>bdi[pair, <span class="op">:</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Segmentation fault (core dumped)</code></pre>
+</div>
+</div>
 </div>
 <div id="tabset-3-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-4-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>key <span class="op">=</span> bdi.astype(<span class="bu">str</span>).agg(<span class="st">"-"</span>.join, axis<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="bu">len</span>(bdi), key.nunique(), <span class="dv">100</span> <span class="op">*</span> (key.<span class="bu">map</span>(key.value_counts()) <span class="op">==</span> <span class="dv">1</span>).mean()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>bdi <span class="op">=</span> pd.read_csv(<span class="st">"data/sim/ch27-bdi.csv"</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>totals <span class="op">=</span> bdi.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>pair <span class="op">=</span> totals[totals <span class="op">==</span> <span class="dv">15</span>].index[:<span class="dv">2</span>]   <span class="co"># two people, identical total of 15</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>bdi.loc[pair].T</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </div>
 </div>
 </div>
@@ -1192,22 +1218,22 @@ FREQUENCIES VARIABLES=n_sharing.</code></pre>
 <div class="tab-content">
 <div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># higher mean = more commonly endorsed = "easier"</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>difficulty <span class="ot">&lt;-</span> bdi <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), mean)) <span class="sc">|&gt;</span> <span class="fu">unlist</span>()</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># count "harder symptom scored above an easier one" pairs, person by person</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>ovi <span class="ot">&lt;-</span> <span class="fu">pmap_dbl</span>(bdi, \(...) {</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  r <span class="ot">&lt;-</span> <span class="fu">c</span>(...)</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(<span class="fu">outer</span>(<span class="fu">seq_along</span>(r), <span class="fu">seq_along</span>(r),</span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>            \(i, j) difficulty[i] <span class="sc">&lt;</span> difficulty[j] <span class="sc">&amp;</span> r[i] <span class="sc">&gt;</span> r[j]))</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">median_violations =</span> <span class="fu">median</span>(ovi),</span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_violations    =</span> <span class="fu">max</span>(ovi),</span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">cor_with_total    =</span> <span class="fu">cor</span>(ovi, totals)    <span class="co"># NOT just severity</span></span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># higher mean = more commonly endorsed = "easier"</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>difficulty <span class="ot">&lt;-</span> bdi <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), mean)) <span class="sc">|&gt;</span> <span class="fu">unlist</span>()</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co"># count "harder symptom scored above an easier one" pairs, person by person</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>ovi <span class="ot">&lt;-</span> <span class="fu">pmap_dbl</span>(bdi, \(...) {</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  r <span class="ot">&lt;-</span> <span class="fu">c</span>(...)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(<span class="fu">outer</span>(<span class="fu">seq_along</span>(r), <span class="fu">seq_along</span>(r),</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>            \(i, j) difficulty[i] <span class="sc">&lt;</span> difficulty[j] <span class="sc">&amp;</span> r[i] <span class="sc">&gt;</span> r[j]))</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">median_violations =</span> <span class="fu">median</span>(ovi),</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_violations    =</span> <span class="fu">max</span>(ovi),</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">cor_with_total    =</span> <span class="fu">cor</span>(ovi, totals)    <span class="co"># NOT just severity</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
@@ -1231,53 +1257,52 @@ FREQUENCIES VARIABLES=n_sharing.</code></pre>
 </div>
 </div>
 <div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
-<pre><code>* Ordering violations: count pairs where a person scores a "harder"
-* (rarely endorsed) symptom above an "easier" one.
-* SPSS has no vectorised pairwise comparison, so this needs nested loops
-* over the 21 x 21 item pairs inside a VECTOR.
-DESCRIPTIVES VARIABLES=s1 TO s21 /STATISTICS=MEAN.
+<div class="cell">
+<pre class="pspp cell-code"><code>* How many distinct 21-item profiles actually occur among 1200 people?
+INSERT FILE='data/sim/ch27-bdi.sps'.
 
-VECTOR s = s1 TO s21.
-VECTOR d = d1 TO d21.        /* item means, filled in from the run above */
-COMPUTE ovi = 0.
-LOOP #i = 1 TO 21.
-  LOOP #j = 1 TO 21.
-    IF (d(#i) &lt; d(#j) AND s(#i) &gt; s(#j)) ovi = ovi + 1.
-  END LOOP.
-END LOOP.
+STRING profile (A63).
+COMPUTE profile = CONCAT(STRING(sadness,F1), STRING(pessimism,F1),
+                         STRING(past_failure,F1), STRING(loss_pleasure,F1)).
 EXECUTE.
 
-FREQUENCIES VARIABLES=ovi /STATISTICS=MEDIAN MAXIMUM.
-CORRELATIONS /VARIABLES=ovi total.</code></pre>
+AGGREGATE OUTFILE=* MODE=ADDVARIABLES /BREAK=profile /n_sharing=N.
+FREQUENCIES VARIABLES=n_sharing.</code></pre>
+</div>
 </div>
 <div id="tabset-4-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-3-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Statistics</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>difficulty <span class="op">=</span> [<span class="fu">mean</span>(col) for col <span class="kw">in</span> <span class="fu">eachcol</span>(bdi)]   <span class="co"># higher = more endorsed</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>ovi <span class="op">=</span> [<span class="fu">sum</span>(difficulty[i] <span class="op">&lt;</span> difficulty[j] <span class="op">&amp;&amp;</span> r[i] <span class="op">&gt;</span> r[j]</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>           for i <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span>k, j <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span>k) for r <span class="kw">in</span> <span class="fu">eachrow</span>(bdi)]</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="fu">median</span>(ovi), <span class="fu">maximum</span>(ovi), <span class="fu">cor</span>(ovi, totals)        <span class="co"># NOT just severity</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">StatsBase</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>bdi <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch27-bdi.csv"</span>, DataFrame)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>key <span class="op">=</span> [<span class="fu">join</span>(r, <span class="st">"-"</span>) for r <span class="kw">in</span> <span class="fu">eachrow</span>(bdi)]</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>counts <span class="op">=</span> <span class="fu">countmap</span>(key)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(bdi), <span class="fu">length</span>(counts), <span class="fl">100</span> <span class="op">*</span> <span class="fu">mean</span>(counts[k] <span class="op">==</span> <span class="fl">1</span> <span class="cf">for</span> k <span class="kw">in</span> key)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Segmentation fault (core dumped)</code></pre>
+</div>
+</div>
 </div>
 <div id="tabset-4-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-4-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>difficulty <span class="op">=</span> bdi.mean().values          <span class="co"># higher = more commonly endorsed</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>harder <span class="op">=</span> difficulty[:, <span class="va">None</span>] <span class="op">&lt;</span> difficulty[<span class="va">None</span>, :]</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> bdi.values</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>ovi <span class="op">=</span> np.array([((X[r][:, <span class="va">None</span>] <span class="op">&gt;</span> X[r][<span class="va">None</span>, :]) <span class="op">&amp;</span> harder).<span class="bu">sum</span>()</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>                <span class="cf">for</span> r <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(X))])</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>np.median(ovi), ovi.<span class="bu">max</span>(), np.corrcoef(ovi, totals)[<span class="dv">0</span>, <span class="dv">1</span>]   <span class="co"># NOT just severity</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>bdi <span class="op">=</span> pd.read_csv(<span class="st">"data/sim/ch27-bdi.csv"</span>)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>key <span class="op">=</span> bdi.astype(<span class="bu">str</span>).agg(<span class="st">"-"</span>.join, axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="bu">len</span>(bdi), key.nunique(), <span class="dv">100</span> <span class="op">*</span> (key.<span class="bu">map</span>(key.value_counts()) <span class="op">==</span> <span class="dv">1</span>).mean()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </div>
 </div>
 </div>
 <p>Incoherence is its own dimension - only weakly tied to how <em>high</em> the total is. The real study replaces this rough count with a proper <strong>Graded Response Model</strong> (an IRT model, cousin of the <a href="./18-rasch.html">Rasch model</a>) that estimates each item’s difficulty and each person’s severity, then scores every profile’s log-likelihood. The two measures - our Ordering Violation Index (OVI) and the GRM profile log-likelihood - agree strongly, and that agreement is stable across samples:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The real analysis (needs the mirt package — shown, not run on the book's server)</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mirt)</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>fit  <span class="ot">&lt;-</span> <span class="fu">mirt</span>(bdi, <span class="dv">1</span>, <span class="at">itemtype =</span> <span class="st">"graded"</span>)           <span class="co"># fit the Graded Response Model</span></span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">&lt;-</span> <span class="fu">fscores</span>(fit)                               <span class="co"># each person's estimated severity</span></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>ll    <span class="ot">&lt;-</span> <span class="fu">personfit</span>(fit)<span class="sc">$</span>logLik                      <span class="co"># how probable each profile is</span></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(ovi, ll)                                        <span class="co"># OVI and GRM-likelihood track each other</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The real analysis (needs the mirt package — shown, not run on the book's server)</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mirt)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>fit  <span class="ot">&lt;-</span> <span class="fu">mirt</span>(bdi, <span class="dv">1</span>, <span class="at">itemtype =</span> <span class="st">"graded"</span>)           <span class="co"># fit the Graded Response Model</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">&lt;-</span> <span class="fu">fscores</span>(fit)                               <span class="co"># each person's estimated severity</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>ll    <span class="ot">&lt;-</span> <span class="fu">personfit</span>(fit)<span class="sc">$</span>logLik                      <span class="co"># how probable each profile is</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(ovi, ll)                                        <span class="co"># OVI and GRM-likelihood track each other</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Across all six independent samples, the OVI–likelihood correlation held between <strong>−0.73 and −0.83</strong>, and the model flagged <strong>13 strong antitypes</strong> in a pooled <span class="math inline">\(n = 1{,}479\)</span>. Incoherent profiles are not a fluke of one dataset; they are a stable, measurable property.</p>
 <p>Finding structure that a sum score hides is a recurring theme in the authors’ work. In a related vein, Kashdan, McKnight, and colleagues <span class="citation" data-cites="KashdanMcKnightRichey2009">(<a href="#ref-KashdanMcKnightRichey2009" role="doc-biblioref">Kashdan et al. 2009</a>)</span> used <strong>latent class analysis</strong> on the National Comorbidity Survey to uncover a neglected, risk-prone <em>subtype</em> of social-anxiety disorder - a whole subgroup of people invisible to anyone who only looked at total symptom counts.</p>
 </section>
