@@ -26,6 +26,23 @@ jobs:
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
 
+      # --- The other three languages -------------------------------------
+      # Every code tab in this book is meant to RUN, not just be displayed.
+      # Without these steps the SPSS, Julia and Python tabs degrade to static
+      # text (see _engines.R), which is safe but is not the book.
+      #
+      # pspp   runs the SPSS syntax.
+      # poppler-utils supplies pdftoppm, which turns PSPP's chart pages into
+      #        images - PSPP's own png output is too coarse and its svg output
+      #        draws charts on top of tables.
+      # libmagick++-dev is what the R magick package builds against; magick
+      #        trims those chart pages and finds the chart on them.
+      - name: Install system tools for the SPSS tabs
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            pspp poppler-utils libmagick++-dev libpng-dev
+
       - name: Set up R
         uses: r-lib/actions/setup-r@v2
         with:
@@ -41,6 +58,38 @@ jobs:
             any::tidyverse
             any::broom
             any::plotly
+            any::png
+            any::magick
+
+      # Ubuntu runners already carry a Julia binary, which is exactly how the
+      # published book once ended up showing readers "Segmentation fault (core
+      # dumped)": the binary was found, the packages were not there, and the
+      # crash was captured as output. Instantiating the committed Manifest is
+      # what makes that Julia usable.
+      # Pinned to the version recorded in Manifest.toml (julia_version). A
+      # newer Julia can refuse a manifest it did not write, and a failed
+      # instantiate would put every Julia tab back to static text.
+      - name: Set up Julia
+        uses: julia-actions/setup-julia@v2
+        with:
+          version: '1.11.5'
+
+      - name: Instantiate the book's Julia project
+        run: julia --project=. -e 'using Pkg; Pkg.instantiate(); Pkg.precompile()'
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # _engines.R deliberately insists on .venv/bin/python rather than
+      # whatever python3 is on PATH, so the environment the book runs against
+      # is the same one described in the appendix.
+      - name: Build the book's Python environment
+        run: |
+          python -m venv .venv
+          .venv/bin/python -m pip install --upgrade pip
+          .venv/bin/python -m pip install -r requirements.txt
 
       - name: Render and publish to GitHub Pages
         uses: quarto-dev/quarto-actions/publish@v2

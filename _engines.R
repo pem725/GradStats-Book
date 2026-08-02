@@ -24,9 +24,60 @@
 .book_have <- function(cmd) nzchar(Sys.which(cmd)[[1]])
 
 .book_static <- function(options, why) {
-  message("  [", options$engine, "] ", why, " - showing code without running it")
+  # Logged loudly and with a fixed marker, because this is the one path where
+  # the book quietly shows less than it promises. Grepping a render log for
+  # BOOK-STATIC says exactly which tabs did not run and why.
+  chap <- tryCatch(knitr::current_input(), error = function(e) NULL)
+  message("  BOOK-STATIC [", options$engine, "] ",
+          if (is.null(chap)) "" else paste0(basename(chap), " "),
+          options$label, ": ", why)
   knitr::engine_output(options, options$code, NULL)
 }
+
+# Run a command and keep BOTH what it said and whether it succeeded.
+# system2() folds the exit status into an attribute that is easy to ignore,
+# and ignoring it is how a crash ends up printed in the book as though it were
+# a result.
+.book_run <- function(cmd, args) {
+  out <- suppressWarnings(system2(cmd, args, stdout = TRUE, stderr = TRUE))
+  st  <- attr(out, "status")
+  list(out = as.character(out), status = if (is.null(st)) 0L else as.integer(st))
+}
+
+# Did that run die rather than finish?
+#
+# This exists because of a real page in the published book: the Julia tab of
+# "Representing Variables Numerically" showed readers the single line
+# "Segmentation fault (core dumped)". GitHub's runners ship a Julia binary, so
+# the check for one passed, but the book's package environment was not
+# installed there and the process crashed. The crash text was captured like
+# any other output and published as the answer.
+#
+# A chunk that crashed has no output worth showing, so we show the code
+# instead - the same thing we do on a machine with no Julia at all.
+.book_crashed <- function(run) {
+  txt <- paste(run$out, collapse = "\n")
+  run$status != 0 ||
+    grepl("Segmentation fault|core dumped|signal \\(11\\)|Bus error|Killed",
+          txt, ignore.case = TRUE)
+}
+
+# Is this toolchain not just present, but actually usable?
+#
+# Checking that a binary exists is not enough - the interpreter also needs the
+# packages the book's chunks import. The probe runs once per render and is
+# remembered, so the cost is one interpreter start, not one per chunk.
+.book_works <- local({
+  seen <- list()
+  function(key, cmd, args) {
+    if (is.null(seen[[key]])) {
+      run <- tryCatch(.book_run(cmd, args), error = function(e) list(out = "", status = 1L))
+      seen[[key]] <<- !.book_crashed(run) &&
+        any(grepl("BOOK_OK", run$out, fixed = TRUE))
+    }
+    seen[[key]]
+  }
+})
 
 .book_fig_dir <- function() {
   d <- file.path("_figs")
@@ -262,6 +313,13 @@ knitr::knit_engines$set(julia = function(options) {
     return(knitr::engine_output(options, options$code, NULL))
   }
   if (!.book_have("julia")) return(.book_static(options, "Julia not installed"))
+  # A Julia binary is not the same thing as a working Julia. GitHub's runners
+  # ship one, but without the book's project instantiated every chunk dies.
+  if (!.book_works("julia", "julia",
+                   c("--project=.", "--startup-file=no", "-e",
+                     shQuote('using CSV, DataFrames; print("BOOK_OK")')))) {
+    return(.book_static(options, "the book's Julia project is not instantiated"))
+  }
 
   fig <- .book_fig_path(options)
   geo <- .book_fig_geometry(options)
@@ -308,10 +366,9 @@ knitr::knit_engines$set(julia = function(options) {
     'catch',
     'end'), runner)
 
-  out <- suppressWarnings(
-    system2("julia", c("--project=.", "--startup-file=no", runner),
-            stdout = TRUE, stderr = TRUE))
-  .book_output(options, out, if (file.exists(fig)) fig else NULL)
+  run <- .book_run("julia", c("--project=.", "--startup-file=no", runner))
+  if (.book_crashed(run)) return(.book_static(options, "the Julia run failed"))
+  .book_output(options, run$out, if (file.exists(fig)) fig else NULL)
 })
 
 # --- Python -----------------------------------------------------------------
@@ -329,6 +386,10 @@ knitr::knit_engines$set(python = function(options) {
   py <- file.path(getwd(), ".venv", "bin", "python")
   if (!file.exists(py)) {
     return(.book_static(options, "the book's .venv is not set up"))
+  }
+  if (!.book_works("python", py,
+                   c("-c", shQuote('import pandas, matplotlib; print("BOOK_OK")')))) {
+    return(.book_static(options, "the book's .venv is missing packages"))
   }
 
   fig <- .book_fig_path(options)
@@ -368,7 +429,7 @@ knitr::knit_engines$set(python = function(options) {
     sprintf("    _plt.savefig(%s)", shQuote(fig))
   ), runner)
 
-  out <- suppressWarnings(
-    system2(py, runner, stdout = TRUE, stderr = TRUE))
-  .book_output(options, out, if (file.exists(fig)) fig else NULL)
+  run <- .book_run(py, runner)
+  if (.book_crashed(run)) return(.book_static(options, "the Python run failed"))
+  .book_output(options, run$out, if (file.exists(fig)) fig else NULL)
 })
