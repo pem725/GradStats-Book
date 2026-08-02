@@ -32,6 +32,18 @@ figure.figure > img {
   box-shadow: 0 1px 8px rgba(0, 0, 0, 0.28);
 }
 
+// The SPSS figures are vector (PSPP renders them as SVG), and PSPP sizes its
+// page in inches, so they arrive declaring a natural width of about 500px —
+// noticeably narrower than the R, Julia and Python figures beside them in the
+// same tabset. Because they are vector, widening them costs nothing and loses
+// no sharpness, so let them fill the column like every other figure.
+.cell-output-display > img[src$=".svg"],
+.cell-output-display > figure img[src$=".svg"],
+.quarto-figure img[src$=".svg"] {
+  width: 100%;
+  height: auto;
+}
+
 // The cover image and inline logos are not data figures — leave them alone.
 img.quarto-cover-image,
 .sidebar-logo {

@@ -91,6 +91,19 @@ format:
       dark: [darkly, brand.scss]
     highlight-style: pygments
     df-print: kable          # render data.frame output as tidy tables, not raw text
+    # One figure geometry for the whole book. Every plot is 7 x 4.5 inches,
+    # whichever language drew it, so a reader flipping between the R, SPSS,
+    # Julia and Python tabs sees the same picture at the same size instead of
+    # one jumping around. The engines in _engines.R read these same numbers.
+    #
+    # fig-dpi is 96 rather than the 192 the figures actually come out at:
+    # Quarto renders at twice the stated dpi for high-resolution screens, so 96
+    # here means 192 in the file (1344 x 864 px). Setting 192 here produced
+    # 2688-pixel images - sharp, but twice the download for no visible gain.
+    fig-width: 7
+    fig-height: 4.5
+    fig-dpi: 96
+    fig-align: center
     # Make the upper-left book title link to index.html (works over file:// too).
     include-after-body: _includes/home-link.html
 
