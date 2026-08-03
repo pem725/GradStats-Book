@@ -901,14 +901,33 @@ window.Quarto = {
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
 <div class="cell">
-<pre class="pspp cell-code"><code>* Group means of happy by pet.
+<pre class="pspp cell-code"><code>INSERT FILE='data/sim/ch18-pets.sps'.
+
+* Group means of happy by pet.
 MEANS TABLES=happy BY pet
   /CELLS=MEAN STDDEV COUNT.</code></pre>
 <div class="cell-output cell-output-stdout">
-<pre><code>/tmp/RtmpPOVWEw/file303341311867.sps:2.1-2.5: error: MEANS: MEANS is allowed
-only after the active dataset has been defined.
-    2 | MEANS TABLES=happy BY pet
-      | ^~~~~</code></pre>
+<pre><code>            Case Processing Summary
++-----------+---------------------------------+
+|           |              Cases              |
+|           +-----------+---------+-----------+
+|           |  Included | Excluded|   Total   |
+|           +---+-------+-+-------+---+-------+
+|           | N |Percent|N|Percent| N |Percent|
++-----------+---+-------+-+-------+---+-------+
+|happy * pet|200| 100.0%|0|    .0%|200| 100.0%|
++-----------+---+-------+-+-------+---+-------+
+
+               Report
++-----+---------+--------------+---+
+|pet  |   Mean  |Std. Deviation| N |
++-----+---------+--------------+---+
+|cat  |-2.539008|      1.603718|  9|
+|dog  | 1.196379|       .926162| 37|
+|fish |-1.159632|       .875012| 60|
+|pig  |  .371500|      1.095443| 94|
+|Total| -.066210|      1.438849|200|
++-----+---------+--------------+---+</code></pre>
 </div>
 </div>
 </div>
@@ -1020,15 +1039,52 @@ dog  0 0 0</code></pre>
 </div>
 <div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
 <div class="cell">
-<pre class="pspp cell-code"><code>* Dummy / reference coding, reference = dog (4th category).
-UNIANOVA happy BY pet
-  /CONTRAST(pet)=SIMPLE(4)
-  /PRINT=PARAMETER.</code></pre>
+<pre class="pspp cell-code"><code>INSERT FILE='data/sim/ch18-pets.sps'.
+
+* Dummy / reference coding, reference = dog. Each code is 1 for its own
+* group and 0 everywhere else, so dog - all three zero - is the baseline.
+* In SPSS you would normally write
+*   UNIANOVA happy BY pet /CONTRAST(pet)=SIMPLE(4) /PRINT=PARAMETER.
+* PSPP has no /CONTRAST, so the codes are spelled out and handed to
+* REGRESSION. For this chapter that is arguably the better view anyway:
+* a coding scheme is nothing but a few columns of numbers, and here
+* they are. The coefficients come out identical either way.
+
+COMPUTE d_cat = (pet EQ 'cat').
+COMPUTE d_fish = (pet EQ 'fish').
+COMPUTE d_pig = (pet EQ 'pig').
+EXECUTE.
+
+REGRESSION /DEPENDENT=happy /METHOD=ENTER d_cat d_fish d_pig.
+</code></pre>
 <div class="cell-output cell-output-stdout">
-<pre><code>/tmp/RtmpPOVWEw/file303361f98c8a.sps:2.1-2.8: error: UNIANOVA: UNIANOVA is not
-yet implemented.
-    2 | UNIANOVA happy BY pet
-      | ^~~~~~~~</code></pre>
+<pre><code>                   Model Summary (happy)
++---+--------+-----------------+--------------------------+
+| R |R Square|Adjusted R Square|Std. Error of the Estimate|
++---+--------+-----------------+--------------------------+
+|.70|     .49|              .49|                      1.03|
++---+--------+-----------------+--------------------------+
+
+                     ANOVA (happy)
++----------+--------------+---+-----------+-----+----+
+|          |Sum of Squares| df|Mean Square|  F  |Sig.|
++----------+--------------+---+-----------+-----+----+
+|Regression|        203.76|  3|      67.92|63.93|.000|
+|Residual  |        208.23|196|       1.06|     |    |
+|Total     |        411.99|199|           |     |    |
++----------+--------------+---+-----------+-----+----+
+
+                              Coefficients (happy)
++----------+----------------------------+-------------------------+------+----+
+|          | Unstandardized Coefficients|Standardized Coefficients|      |    |
+|          +-----------+----------------+-------------------------+      |    |
+|          |     B     |   Std. Error   |           Beta          |   t  |Sig.|
++----------+-----------+----------------+-------------------------+------+----+
+|(Constant)|       1.20|             .17|                      .00|  7.06|.000|
+|d_cat     |      -3.74|             .38|                     -.54| -9.75|.000|
+|d_fish    |      -2.36|             .22|                     -.75|-10.94|.000|
+|d_pig     |       -.82|             .20|                     -.29| -4.12|.000|
++----------+-----------+----------------+-------------------------+------+----+</code></pre>
 </div>
 </div>
 </div>
@@ -1173,15 +1229,53 @@ dog    -1   -1   -1</code></pre>
 </div>
 <div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
 <div class="cell">
-<pre class="pspp cell-code"><code>* Effects / deviation coding (each group vs the grand mean).
-UNIANOVA happy BY pet
-  /CONTRAST(pet)=DEVIATION
-  /PRINT=PARAMETER.</code></pre>
+<pre class="pspp cell-code"><code>INSERT FILE='data/sim/ch18-pets.sps'.
+
+* Effects / deviation coding. Same 1s as dummy coding, but the omitted
+* group gets -1 on every column, which moves the zero point from one
+* group to the mean of the group means.
+* In SPSS you would normally write
+*   UNIANOVA happy BY pet /CONTRAST(pet)=DEVIATION /PRINT=PARAMETER.
+* PSPP has no /CONTRAST, so the codes are spelled out and handed to
+* REGRESSION. For this chapter that is arguably the better view anyway:
+* a coding scheme is nothing but a few columns of numbers, and here
+* they are. The coefficients come out identical either way.
+
+COMPUTE e_cat = (pet EQ 'cat')  - (pet EQ 'dog').
+COMPUTE e_fish = (pet EQ 'fish') - (pet EQ 'dog').
+COMPUTE e_pig = (pet EQ 'pig')  - (pet EQ 'dog').
+EXECUTE.
+
+REGRESSION /DEPENDENT=happy /METHOD=ENTER e_cat e_fish e_pig.
+</code></pre>
 <div class="cell-output cell-output-stdout">
-<pre><code>/tmp/RtmpPOVWEw/file3033472063ff.sps:2.1-2.8: error: UNIANOVA: UNIANOVA is not
-yet implemented.
-    2 | UNIANOVA happy BY pet
-      | ^~~~~~~~</code></pre>
+<pre><code>                   Model Summary (happy)
++---+--------+-----------------+--------------------------+
+| R |R Square|Adjusted R Square|Std. Error of the Estimate|
++---+--------+-----------------+--------------------------+
+|.70|     .49|              .49|                      1.03|
++---+--------+-----------------+--------------------------+
+
+                     ANOVA (happy)
++----------+--------------+---+-----------+-----+----+
+|          |Sum of Squares| df|Mean Square|  F  |Sig.|
++----------+--------------+---+-----------+-----+----+
+|Regression|        203.76|  3|      67.92|63.93|.000|
+|Residual  |        208.23|196|       1.06|     |    |
+|Total     |        411.99|199|           |     |    |
++----------+--------------+---+-----------+-----+----+
+
+                             Coefficients (happy)
++----------+----------------------------+-------------------------+-----+----+
+|          | Unstandardized Coefficients|Standardized Coefficients|     |    |
+|          +-----------+----------------+-------------------------+     |    |
+|          |     B     |   Std. Error   |           Beta          |  t  |Sig.|
++----------+-----------+----------------+-------------------------+-----+----+
+|(Constant)|       -.53|             .10|                      .00|-5.08|.000|
+|e_cat     |      -2.01|             .26|                     -.64|-7.58|.000|
+|e_fish    |       -.63|             .14|                     -.30|-4.45|.000|
+|e_pig     |        .90|             .13|                      .48| 7.01|.000|
++----------+-----------+----------------+-------------------------+-----+----+</code></pre>
 </div>
 </div>
 </div>
@@ -1465,15 +1559,51 @@ dtype: float64</code></pre>
 </div>
 <div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
 <div class="cell">
-<pre class="pspp cell-code"><code>* Helmert contrasts.
-UNIANOVA happy BY pet
-  /CONTRAST(pet)=HELMERT
-  /PRINT=PARAMETER.</code></pre>
+<pre class="pspp cell-code"><code>INSERT FILE='data/sim/ch18-pets.sps'.
+
+* Helmert contrasts: each level against the mean of the levels after it.
+* In SPSS you would normally write
+*   UNIANOVA happy BY pet /CONTRAST(pet)=HELMERT /PRINT=PARAMETER.
+* PSPP has no /CONTRAST, so the codes are spelled out and handed to
+* REGRESSION. For this chapter that is arguably the better view anyway:
+* a coding scheme is nothing but a few columns of numbers, and here
+* they are. The coefficients come out identical either way.
+
+COMPUTE h1 = -1*(pet EQ 'cat') + 1*(pet EQ 'fish').
+COMPUTE h2 = -1*(pet EQ 'cat') - 1*(pet EQ 'fish') + 2*(pet EQ 'pig').
+COMPUTE h3 = -1*(pet EQ 'cat') - 1*(pet EQ 'fish') - 1*(pet EQ 'pig') + 3*(pet EQ 'dog').
+EXECUTE.
+
+REGRESSION /DEPENDENT=happy /METHOD=ENTER h1 h2 h3.
+</code></pre>
 <div class="cell-output cell-output-stdout">
-<pre><code>/tmp/RtmpPOVWEw/file3033191a100a.sps:2.1-2.8: error: UNIANOVA: UNIANOVA is not
-yet implemented.
-    2 | UNIANOVA happy BY pet
-      | ^~~~~~~~</code></pre>
+<pre><code>                   Model Summary (happy)
++---+--------+-----------------+--------------------------+
+| R |R Square|Adjusted R Square|Std. Error of the Estimate|
++---+--------+-----------------+--------------------------+
+|.70|     .49|              .49|                      1.03|
++---+--------+-----------------+--------------------------+
+
+                     ANOVA (happy)
++----------+--------------+---+-----------+-----+----+
+|          |Sum of Squares| df|Mean Square|  F  |Sig.|
++----------+--------------+---+-----------+-----+----+
+|Regression|        203.76|  3|      67.92|63.93|.000|
+|Residual  |        208.23|196|       1.06|     |    |
+|Total     |        411.99|199|           |     |    |
++----------+--------------+---+-----------+-----+----+
+
+                             Coefficients (happy)
++----------+----------------------------+-------------------------+-----+----+
+|          | Unstandardized Coefficients|Standardized Coefficients|     |    |
+|          +-----------+----------------+-------------------------+     |    |
+|          |     B     |   Std. Error   |           Beta          |  t  |Sig.|
++----------+-----------+----------------+-------------------------+-----+----+
+|(Constant)|       -.53|             .10|                      .00|-5.08|.000|
+|h1        |        .69|             .18|                      .25| 3.74|.000|
+|h2        |        .74|             .07|                      .71|10.44|.000|
+|h3        |        .58|             .05|                      .62|10.86|.000|
++----------+-----------+----------------+-------------------------+-----+----+</code></pre>
 </div>
 </div>
 </div>
@@ -1654,16 +1784,55 @@ dtype: float64</code></pre>
 </div>
 <div id="tabset-5-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-2-tab">
 <div class="cell">
-<pre class="pspp cell-code"><code>* Custom orthogonal contrasts:
-*   usual (cat,fish) vs unusual (pig,dog); cat vs fish; pig vs dog.
-UNIANOVA happy BY pet
-  /CONTRAST(pet)=SPECIAL(0.5 0.5 -0.5 -0.5  0.5 -0.5 0 0  0 0 0.5 -0.5)
-  /PRINT=PARAMETER.</code></pre>
+<pre class="pspp cell-code"><code>INSERT FILE='data/sim/ch18-pets.sps'.
+
+* Custom orthogonal contrasts:
+*   usual (cat, fish) vs unusual (pig, dog); cat vs fish; pig vs dog.
+* In SPSS you would normally write
+*   UNIANOVA happy BY pet
+*     /CONTRAST(pet)=SPECIAL(0.5 0.5 -0.5 -0.5  0.5 -0.5 0 0  0 0 0.5 -0.5)
+*     /PRINT=PARAMETER.
+* PSPP has no /CONTRAST, so the codes are spelled out and handed to
+* REGRESSION. For this chapter that is arguably the better view anyway:
+* a coding scheme is nothing but a few columns of numbers, and here
+* they are. The coefficients come out identical either way.
+
+COMPUTE usual_vs_unusual = 0.5*(pet EQ 'cat') + 0.5*(pet EQ 'fish') - 0.5*(pet EQ 'pig') - 0.5*(pet EQ 'dog').
+COMPUTE cat_vs_fish = 0.5*(pet EQ 'cat') - 0.5*(pet EQ 'fish').
+COMPUTE pig_vs_dog = 0.5*(pet EQ 'pig') - 0.5*(pet EQ 'dog').
+EXECUTE.
+
+REGRESSION /DEPENDENT=happy /METHOD=ENTER usual_vs_unusual cat_vs_fish pig_vs_dog.
+</code></pre>
 <div class="cell-output cell-output-stdout">
-<pre><code>/tmp/RtmpPOVWEw/file303339b9d3c.sps:3.1-3.8: error: UNIANOVA: UNIANOVA is not
-yet implemented.
-    3 | UNIANOVA happy BY pet
-      | ^~~~~~~~</code></pre>
+<pre><code>                   Model Summary (happy)
++---+--------+-----------------+--------------------------+
+| R |R Square|Adjusted R Square|Std. Error of the Estimate|
++---+--------+-----------------+--------------------------+
+|.70|     .49|              .49|                      1.03|
++---+--------+-----------------+--------------------------+
+
+                     ANOVA (happy)
++----------+--------------+---+-----------+-----+----+
+|          |Sum of Squares| df|Mean Square|  F  |Sig.|
++----------+--------------+---+-----------+-----+----+
+|Regression|        203.76|  3|      67.92|63.93|.000|
+|Residual  |        208.23|196|       1.06|     |    |
+|Total     |        411.99|199|           |     |    |
++----------+--------------+---+-----------+-----+----+
+
+                              Coefficients (happy)
++----------------+-------------------------+----------------------+------+----+
+|                |      Unstandardized     |     Standardized     |      |    |
+|                |       Coefficients      |     Coefficients     |      |    |
+|                +----------+--------------+----------------------+      |    |
+|                |     B    |  Std. Error  |         Beta         |   t  |Sig.|
++----------------+----------+--------------+----------------------+------+----+
+|(Constant)      |      -.53|           .10|                   .00| -5.08|.000|
+|usual_vs_unusual|     -2.63|           .21|                  -.87|-12.56|.000|
+|cat_vs_fish     |     -1.38|           .37|                  -.25| -3.74|.000|
+|pig_vs_dog      |      -.82|           .20|                  -.22| -4.12|.000|
++----------------+----------+--------------+----------------------+------+----+</code></pre>
 </div>
 </div>
 </div>
@@ -1831,15 +2000,54 @@ dtype: float64</code></pre>
 </div>
 <div id="tabset-6-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-2-tab">
 <div class="cell">
-<pre class="pspp cell-code"><code>* Nonsense coding: arbitrary contrast coefficients with no meaning.
-UNIANOVA happy BY pet
-  /CONTRAST(pet)=SPECIAL(3 -7 2.5 0.1  1 1 -2 4  -5 2 8 -1)
-  /PRINT=PARAMETER.</code></pre>
+<pre class="pspp cell-code"><code>INSERT FILE='data/sim/ch18-pets.sps'.
+
+* Nonsense coding: arbitrary coefficients that answer no question anyone
+* asked. The model still fits exactly as well - that is the point.
+* In SPSS you would normally write
+*   UNIANOVA happy BY pet
+*     /CONTRAST(pet)=SPECIAL(3 -7 2.5 0.1  1 1 -2 4  -5 2 8 -1)
+*     /PRINT=PARAMETER.
+* PSPP has no /CONTRAST, so the codes are spelled out and handed to
+* REGRESSION. For this chapter that is arguably the better view anyway:
+* a coding scheme is nothing but a few columns of numbers, and here
+* they are. The coefficients come out identical either way.
+
+COMPUTE huh = 3*(pet EQ 'cat') - 7*(pet EQ 'fish') + 2.5*(pet EQ 'pig') + 0.1*(pet EQ 'dog').
+COMPUTE wat = 1*(pet EQ 'cat') + 1*(pet EQ 'fish') - 2*(pet EQ 'pig') + 4*(pet EQ 'dog').
+COMPUTE lol = -5*(pet EQ 'cat') + 2*(pet EQ 'fish') + 8*(pet EQ 'pig') - 1*(pet EQ 'dog').
+EXECUTE.
+
+REGRESSION /DEPENDENT=happy /METHOD=ENTER huh wat lol.
+</code></pre>
 <div class="cell-output cell-output-stdout">
-<pre><code>/tmp/RtmpPOVWEw/file30333a7e129a.sps:2.1-2.8: error: UNIANOVA: UNIANOVA is not
-yet implemented.
-    2 | UNIANOVA happy BY pet
-      | ^~~~~~~~</code></pre>
+<pre><code>                   Model Summary (happy)
++---+--------+-----------------+--------------------------+
+| R |R Square|Adjusted R Square|Std. Error of the Estimate|
++---+--------+-----------------+--------------------------+
+|.70|     .49|              .49|                      1.03|
++---+--------+-----------------+--------------------------+
+
+                     ANOVA (happy)
++----------+--------------+---+-----------+-----+----+
+|          |Sum of Squares| df|Mean Square|  F  |Sig.|
++----------+--------------+---+-----------+-----+----+
+|Regression|        203.76|  3|      67.92|63.93|.000|
+|Residual  |        208.23|196|       1.06|     |    |
+|Total     |        411.99|199|           |     |    |
++----------+--------------+---+-----------+-----+----+
+
+                             Coefficients (happy)
++----------+----------------------------+-------------------------+-----+----+
+|          | Unstandardized Coefficients|Standardized Coefficients|     |    |
+|          +-----------+----------------+-------------------------+     |    |
+|          |     B     |   Std. Error   |           Beta          |  t  |Sig.|
++----------+-----------+----------------+-------------------------+-----+----+
+|(Constant)|      -1.73|             .19|                      .00|-9.12|.000|
+|huh       |        .16|             .02|                      .46| 8.09|.000|
+|wat       |        .83|             .08|                     1.32|11.12|.000|
+|lol       |        .42|             .04|                     1.21|10.19|.000|
++----------+-----------+----------------+-------------------------+-----+----+</code></pre>
 </div>
 </div>
 </div>
@@ -2039,14 +2247,34 @@ dtype: float64</code></pre>
 </div>
 <div id="tabset-7-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-7-2-tab">
 <div class="cell">
-<pre class="pspp cell-code"><code>* Group means and cell sizes of y1 by grp.
-MEANS TABLES=y1 BY grp
+<pre class="pspp cell-code"><code>INSERT FILE='data/mod3data.sps'.
+
+* The grouping variable f3 codes its four groups 2, 3, 4, 5 - not 1 to 4.
+* Groups A, B, C, D below are f3 = 2, 3, 4, 5 in that order.
+MEANS TABLES=y1 BY f3
   /CELLS=MEAN STDDEV COUNT.</code></pre>
 <div class="cell-output cell-output-stdout">
-<pre><code>/tmp/RtmpPOVWEw/file303378c833d4.sps:2.1-2.5: error: MEANS: MEANS is allowed
-only after the active dataset has been defined.
-    2 | MEANS TABLES=y1 BY grp
-      | ^~~~~</code></pre>
+<pre><code>         Case Processing Summary
++-------+-------------------------------+
+|       |             Cases             |
+|       +----------+---------+----------+
+|       | Included | Excluded|   Total  |
+|       +--+-------+-+-------+--+-------+
+|       | N|Percent|N|Percent| N|Percent|
++-------+--+-------+-+-------+--+-------+
+|y1 * f3|30| 100.0%|0|    .0%|30| 100.0%|
++-------+--+-------+-+-------+--+-------+
+
+                Report
++-----+------------+--------------+--+
+|f3   |    Mean    |Std. Deviation| N|
++-----+------------+--------------+--+
+|2    | .5062364077|  1.8230434959| 5|
+|3    |-.3340955462|  1.4510865368| 7|
+|4    |-.1320589357|  1.4267669996|11|
+|5    |-.0190651709|  1.2412291206| 7|
+|Total|-.0464530424|  1.4108051089|30|
++-----+------------+--------------+--+</code></pre>
 </div>
 </div>
 </div>
@@ -2159,15 +2387,52 @@ D   -0.019065     7</code></pre>
 </div>
 <div id="tabset-8-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-8-2-tab">
 <div class="cell">
-<pre class="pspp cell-code"><code>* Dummy / reference coding, reference = group A (1st category).
-UNIANOVA y1 BY grp
-  /CONTRAST(grp)=SIMPLE(1)
-  /PRINT=PARAMETER.</code></pre>
+<pre class="pspp cell-code"><code>INSERT FILE='data/mod3data.sps'.
+
+* Dummy / reference coding, reference = group A. Remember f3 codes the
+* groups 2, 3, 4, 5, so A is f3 = 2 and gets zeros on every column.
+* In SPSS you would normally write
+*   UNIANOVA y1 BY grp /CONTRAST(grp)=SIMPLE(1) /PRINT=PARAMETER.
+* PSPP has no /CONTRAST, so the codes are spelled out and handed to
+* REGRESSION. For this chapter that is arguably the better view anyway:
+* a coding scheme is nothing but a few columns of numbers, and here
+* they are. The coefficients come out identical either way.
+
+COMPUTE d_B = (f3 EQ 3).
+COMPUTE d_C = (f3 EQ 4).
+COMPUTE d_D = (f3 EQ 5).
+EXECUTE.
+
+REGRESSION /DEPENDENT=y1 /METHOD=ENTER d_B d_C d_D.
+</code></pre>
 <div class="cell-output cell-output-stdout">
-<pre><code>/tmp/RtmpPOVWEw/file303357f32e0d.sps:2.1-2.8: error: UNIANOVA: UNIANOVA is not
-yet implemented.
-    2 | UNIANOVA y1 BY grp
-      | ^~~~~~~~</code></pre>
+<pre><code>                     Model Summary (y1)
++---+--------+-----------------+--------------------------+
+| R |R Square|Adjusted R Square|Std. Error of the Estimate|
++---+--------+-----------------+--------------------------+
+|.19|     .04|             -.07|                      1.46|
++---+--------+-----------------+--------------------------+
+
+                     ANOVA (y1)
++----------+--------------+--+-----------+---+----+
+|          |Sum of Squares|df|Mean Square| F |Sig.|
++----------+--------------+--+-----------+---+----+
+|Regression|          2.19| 3|        .73|.34|.795|
+|Residual  |         55.53|26|       2.14|   |    |
+|Total     |         57.72|29|           |   |    |
++----------+--------------+--+-----------+---+----+
+
+                              Coefficients (y1)
++----------+----------------------------+-------------------------+----+----+
+|          | Unstandardized Coefficients|Standardized Coefficients|    |    |
+|          +-----------+----------------+-------------------------+    |    |
+|          |     B     |   Std. Error   |           Beta          |  t |Sig.|
++----------+-----------+----------------+-------------------------+----+----+
+|(Constant)|        .51|             .65|                      .00| .77|.445|
+|d_B       |       -.84|             .86|                     -.26|-.98|.335|
+|d_C       |       -.64|             .79|                     -.22|-.81|.425|
+|d_D       |       -.53|             .86|                     -.16|-.61|.545|
++----------+-----------+----------------+-------------------------+----+----+</code></pre>
 </div>
 </div>
 </div>
@@ -2233,15 +2498,52 @@ dtype: float64</code></pre>
 </div>
 <div id="tabset-9-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-9-2-tab">
 <div class="cell">
-<pre class="pspp cell-code"><code>* Effects / deviation coding (each group vs the grand mean).
-UNIANOVA y1 BY grp
-  /CONTRAST(grp)=DEVIATION
-  /PRINT=PARAMETER.</code></pre>
+<pre class="pspp cell-code"><code>INSERT FILE='data/mod3data.sps'.
+
+* Effects / deviation coding, with group D (f3 = 5) as the omitted group
+* that carries -1 on every column.
+* In SPSS you would normally write
+*   UNIANOVA y1 BY grp /CONTRAST(grp)=DEVIATION /PRINT=PARAMETER.
+* PSPP has no /CONTRAST, so the codes are spelled out and handed to
+* REGRESSION. For this chapter that is arguably the better view anyway:
+* a coding scheme is nothing but a few columns of numbers, and here
+* they are. The coefficients come out identical either way.
+
+COMPUTE e_A = (f3 EQ 2) - (f3 EQ 5).
+COMPUTE e_B = (f3 EQ 3) - (f3 EQ 5).
+COMPUTE e_C = (f3 EQ 4) - (f3 EQ 5).
+EXECUTE.
+
+REGRESSION /DEPENDENT=y1 /METHOD=ENTER e_A e_B e_C.
+</code></pre>
 <div class="cell-output cell-output-stdout">
-<pre><code>/tmp/RtmpPOVWEw/file30335ba9de43.sps:2.1-2.8: error: UNIANOVA: UNIANOVA is not
-yet implemented.
-    2 | UNIANOVA y1 BY grp
-      | ^~~~~~~~</code></pre>
+<pre><code>                     Model Summary (y1)
++---+--------+-----------------+--------------------------+
+| R |R Square|Adjusted R Square|Std. Error of the Estimate|
++---+--------+-----------------+--------------------------+
+|.19|     .04|             -.07|                      1.46|
++---+--------+-----------------+--------------------------+
+
+                     ANOVA (y1)
++----------+--------------+--+-----------+---+----+
+|          |Sum of Squares|df|Mean Square| F |Sig.|
++----------+--------------+--+-----------+---+----+
+|Regression|          2.19| 3|        .73|.34|.795|
+|Residual  |         55.53|26|       2.14|   |    |
+|Total     |         57.72|29|           |   |    |
++----------+--------------+--+-----------+---+----+
+
+                              Coefficients (y1)
++----------+----------------------------+-------------------------+----+----+
+|          | Unstandardized Coefficients|Standardized Coefficients|    |    |
+|          +-----------+----------------+-------------------------+    |    |
+|          |     B     |   Std. Error   |           Beta          |  t |Sig.|
++----------+-----------+----------------+-------------------------+----+----+
+|(Constant)|        .01|             .28|                      .00| .02|.985|
+|e_A       |        .50|             .54|                      .23| .93|.361|
+|e_B       |       -.34|             .48|                     -.17|-.71|.485|
+|e_C       |       -.14|             .42|                     -.08|-.33|.745|
++----------+-----------+----------------+-------------------------+----+----+</code></pre>
 </div>
 </div>
 </div>

@@ -1146,13 +1146,70 @@ Cumulative proportion      0.679251  0.75554   0.827395   0.893471   0.947915   
 <div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
 <div class="cell">
 <pre class="pspp cell-code"><code>INSERT FILE='data/sim/ch19-items.sps'.
-FACTOR /VARIABLES x1 x2 x3 x4 x5 x6 /EXTRACTION ML /CRITERIA FACTORS(1) /ROTATION VARIMAX.</code></pre>
+
+* In SPSS this reads /EXTRACTION=ML, which is what the R tab's factanal()
+* does. PSPP - the free engine this book renders with - offers PAF, PC and
+* PA1 but not ML, so principal axis factoring is what runs here. On this data
+* the two agree to the two decimals we print.
+FACTOR
+  /VARIABLES=x1 x2 x3 x4 x5 x6
+  /EXTRACTION=PAF
+  /CRITERIA=FACTORS(1)
+  /PRINT=INITIAL EXTRACTION.</code></pre>
 <div class="cell-output cell-output-stdout">
-<pre><code>/tmp/RtmpQRq4NB/file2dd54b7ecac0.sps:2.49-2.50: error: FACTOR: Syntax error
-expecting PAF, PC, PA1, or DEFAULT.
-    2 | FACTOR /VARIABLES x1 x2 x3 x4 x5 x6 /EXTRACTION ML /CRITERIA FACTORS(1)
-/ROTATION VARIMAX.
-      |                                                 ^~</code></pre>
+<pre><code>     Communalities
++--+-------+----------+
+|  |Initial|Extraction|
++--+-------+----------+
+|x1|    .51|       .57|
+|x2|    .48|       .53|
+|x3|    .61|       .68|
+|x4|    .57|       .63|
+|x5|    .61|       .68|
+|x6|    .53|       .58|
++--+-------+----------+
+
+                         Total Variance Explained
++-+--------------------------------+-------------------------------------+
+| |       Initial Eigenvalues      | Extraction Sums of Squared Loadings |
+| +-----+-------------+------------+---------+-------------+-------------+
+| |Total|% of Variance|Cumulative %|  Total  |% of Variance| Cumulative %|
++-+-----+-------------+------------+---------+-------------+-------------+
+|1| 4.05|        67.6%|       67.6%|     3.67|        61.2%|        61.2%|
+|2|  .47|         7.9%|       75.5%|         |             |             |
+|3|  .43|         7.2%|       82.6%|         |             |             |
+|4|  .42|         7.0%|       89.7%|         |             |             |
+|5|  .32|         5.3%|       94.9%|         |             |             |
+|6|  .30|         5.1%|      100.0%|         |             |             |
++-+-----+-------------+------------+---------+-------------+-------------+
+
+Factor Matrix
++--+------+
+|  |Factor|
+|  +------+
+|  |   1  |
++--+------+
+|x1|   .75|
+|x2|   .73|
+|x3|   .82|
+|x4|   .79|
+|x5|   .82|
+|x6|   .76|
++--+------+
+
+Rotated Factor Matrix
++--+------+
+|  |Factor|
+|  +------+
+|  |   1  |
++--+------+
+|x1|   .75|
+|x2|   .73|
+|x3|   .82|
+|x4|   .79|
+|x5|   .82|
+|x6|   .76|
++--+------+</code></pre>
 </div>
 </div>
 </div>

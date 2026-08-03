@@ -1368,12 +1368,28 @@ dtype: float64</code></pre>
 <div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
 <div class="cell">
 <pre class="pspp cell-code"><code>INSERT FILE='data/sim/ch16-pets.sps'.
-UNIANOVA sad BY pet mess /DESIGN=pet mess pet*mess.</code></pre>
+
+* GLM and UNIANOVA are the same procedure in SPSS; GLM is the name that also
+* works in PSPP, so that is what the book runs. A factor has to be numeric
+* here, which is what AUTORECODE does - it hands back the same groups with
+* integer codes and the labels still attached.
+AUTORECODE VARIABLES=pet mess /INTO petn messn.
+
+GLM sad BY petn messn
+  /DESIGN=petn messn petn*messn.</code></pre>
 <div class="cell-output cell-output-stdout">
-<pre><code>/tmp/Rtmp38iZ0J/file2f93360d587.sps:2.1-2.8: error: UNIANOVA: UNIANOVA is not
-yet implemented.
-    2 | UNIANOVA sad BY pet mess /DESIGN=pet mess pet*mess.
-      | ^~~~~~~~</code></pre>
+<pre><code>                  Tests of Between-Subjects Effects
++---------------+-----------------------+---+-----------+-----+----+
+|               |Type III Sum Of Squares| df|Mean Square|  F  |Sig.|
++---------------+-----------------------+---+-----------+-----+----+
+|Corrected Model|                  98.58|  7|      14.08|11.47|.000|
+|petn           |                  53.15|  3|      17.72|14.42|.000|
+|messn          |                  13.09|  1|      13.09|10.66|.002|
+|petn × messn   |                   2.49|  3|        .83|  .67|.570|
+|Error          |                 113.00| 92|       1.23|     |    |
+|Total          |                 454.87|100|           |     |    |
+|Corrected Total|                 211.58| 99|           |     |    |
++---------------+-----------------------+---+-----------+-----+----+</code></pre>
 </div>
 </div>
 </div>

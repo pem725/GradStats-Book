@@ -1126,11 +1126,14 @@ RELIABILITY
 * Omega needs the factor loadings. Base SPSS has no omega keyword, so you
 * extract a one-factor solution and compute omega from its output:
 *   omega = (SUM lambda)^2 / ((SUM lambda)^2 + SUM psi)
+* In SPSS the extraction line reads /EXTRACTION=ML, matching the R tab.
+* PSPP offers PAF, PC and PA1 but not ML, so principal axis factoring runs
+* here; on this data the loadings agree to the two decimals we print.
 FACTOR
-  /VARIABLES item1 item2 item3 item4 item5
-  /EXTRACTION ML
-  /CRITERIA FACTORS(1)
-  /PRINT INITIAL EXTRACTION.</code></pre>
+  /VARIABLES=item1 item2 item3 item4 item5
+  /EXTRACTION=PAF
+  /CRITERIA=FACTORS(1)
+  /PRINT=INITIAL EXTRACTION.</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>Scale: ANY
 
@@ -1150,10 +1153,55 @@ Case Processing Summary
 |             .80|         5|
 +----------------+----------+
 
-/tmp/RtmpBthlUn/file2cc91e529f9.sps:14.15-14.16: error: FACTOR: Syntax error
-expecting PAF, PC, PA1, or DEFAULT.
-   14 |   /EXTRACTION ML
-      |               ^~</code></pre>
+       Communalities
++-----+-------+----------+
+|     |Initial|Extraction|
++-----+-------+----------+
+|item1|    .66|       .84|
+|item2|    .58|       .68|
+|item3|    .45|       .50|
+|item4|    .22|       .24|
+|item5|    .17|       .18|
++-----+-------+----------+
+
+                         Total Variance Explained
++-+--------------------------------+-------------------------------------+
+| |       Initial Eigenvalues      | Extraction Sums of Squared Loadings |
+| +-----+-------------+------------+---------+-------------+-------------+
+| |Total|% of Variance|Cumulative %|  Total  |% of Variance| Cumulative %|
++-+-----+-------------+------------+---------+-------------+-------------+
+|1| 2.84|        56.8%|       56.8%|     2.44|        48.7%|        48.7%|
+|2|  .80|        16.0%|       72.8%|         |             |             |
+|3|  .70|        14.1%|       86.9%|         |             |             |
+|4|  .42|         8.3%|       95.2%|         |             |             |
+|5|  .24|         4.8%|      100.0%|         |             |             |
++-+-----+-------------+------------+---------+-------------+-------------+
+
+ Factor Matrix
++-----+------+
+|     |Factor|
+|     +------+
+|     |   1  |
++-----+------+
+|item1|   .92|
+|item2|   .82|
+|item3|   .71|
+|item4|   .49|
+|item5|   .42|
++-----+------+
+
+Rotated Factor Matrix
++-----+------+
+|     |Factor|
+|     +------+
+|     |   1  |
++-----+------+
+|item1|   .92|
+|item2|   .82|
+|item3|   .71|
+|item4|   .49|
+|item5|   .42|
++-----+------+</code></pre>
 </div>
 </div>
 </div>
@@ -1267,11 +1315,11 @@ CORRELATIONS /VARIABLES=Ox Oy.</code></pre>
 +----------------------+-----+-----+
 |                      |  Tx |  Ty |
 +----------------------+-----+-----+
-|Tx Pearson Correlation|1.000| .603|
+|Tx Pearson Correlation|1.000| .621|
 |   Sig. (2-tailed)    |     | .000|
 |   N                  | 1000| 1000|
 +----------------------+-----+-----+
-|Ty Pearson Correlation| .603|1.000|
+|Ty Pearson Correlation| .621|1.000|
 |   Sig. (2-tailed)    | .000|     |
 |   N                  | 1000| 1000|
 +----------------------+-----+-----+
@@ -1280,11 +1328,11 @@ CORRELATIONS /VARIABLES=Ox Oy.</code></pre>
 +----------------------+-----+-----+
 |                      |  Ox |  Oy |
 +----------------------+-----+-----+
-|Ox Pearson Correlation|1.000| .304|
+|Ox Pearson Correlation|1.000| .314|
 |   Sig. (2-tailed)    |     | .000|
 |   N                  | 1000| 1000|
 +----------------------+-----+-----+
-|Oy Pearson Correlation| .304|1.000|
+|Oy Pearson Correlation| .314|1.000|
 |   Sig. (2-tailed)    | .000|     |
 |   N                  | 1000| 1000|
 +----------------------+-----+-----+</code></pre>
