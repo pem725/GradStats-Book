@@ -1021,24 +1021,47 @@ GRAPH /HISTOGRAM = sample_mean.</code></pre>
 <span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>          title <span class="op">=</span> <span class="st">"Sampling distribution of the mean IF the null is true"</span>,</span>
 <span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>          xlabel <span class="op">=</span> <span class="st">"sample mean"</span>, ylabel <span class="op">=</span> <span class="st">"count"</span>)</span>
 <span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="fu">vline!</span>([<span class="fl">22</span>], linewidth <span class="op">=</span> <span class="fl">2</span>, color <span class="op">=</span> <span class="op">:</span>red)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>TaskLocalRNG()</code></pre>
+</div>
+<p><img src="_figs/08-hypothesistesting-unnamed-chunk-6-julia.png" class="img-fluid"></p>
 </div>
 </div>
 <div id="tabset-2-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-4-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"data/sim/ch07-nulldist.csv"</span>)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">1908</span>)   <span class="co"># the year Gosset published "Student's" t</span></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>means <span class="op">=</span> rng.normal(<span class="dv">20</span>, <span class="dv">4</span>, size<span class="op">=</span>(<span class="dv">10_000</span>, <span class="dv">4</span>)).mean(axis<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>plt.hist(means, bins<span class="op">=</span><span class="dv">40</span>, color<span class="op">=</span><span class="st">"lightgrey"</span>, edgecolor<span class="op">=</span><span class="st">"white"</span>)</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>plt.axvline(<span class="dv">22</span>, color<span class="op">=</span><span class="st">"red"</span>, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Sampling distribution of the mean IF the null is true"</span>)</span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"sample mean"</span>)<span class="op">;</span> plt.ylabel(<span class="st">"count"</span>)</span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"data/sim/ch07-nulldist.csv"</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">1908</span>)   <span class="co"># the year Gosset published "Student's" t</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>means <span class="op">=</span> rng.normal(<span class="dv">20</span>, <span class="dv">4</span>, size<span class="op">=</span>(<span class="dv">10_000</span>, <span class="dv">4</span>)).mean(axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>plt.hist(means, bins<span class="op">=</span><span class="dv">40</span>, color<span class="op">=</span><span class="st">"lightgrey"</span>, edgecolor<span class="op">=</span><span class="st">"white"</span>)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>plt.axvline(<span class="dv">22</span>, color<span class="op">=</span><span class="st">"red"</span>, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Sampling distribution of the mean IF the null is true"</span>)</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"sample mean"</span>)<span class="op">;</span> plt.ylabel(<span class="st">"count"</span>)</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(array([  1.,   0.,   1.,   1.,   8.,   4.,  12.,  27.,  34.,  57.,  93.,
+       155., 241., 309., 376., 520., 598., 724., 790., 787., 858., 822.,
+       779., 674., 581., 459., 322., 260., 209., 116.,  78.,  41.,  30.,
+        15.,   9.,   4.,   2.,   1.,   1.,   1.]), array([11.4263051 , 11.85075849, 12.27521189, 12.69966529, 13.12411869,
+       13.54857208, 13.97302548, 14.39747888, 14.82193228, 15.24638567,
+       15.67083907, 16.09529247, 16.51974587, 16.94419926, 17.36865266,
+       17.79310606, 18.21755946, 18.64201285, 19.06646625, 19.49091965,
+       19.91537305, 20.33982644, 20.76427984, 21.18873324, 21.61318664,
+       22.03764003, 22.46209343, 22.88654683, 23.31100023, 23.73545362,
+       24.15990702, 24.58436042, 25.00881382, 25.43326721, 25.85772061,
+       26.28217401, 26.70662741, 27.1310808 , 27.5555342 , 27.9799876 ,
+       28.404441  ]), &lt;BarContainer object of 40 artists&gt;)
+&lt;matplotlib.lines.Line2D object at 0x7f293808a780&gt;
+Text(0.5, 1.0, 'Sampling distribution of the mean IF the null is true')
+Text(0.5, 0, 'sample mean')
+Text(0, 0.5, 'count')</code></pre>
+</div>
+<p><img src="_figs/08-hypothesistesting-unnamed-chunk-7-python.png" class="img-fluid"></p>
 </div>
 </div>
 </div>

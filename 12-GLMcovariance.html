@@ -922,7 +922,7 @@ REGRESSION /STATISTICS COEFF R ANOVA /DEPENDENT y /METHOD=ENTER group.</code></p
 |  Total         |         74.06|79|           |     |    |
 +----------------+--------------+--+-----------+-----+----+
 
-/tmp/RtmpbhOPfo/file30023e32c6b7.sps:5.65-5.69: warning: REGRESSION: group is
+/tmp/RtmpVg85s7/file2e254494a606.sps:5.65-5.69: warning: REGRESSION: group is
 not a numeric variable.  It will not be included in the variable list.
     5 | REGRESSION /STATISTICS COEFF R ANOVA /DEPENDENT y /METHOD=ENTER group.
       |                                                                 ^~~~~</code></pre>
@@ -938,31 +938,93 @@ not a numeric variable.  It will not be included in the variable list.
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">EqualVarianceTTest</span>(df.y[df.group <span class="op">.==</span> <span class="st">"control"</span>], df.y[df.group <span class="op">.==</span> <span class="st">"treatment"</span>])</span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ftest</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(y <span class="op">~</span> group), df).model)</span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftable</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(y <span class="op">~</span> group), df))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Two sample t-test (equal variance)
+----------------------------------
+Population details:
+    parameter of interest:   Mean difference
+    value under h_0:         0
+    point estimate:          -0.765134
+    95% confidence interval: (-1.163, -0.3671)
+
+Test summary:
+    outcome with 95% confidence: reject h_0
+    two-sided p-value:           0.0003
+
+Details:
+    number of observations:   [40,40]
+    t-statistic:              -3.8270867244982787
+    degrees of freedom:       78
+    empirical standard error: 0.19992590277277825
+
+F-test against the null model:
+F-statistic: 14.65 on 80 observations and 1 degrees of freedom, p-value: 0.0003
+──────────────────────────────────────────────────────────────────────────────
+                      Coef.  Std. Error      t  Pr(&gt;|t|)  Lower 95%  Upper 95%
+──────────────────────────────────────────────────────────────────────────────
+(Intercept)       -0.116769    0.141369  -0.83    0.4113  -0.398213   0.164675
+group: treatment   0.765134    0.199926   3.83    0.0003   0.367112   1.16316
+──────────────────────────────────────────────────────────────────────────────</code></pre>
+</div>
 </div>
 </div>
 <div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"data/sim/ch12-groups.csv"</span>)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy <span class="im">import</span> stats</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.stats.anova <span class="im">import</span> anova_lm</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>stats.ttest_ind(df.y[df.group <span class="op">==</span> <span class="st">"control"</span>], df.y[df.group <span class="op">==</span> <span class="st">"treatment"</span>])</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>fit <span class="op">=</span> smf.ols(<span class="st">"y ~ group"</span>, data<span class="op">=</span>df).fit()</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>anova_lm(fit)                  <span class="co"># the ANOVA</span></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>fit.summary()                  <span class="co"># the regression</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"data/sim/ch12-groups.csv"</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy <span class="im">import</span> stats</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.stats.anova <span class="im">import</span> anova_lm</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>stats.ttest_ind(df.y[df.group <span class="op">==</span> <span class="st">"control"</span>], df.y[df.group <span class="op">==</span> <span class="st">"treatment"</span>])</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>fit <span class="op">=</span> smf.ols(<span class="st">"y ~ group"</span>, data<span class="op">=</span>df).fit()</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>anova_lm(fit)                  <span class="co"># the ANOVA</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>fit.summary()                  <span class="co"># the regression</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>TtestResult(statistic=np.float64(-3.8270867244982787), pvalue=np.float64(0.00026008567897510494), df=np.float64(78.0))
+            df     sum_sq    mean_sq          F   PR(&gt;F)
+group      1.0  11.708594  11.708594  14.646593  0.00026
+Residual  78.0  62.353772   0.799407        NaN      NaN
+&lt;class 'statsmodels.iolib.summary.Summary'&gt;
+"""
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.158
+Model:                            OLS   Adj. R-squared:                  0.147
+Method:                 Least Squares   F-statistic:                     14.65
+Date:                Mon, 03 Aug 2026   Prob (F-statistic):           0.000260
+Time:                        02:30:48   Log-Likelihood:                -103.55
+No. Observations:                  80   AIC:                             211.1
+Df Residuals:                      78   BIC:                             215.9
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+======================================================================================
+                         coef    std err          t      P&gt;|t|      [0.025      0.975]
+--------------------------------------------------------------------------------------
+Intercept             -0.1168      0.141     -0.826      0.411      -0.398       0.165
+group[T.treatment]     0.7651      0.200      3.827      0.000       0.367       1.163
+==============================================================================
+Omnibus:                        1.034   Durbin-Watson:                   2.012
+Prob(Omnibus):                  0.596   Jarque-Bera (JB):                0.596
+Skew:                           0.191   Prob(JB):                        0.742
+Kurtosis:                       3.182   Cond. No.                         2.62
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+"""</code></pre>
+</div>
 </div>
 </div>
 </div>
 </div>
 <p>Three identical p-values. The t-test, the ANOVA, and the regression are literally the same model here - the t-test is a two-group ANOVA, the two-group ANOVA is a regression with one dummy-coded predictor, and (as a bonus) <span class="math inline">\(F = t^2\)</span>:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>t_stat <span class="ot">&lt;-</span> <span class="fu">t.test</span>(y <span class="sc">~</span> group, <span class="at">data =</span> d, <span class="at">var.equal =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> <span class="fu">tidy</span>() <span class="sc">|&gt;</span> <span class="fu">pull</span>(statistic)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>F_stat <span class="ot">&lt;-</span> <span class="fu">aov</span>(y <span class="sc">~</span> group, <span class="at">data =</span> d) <span class="sc">|&gt;</span> <span class="fu">tidy</span>() <span class="sc">|&gt;</span> <span class="fu">slice</span>(<span class="dv">1</span>) <span class="sc">|&gt;</span> <span class="fu">pull</span>(statistic)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">t_squared =</span> t_stat<span class="sc">^</span><span class="dv">2</span>, <span class="at">F =</span> F_stat) <span class="sc">|&gt;</span> <span class="fu">round2</span>()   <span class="co"># F = t^2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>t_stat <span class="ot">&lt;-</span> <span class="fu">t.test</span>(y <span class="sc">~</span> group, <span class="at">data =</span> d, <span class="at">var.equal =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> <span class="fu">tidy</span>() <span class="sc">|&gt;</span> <span class="fu">pull</span>(statistic)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>F_stat <span class="ot">&lt;-</span> <span class="fu">aov</span>(y <span class="sc">~</span> group, <span class="at">data =</span> d) <span class="sc">|&gt;</span> <span class="fu">tidy</span>() <span class="sc">|&gt;</span> <span class="fu">slice</span>(<span class="dv">1</span>) <span class="sc">|&gt;</span> <span class="fu">pull</span>(statistic)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">t_squared =</span> t_stat<span class="sc">^</span><span class="dv">2</span>, <span class="at">F =</span> F_stat) <span class="sc">|&gt;</span> <span class="fu">round2</span>()   <span class="co"># F = t^2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">

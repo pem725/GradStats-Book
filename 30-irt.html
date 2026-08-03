@@ -926,7 +926,7 @@ VARCOMP score BY p i
   /RANDOM = p i
   /METHOD = REML.</code></pre>
 <div class="cell-output cell-output-stdout">
-<pre><code>/tmp/RtmppF6Cc6/file34aa7f9472dc.sps:5.1-5.7: error: VARCOMP: VARCOMP is not
+<pre><code>/tmp/Rtmp0AzVfI/file32133a892b3b.sps:5.1-5.7: error: VARCOMP: VARCOMP is not
 yet implemented.
     5 | VARCOMP score BY p i
       | ^~~~~~~</code></pre>
@@ -944,29 +944,70 @@ yet implemented.
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># The random-effect variances ARE the G-theory person/item components;</span></span>
 <span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># the residual variance is the leftover noise.</span></span>
 <span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="fu">fit</span>(MixedModel, <span class="pp">@formula</span>(score <span class="op">~</span> <span class="fl">1</span> <span class="op">+</span> (<span class="fl">1</span><span class="op">|</span>p) <span class="op">+</span> (<span class="fl">1</span><span class="op">|</span>i)), df)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by maximum likelihood
+ score ~ 1 + (1 | p) + (1 | i)
+   logLik   -2 logLik     AIC       AICc        BIC    
+ -1736.0572  3472.1143  3480.1143  3480.1422  3501.2039
+
+Variance components:
+            Column   Variance Std.Dev. 
+p        (Intercept)  1.045302 1.022400
+i        (Intercept)  0.338506 0.581813
+Residual              0.478553 0.691775
+ Number of obs: 1440; levels of grouping factors: 120, 12
+
+  Fixed-effects parameters:
+─────────────────────────────────────────────────
+                Coef.  Std. Error     z  Pr(&gt;|z|)
+─────────────────────────────────────────────────
+(Intercept)  0.208062    0.193008  1.08    0.2810
+─────────────────────────────────────────────────</code></pre>
+</div>
 </div>
 </div>
 <div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"data/sim/ch23-gtheory.csv"</span>)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># df has columns score, p (person), i (item).</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Persons and items are crossed random effects; their variances ARE the</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co"># G-theory components, and the model's scale is the residual variance.</span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>vc <span class="op">=</span> {<span class="st">"p"</span>: <span class="st">"0 + C(p)"</span>, <span class="st">"i"</span>: <span class="st">"0 + C(i)"</span>}</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>smf.mixedlm(<span class="st">"score ~ 1"</span>, df, groups<span class="op">=</span>np.ones(<span class="bu">len</span>(df)), vc_formula<span class="op">=</span>vc).fit().summary()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"data/sim/ch23-gtheory.csv"</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co"># df has columns score, p (person), i (item).</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Persons and items are crossed random effects; their variances ARE the</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co"># G-theory components, and the model's scale is the residual variance.</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>vc <span class="op">=</span> {<span class="st">"p"</span>: <span class="st">"0 + C(p)"</span>, <span class="st">"i"</span>: <span class="st">"0 + C(i)"</span>}</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>smf.mixedlm(<span class="st">"score ~ 1"</span>, df, groups<span class="op">=</span>np.ones(<span class="bu">len</span>(df)), vc_formula<span class="op">=</span>vc).fit().summary()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;class 'statsmodels.iolib.summary2.Summary'&gt;
+"""
+         Mixed Linear Model Regression Results
+========================================================
+Model:            MixedLM Dependent Variable: score     
+No. Observations: 1440    Method:             REML      
+No. Groups:       1       Scale:              0.4785    
+Min. group size:  1440    Log-Likelihood:     -1736.7704
+Max. group size:  1440    Converged:          Yes       
+Mean group size:  1440.0                                
+---------------------------------------------------------
+            Coef.  Std.Err.    z    P&gt;|z|  [0.025  0.975]
+---------------------------------------------------------
+Intercept   0.208     0.198  1.050  0.294  -0.180   0.596
+i Var       0.362     0.227                              
+p Var       1.048     0.213                              
+========================================================
+
+"""</code></pre>
+</div>
 </div>
 </div>
 </div>
 </div>
 <p>Person variance is the <strong>signal</strong> - the real differences you want to measure. Item and residual variance are <strong>noise</strong>, now itemized by source. The <strong>generalizability coefficient</strong> is the same signal-share idea as reliability, but honest about the fact that you averaged over a <em>sample</em> of items:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># G-coefficient for a test of ni items</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">n_items =</span> ni, <span class="at">G =</span> v_p <span class="sc">/</span> (v_p <span class="sc">+</span> v_e <span class="sc">/</span> ni)) <span class="sc">|&gt;</span> <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># G-coefficient for a test of ni items</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">n_items =</span> ni, <span class="at">G =</span> v_p <span class="sc">/</span> (v_p <span class="sc">+</span> v_e <span class="sc">/</span> ni)) <span class="sc">|&gt;</span> <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
@@ -990,9 +1031,9 @@ yet implemented.
 <h3 data-number="23.3.1" class="anchored" data-anchor-id="the-d-study-designing-the-measure"><span class="header-section-number">23.3.1</span> The D-study: Designing the Measure</h3>
 <p>This is where G-theory pays for itself. Because you know the variance components, you can ask a <strong>design</strong> question - a <em>decision (D) study</em>: how many items would I need for a target reliability? It is the <a href="./09-statisticalpower.html">power analysis</a> of measurement.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">n_items =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">8</span>, <span class="dv">12</span>, <span class="dv">20</span>, <span class="dv">40</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">G =</span> v_p <span class="sc">/</span> (v_p <span class="sc">+</span> v_e <span class="sc">/</span> n_items)) <span class="sc">|&gt;</span>   <span class="co"># generalizability at each test length</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">n_items =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">8</span>, <span class="dv">12</span>, <span class="dv">20</span>, <span class="dv">40</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">G =</span> v_p <span class="sc">/</span> (v_p <span class="sc">+</span> v_e <span class="sc">/</span> n_items)) <span class="sc">|&gt;</span>   <span class="co"># generalizability at each test length</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">

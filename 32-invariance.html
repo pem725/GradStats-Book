@@ -955,20 +955,52 @@ T-TEST GROUPS=grp('A' 'B') /VARIABLES=composite.</code></pre>
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="fu">combine</span>(<span class="fu">groupby</span>(df, <span class="op">:</span>grp), <span class="op">:</span>trait <span class="op">=&gt;</span> mean, <span class="op">:</span>composite <span class="op">=&gt;</span> mean)</span>
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Independent-groups (Welch) t-test comparing the composite across groups.</span></span>
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="fu">UnequalVarianceTTest</span>(df.composite[df.grp <span class="op">.==</span> <span class="st">"A"</span>], df.composite[df.grp <span class="op">.==</span> <span class="st">"B"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>2×3 DataFrame
+ Row │ grp      trait_mean  composite_mean
+     │ String1  Float64     Float64
+─────┼─────────────────────────────────────
+   1 │ A         0.0335843       0.0310153
+   2 │ B        -0.0106839       0.487768
+Two sample t-test (unequal variance)
+------------------------------------
+Population details:
+    parameter of interest:   Mean difference
+    value under h_0:         0
+    point estimate:          -0.456753
+    95% confidence interval: (-0.6297, -0.2838)
+
+Test summary:
+    outcome with 95% confidence: reject h_0
+    two-sided p-value:           &lt;1e-06
+
+Details:
+    number of observations:   [300,300]
+    t-statistic:              -5.18706830843206
+    degrees of freedom:       592.9851791257745
+    empirical standard error: 0.08805611315007979</code></pre>
+</div>
 </div>
 </div>
 <div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"data/sim/ch21-invariance.csv"</span>)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy <span class="im">import</span> stats</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># df holds trait, composite, and the group factor grp.</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Group means: true trait (equal by construction) and observed composite.</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>df.groupby(<span class="st">"grp"</span>)[[<span class="st">"trait"</span>, <span class="st">"composite"</span>]].mean()</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Independent-groups (Welch) t-test comparing the composite across groups.</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>stats.ttest_ind(df.composite[df.grp <span class="op">==</span> <span class="st">"A"</span>],</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>                df.composite[df.grp <span class="op">==</span> <span class="st">"B"</span>], equal_var<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"data/sim/ch21-invariance.csv"</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy <span class="im">import</span> stats</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># df holds trait, composite, and the group factor grp.</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Group means: true trait (equal by construction) and observed composite.</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>df.groupby(<span class="st">"grp"</span>)[[<span class="st">"trait"</span>, <span class="st">"composite"</span>]].mean()</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Independent-groups (Welch) t-test comparing the composite across groups.</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>stats.ttest_ind(df.composite[df.grp <span class="op">==</span> <span class="st">"A"</span>],</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>                df.composite[df.grp <span class="op">==</span> <span class="st">"B"</span>], equal_var<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        trait  composite
+grp                     
+A    0.033584   0.031015
+B   -0.010684   0.487768
+TtestResult(statistic=np.float64(-5.1870683084320595), pvalue=np.float64(2.936478211895369e-07), df=np.float64(592.9851791257746))</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -989,15 +1021,15 @@ T-TEST GROUPS=grp('A' 'B') /VARIABLES=composite.</code></pre>
 <section id="how-you-test-it" class="level2" data-number="21.4">
 <h2 data-number="21.4" class="anchored" data-anchor-id="how-you-test-it"><span class="header-section-number">21.4</span> How You Test It</h2>
 <p>Invariance is tested with <strong>multi-group confirmatory factor analysis</strong> (<a href="./28-sem.html">CFA</a>): fit the same factor model to every group, then progressively <em>constrain</em> parameters to be equal, one rung at a time. The idiom is <code>lavaan</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Multi-group CFA invariance sequence (needs lavaan — shown, not run on the book's server)</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lavaan)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="st">'curiosity =~ x1 + x2 + x3 + x4 + x5 + x6'</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>configural <span class="ot">&lt;-</span> <span class="fu">cfa</span>(model, <span class="at">data =</span> d, <span class="at">group =</span> <span class="st">"group"</span>)                             <span class="co"># same shape</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>metric     <span class="ot">&lt;-</span> <span class="fu">cfa</span>(model, <span class="at">data =</span> d, <span class="at">group =</span> <span class="st">"group"</span>, <span class="at">group.equal =</span> <span class="st">"loadings"</span>)   <span class="co"># + equal loadings</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>scalar     <span class="ot">&lt;-</span> <span class="fu">cfa</span>(model, <span class="at">data =</span> d, <span class="at">group =</span> <span class="st">"group"</span>,</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>                  <span class="at">group.equal =</span> <span class="fu">c</span>(<span class="st">"loadings"</span>, <span class="st">"intercepts"</span>))                    <span class="co"># + equal intercepts</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>strict     <span class="ot">&lt;-</span> <span class="fu">cfa</span>(model, <span class="at">data =</span> d, <span class="at">group =</span> <span class="st">"group"</span>,</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>                  <span class="at">group.equal =</span> <span class="fu">c</span>(<span class="st">"loadings"</span>, <span class="st">"intercepts"</span>, <span class="st">"residuals"</span>))       <span class="co"># + equal residuals</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Multi-group CFA invariance sequence (needs lavaan — shown, not run on the book's server)</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lavaan)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="st">'curiosity =~ x1 + x2 + x3 + x4 + x5 + x6'</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>configural <span class="ot">&lt;-</span> <span class="fu">cfa</span>(model, <span class="at">data =</span> d, <span class="at">group =</span> <span class="st">"group"</span>)                             <span class="co"># same shape</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>metric     <span class="ot">&lt;-</span> <span class="fu">cfa</span>(model, <span class="at">data =</span> d, <span class="at">group =</span> <span class="st">"group"</span>, <span class="at">group.equal =</span> <span class="st">"loadings"</span>)   <span class="co"># + equal loadings</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>scalar     <span class="ot">&lt;-</span> <span class="fu">cfa</span>(model, <span class="at">data =</span> d, <span class="at">group =</span> <span class="st">"group"</span>,</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>                  <span class="at">group.equal =</span> <span class="fu">c</span>(<span class="st">"loadings"</span>, <span class="st">"intercepts"</span>))                    <span class="co"># + equal intercepts</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>strict     <span class="ot">&lt;-</span> <span class="fu">cfa</span>(model, <span class="at">data =</span> d, <span class="at">group =</span> <span class="st">"group"</span>,</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>                  <span class="at">group.equal =</span> <span class="fu">c</span>(<span class="st">"loadings"</span>, <span class="st">"intercepts"</span>, <span class="st">"residuals"</span>))       <span class="co"># + equal residuals</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Each step adds constraints. The question at each rung is simple: <em>does forcing this equality make the fit meaningfully worse?</em> If constraining the loadings barely changes fit, metric invariance holds; if constraining the intercepts barely changes fit, scalar holds. “Barely” is judged by the <strong>change in fit indices</strong>, not the chi-square difference test, which is oversensitive in large samples. The common thresholds:</p>
 <ul>
 <li><strong>ΔCFI &lt; .010</strong> (Cheung &amp; Rensvold, 2002) is the workhorse rule.</li>
