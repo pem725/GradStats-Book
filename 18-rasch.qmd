@@ -56,15 +56,10 @@ X[1:6, 1:9]   # a corner: the first children, the easiest items
 ```
 ### SPSS
 ```{pspp}
-* Reading Wright's Knox Cube Test responses: 35 children (rows) by 18
-* tapping items (columns), 1 = repeated the pattern correctly.
-* GET DATA needs a format after EVERY name - the "i1 TO i18" shorthand that
-* works in DATA LIST is not available here.
-GET DATA /TYPE=TXT /FILE='data/knox.dat'
-  /DELIMITERS=' \t' /FIRSTCASE=2
-  /VARIABLES=Name A10 sex A1 i1 F1.0 i2 F1.0 i3 F1.0 i4 F1.0 i5 F1.0 i6 F1.0
-             i7 F1.0 i8 F1.0 i9 F1.0 i10 F1.0 i11 F1.0 i12 F1.0 i13 F1.0
-             i14 F1.0 i15 F1.0 i16 F1.0 i17 F1.0 i18 F1.0.
+* Wright's Knox Cube Test responses: 35 children (rows) by 18 tapping items
+* (columns), 1 = repeated the tapping pattern correctly. The loader is in
+* data/knox.sps, which spells out the format for all eighteen items.
+INSERT FILE='data/knox.sps'.
 
 LIST VARIABLES=Name i1 TO i9 /CASES=6.
 ```
@@ -104,6 +99,8 @@ tibble(item = colnames(X), passes = colSums(X))
 ```
 ### SPSS
 ```{pspp}
+INSERT FILE='data/knox.sps'.
+
 * Passes per item, easy (left) to hard (right). Everyone passes the first
 * three and no one passes the last - those carry no information about
 * DIFFERENCES, and cannot get a finite logit.
@@ -194,8 +191,8 @@ tibble(item = fit$items, difficulty = fit$difficulty) |> round2()
 * dedicated engine - Winsteps/BIGSTEPS (Wright's own), ConQuest, or R's
 * eRm/TAM - or the SPSS Python/R integration plug-in calling one of those.
 *
-* * The joint-maximum-likelihood calibration below
-* is shown in the R, Julia, and Python tabs.
+* The joint-maximum-likelihood calibration of item difficulties is shown in
+* the R, Julia and Python tabs.
 ```
 ### Julia
 ```{julia}
@@ -305,8 +302,7 @@ tibble(ability = fit$ability) |>
 * dedicated engine - Winsteps/BIGSTEPS (Wright's own), ConQuest, or R's
 * eRm/TAM - or the SPSS Python/R integration plug-in calling one of those.
 *
-* * The person measures (abilities) summarised below
-* is shown in the R, Julia, and Python tabs.
+* The person measures (abilities) are shown in the R, Julia and Python tabs.
 ```
 ### Julia
 ```{julia}
