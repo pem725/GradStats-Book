@@ -1,9 +1,9 @@
 # Book Build Dashboard — *Statistics by Us for You*
 
-Living tracker for pulling ~20 years of teaching material into the book and getting
-it published. Claude updates this file each working session.
+Living tracker for the book: what is built, what runs, and what is still open.
+Claude updates this file each working session.
 
-_Last updated: 2026-07-16_
+_Last updated: 2026-08-03_
 
 ---
 
@@ -11,117 +11,169 @@ _Last updated: 2026-07-16_
 
 | Item | Status | Notes |
 |------|:------:|-------|
-| Stop version-controlling `_book/` | ✅ done | `git rm --cached _book`; added `/_book/` + `/docs/` to `.gitignore`. **Needs a commit.** |
-| GitHub Pages publishing | ✅ workflow added | `.github/workflows/publish.yml` renders on push to `main` → `gh-pages` branch. |
-| Enable Pages (one-time, in GitHub UI) | ⬜ **you** | Settings → Pages → Source: *Deploy from a branch* → `gh-pages` / `(root)`. Then site lives at https://pem725.github.io/GradStats-Book/ |
-| CLAUDE.md for the repo | ✅ done | Guidance for future Claude sessions. |
-| Import teaching BibTeX | ✅ done | `Methods.bib` (12 entries) + `PSYC643.bib` (14 entries) in repo & wired into `_quarto.yml`. Zotero library confirmed local: **5,082 PDFs** at `~/Zotero/storage/`. |
+| GitHub Pages publishing | ✅ live | `.github/workflows/publish.yml` renders on push to `main` → `gh-pages`. Site: <https://pem725.github.io/GradStats-Book/> |
+| `_book/` out of version control | ✅ done | `/_book/` and `/docs/` gitignored; a local render never dirties the tree. |
+| Render time in CI | ~35–45 min | Four interpreters now run during the render, so it is no longer a two-minute job. |
+| Bibliography | ✅ wired | Six files in `_quarto.yml`: `statbook.bib`, `packages.bib` (auto-generated), `Methods.bib`, `PSYC643.bib`, `Rasch.bib`, `mcknight-pubs.bib`. |
+| CLAUDE.md | ✅ current | Guidance for future sessions; kept in step with the build. |
 
-**Publishing model:** you just edit `.qmd` files and `git push`. The Action renders the
-book (running all R chunks) and deploys. No local render-and-commit needed.
+**Publishing model:** edit `.qmd` files and `git push`. The Action renders the whole
+book — running every R, SPSS, Julia and Python chunk — and deploys. No local
+render-and-commit needed.
+
+**Two machines.** PEM also develops from Positron elsewhere and pushes to `main`
+independently, so `main` can diverge. Always `git fetch` and merge before pushing.
 
 ---
 
-## 2. Source Material Found (Google Drive → `Teaching/`)
+## 2. The Four-Language Build
 
-The archive is large (~30 course folders, 2004–2026). Key locations for *this* book:
+Every code tab in the book **executes**. This is the newest and most fragile part of
+the machinery, so it gets its own section.
 
-| Drive location | Folder ID | Feeds chapters |
-|----------------|-----------|----------------|
-| `Teaching/R/` (Regression1–9.R, Basics.R, datasets, videos) | `0B1KESQbSMul1VWt2OTluc2NvRlk` | 12–17 (regression/GLM) + basics |
-| `Teaching/PSYC/611` (Adv Stat Research Methods) | `0B1KESQbSMul1amdwRE9XclBzQXM` | 06–09 (inference, power) |
+`_engines.R` (sourced by `_common.R`) defines knitr engines for `pspp`, `julia` and
+`python`. Each writes the chunk to a scratch file, runs the real interpreter, captures
+stdout, and collects any figure the chunk drew.
+
+| | count |
+|---|---:|
+| tabsets | 109 |
+| live `{r}` chunks | 191 |
+| live `{pspp}` chunks | 105 |
+| live `{julia}` chunks | 105 |
+| live `{python}` chunks | 105 |
+
+**Nothing is shared between chunks except through files.** Every non-R tab therefore
+loads its own data — shared loaders in `setup/load_data.{R,sps,jl,py}`, per-dataset ones
+like `data/knox.sps` and `data/mod3data.sps`.
+
+**Graceful degradation.** A missing interpreter falls back to static text and logs
+`BOOK-STATIC [engine] chapter label: why`. The build never goes red on a machine without
+the toolchains, and grepping a render log says exactly which tabs showed less than they
+promised. The workflow's "Verify the toolchains" step runs `_engines.R`'s own probes
+*before* the render and fails the job if Julia or Python is unusable.
+
+### Hard-won lessons (each cost a build)
+
+- **`LD_LIBRARY_PATH`** — R exports it pointing at its own lib directory and children
+  inherit it, so Python's compiled extensions resolved against R's BLAS/LAPACK and
+  `import pandas` died. Worked from a shell, failed from R. `.book_run()` clears and
+  restores it.
+- **PSPP's `/DELIMITERS`** — it reads escapes literally, so `' \t'` is a backslash and a
+  letter, not a tab. The Knox file mixes spaces and tabs, so values slid silently into
+  the wrong variables. No error, no warning, just wrong numbers.
+- **Julia on the runner** — Ubuntu ships a Julia binary, so the engine found it, the
+  packages were absent, and the published book printed `Segmentation fault (core
+  dumped)` as though it were a result. Pinned to 1.11.5 with the committed
+  `Manifest.toml` instantiated.
+- **PSPP is a subset of SPSS** — no `UNIANOVA /CONTRAST` (spell codes out with `COMPUTE`
+  + `REGRESSION`), no `FACTOR /EXTRACTION=ML` (use PAF, note the one-word change),
+  `GLM` not `UNIANOVA`. Factor signs are arbitrary and PSPP sometimes flips one.
+
+### The four tabs that stay static, on purpose
+
+| Chapter | Section | Why |
+|---|---|---|
+| `10-reliability.qmd` | keyed alpha | depends on the bespoke `alpha_keyed()` teaching function |
+| `10-reliability.qmd` | alpha-if-deleted | same |
+| `10-reliability.qmd` | reliability → power | depends on McKnight's `EScalc()` |
+| `24-casestudy-depression.qmd` | response-pattern count | bespoke combinatorial function |
+
+These follow the house include/exclude rule: no manufactured equivalents for bespoke
+code. Where a language genuinely cannot do a procedure, its tab says so and names the
+tool that can — base SPSS has no power analysis (G\*Power, SamplePower), no latent class
+analysis (Latent GOLD, Mplus, `poLCA`), and no Rasch calibration (Winsteps, ConQuest,
+`eRm`/`TAM`).
+
+---
+
+## 3. Book Structure
+
+Twelve parts, thirty-two numbered chapters, plus front and back matter. Order lives in
+`_quarto.yml`, not in filename order.
+
+| Part | Chapters |
+|------|----------|
+| _(front)_ | `index` · `foreword` · `preface` · `author` · `intro` |
+| The Basics | 02 Distributions · 03 Central Tendency · 04 Dispersion · 05 Data Cleaning |
+| Making Inferences with Data | 06 z-Distribution · 07 Covariance · 08 Hypothesis Testing · 09 Power |
+| Checking Our Data | 10 Reliability · 11 Validity · 18 Rasch |
+| Preparing Our Data | 31 Data Reduction |
+| Using Models | 12 GLM & Covariance · 13 Point-Biserial · 14 Bivariate Regression · 15 MRC · 16 ANOVA & GLM · 17 Basic ANOVA · 19 Coding Categorical Predictors |
+| Latent Variable Models | 28 CFA/SEM · 32 Measurement Invariance · 29 Latent Class · 30 IRT & Generalizability |
+| Causal Inference | 33 DAGs and the back door |
+| Beyond the Normal Curve | 20 Resampling, robust methods, Bayes |
+| Displaying Data | 21 Graphics · 22 Tables |
+| Statistics in the Wild | 23 The Sports Page · 24 Depression Profiles · 25 Building a Measure · 26 Missing Data |
+| The Methods in Practice | 27 Showcase |
+| Appendices | `three-languages` · `setup` · `required-packages` · `changelog` |
+| _(back)_ | `references` |
+
+**All chapters are drafted and render clean.** No stubs and no `foo`/`bar`/`baz`
+placeholders remain. The one deliberate blank is `foreword.qmd`, held for an outside
+colleague to write in their own words.
+
+The largest chapters are `19-coding` (747 lines, 9 tabsets), `20-beyond` (708 / 10),
+`10-reliability` (510 / 7), `15-MRC` (508 / 6), `21-graphics` (467 / 7), and
+`18-rasch` (423 / 4).
+
+**Ch. 18 — Rasch, honoring Ben Wright.** From-scratch JMLE (the BIGSTEPS/UCON engine)
+running on Wright's *actual* Knox Cube Test data (`data/knox.dat`, 35 named children ×
+18 tapping items from *Best Test Design*). Converges in 31 iterations, sets aside the 3
+all-pass and 1 no-pass items automatically, and recovers Wright's difficulty ladder
+(Spearman 0.97 against item order). All four languages read the same file and agree.
+The source PDFs are gitignored — large and copyrighted, never committed.
+
+---
+
+## 4. Source Material (Google Drive → `Teaching/`)
+
+| Drive location | Folder ID | Feeds |
+|----------------|-----------|-------|
+| `Teaching/R/` (Regression1–9.R, Basics.R, datasets) | `0B1KESQbSMul1VWt2OTluc2NvRlk` | 14–17, 19 |
+| `Teaching/PSYC/611` (Adv Stat Research Methods) | `0B1KESQbSMul1amdwRE9XclBzQXM` | 06–09 |
 | `Teaching/PSYC/642` (GLM I) | `1lnNNP_2E-EBTvctziFyk1EKqjxqdPx4i` | 12–16 |
 | `Teaching/PSYC/643` (GLM II) | `1kcGbfbX5oLRml-YqvszKpAnNXbZnm845` | 14–16 |
-| `Teaching/PSYC/644` (GLM III / advanced) | `0B1KESQbSMul1TnhrS0VUaWtSYmc` | 15–16 |
+| `Teaching/PSYC/644` (GLM III) | `0B1KESQbSMul1TnhrS0VUaWtSYmc` | 15–16 |
 | `Teaching/PSYC/612` (Regression / mediation) | `0B1KESQbSMul1M0ZsamVMSEVObFk` | 14–15 |
-| `Teaching/PSYC/757 & 892` (Bayesian) | `1qN6IiOJS-BwP3YFBsnYK6NGsE02mvh8H` | future / inference |
-| `Teaching/Rasch/` (measurement) | `0B1KESQbSMul1bDhHcG9qdHpvNm8` | 10–11 (reliability/validity) |
-| `Teaching/Methods.bib` | `0B1KESQbSMul1ZFBYQ3k0SjdndkU` | references (sampling/design) |
-| Local Zotero PDF library | `~/Zotero/storage/` | ✅ source PDFs live here (per PSYC643.bib) |
+| `Teaching/PSYC/757 & 892` (Bayesian) | `1qN6IiOJS-BwP3YFBsnYK6NGsE02mvh8H` | 20 |
+| `Teaching/Rasch/` (measurement) | `0B1KESQbSMul1bDhHcG9qdHpvNm8` | 10, 11, 18, 30 |
+| Local Zotero PDF library (5,082 PDFs) | `~/Zotero/storage/` | references |
 
-**Other bib files of interest:** `PSYC643.bib` (GLM/regression — Aiken/Cohen/West, Keppel,
-MacKinnon), `596i_syllabus.bib`, `564_syllabus.bib`. Giant research libraries
-(`CRC.bib` 4.9 MB, `delphi.bib` 3.8 MB) exist but are **excluded** from the book repo
-unless you want them.
+Giant research libraries (`CRC.bib` 4.9 MB, `delphi.bib` 3.8 MB) are deliberately
+**excluded** from the repo.
 
 ---
 
-## 3. Chapter Synthesis Status
+## 5. Open Items
 
-Legend: 🟥 stub/empty · 🟨 partial · 🟩 drafted · ⬜ not started synthesis
+- [ ] **Ch. 10 `RELIABILITY /MODEL=ALPHA`** — reserved for Jeff Stuewig to write.
+- [ ] **`foreword.qmd`** — awaiting the invited colleague.
+- [ ] **Voice/structure review** of the drafted chapters (PEM).
+- [ ] Consider whether the reliability chapter's three static tabs can be made live by
+      inlining the helper into each language's tab.
 
-| # | Chapter | Now | Primary source(s) to pull from | Synth |
-|---|---------|-----|-------------------------------|:-----:|
-| — | intro | 🟨 helix works; concept callouts filled | — | — |
-| 02 | Variables & Distributions | 🟩 **drafted** | extended existing; distributions/PDFs | ✅ |
-| 03 | Central Tendency | 🟩 **drafted** | mean=least-squares framing | ✅ |
-| 04 | Dispersion | 🟩 **drafted** | variance/SD/df, the "VARIANCE" spine | ✅ |
-| 05 | Data Cleaning | 🟩 **drafted** | sensors, missingness (MCAR/MAR/MNAR) | ✅ |
-| 06 | z-Distribution | 🟩 **drafted** | extended existing; pnorm/qnorm | ✅ |
-| 07 | Covariance | 🟩 **drafted** | covariance→correlation→slope engine | ✅ |
-| 08 | Hypothesis Testing | 🟩 **drafted** | PSYC 611 Lec 6, Methods.bib (Meehl) | ✅ |
-| 09 | Statistical Power | 🟩 **drafted** | PSYC 611 Lec 6; fixed the α→power error | ✅ |
-| 10 | Reliability | 🟩 **drafted** | CTT (O=T+E), Cronbach α, dartboard | ✅ |
-| 11 | Validity | 🟩 **drafted** | measure + inference validity, dartboard | ✅ |
-| 12 | GLM & Covariance | 🟩 **drafted** | GLM overture; t=ANOVA=regression | ✅ |
-| 13 | Point-Biserial Correlation | 🟩 **drafted** | continuous↔dichotomous bridge | ✅ |
-| 14 | Bivariate Regression | 🟩 **drafted** | **R/Regression1.R** | ✅ |
-| 15 | Multiple Regression (MRC) | 🟩 **drafted** | **R/Regression4.R**; fixed df & F errors | ✅ |
-| 16 | ANOVA & GLM | 🟩 **drafted** | **R/Regression7.R** + 8–9.R | ✅ |
-| 17 | Basic ANOVA | 🟩 **drafted** | SS partition; ANOVA=regression | ✅ |
-| 19 | Coding Categorical Predictors | 🟩 **drafted** | **Regression7/8/9.R** — dummy/effects/weighted/contrast/nonsense | ✅ |
-| 20 | Beyond the Normal Curve | 🟩 **drafted** | AES-1997 resampling + `sobel.R`; PSYC757 brms/ROPE; robust (new) | ✅ |
+### Known quirks, deliberately left alone
 
-**All body chapters drafted and rendering** (16 + a new Rasch chapter, `18-rasch.qmd`,
-in the "Checking Our Data" part). The whole book builds end-to-end (`quarto render`,
-exit 0). Chapters 12/13/17 equivalence claims (t=ANOVA=regression, point-biserial=t-test,
-SS partition, `lm` F = `aov` F) verified numerically.
+- **`.gitignore` patterns are literal, not stems.** The rule `pspp.png` does not match
+  `pspp.png-2`, so `pspp.png-2` … `-7` and `pspp.svg` are tracked in the repo even
+  though the same commit that added the rule meant to exclude them. Widening it to
+  `pspp.png*` would catch future spill, but gitignore never retroactively untracks a
+  file, so the existing seven would still need `git rm --cached`. Kept as is, on purpose.
+- `_poc_engines.*` is the proof-of-concept that became `_engines.R`. Nothing in the book
+  references it; it is kept as a record of the scratch work.
+- `statbook.bib.bak` is a 70-line backup from the initial commit; the live file is 79
+  lines. Kept.
+- `Module{1,2}demostration.qmd` are standalone demos rendered outside the book. The
+  `.qmd` sources are tracked on purpose; their `.html` and `_files/` output is ignored.
 
-**Ch. 18 — Rasch (honoring Ben Wright):** from-scratch JMLE (the BIGSTEPS/UCON engine)
-in R (executed, verified), with faithful Python (NumPy) and Julia translations
-(the build server only runs R, so those two are shown as static blocks). **Now runs on
-Wright's *actual* Knox Cube Test data** (`data/knox.dat` — 35 named children × 18 tapping
-items, straight from *Best Test Design*, dropped in by PEM 2026-07-16). The engine
-converges in 31 iterations, automatically sets aside the 3 all-pass items and the 1
-no-pass item (no finite logit), and recovers Wright's difficulty ladder (Spearman 0.97
-of difficulty vs. item order). All three languages read the same `data/knox.dat`. Source
-PDFs (Best Test Design, Rating Scale Analysis, Making Measures) are gitignored — never
-committed (large + copyrighted). To make the Python/Julia blocks *executable on the build
-server*, add Python+Julia setup to the publish workflow.
+### Corrections made along the way
 
-Chapters 02–07, 10–13, 17 are drafted from the book's established voice/framework plus
-the digested 611 lectures and CTT material — solid, correct, self-contained (base R +
-ggplot2). They can be *enriched* later with specific lecture examples/data from the
-Drive archive (measurement chapters especially could pull from Rasch/754).
-
----
-
-## 4. Decisions Needed From You
-
-1. **Synthesis strategy** — depth-first (finish a few chapters fully, review, then
-   continue) vs. breadth-first (drop relevant material into all 16, then polish)?
-2. **Canonical courses** — confirm 611 + 642/643/644 + 612 are the authoritative
-   sources; ignore undergrad sections (300/325/etc.)?
-3. **PDFs** — do you want the Zotero source PDFs referenced/linked, or copied into the
-   repo? (Copying could add hundreds of MB.)
-4. **Videos** — old `.avi` lecture videos exist in `Teaching/R/`. Re-host, link, or skip?
-
----
-
-## 5. Next Actions (Claude)
-
-- [x] Commit infra changes (gitignore, workflow, CLAUDE.md, bibs). _(commit 430970f, held locally — not pushed)_
-- [x] Chapter 14 (Bivariate Regression) drafted to publication quality & renders clean.
-- [x] Ch. 8 (Hypothesis Testing), Ch. 14 (Bivariate Regression) — drafted, render clean.
-- [x] Ch. 15 (MRC) & Ch. 16 (ANOVA/GLM) — drafted from Regression4/7.R; by-hand values verified against `lm()`/`aov()`.
-- [x] Ch. 9 (Power) — drafted; **fixed the α→power error** from the 611 slides; removed the "AI shit" placeholder.
-- [x] Fixed intro placeholder callouts (foo/bar/baz) + removed a duplicated "Frequency" callout.
-- [ ] **You:** review the drafted chapters for voice/structure; enable GitHub Pages.
-- [ ] Remaining stubs to synthesize: 02–07, 10–13, 17 (measurement chapters need the Rasch/754 folders).
-
-### Corrections made (fix-the-mistakes pass)
-- MRC coefficient t-test df: `n-1` → **`n-k-1`** (Regression4.R).
-- Omnibus F: replaced garbled comment formula with `F = (R²/k)/((1-R²)/(n-k-1))`.
-- Separated *semipartial* vs *partial* correlation vs *standardized coefficient* (Regression4.R conflated them).
-- Power: **stricter α lowers power** (slides had it backwards); n only lever that raises power without raising Type I.
-- Dropped crash-causing typos from source (`summmary`, `Princpal`) and hardcoded local data paths.
+- MRC coefficient t-test df: `n-1` → **`n-k-1`**.
+- Omnibus F comment replaced with `F = (R²/k)/((1-R²)/(n-k-1))`.
+- Separated *semipartial* vs *partial* correlation vs *standardized coefficient*.
+- Power: **stricter α lowers power** — the 611 slides had it backwards.
+- Knox Cube SPSS loader read a literal `\t` and silently mis-parsed every item.
+- Seven contrast-coding schemes in Ch. 19 rewritten to run in PSPP; all reproduce the R
+  coefficients exactly, and the regression sums of squares come out identical across all
+  five pet schemes — which is the chapter's whole argument.
