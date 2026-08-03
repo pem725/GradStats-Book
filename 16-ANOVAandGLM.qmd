@@ -191,7 +191,15 @@ tidy2(lm_fac)
 ### SPSS
 ```{pspp}
 INSERT FILE='data/sim/ch16-pets.sps'.
-UNIANOVA sad BY pet mess /DESIGN=pet mess pet*mess.
+
+* GLM and UNIANOVA are the same procedure in SPSS; GLM is the name that also
+* works in PSPP, so that is what the book runs. A factor has to be numeric
+* here, which is what AUTORECODE does - it hands back the same groups with
+* integer codes and the labels still attached.
+AUTORECODE VARIABLES=pet mess /INTO petn messn.
+
+GLM sad BY petn messn
+  /DESIGN=petn messn petn*messn.
 ```
 ### Julia
 ```{julia}

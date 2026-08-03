@@ -52,12 +52,17 @@ unclass(fa$loadings) |> as_tibble(rownames = "item") |> round2()
 ### SPSS
 ```{pspp}
 INSERT FILE='data/sim/ch20-cfa.sps'.
-* ML factor analysis as a CFA proxy; a true CFA uses AMOS or the CFA/OMS approach.
+* Factor analysis as a CFA proxy; a true CFA uses AMOS or the CFA/OMS approach.
+* In SPSS the extraction line reads /EXTRACTION=ML, matching the R tab. PSPP
+* offers PAF, PC and PA1 but not ML, so principal axis factoring runs here.
+* The loadings agree with R's to the two decimals we print, though the sign of
+* a factor is arbitrary - if a whole column comes out negative, nothing is
+* wrong; the factor simply points the other way.
 FACTOR
-  /VARIABLES a1 a2 a3 a4 b1 b2 b3 b4
-  /EXTRACTION ML
-  /CRITERIA FACTORS(2)
-  /ROTATION PROMAX.
+  /VARIABLES=a1 a2 a3 a4 b1 b2 b3 b4
+  /EXTRACTION=PAF
+  /CRITERIA=FACTORS(2)
+  /ROTATION=PROMAX.
 ```
 
 ### Julia

@@ -199,11 +199,14 @@ RELIABILITY
 * Omega needs the factor loadings. Base SPSS has no omega keyword, so you
 * extract a one-factor solution and compute omega from its output:
 *   omega = (SUM lambda)^2 / ((SUM lambda)^2 + SUM psi)
+* In SPSS the extraction line reads /EXTRACTION=ML, matching the R tab.
+* PSPP offers PAF, PC and PA1 but not ML, so principal axis factoring runs
+* here; on this data the loadings agree to the two decimals we print.
 FACTOR
-  /VARIABLES item1 item2 item3 item4 item5
-  /EXTRACTION ML
-  /CRITERIA FACTORS(1)
-  /PRINT INITIAL EXTRACTION.
+  /VARIABLES=item1 item2 item3 item4 item5
+  /EXTRACTION=PAF
+  /CRITERIA=FACTORS(1)
+  /PRINT=INITIAL EXTRACTION.
 ```
 ### Julia
 ```{julia}

@@ -141,7 +141,16 @@ tibble(item = names(items), loading = as.numeric(fa1$loadings)) |> round2()
 ### SPSS
 ```{pspp}
 INSERT FILE='data/sim/ch19-items.sps'.
-FACTOR /VARIABLES x1 x2 x3 x4 x5 x6 /EXTRACTION ML /CRITERIA FACTORS(1) /ROTATION VARIMAX.
+
+* In SPSS this reads /EXTRACTION=ML, which is what the R tab's factanal()
+* does. PSPP - the free engine this book renders with - offers PAF, PC and
+* PA1 but not ML, so principal axis factoring is what runs here. On this data
+* the two agree to the two decimals we print.
+FACTOR
+  /VARIABLES=x1 x2 x3 x4 x5 x6
+  /EXTRACTION=PAF
+  /CRITERIA=FACTORS(1)
+  /PRINT=INITIAL EXTRACTION.
 ```
 ### Julia
 ```{julia}
