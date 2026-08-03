@@ -104,6 +104,9 @@ jobs:
           echo "--- julia ---";  julia --project=. --startup-file=no -e 'using CSV, DataFrames; print("BOOK_OK ")'
           echo
           echo "--- exactly what the engines will decide ---"
+          echo "shell LD_LIBRARY_PATH: [${LD_LIBRARY_PATH:-unset}]"
+          Rscript -e '
+            cat("R LD_LIBRARY_PATH:", Sys.getenv("LD_LIBRARY_PATH", "unset"), "\n")'
           Rscript -e '
             suppressMessages(library(knitr)); e <- new.env(); sys.source("_engines.R", envir = e)
             jl <- e$.book_works("julia","julia", c("--project=.","--startup-file=no","-e",

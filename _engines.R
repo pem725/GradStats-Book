@@ -39,6 +39,25 @@
 # and ignoring it is how a crash ends up printed in the book as though it were
 # a result.
 .book_run <- function(cmd, args) {
+  # Launch the other language OUT from under R's dynamic linker settings.
+  #
+  # R exports LD_LIBRARY_PATH pointing at its own lib directory, and every
+  # process R starts inherits it. That directory carries R's BLAS and LAPACK,
+  # so on a machine where those come first, Python's compiled extensions
+  # resolve against R's numerical libraries instead of the ones NumPy was
+  # built against, and `import pandas` dies before it starts.
+  #
+  # This is exactly what happened on the build server: running
+  #     .venv/bin/python -c 'import pandas'
+  # from the shell printed the version happily, while the same command run
+  # from R raised an ImportError - same packages, same versions, different
+  # linker path. Julia and PSPP are self-contained and do not need it either,
+  # so it is cleared for all three and restored immediately afterwards.
+  old <- Sys.getenv("LD_LIBRARY_PATH", unset = NA)
+  if (!is.na(old)) {
+    Sys.unsetenv("LD_LIBRARY_PATH")
+    on.exit(Sys.setenv(LD_LIBRARY_PATH = old), add = TRUE)
+  }
   out <- suppressWarnings(system2(cmd, args, stdout = TRUE, stderr = TRUE))
   st  <- attr(out, "status")
   list(out = as.character(out), status = if (is.null(st)) 0L else as.integer(st))
