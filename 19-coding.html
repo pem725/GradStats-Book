@@ -85,9 +85,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-aced932c6eb97d642153b8e218288f9f.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-691837cabdf7814d00f0b173a74e7339.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-0437c578d6602383c15080ec46670fbd.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-691837cabdf7814d00f0b173a74e7339.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-3913145bdfeb359920d1030d76b14cbb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-bffc7bc0e84feeb56ea314b01b92581f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-3913145bdfeb359920d1030d76b14cbb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -904,18 +904,21 @@ window.Quarto = {
 <pre class="pspp cell-code"><code>* Group means of happy by pet.
 MEANS TABLES=happy BY pet
   /CELLS=MEAN STDDEV COUNT.</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>/tmp/RtmpTOOwnI/file329e65314dc7.sps:2.1-2.5: error: MEANS: MEANS is allowed
+only after the active dataset has been defined.
+    2 | MEANS TABLES=happy BY pet
+      | ^~~~~</code></pre>
+</div>
 </div>
 </div>
 <div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">CategoricalArrays</span>, <span class="bu">GLM</span>, <span class="bu">StatsModels</span>, <span class="bu">Statistics</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch18-pets.csv"</span>, DataFrame)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>df.pet <span class="op">=</span> <span class="fu">categorical</span>(df.pet; levels <span class="op">=</span> [<span class="st">"cat"</span>, <span class="st">"fish"</span>, <span class="st">"pig"</span>, <span class="st">"dog"</span>])</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">combine</span>(<span class="fu">groupby</span>(df, <span class="op">:</span>pet), <span class="op">:</span>happy <span class="op">=&gt;</span> mean)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Segmentation fault (core dumped)</code></pre>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">CategoricalArrays</span>, <span class="bu">GLM</span>, <span class="bu">StatsModels</span>, <span class="bu">Statistics</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch18-pets.csv"</span>, DataFrame)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>df.pet <span class="op">=</span> <span class="fu">categorical</span>(df.pet; levels <span class="op">=</span> [<span class="st">"cat"</span>, <span class="st">"fish"</span>, <span class="st">"pig"</span>, <span class="st">"dog"</span>])</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">combine</span>(<span class="fu">groupby</span>(df, <span class="op">:</span>pet), <span class="op">:</span>happy <span class="op">=&gt;</span> mean)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
@@ -1003,20 +1006,23 @@ dog  0 0 0</code></pre>
 UNIANOVA happy BY pet
   /CONTRAST(pet)=SIMPLE(4)
   /PRINT=PARAMETER.</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>/tmp/RtmpTOOwnI/file329e2b2b9364.sps:2.1-2.8: error: UNIANOVA: UNIANOVA is not
+yet implemented.
+    2 | UNIANOVA happy BY pet
+      | ^~~~~~~~</code></pre>
+</div>
 </div>
 </div>
 <div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">CategoricalArrays</span>, <span class="bu">GLM</span>, <span class="bu">StatsModels</span>, <span class="bu">Statistics</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch18-pets.csv"</span>, DataFrame)</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>df.pet <span class="op">=</span> <span class="fu">categorical</span>(df.pet; levels <span class="op">=</span> [<span class="st">"cat"</span>, <span class="st">"fish"</span>, <span class="st">"pig"</span>, <span class="st">"dog"</span>])</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>m_dummy <span class="op">=</span> <span class="fu">lm</span>(<span class="pp">@formula</span>(happy <span class="op">~</span> pet), df,</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>             contrasts <span class="op">=</span> <span class="fu">Dict</span>(<span class="op">:</span>pet <span class="op">=&gt;</span> <span class="fu">DummyCoding</span>(base <span class="op">=</span> <span class="st">"dog"</span>)))</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftable</span>(m_dummy)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Segmentation fault (core dumped)</code></pre>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">CategoricalArrays</span>, <span class="bu">GLM</span>, <span class="bu">StatsModels</span>, <span class="bu">Statistics</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch18-pets.csv"</span>, DataFrame)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>df.pet <span class="op">=</span> <span class="fu">categorical</span>(df.pet; levels <span class="op">=</span> [<span class="st">"cat"</span>, <span class="st">"fish"</span>, <span class="st">"pig"</span>, <span class="st">"dog"</span>])</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>m_dummy <span class="op">=</span> <span class="fu">lm</span>(<span class="pp">@formula</span>(happy <span class="op">~</span> pet), df,</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>             contrasts <span class="op">=</span> <span class="fu">Dict</span>(<span class="op">:</span>pet <span class="op">=&gt;</span> <span class="fu">DummyCoding</span>(base <span class="op">=</span> <span class="st">"dog"</span>)))</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftable</span>(m_dummy)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div id="tabset-2-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-4-tab">
@@ -1136,20 +1142,23 @@ dog    -1   -1   -1</code></pre>
 UNIANOVA happy BY pet
   /CONTRAST(pet)=DEVIATION
   /PRINT=PARAMETER.</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>/tmp/RtmpTOOwnI/file329e456efc0a.sps:2.1-2.8: error: UNIANOVA: UNIANOVA is not
+yet implemented.
+    2 | UNIANOVA happy BY pet
+      | ^~~~~~~~</code></pre>
+</div>
 </div>
 </div>
 <div id="tabset-3-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">CategoricalArrays</span>, <span class="bu">GLM</span>, <span class="bu">StatsModels</span>, <span class="bu">Statistics</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch18-pets.csv"</span>, DataFrame)</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>df.pet <span class="op">=</span> <span class="fu">categorical</span>(df.pet; levels <span class="op">=</span> [<span class="st">"cat"</span>, <span class="st">"fish"</span>, <span class="st">"pig"</span>, <span class="st">"dog"</span>])</span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>m_eff <span class="op">=</span> <span class="fu">lm</span>(<span class="pp">@formula</span>(happy <span class="op">~</span> pet), df,</span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>           contrasts <span class="op">=</span> <span class="fu">Dict</span>(<span class="op">:</span>pet <span class="op">=&gt;</span> <span class="fu">EffectsCoding</span>()))</span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftable</span>(m_eff)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Segmentation fault (core dumped)</code></pre>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">CategoricalArrays</span>, <span class="bu">GLM</span>, <span class="bu">StatsModels</span>, <span class="bu">Statistics</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch18-pets.csv"</span>, DataFrame)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>df.pet <span class="op">=</span> <span class="fu">categorical</span>(df.pet; levels <span class="op">=</span> [<span class="st">"cat"</span>, <span class="st">"fish"</span>, <span class="st">"pig"</span>, <span class="st">"dog"</span>])</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>m_eff <span class="op">=</span> <span class="fu">lm</span>(<span class="pp">@formula</span>(happy <span class="op">~</span> pet), df,</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>           contrasts <span class="op">=</span> <span class="fu">Dict</span>(<span class="op">:</span>pet <span class="op">=&gt;</span> <span class="fu">EffectsCoding</span>()))</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftable</span>(m_eff)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div id="tabset-3-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-4-tab">
@@ -1408,20 +1417,23 @@ UNIANOVA happy BY pet
 UNIANOVA happy BY pet
   /CONTRAST(pet)=HELMERT
   /PRINT=PARAMETER.</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>/tmp/RtmpTOOwnI/file329e6bd0e4ff.sps:2.1-2.8: error: UNIANOVA: UNIANOVA is not
+yet implemented.
+    2 | UNIANOVA happy BY pet
+      | ^~~~~~~~</code></pre>
+</div>
 </div>
 </div>
 <div id="tabset-4-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">CategoricalArrays</span>, <span class="bu">GLM</span>, <span class="bu">StatsModels</span>, <span class="bu">Statistics</span></span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch18-pets.csv"</span>, DataFrame)</span>
-<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>df.pet <span class="op">=</span> <span class="fu">categorical</span>(df.pet; levels <span class="op">=</span> [<span class="st">"cat"</span>, <span class="st">"fish"</span>, <span class="st">"pig"</span>, <span class="st">"dog"</span>])</span>
-<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>m_helm <span class="op">=</span> <span class="fu">lm</span>(<span class="pp">@formula</span>(happy <span class="op">~</span> pet), df,</span>
-<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>            contrasts <span class="op">=</span> <span class="fu">Dict</span>(<span class="op">:</span>pet <span class="op">=&gt;</span> <span class="fu">HelmertCoding</span>()))</span>
-<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftable</span>(m_helm)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Segmentation fault (core dumped)</code></pre>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">CategoricalArrays</span>, <span class="bu">GLM</span>, <span class="bu">StatsModels</span>, <span class="bu">Statistics</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch18-pets.csv"</span>, DataFrame)</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>df.pet <span class="op">=</span> <span class="fu">categorical</span>(df.pet; levels <span class="op">=</span> [<span class="st">"cat"</span>, <span class="st">"fish"</span>, <span class="st">"pig"</span>, <span class="st">"dog"</span>])</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>m_helm <span class="op">=</span> <span class="fu">lm</span>(<span class="pp">@formula</span>(happy <span class="op">~</span> pet), df,</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>            contrasts <span class="op">=</span> <span class="fu">Dict</span>(<span class="op">:</span>pet <span class="op">=&gt;</span> <span class="fu">HelmertCoding</span>()))</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftable</span>(m_helm)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div id="tabset-4-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-4-tab">
@@ -1578,23 +1590,26 @@ UNIANOVA happy BY pet
 UNIANOVA happy BY pet
   /CONTRAST(pet)=SPECIAL(0.5 0.5 -0.5 -0.5  0.5 -0.5 0 0  0 0 0.5 -0.5)
   /PRINT=PARAMETER.</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>/tmp/RtmpTOOwnI/file329e5c09c34.sps:3.1-3.8: error: UNIANOVA: UNIANOVA is not
+yet implemented.
+    3 | UNIANOVA happy BY pet
+      | ^~~~~~~~</code></pre>
+</div>
 </div>
 </div>
 <div id="tabset-5-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">CategoricalArrays</span>, <span class="bu">GLM</span>, <span class="bu">StatsModels</span>, <span class="bu">Statistics</span></span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch18-pets.csv"</span>, DataFrame)</span>
-<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>df.pet <span class="op">=</span> <span class="fu">categorical</span>(df.pet; levels <span class="op">=</span> [<span class="st">"cat"</span>, <span class="st">"fish"</span>, <span class="st">"pig"</span>, <span class="st">"dog"</span>])</span>
-<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>m_con <span class="op">=</span> <span class="fu">lm</span>(<span class="pp">@formula</span>(happy <span class="op">~</span> pet), df,</span>
-<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>           contrasts <span class="op">=</span> <span class="fu">Dict</span>(<span class="op">:</span>pet <span class="op">=&gt;</span> <span class="fu">HypothesisCoding</span>(</span>
-<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>               [<span class="fl">0.5</span> <span class="fl">0.5</span> <span class="op">-</span><span class="fl">0.5</span> <span class="op">-</span><span class="fl">0.5</span>; <span class="fl">0.5</span> <span class="op">-</span><span class="fl">0.5</span> <span class="fl">0</span> <span class="fl">0</span>; <span class="fl">0</span> <span class="fl">0</span> <span class="fl">0.5</span> <span class="op">-</span><span class="fl">0.5</span>];</span>
-<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>               levels <span class="op">=</span> [<span class="st">"cat"</span>, <span class="st">"fish"</span>, <span class="st">"pig"</span>, <span class="st">"dog"</span>],</span>
-<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>               labels <span class="op">=</span> [<span class="st">"usual_vs_unusual"</span>, <span class="st">"cat_vs_fish"</span>, <span class="st">"pig_vs_dog"</span>])))</span>
-<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftable</span>(m_con)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Segmentation fault (core dumped)</code></pre>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">CategoricalArrays</span>, <span class="bu">GLM</span>, <span class="bu">StatsModels</span>, <span class="bu">Statistics</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch18-pets.csv"</span>, DataFrame)</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>df.pet <span class="op">=</span> <span class="fu">categorical</span>(df.pet; levels <span class="op">=</span> [<span class="st">"cat"</span>, <span class="st">"fish"</span>, <span class="st">"pig"</span>, <span class="st">"dog"</span>])</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>m_con <span class="op">=</span> <span class="fu">lm</span>(<span class="pp">@formula</span>(happy <span class="op">~</span> pet), df,</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>           contrasts <span class="op">=</span> <span class="fu">Dict</span>(<span class="op">:</span>pet <span class="op">=&gt;</span> <span class="fu">HypothesisCoding</span>(</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>               [<span class="fl">0.5</span> <span class="fl">0.5</span> <span class="op">-</span><span class="fl">0.5</span> <span class="op">-</span><span class="fl">0.5</span>; <span class="fl">0.5</span> <span class="op">-</span><span class="fl">0.5</span> <span class="fl">0</span> <span class="fl">0</span>; <span class="fl">0</span> <span class="fl">0</span> <span class="fl">0.5</span> <span class="op">-</span><span class="fl">0.5</span>];</span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>               levels <span class="op">=</span> [<span class="st">"cat"</span>, <span class="st">"fish"</span>, <span class="st">"pig"</span>, <span class="st">"dog"</span>],</span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>               labels <span class="op">=</span> [<span class="st">"usual_vs_unusual"</span>, <span class="st">"cat_vs_fish"</span>, <span class="st">"pig_vs_dog"</span>])))</span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftable</span>(m_con)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div id="tabset-5-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-4-tab">
@@ -1734,23 +1749,26 @@ UNIANOVA happy BY pet
 UNIANOVA happy BY pet
   /CONTRAST(pet)=SPECIAL(3 -7 2.5 0.1  1 1 -2 4  -5 2 8 -1)
   /PRINT=PARAMETER.</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>/tmp/RtmpTOOwnI/file329e45bb63a4.sps:2.1-2.8: error: UNIANOVA: UNIANOVA is not
+yet implemented.
+    2 | UNIANOVA happy BY pet
+      | ^~~~~~~~</code></pre>
+</div>
 </div>
 </div>
 <div id="tabset-6-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">CategoricalArrays</span>, <span class="bu">GLM</span>, <span class="bu">StatsModels</span>, <span class="bu">Statistics</span></span>
-<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch18-pets.csv"</span>, DataFrame)</span>
-<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>df.pet <span class="op">=</span> <span class="fu">categorical</span>(df.pet; levels <span class="op">=</span> [<span class="st">"cat"</span>, <span class="st">"fish"</span>, <span class="st">"pig"</span>, <span class="st">"dog"</span>])</span>
-<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>m_nonsense <span class="op">=</span> <span class="fu">lm</span>(<span class="pp">@formula</span>(happy <span class="op">~</span> pet), df,</span>
-<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>                contrasts <span class="op">=</span> <span class="fu">Dict</span>(<span class="op">:</span>pet <span class="op">=&gt;</span> <span class="fu">HypothesisCoding</span>(</span>
-<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>                    [<span class="fl">3.0</span> <span class="op">-</span><span class="fl">7.0</span> <span class="fl">2.5</span> <span class="fl">0.1</span>; <span class="fl">1.0</span> <span class="fl">1.0</span> <span class="op">-</span><span class="fl">2.0</span> <span class="fl">4.0</span>; <span class="op">-</span><span class="fl">5.0</span> <span class="fl">2.0</span> <span class="fl">8.0</span> <span class="op">-</span><span class="fl">1.0</span>];</span>
-<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>                    levels <span class="op">=</span> [<span class="st">"cat"</span>, <span class="st">"fish"</span>, <span class="st">"pig"</span>, <span class="st">"dog"</span>],</span>
-<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>                    labels <span class="op">=</span> [<span class="st">"huh"</span>, <span class="st">"wat"</span>, <span class="st">"lol"</span>])))</span>
-<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftable</span>(m_nonsense)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Segmentation fault (core dumped)</code></pre>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">CategoricalArrays</span>, <span class="bu">GLM</span>, <span class="bu">StatsModels</span>, <span class="bu">Statistics</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch18-pets.csv"</span>, DataFrame)</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>df.pet <span class="op">=</span> <span class="fu">categorical</span>(df.pet; levels <span class="op">=</span> [<span class="st">"cat"</span>, <span class="st">"fish"</span>, <span class="st">"pig"</span>, <span class="st">"dog"</span>])</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>m_nonsense <span class="op">=</span> <span class="fu">lm</span>(<span class="pp">@formula</span>(happy <span class="op">~</span> pet), df,</span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>                contrasts <span class="op">=</span> <span class="fu">Dict</span>(<span class="op">:</span>pet <span class="op">=&gt;</span> <span class="fu">HypothesisCoding</span>(</span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>                    [<span class="fl">3.0</span> <span class="op">-</span><span class="fl">7.0</span> <span class="fl">2.5</span> <span class="fl">0.1</span>; <span class="fl">1.0</span> <span class="fl">1.0</span> <span class="op">-</span><span class="fl">2.0</span> <span class="fl">4.0</span>; <span class="op">-</span><span class="fl">5.0</span> <span class="fl">2.0</span> <span class="fl">8.0</span> <span class="op">-</span><span class="fl">1.0</span>];</span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>                    levels <span class="op">=</span> [<span class="st">"cat"</span>, <span class="st">"fish"</span>, <span class="st">"pig"</span>, <span class="st">"dog"</span>],</span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a>                    labels <span class="op">=</span> [<span class="st">"huh"</span>, <span class="st">"wat"</span>, <span class="st">"lol"</span>])))</span>
+<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftable</span>(m_nonsense)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div id="tabset-6-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-4-tab">
@@ -1921,20 +1939,23 @@ UNIANOVA happy BY pet
 <pre class="pspp cell-code"><code>* Group means and cell sizes of y1 by grp.
 MEANS TABLES=y1 BY grp
   /CELLS=MEAN STDDEV COUNT.</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>/tmp/RtmpTOOwnI/file329e2d61fd56.sps:2.1-2.5: error: MEANS: MEANS is allowed
+only after the active dataset has been defined.
+    2 | MEANS TABLES=y1 BY grp
+      | ^~~~~</code></pre>
+</div>
 </div>
 </div>
 <div id="tabset-7-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-7-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">CategoricalArrays</span>, <span class="bu">GLM</span>, <span class="bu">StatsModels</span>, <span class="bu">Statistics</span></span>
-<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>d3 <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/mod3data.csv"</span>, DataFrame)</span>
-<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a><span class="co"># f3 is coded 2,3,4,5 - R's factor(labels=) maps the SORTED values in order</span></span>
-<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>d3.grp <span class="op">=</span> <span class="fu">categorical</span>(<span class="fu">map</span>(f <span class="op">-&gt;</span> <span class="fu">Dict</span>(<span class="fl">2</span><span class="op">=&gt;</span><span class="st">"A"</span>, <span class="fl">3</span><span class="op">=&gt;</span><span class="st">"B"</span>, <span class="fl">4</span><span class="op">=&gt;</span><span class="st">"C"</span>, <span class="fl">5</span><span class="op">=&gt;</span><span class="st">"D"</span>)[f], d3.f3);</span>
-<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>                     levels <span class="op">=</span> [<span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>, <span class="st">"D"</span>])</span>
-<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a><span class="fu">combine</span>(<span class="fu">groupby</span>(d3, <span class="op">:</span>grp), <span class="op">:</span>y1 <span class="op">=&gt;</span> mean, nrow <span class="op">=&gt;</span> <span class="op">:</span>n)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Segmentation fault (core dumped)</code></pre>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">CategoricalArrays</span>, <span class="bu">GLM</span>, <span class="bu">StatsModels</span>, <span class="bu">Statistics</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>d3 <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/mod3data.csv"</span>, DataFrame)</span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a><span class="co"># f3 is coded 2,3,4,5 - R's factor(labels=) maps the SORTED values in order</span></span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>d3.grp <span class="op">=</span> <span class="fu">categorical</span>(<span class="fu">map</span>(f <span class="op">-&gt;</span> <span class="fu">Dict</span>(<span class="fl">2</span><span class="op">=&gt;</span><span class="st">"A"</span>, <span class="fl">3</span><span class="op">=&gt;</span><span class="st">"B"</span>, <span class="fl">4</span><span class="op">=&gt;</span><span class="st">"C"</span>, <span class="fl">5</span><span class="op">=&gt;</span><span class="st">"D"</span>)[f], d3.f3);</span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>                     levels <span class="op">=</span> [<span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>, <span class="st">"D"</span>])</span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a><span class="fu">combine</span>(<span class="fu">groupby</span>(d3, <span class="op">:</span>grp), <span class="op">:</span>y1 <span class="op">=&gt;</span> mean, nrow <span class="op">=&gt;</span> <span class="op">:</span>n)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div id="tabset-7-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-7-4-tab">
@@ -2021,22 +2042,25 @@ MEANS TABLES=y1 BY grp
 UNIANOVA y1 BY grp
   /CONTRAST(grp)=SIMPLE(1)
   /PRINT=PARAMETER.</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>/tmp/RtmpTOOwnI/file329e6ac8afd4.sps:2.1-2.8: error: UNIANOVA: UNIANOVA is not
+yet implemented.
+    2 | UNIANOVA y1 BY grp
+      | ^~~~~~~~</code></pre>
+</div>
 </div>
 </div>
 <div id="tabset-8-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-8-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb60"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">CategoricalArrays</span>, <span class="bu">GLM</span>, <span class="bu">StatsModels</span>, <span class="bu">Statistics</span></span>
-<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>d3 <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/mod3data.csv"</span>, DataFrame)</span>
-<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a><span class="co"># f3 is coded 2,3,4,5 - R's factor(labels=) maps the SORTED values in order</span></span>
-<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>d3.grp <span class="op">=</span> <span class="fu">categorical</span>(<span class="fu">map</span>(f <span class="op">-&gt;</span> <span class="fu">Dict</span>(<span class="fl">2</span><span class="op">=&gt;</span><span class="st">"A"</span>, <span class="fl">3</span><span class="op">=&gt;</span><span class="st">"B"</span>, <span class="fl">4</span><span class="op">=&gt;</span><span class="st">"C"</span>, <span class="fl">5</span><span class="op">=&gt;</span><span class="st">"D"</span>)[f], d3.f3);</span>
-<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a>                     levels <span class="op">=</span> [<span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>, <span class="st">"D"</span>])</span>
-<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb60-7"><a href="#cb60-7" aria-hidden="true" tabindex="-1"></a>m_real <span class="op">=</span> <span class="fu">lm</span>(<span class="pp">@formula</span>(y1 <span class="op">~</span> grp), d3,</span>
-<span id="cb60-8"><a href="#cb60-8" aria-hidden="true" tabindex="-1"></a>            contrasts <span class="op">=</span> <span class="fu">Dict</span>(<span class="op">:</span>grp <span class="op">=&gt;</span> <span class="fu">DummyCoding</span>(base <span class="op">=</span> <span class="st">"A"</span>)))</span>
-<span id="cb60-9"><a href="#cb60-9" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftable</span>(m_real)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Segmentation fault (core dumped)</code></pre>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb61"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">CategoricalArrays</span>, <span class="bu">GLM</span>, <span class="bu">StatsModels</span>, <span class="bu">Statistics</span></span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>d3 <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/mod3data.csv"</span>, DataFrame)</span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a><span class="co"># f3 is coded 2,3,4,5 - R's factor(labels=) maps the SORTED values in order</span></span>
+<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a>d3.grp <span class="op">=</span> <span class="fu">categorical</span>(<span class="fu">map</span>(f <span class="op">-&gt;</span> <span class="fu">Dict</span>(<span class="fl">2</span><span class="op">=&gt;</span><span class="st">"A"</span>, <span class="fl">3</span><span class="op">=&gt;</span><span class="st">"B"</span>, <span class="fl">4</span><span class="op">=&gt;</span><span class="st">"C"</span>, <span class="fl">5</span><span class="op">=&gt;</span><span class="st">"D"</span>)[f], d3.f3);</span>
+<span id="cb61-5"><a href="#cb61-5" aria-hidden="true" tabindex="-1"></a>                     levels <span class="op">=</span> [<span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>, <span class="st">"D"</span>])</span>
+<span id="cb61-6"><a href="#cb61-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-7"><a href="#cb61-7" aria-hidden="true" tabindex="-1"></a>m_real <span class="op">=</span> <span class="fu">lm</span>(<span class="pp">@formula</span>(y1 <span class="op">~</span> grp), d3,</span>
+<span id="cb61-8"><a href="#cb61-8" aria-hidden="true" tabindex="-1"></a>            contrasts <span class="op">=</span> <span class="fu">Dict</span>(<span class="op">:</span>grp <span class="op">=&gt;</span> <span class="fu">DummyCoding</span>(base <span class="op">=</span> <span class="st">"A"</span>)))</span>
+<span id="cb61-9"><a href="#cb61-9" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftable</span>(m_real)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div id="tabset-8-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-8-4-tab">
@@ -2075,22 +2099,25 @@ UNIANOVA y1 BY grp
 UNIANOVA y1 BY grp
   /CONTRAST(grp)=DEVIATION
   /PRINT=PARAMETER.</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>/tmp/RtmpTOOwnI/file329e5ac96b30.sps:2.1-2.8: error: UNIANOVA: UNIANOVA is not
+yet implemented.
+    2 | UNIANOVA y1 BY grp
+      | ^~~~~~~~</code></pre>
+</div>
 </div>
 </div>
 <div id="tabset-9-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-9-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb66"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">CategoricalArrays</span>, <span class="bu">GLM</span>, <span class="bu">StatsModels</span>, <span class="bu">Statistics</span></span>
-<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a>d3 <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/mod3data.csv"</span>, DataFrame)</span>
-<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a><span class="co"># f3 is coded 2,3,4,5 - R's factor(labels=) maps the SORTED values in order</span></span>
-<span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a>d3.grp <span class="op">=</span> <span class="fu">categorical</span>(<span class="fu">map</span>(f <span class="op">-&gt;</span> <span class="fu">Dict</span>(<span class="fl">2</span><span class="op">=&gt;</span><span class="st">"A"</span>, <span class="fl">3</span><span class="op">=&gt;</span><span class="st">"B"</span>, <span class="fl">4</span><span class="op">=&gt;</span><span class="st">"C"</span>, <span class="fl">5</span><span class="op">=&gt;</span><span class="st">"D"</span>)[f], d3.f3);</span>
-<span id="cb66-5"><a href="#cb66-5" aria-hidden="true" tabindex="-1"></a>                     levels <span class="op">=</span> [<span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>, <span class="st">"D"</span>])</span>
-<span id="cb66-6"><a href="#cb66-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb66-7"><a href="#cb66-7" aria-hidden="true" tabindex="-1"></a>m_real_eff <span class="op">=</span> <span class="fu">lm</span>(<span class="pp">@formula</span>(y1 <span class="op">~</span> grp), d3,</span>
-<span id="cb66-8"><a href="#cb66-8" aria-hidden="true" tabindex="-1"></a>                contrasts <span class="op">=</span> <span class="fu">Dict</span>(<span class="op">:</span>grp <span class="op">=&gt;</span> <span class="fu">EffectsCoding</span>()))</span>
-<span id="cb66-9"><a href="#cb66-9" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftable</span>(m_real_eff)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Segmentation fault (core dumped)</code></pre>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb67"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">CategoricalArrays</span>, <span class="bu">GLM</span>, <span class="bu">StatsModels</span>, <span class="bu">Statistics</span></span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>d3 <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/mod3data.csv"</span>, DataFrame)</span>
+<span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a><span class="co"># f3 is coded 2,3,4,5 - R's factor(labels=) maps the SORTED values in order</span></span>
+<span id="cb67-4"><a href="#cb67-4" aria-hidden="true" tabindex="-1"></a>d3.grp <span class="op">=</span> <span class="fu">categorical</span>(<span class="fu">map</span>(f <span class="op">-&gt;</span> <span class="fu">Dict</span>(<span class="fl">2</span><span class="op">=&gt;</span><span class="st">"A"</span>, <span class="fl">3</span><span class="op">=&gt;</span><span class="st">"B"</span>, <span class="fl">4</span><span class="op">=&gt;</span><span class="st">"C"</span>, <span class="fl">5</span><span class="op">=&gt;</span><span class="st">"D"</span>)[f], d3.f3);</span>
+<span id="cb67-5"><a href="#cb67-5" aria-hidden="true" tabindex="-1"></a>                     levels <span class="op">=</span> [<span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>, <span class="st">"D"</span>])</span>
+<span id="cb67-6"><a href="#cb67-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-7"><a href="#cb67-7" aria-hidden="true" tabindex="-1"></a>m_real_eff <span class="op">=</span> <span class="fu">lm</span>(<span class="pp">@formula</span>(y1 <span class="op">~</span> grp), d3,</span>
+<span id="cb67-8"><a href="#cb67-8" aria-hidden="true" tabindex="-1"></a>                contrasts <span class="op">=</span> <span class="fu">Dict</span>(<span class="op">:</span>grp <span class="op">=&gt;</span> <span class="fu">EffectsCoding</span>()))</span>
+<span id="cb67-9"><a href="#cb67-9" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftable</span>(m_real_eff)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div id="tabset-9-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-9-4-tab">

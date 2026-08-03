@@ -104,9 +104,9 @@ div.csl-indent {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-aced932c6eb97d642153b8e218288f9f.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-691837cabdf7814d00f0b173a74e7339.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-0437c578d6602383c15080ec46670fbd.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-691837cabdf7814d00f0b173a74e7339.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-3913145bdfeb359920d1030d76b14cbb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-bffc7bc0e84feeb56ea314b01b92581f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-3913145bdfeb359920d1030d76b14cbb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -885,18 +885,33 @@ window.Quarto = {
 <div class="cell">
 <pre class="pspp cell-code"><code>INSERT FILE='data/sim/ch15-tangled.sps'.
 CORRELATIONS /VARIABLES=y x1 x2.</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>               Correlations
++----------------------+-----+-----+-----+
+|                      |  y  |  x1 |  x2 |
++----------------------+-----+-----+-----+
+|y  Pearson Correlation|1.000| .511| .560|
+|   Sig. (2-tailed)    |     | .000| .000|
+|   N                  |  100|  100|  100|
++----------------------+-----+-----+-----+
+|x1 Pearson Correlation| .511|1.000| .569|
+|   Sig. (2-tailed)    | .000|     | .000|
+|   N                  |  100|  100|  100|
++----------------------+-----+-----+-----+
+|x2 Pearson Correlation| .560| .569|1.000|
+|   Sig. (2-tailed)    | .000| .000|     |
+|   N                  |  100|  100|  100|
++----------------------+-----+-----+-----+</code></pre>
+</div>
 </div>
 </div>
 <div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch15-tangled.csv"</span>, DataFrame)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Statistics</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(<span class="fu">Matrix</span>(df))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Segmentation fault (core dumped)</code></pre>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch15-tangled.csv"</span>, DataFrame)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Statistics</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(<span class="fu">Matrix</span>(df))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
@@ -961,18 +976,43 @@ CORRELATIONS /VARIABLES=y x1 x2.</code></pre>
 <div class="cell">
 <pre class="pspp cell-code"><code>INSERT FILE='data/sim/ch15-tangled.sps'.
 REGRESSION /STATISTICS COEFF R ANOVA /DEPENDENT y /METHOD=ENTER x1 x2.</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>                     Model Summary (y)
++---+--------+-----------------+--------------------------+
+| R |R Square|Adjusted R Square|Std. Error of the Estimate|
++---+--------+-----------------+--------------------------+
+|.61|     .37|              .36|                      1.12|
++---+--------+-----------------+--------------------------+
+
+                      ANOVA (y)
++----------+--------------+--+-----------+-----+----+
+|          |Sum of Squares|df|Mean Square|  F  |Sig.|
++----------+--------------+--+-----------+-----+----+
+|Regression|         71.46| 2|      35.73|28.28|.000|
+|Residual  |        122.57|97|       1.26|     |    |
+|Total     |        194.03|99|           |     |    |
++----------+--------------+--+-----------+-----+----+
+
+                               Coefficients (y)
++----------+----------------------------+-------------------------+----+----+
+|          | Unstandardized Coefficients|Standardized Coefficients|    |    |
+|          +-----------+----------------+-------------------------+    |    |
+|          |     B     |   Std. Error   |           Beta          |  t |Sig.|
++----------+-----------+----------------+-------------------------+----+----+
+|(Constant)|       -.07|             .11|                      .00|-.58|.565|
+|x1        |        .27|             .09|                      .28|2.89|.005|
+|x2        |        .39|             .10|                      .40|4.06|.000|
++----------+-----------+----------------+-------------------------+----+----+</code></pre>
+</div>
 </div>
 </div>
 <div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch15-tangled.csv"</span>, DataFrame)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">GLM</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftable</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(y <span class="op">~</span> x1 <span class="op">+</span> x2), df))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Segmentation fault (core dumped)</code></pre>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch15-tangled.csv"</span>, DataFrame)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">GLM</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftable</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(y <span class="op">~</span> x1 <span class="op">+</span> x2), df))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div id="tabset-2-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-4-tab">
@@ -1073,21 +1113,46 @@ REGRESSION /STATISTICS COEFF R ANOVA /DEPENDENT y /METHOD=ENTER x1 x2.</code></p
 <pre class="pspp cell-code"><code>INSERT FILE='data/sim/ch15-tangled.sps'.
 * REGRESSION prints the standardized Beta by default.
 REGRESSION /STATISTICS COEFF R ANOVA /DEPENDENT y /METHOD=ENTER x1 x2.</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>                     Model Summary (y)
++---+--------+-----------------+--------------------------+
+| R |R Square|Adjusted R Square|Std. Error of the Estimate|
++---+--------+-----------------+--------------------------+
+|.61|     .37|              .36|                      1.12|
++---+--------+-----------------+--------------------------+
+
+                      ANOVA (y)
++----------+--------------+--+-----------+-----+----+
+|          |Sum of Squares|df|Mean Square|  F  |Sig.|
++----------+--------------+--+-----------+-----+----+
+|Regression|         71.46| 2|      35.73|28.28|.000|
+|Residual  |        122.57|97|       1.26|     |    |
+|Total     |        194.03|99|           |     |    |
++----------+--------------+--+-----------+-----+----+
+
+                               Coefficients (y)
++----------+----------------------------+-------------------------+----+----+
+|          | Unstandardized Coefficients|Standardized Coefficients|    |    |
+|          +-----------+----------------+-------------------------+    |    |
+|          |     B     |   Std. Error   |           Beta          |  t |Sig.|
++----------+-----------+----------------+-------------------------+----+----+
+|(Constant)|       -.07|             .11|                      .00|-.58|.565|
+|x1        |        .27|             .09|                      .28|2.89|.005|
+|x2        |        .39|             .10|                      .40|4.06|.000|
++----------+-----------+----------------+-------------------------+----+----+</code></pre>
+</div>
 </div>
 </div>
 <div id="tabset-3-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch15-tangled.csv"</span>, DataFrame)</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">GLM</span>, <span class="bu">Statistics</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>df.zy  <span class="op">=</span> (df.y  <span class="op">.-</span> <span class="fu">mean</span>(df.y))  <span class="op">./</span> <span class="fu">std</span>(df.y)</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>df.zx1 <span class="op">=</span> (df.x1 <span class="op">.-</span> <span class="fu">mean</span>(df.x1)) <span class="op">./</span> <span class="fu">std</span>(df.x1)</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>df.zx2 <span class="op">=</span> (df.x2 <span class="op">.-</span> <span class="fu">mean</span>(df.x2)) <span class="op">./</span> <span class="fu">std</span>(df.x2)</span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftable</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(zy <span class="op">~</span> zx1 <span class="op">+</span> zx2), df))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Segmentation fault (core dumped)</code></pre>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch15-tangled.csv"</span>, DataFrame)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">GLM</span>, <span class="bu">Statistics</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>df.zy  <span class="op">=</span> (df.y  <span class="op">.-</span> <span class="fu">mean</span>(df.y))  <span class="op">./</span> <span class="fu">std</span>(df.y)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>df.zx1 <span class="op">=</span> (df.x1 <span class="op">.-</span> <span class="fu">mean</span>(df.x1)) <span class="op">./</span> <span class="fu">std</span>(df.x1)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>df.zx2 <span class="op">=</span> (df.x2 <span class="op">.-</span> <span class="fu">mean</span>(df.x2)) <span class="op">./</span> <span class="fu">std</span>(df.x2)</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftable</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(zy <span class="op">~</span> zx1 <span class="op">+</span> zx2), df))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div id="tabset-3-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-4-tab">
@@ -1408,27 +1473,35 @@ Figure&nbsp;16.1: The variance inflation factor as two predictors grow more corr
 * Type I (sequential) sums of squares; DESIGN order sets the entry order.
 UNIANOVA y WITH x1 x2 /METHOD=SSTYPE(1) /DESIGN=x1 x2.
 UNIANOVA y WITH x1 x2 /METHOD=SSTYPE(1) /DESIGN=x2 x1.</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>/tmp/RtmpaSRyxX/file311a74a6b386.sps:3.1-3.8: error: UNIANOVA: UNIANOVA is not
+yet implemented.
+    3 | UNIANOVA y WITH x1 x2 /METHOD=SSTYPE(1) /DESIGN=x1 x2.
+      | ^~~~~~~~
+
+/tmp/RtmpaSRyxX/file311a74a6b386.sps:4.1-4.8: error: UNIANOVA: UNIANOVA is not
+yet implemented.
+    4 | UNIANOVA y WITH x1 x2 /METHOD=SSTYPE(1) /DESIGN=x2 x1.
+      | ^~~~~~~~</code></pre>
+</div>
 </div>
 </div>
 <div id="tabset-4-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch15-typess.csv"</span>, DataFrame)</span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">GLM</span></span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Julia's GLM has no anova() table. Its equivalent is ftest() over NESTED</span></span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="co"># models, which is what a Type I split really is: add one term at a time and</span></span>
-<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a><span class="co"># ask what each addition bought. Swap the order and the credit moves.</span></span>
-<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ftest</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(y <span class="op">~</span> <span class="fl">1</span>), df).model,</span>
-<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">lm</span>(<span class="pp">@formula</span>(y <span class="op">~</span> x1), df).model,</span>
-<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>      <span class="fu">lm</span>(<span class="pp">@formula</span>(y <span class="op">~</span> x1 <span class="op">+</span> x2), df).model)</span>
-<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a><span class="fu">ftest</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(y <span class="op">~</span> <span class="fl">1</span>), df).model,</span>
-<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>      <span class="fu">lm</span>(<span class="pp">@formula</span>(y <span class="op">~</span> x2), df).model,</span>
-<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>      <span class="fu">lm</span>(<span class="pp">@formula</span>(y <span class="op">~</span> x2 <span class="op">+</span> x1), df).model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Segmentation fault (core dumped)</code></pre>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch15-typess.csv"</span>, DataFrame)</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">GLM</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Julia's GLM has no anova() table. Its equivalent is ftest() over NESTED</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="co"># models, which is what a Type I split really is: add one term at a time and</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="co"># ask what each addition bought. Swap the order and the credit moves.</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ftest</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(y <span class="op">~</span> <span class="fl">1</span>), df).model,</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">lm</span>(<span class="pp">@formula</span>(y <span class="op">~</span> x1), df).model,</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>      <span class="fu">lm</span>(<span class="pp">@formula</span>(y <span class="op">~</span> x1 <span class="op">+</span> x2), df).model)</span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a><span class="fu">ftest</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(y <span class="op">~</span> <span class="fl">1</span>), df).model,</span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>      <span class="fu">lm</span>(<span class="pp">@formula</span>(y <span class="op">~</span> x2), df).model,</span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>      <span class="fu">lm</span>(<span class="pp">@formula</span>(y <span class="op">~</span> x2 <span class="op">+</span> x1), df).model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div id="tabset-4-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-4-tab">
@@ -1488,24 +1561,27 @@ UNIANOVA y WITH x1 x2 /METHOD=SSTYPE(1) /DESIGN=x2 x1.</code></pre>
 <pre class="pspp cell-code"><code>INSERT FILE='data/sim/ch15-typess.sps'.
 * Type III (unique / "each last") sums of squares; SPSS's default.
 UNIANOVA y WITH x1 x2 /METHOD=SSTYPE(3) /DESIGN=x1 x2.</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>/tmp/RtmpaSRyxX/file311a607149a0.sps:3.1-3.8: error: UNIANOVA: UNIANOVA is not
+yet implemented.
+    3 | UNIANOVA y WITH x1 x2 /METHOD=SSTYPE(3) /DESIGN=x1 x2.
+      | ^~~~~~~~</code></pre>
+</div>
 </div>
 </div>
 <div id="tabset-5-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span></span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch15-typess.csv"</span>, DataFrame)</span>
-<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">GLM</span></span>
-<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Type III (unique): compare the FULL model against the model with one term</span></span>
-<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a><span class="co"># dropped, which is exactly "what does this predictor add, controlling for</span></span>
-<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a><span class="co"># everything else".</span></span>
-<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>full <span class="op">=</span> <span class="fu">lm</span>(<span class="pp">@formula</span>(y <span class="op">~</span> x1 <span class="op">+</span> x2), df)</span>
-<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a><span class="fu">ftest</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(y <span class="op">~</span> x2), df).model, full.model)   <span class="co"># what x1 adds</span></span>
-<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a><span class="fu">ftest</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(y <span class="op">~</span> x1), df).model, full.model)   <span class="co"># what x2 adds</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Segmentation fault (core dumped)</code></pre>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch15-typess.csv"</span>, DataFrame)</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">GLM</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Type III (unique): compare the FULL model against the model with one term</span></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="co"># dropped, which is exactly "what does this predictor add, controlling for</span></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a><span class="co"># everything else".</span></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>full <span class="op">=</span> <span class="fu">lm</span>(<span class="pp">@formula</span>(y <span class="op">~</span> x1 <span class="op">+</span> x2), df)</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a><span class="fu">ftest</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(y <span class="op">~</span> x2), df).model, full.model)   <span class="co"># what x1 adds</span></span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a><span class="fu">ftest</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(y <span class="op">~</span> x1), df).model, full.model)   <span class="co"># what x2 adds</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div id="tabset-5-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-4-tab">
@@ -1720,17 +1796,43 @@ UNIANOVA y WITH x1 x2 /METHOD=SSTYPE(3) /DESIGN=x1 x2.</code></pre>
   /VARIABLES=CollegeGPA F16.6 HSGPA F16.6 SATtotal F16.6 QLOR F16.6.
 REGRESSION /STATISTICS COEFF R ANOVA
   /DEPENDENT CollegeGPA /METHOD=ENTER HSGPA SATtotal QLOR.</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>                 Model Summary (CollegeGPA)
++---+--------+-----------------+--------------------------+
+| R |R Square|Adjusted R Square|Std. Error of the Estimate|
++---+--------+-----------------+--------------------------+
+|.63|     .40|              .38|                       .59|
++---+--------+-----------------+--------------------------+
+
+                  ANOVA (CollegeGPA)
++----------+--------------+--+-----------+-----+----+
+|          |Sum of Squares|df|Mean Square|  F  |Sig.|
++----------+--------------+--+-----------+-----+----+
+|Regression|         22.21| 3|       7.40|21.31|.000|
+|Residual  |         33.36|96|        .35|     |    |
+|Total     |         55.57|99|           |     |    |
++----------+--------------+--+-----------+-----+----+
+
+                          Coefficients (CollegeGPA)
++----------+----------------------------+-------------------------+----+----+
+|          | Unstandardized Coefficients|Standardized Coefficients|    |    |
+|          +-----------+----------------+-------------------------+    |    |
+|          |     B     |   Std. Error   |           Beta          |  t |Sig.|
++----------+-----------+----------------+-------------------------+----+----+
+|(Constant)|       -.15|             .32|                      .00|-.47|.636|
+|HSGPA     |        .38|             .11|                      .36|3.29|.001|
+|SATtotal  |        .00|             .00|                      .36|4.05|.000|
+|QLOR      |        .02|             .05|                      .05| .44|.657|
++----------+-----------+----------------+-------------------------+----+----+</code></pre>
+</div>
 </div>
 </div>
 <div id="tabset-6-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">GLM</span></span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>gpa <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/gpa.csv"</span>, DataFrame)</span>
-<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftable</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(CollegeGPA <span class="op">~</span> HSGPA <span class="op">+</span> SATtotal <span class="op">+</span> QLOR), gpa))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Segmentation fault (core dumped)</code></pre>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">GLM</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>gpa <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/gpa.csv"</span>, DataFrame)</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftable</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(CollegeGPA <span class="op">~</span> HSGPA <span class="op">+</span> SATtotal <span class="op">+</span> QLOR), gpa))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div id="tabset-6-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-4-tab">

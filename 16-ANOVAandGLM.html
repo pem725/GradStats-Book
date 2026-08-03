@@ -104,9 +104,9 @@ div.csl-indent {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-aced932c6eb97d642153b8e218288f9f.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-691837cabdf7814d00f0b173a74e7339.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-0437c578d6602383c15080ec46670fbd.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-691837cabdf7814d00f0b173a74e7339.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-3913145bdfeb359920d1030d76b14cbb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-bffc7bc0e84feeb56ea314b01b92581f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-3913145bdfeb359920d1030d76b14cbb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -927,17 +927,39 @@ window.Quarto = {
 <div class="cell">
 <pre class="pspp cell-code"><code>INSERT FILE='data/sim/ch16-pets.sps'.
 ONEWAY happy BY pet /STATISTICS DESCRIPTIVES.</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                  Descriptives
++-----------+---+-----+-----------+-------+-------------------+-------+-------+
+|           |   |     |           |       |   95% Confidence  |       |       |
+|           |   |     |           |       | Interval for Mean |       |       |
+|           |   |     |           |       +---------+---------+       |       |
+|           |   |     |    Std.   |  Std. |  Lower  |  Upper  |       |       |
+|      pet  | N | Mean| Deviation | Error |  Bound  |  Bound  |Minimum|Maximum|
++-----------+---+-----+-----------+-------+---------+---------+-------+-------+
+|happy cat  | 17|-1.32|        .91|    .22|    -1.79|     -.86|  -2.91|    .04|
+|      dog  |  7| 1.50|       1.55|    .59|      .06|     2.93|   -.41|   4.14|
+|      fish | 47| -.14|       1.05|    .15|     -.45|      .17|  -2.54|   1.89|
+|      pig  | 29|  .73|        .76|    .14|      .44|     1.02|   -.53|   2.31|
+|      Total|100|  .03|       1.25|    .13|     -.22|      .27|  -2.91|   4.14|
++-----------+---+-----+-----------+-------+---------+---------+-------+-------+
+
+                             ANOVA
++--------------------+--------------+--+-----------+-----+----+
+|                    |Sum of Squares|df|Mean Square|  F  |Sig.|
++--------------------+--------------+--+-----------+-----+----+
+|happy Between Groups|         61.67| 3|      20.56|20.99|.000|
+|      Within Groups |         94.01|96|        .98|     |    |
+|      Total         |        155.69|99|           |     |    |
++--------------------+--------------+--+-----------+-----+----+</code></pre>
+</div>
 </div>
 </div>
 <div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch16-pets.csv"</span>, DataFrame)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">GLM;</span> ftest(lm(@formula(happy ~ pet), <span class="bu">df).model)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Segmentation fault (core dumped)</code></pre>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch16-pets.csv"</span>, DataFrame)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">GLM;</span> ftest(lm(@formula(happy ~ pet), <span class="bu">df).model)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
@@ -1336,17 +1358,20 @@ ONEWAY happy BY pet /STATISTICS DESCRIPTIVES.</code></pre>
 <div class="cell">
 <pre class="pspp cell-code"><code>INSERT FILE='data/sim/ch16-pets.sps'.
 UNIANOVA sad BY pet mess /DESIGN=pet mess pet*mess.</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>/tmp/RtmpOtwgsO/file31dd27bc5f4c.sps:2.1-2.8: error: UNIANOVA: UNIANOVA is not
+yet implemented.
+    2 | UNIANOVA sad BY pet mess /DESIGN=pet mess pet*mess.
+      | ^~~~~~~~</code></pre>
+</div>
 </div>
 </div>
 <div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch16-pets.csv"</span>, DataFrame)</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">GLM;</span> lm(@formula(sad ~ pet * mess), <span class="bu">df)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Segmentation fault (core dumped)</code></pre>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch16-pets.csv"</span>, DataFrame)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">GLM;</span> lm(@formula(sad ~ pet * mess), <span class="bu">df)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div id="tabset-2-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-4-tab">
@@ -1412,17 +1437,64 @@ UNIANOVA sad BY pet mess /DESIGN=pet mess pet*mess.</code></pre>
 <div class="cell">
 <pre class="pspp cell-code"><code>INSERT FILE='data/sim/ch16-pets.sps'.
 LOGISTIC REGRESSION VARIABLES passed WITH x.</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Dependent Variable Encoding
++--------------+--------------+
+|Original Value|Internal Value|
++--------------+--------------+
+|.000000       |           .00|
+|1.000000      |          1.00|
++--------------+--------------+
+
+      Case Processing Summary
++--------------------+---+-------+
+|Unweighted Cases    | N |Percent|
++--------------------+---+-------+
+|Included in Analysis|100| 100.0%|
+|Missing Cases       |  0|    .0%|
+|Total               |100| 100.0%|
++--------------------+---+-------+
+
+note: Estimation terminated at iteration number 4 because parameter estimates
+changed by less than 0.001
+
+                          Model Summary
++----+-----------------+--------------------+-------------------+
+|Step|-2 Log likelihood|Cox &amp; Snell R Square|Nagelkerke R Square|
++----+-----------------+--------------------+-------------------+
+|1   |           129.26|                 .09|                .11|
++----+-----------------+--------------------+-------------------+
+
+                      Classification Table
++--------------------------+-----------------------------------+
+|                          |             Predicted             |
+|                          +----------------+------------------+
+|                          |     passed     |                  |
+|                          +-------+--------+                  |
+|       Observed           |.000000|1.000000|Percentage Correct|
++--------------------------+-------+--------+------------------+
+|Step 1 passed   .000000   |     37|      16|             69.8%|
+|                1.000000  |     24|      23|             48.9%|
+|      --------------------+-------+--------+------------------+
+|       Overall Percentage |       |        |             60.0%|
++--------------------------+-------+--------+------------------+
+
+           Variables in the Equation
++---------------+----+----+----+--+----+------+
+|               |  B |S.E.|Wald|df|Sig.|Exp(B)|
++---------------+----+----+----+--+----+------+
+|Step 1 x       | .73| .26|7.77| 1|.005|  2.07|
+|       Constant|-.18| .21| .73| 1|.392|   .83|
++---------------+----+----+----+--+----+------+</code></pre>
+</div>
 </div>
 </div>
 <div id="tabset-3-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch16-pets.csv"</span>, DataFrame)</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">GLM;</span> glm(@formula(passed ~ x), <span class="bu">df</span>, <span class="bu">Binomial()</span>, <span class="bu">LogitLink())</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Segmentation fault (core dumped)</code></pre>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch16-pets.csv"</span>, DataFrame)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">GLM;</span> glm(@formula(passed ~ x), <span class="bu">df</span>, <span class="bu">Binomial()</span>, <span class="bu">LogitLink())</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div id="tabset-3-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-4-tab">

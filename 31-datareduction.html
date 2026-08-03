@@ -85,9 +85,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-aced932c6eb97d642153b8e218288f9f.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-691837cabdf7814d00f0b173a74e7339.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-0437c578d6602383c15080ec46670fbd.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-691837cabdf7814d00f0b173a74e7339.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-3913145bdfeb359920d1030d76b14cbb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-bffc7bc0e84feeb56ea314b01b92581f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-3913145bdfeb359920d1030d76b14cbb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -982,18 +982,71 @@ window.Quarto = {
 <div class="cell">
 <pre class="pspp cell-code"><code>INSERT FILE='data/sim/ch19-items.sps'.
 FACTOR /VARIABLES x1 x2 x3 x4 x5 x6 /EXTRACTION PC /PRINT INITIAL EXTRACTION /PLOT EIGEN.</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>     Communalities
++--+-------+----------+
+|  |Initial|Extraction|
++--+-------+----------+
+|x1|   1.00|       .80|
+|x2|   1.00|       .97|
+|x3|   1.00|       .95|
+|x4|   1.00|       .86|
+|x5|   1.00|       .99|
+|x6|   1.00|       .99|
++--+-------+----------+
+
+                         Total Variance Explained
++-+--------------------------------+-------------------------------------+
+| |       Initial Eigenvalues      | Extraction Sums of Squared Loadings |
+| +-----+-------------+------------+---------+-------------+-------------+
+| |Total|% of Variance|Cumulative %|  Total  |% of Variance| Cumulative %|
++-+-----+-------------+------------+---------+-------------+-------------+
+|1| 4.05|        67.6%|       67.6%|     4.05|        67.6%|        67.6%|
+|2|  .47|         7.9%|       75.5%|      .47|         7.9%|        75.5%|
+|3|  .43|         7.2%|       82.6%|      .43|         7.2%|        82.6%|
+|4|  .42|         7.0%|       89.7%|      .42|         7.0%|        89.7%|
+|5|  .32|         5.3%|       94.9%|      .32|         5.3%|        94.9%|
+|6|  .30|         5.1%|      100.0%|         |             |             |
++-+-----+-------------+------------+---------+-------------+-------------+
+
+      Component Matrix
++--+-----------------------+
+|  |       Component       |
+|  +---+----+----+----+----+
+|  | 1 |  2 |  3 |  4 |  5 |
++--+---+----+----+----+----+
+|x1|.80| .10| .05| .19|-.33|
+|x2|.78|-.14| .05|-.57| .09|
+|x3|.85| .28|-.36|-.11|-.08|
+|x4|.83| .01| .36| .02|-.20|
+|x5|.85|-.41|-.20| .25| .02|
+|x6|.81| .16| .12| .20| .51|
++--+---+----+----+----+----+
+
+Rotated Component Matrix
++--+-------------------+
+|  |     Component     |
+|  +---+---+---+---+---+
+|  | 1 | 2 | 3 | 4 | 5 |
++--+---+---+---+---+---+
+|x1|.40|.31|.71|.12|.18|
+|x2|.25|.20|.25|.87|.21|
+|x3|.79|.24|.32|.33|.27|
+|x4|.14|.21|.77|.36|.28|
+|x5|.24|.82|.34|.24|.29|
+|x6|.23|.25|.27|.22|.87|
++--+---+---+---+---+---+</code></pre>
+</div>
+<p><img src="_figs/31-datareduction-unnamed-chunk-4-pspp-1.png" class="img-fluid"></p>
 </div>
 </div>
 <div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>items <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch19-items.csv"</span>, DataFrame)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">MultivariateStats</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">fit</span>(PCA, <span class="fu">Matrix</span>(items)<span class="ch">'; maxoutdim=6)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Segmentation fault (core dumped)</code></pre>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>items <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch19-items.csv"</span>, DataFrame)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">MultivariateStats</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">fit</span>(PCA, <span class="fu">Matrix</span>(items)<span class="ch">'; maxoutdim=6)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
@@ -1064,18 +1117,22 @@ FACTOR /VARIABLES x1 x2 x3 x4 x5 x6 /EXTRACTION PC /PRINT INITIAL EXTRACTION /PL
 <div class="cell">
 <pre class="pspp cell-code"><code>INSERT FILE='data/sim/ch19-items.sps'.
 FACTOR /VARIABLES x1 x2 x3 x4 x5 x6 /EXTRACTION ML /CRITERIA FACTORS(1) /ROTATION VARIMAX.</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>/tmp/Rtmp39imHG/file2fa174a3decc.sps:2.49-2.50: error: FACTOR: Syntax error
+expecting PAF, PC, PA1, or DEFAULT.
+    2 | FACTOR /VARIABLES x1 x2 x3 x4 x5 x6 /EXTRACTION ML /CRITERIA FACTORS(1)
+/ROTATION VARIMAX.
+      |                                                 ^~</code></pre>
+</div>
 </div>
 </div>
 <div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>items <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch19-items.csv"</span>, DataFrame)</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">MultivariateStats</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="fu">fit</span>(FactorAnalysis, <span class="fu">Matrix</span>(items)<span class="ch">'; maxoutdim=1)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Segmentation fault (core dumped)</code></pre>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>items <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch19-items.csv"</span>, DataFrame)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">MultivariateStats</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="fu">fit</span>(FactorAnalysis, <span class="fu">Matrix</span>(items)<span class="ch">'; maxoutdim=1)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div id="tabset-2-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-4-tab">

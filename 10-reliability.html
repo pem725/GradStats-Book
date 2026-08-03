@@ -104,9 +104,9 @@ div.csl-indent {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-aced932c6eb97d642153b8e218288f9f.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-691837cabdf7814d00f0b173a74e7339.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-0437c578d6602383c15080ec46670fbd.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-691837cabdf7814d00f0b173a74e7339.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-3913145bdfeb359920d1030d76b14cbb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-bffc7bc0e84feeb56ea314b01b92581f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-3913145bdfeb359920d1030d76b14cbb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -895,17 +895,25 @@ window.Quarto = {
 INSERT FILE='data/sim/ch09-ctt.sps'.
 
 DESCRIPTIVES VARIABLES=truth observed /STATISTICS=VARIANCE.</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>       Descriptive Statistics
++--------------------+----+--------+
+|                    |  N |Variance|
++--------------------+----+--------+
+|truth               |1000|  235.07|
+|observed            |1000|  292.69|
+|Valid N (listwise)  |1000|        |
+|Missing N (listwise)|   0|        |
++--------------------+----+--------+</code></pre>
+</div>
 </div>
 </div>
 <div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Statistics</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>ctt <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch09-ctt.csv"</span>, DataFrame)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">var</span>(ctt.truth) <span class="op">/</span> <span class="fu">var</span>(ctt.observed)      <span class="co"># the true-score share of the variance</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Segmentation fault (core dumped)</code></pre>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Statistics</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>ctt <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch09-ctt.csv"</span>, DataFrame)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">var</span>(ctt.truth) <span class="op">/</span> <span class="fu">var</span>(ctt.observed)      <span class="co"># the true-score share of the variance</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
@@ -978,21 +986,50 @@ RELIABILITY
   /VARIABLES=item1 item2 item3 item4 item5 item6
   /MODEL=ALPHA
   /SUMMARY=TOTAL.</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>Scale: ANY
+
+Case Processing Summary
++--------+---+-------+
+|Cases   | N |Percent|
++--------+---+-------+
+|Valid   |500| 100.0%|
+|Excluded|  0|    .0%|
+|Total   |500| 100.0%|
++--------+---+-------+
+
+    Reliability Statistics
++----------------+----------+
+|Cronbach's Alpha|N of Items|
++----------------+----------+
+|             .84|         6|
++----------------+----------+
+
+                             Item-Total Statistics
++-----+--------------+-----------------+-------------------+------------------+
+|     | Scale Mean if|Scale Variance if|  Corrected Item-  | Cronbach's Alpha |
+|     | Item Deleted |   Item Deleted  | Total Correlation |  if Item Deleted |
++-----+--------------+-----------------+-------------------+------------------+
+|item1|          -.05|            25.51|                .63|               .80|
+|item2|          -.07|            26.06|                .58|               .82|
+|item3|           .03|            26.05|                .59|               .81|
+|item4|          -.04|            25.45|                .62|               .81|
+|item5|          -.05|            25.25|                .61|               .81|
+|item6|          -.04|            25.17|                .64|               .80|
++-----+--------------+-----------------+-------------------+------------------+</code></pre>
+</div>
 </div>
 </div>
 <div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Statistics</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>items <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch09-items-tau.csv"</span>, DataFrame)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>k <span class="op">=</span> <span class="fu">ncol</span>(items)</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>var_items <span class="op">=</span> <span class="fu">sum</span>(<span class="fu">var</span>(col) <span class="cf">for</span> col <span class="kw">in</span> <span class="fu">eachcol</span>(items))</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>var_total <span class="op">=</span> <span class="fu">var</span>(<span class="fu">sum</span>(<span class="fu">eachcol</span>(items)))</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>(k <span class="op">/</span> (k <span class="op">-</span> <span class="fl">1</span>)) <span class="op">*</span> (<span class="fl">1</span> <span class="op">-</span> var_items <span class="op">/</span> var_total)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Segmentation fault (core dumped)</code></pre>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Statistics</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>items <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch09-items-tau.csv"</span>, DataFrame)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>k <span class="op">=</span> <span class="fu">ncol</span>(items)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>var_items <span class="op">=</span> <span class="fu">sum</span>(<span class="fu">var</span>(col) <span class="cf">for</span> col <span class="kw">in</span> <span class="fu">eachcol</span>(items))</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>var_total <span class="op">=</span> <span class="fu">var</span>(<span class="fu">sum</span>(<span class="fu">eachcol</span>(items)))</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>(k <span class="op">/</span> (k <span class="op">-</span> <span class="fl">1</span>)) <span class="op">*</span> (<span class="fl">1</span> <span class="op">-</span> var_items <span class="op">/</span> var_total)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div id="tabset-2-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-4-tab">
@@ -1082,25 +1119,46 @@ FACTOR
   /EXTRACTION ML
   /CRITERIA FACTORS(1)
   /PRINT INITIAL EXTRACTION.</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>Scale: ANY
+
+Case Processing Summary
++--------+---+-------+
+|Cases   | N |Percent|
++--------+---+-------+
+|Valid   |500| 100.0%|
+|Excluded|  0|    .0%|
+|Total   |500| 100.0%|
++--------+---+-------+
+
+    Reliability Statistics
++----------------+----------+
+|Cronbach's Alpha|N of Items|
++----------------+----------+
+|             .80|         5|
++----------------+----------+
+
+/tmp/RtmpR5FPUq/file2e3d399cd44b.sps:14.15-14.16: error: FACTOR: Syntax error
+expecting PAF, PC, PA1, or DEFAULT.
+   14 |   /EXTRACTION ML
+      |               ^~</code></pre>
+</div>
 </div>
 </div>
 <div id="tabset-3-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Statistics</span>, <span class="bu">MultivariateStats</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>items <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch09-items-congeneric.csv"</span>, DataFrame)</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>k <span class="op">=</span> <span class="fu">ncol</span>(items)</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> (k <span class="op">/</span> (k <span class="op">-</span> <span class="fl">1</span>)) <span class="op">*</span></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>        (<span class="fl">1</span> <span class="op">-</span> <span class="fu">sum</span>(<span class="fu">var</span>(c) <span class="cf">for</span> c <span class="kw">in</span> <span class="fu">eachcol</span>(items)) <span class="op">/</span> <span class="fu">var</span>(<span class="fu">sum</span>(<span class="fu">eachcol</span>(items))))</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>fa  <span class="op">=</span> <span class="fu">fit</span>(FactorAnalysis, <span class="fu">Matrix</span>(items)<span class="ch">'; maxoutdim = 1)</span></span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>lam <span class="op">=</span> <span class="fu">vec</span>(<span class="fu">loadings</span>(fa)); psi <span class="op">=</span> <span class="fu">var</span>(fa)</span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>omega <span class="op">=</span> <span class="fu">sum</span>(lam)<span class="op">^</span><span class="fl">2</span> <span class="op">/</span> (<span class="fu">sum</span>(lam)<span class="op">^</span><span class="fl">2</span> <span class="op">+</span> <span class="fu">sum</span>(psi))</span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>alpha, omega</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Segmentation fault (core dumped)</code></pre>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Statistics</span>, <span class="bu">MultivariateStats</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>items <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch09-items-congeneric.csv"</span>, DataFrame)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>k <span class="op">=</span> <span class="fu">ncol</span>(items)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> (k <span class="op">/</span> (k <span class="op">-</span> <span class="fl">1</span>)) <span class="op">*</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>        (<span class="fl">1</span> <span class="op">-</span> <span class="fu">sum</span>(<span class="fu">var</span>(c) <span class="cf">for</span> c <span class="kw">in</span> <span class="fu">eachcol</span>(items)) <span class="op">/</span> <span class="fu">var</span>(<span class="fu">sum</span>(<span class="fu">eachcol</span>(items))))</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>fa  <span class="op">=</span> <span class="fu">fit</span>(FactorAnalysis, <span class="fu">Matrix</span>(items)<span class="ch">'; maxoutdim = 1)</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>lam <span class="op">=</span> <span class="fu">vec</span>(<span class="fu">loadings</span>(fa)); psi <span class="op">=</span> <span class="fu">var</span>(fa)</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>omega <span class="op">=</span> <span class="fu">sum</span>(lam)<span class="op">^</span><span class="fl">2</span> <span class="op">/</span> (<span class="fu">sum</span>(lam)<span class="op">^</span><span class="fl">2</span> <span class="op">+</span> <span class="fu">sum</span>(psi))</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>alpha, omega</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div id="tabset-3-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-4-tab">
@@ -1180,17 +1238,41 @@ EXECUTE.
 * The true correlation, then the one a noisy sensor actually reports.
 CORRELATIONS /VARIABLES=Tx Ty.
 CORRELATIONS /VARIABLES=Ox Oy.</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Correlations
++----------------------+-----+-----+
+|                      |  Tx |  Ty |
++----------------------+-----+-----+
+|Tx Pearson Correlation|1.000| .630|
+|   Sig. (2-tailed)    |     | .000|
+|   N                  | 1000| 1000|
++----------------------+-----+-----+
+|Ty Pearson Correlation| .630|1.000|
+|   Sig. (2-tailed)    | .000|     |
+|   N                  | 1000| 1000|
++----------------------+-----+-----+
+
+            Correlations
++----------------------+-----+-----+
+|                      |  Ox |  Oy |
++----------------------+-----+-----+
+|Ox Pearson Correlation|1.000| .312|
+|   Sig. (2-tailed)    |     | .000|
+|   N                  | 1000| 1000|
++----------------------+-----+-----+
+|Oy Pearson Correlation| .312|1.000|
+|   Sig. (2-tailed)    | .000|     |
+|   N                  | 1000| 1000|
++----------------------+-----+-----+</code></pre>
+</div>
 </div>
 </div>
 <div id="tabset-4-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Statistics</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>att <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch09-attenuation.csv"</span>, DataFrame)</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(att.Tx, att.Ty), <span class="fu">cor</span>(att.Ox, att.Oy)   <span class="co"># true, then observed through noise</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Segmentation fault (core dumped)</code></pre>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Statistics</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>att <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch09-attenuation.csv"</span>, DataFrame)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(att.Tx, att.Ty), <span class="fu">cor</span>(att.Ox, att.Oy)   <span class="co"># true, then observed through noise</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div id="tabset-4-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-4-tab">

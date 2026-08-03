@@ -104,9 +104,9 @@ div.csl-indent {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-aced932c6eb97d642153b8e218288f9f.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-691837cabdf7814d00f0b173a74e7339.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-0437c578d6602383c15080ec46670fbd.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-691837cabdf7814d00f0b173a74e7339.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-3913145bdfeb359920d1030d76b14cbb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-bffc7bc0e84feeb56ea314b01b92581f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-3913145bdfeb359920d1030d76b14cbb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -921,19 +921,69 @@ div.csl-indent {
 REGRESSION /STATISTICS COEFF R ANOVA /DEPENDENT y /METHOD=ENTER z.
 * Complete-case slope of y_obs on z (SPSS drops missing listwise by default).
 REGRESSION /STATISTICS COEFF R ANOVA /DEPENDENT y_obs /METHOD=ENTER z.</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>                     Model Summary (y)
++---+--------+-----------------+--------------------------+
+| R |R Square|Adjusted R Square|Std. Error of the Estimate|
++---+--------+-----------------+--------------------------+
+|.57|     .33|              .33|                       .80|
++---+--------+-----------------+--------------------------+
+
+                        ANOVA (y)
++----------+--------------+----+-----------+------+----+
+|          |Sum of Squares| df |Mean Square|   F  |Sig.|
++----------+--------------+----+-----------+------+----+
+|Regression|        621.01|   1|     621.01|968.06|.000|
+|Residual  |       1281.72|1998|        .64|      |    |
+|Total     |       1902.73|1999|           |      |    |
++----------+--------------+----+-----------+------+----+
+
+                               Coefficients (y)
++----------+----------------------------+-------------------------+-----+----+
+|          | Unstandardized Coefficients|Standardized Coefficients|     |    |
+|          +-----------+----------------+-------------------------+     |    |
+|          |     B     |   Std. Error   |           Beta          |  t  |Sig.|
++----------+-----------+----------------+-------------------------+-----+----+
+|(Constant)|       -.01|             .02|                      .00| -.76|.446|
+|z         |        .57|             .02|                      .57|31.11|.000|
++----------+-----------+----------------+-------------------------+-----+----+
+
+                   Model Summary (y_obs)
++---+--------+-----------------+--------------------------+
+| R |R Square|Adjusted R Square|Std. Error of the Estimate|
++---+--------+-----------------+--------------------------+
+|.52|     .27|              .27|                       .79|
++---+--------+-----------------+--------------------------+
+
+                      ANOVA (y_obs)
++----------+--------------+----+-----------+------+----+
+|          |Sum of Squares| df |Mean Square|   F  |Sig.|
++----------+--------------+----+-----------+------+----+
+|Regression|        237.99|   1|     237.99|382.53|.000|
+|Residual  |        654.49|1052|        .62|      |    |
+|Total     |        892.48|1053|           |      |    |
++----------+--------------+----+-----------+------+----+
+
+                             Coefficients (y_obs)
++----------+----------------------------+-------------------------+-----+----+
+|          | Unstandardized Coefficients|Standardized Coefficients|     |    |
+|          +----------+-----------------+-------------------------+     |    |
+|          |     B    |    Std. Error   |           Beta          |  t  |Sig.|
++----------+----------+-----------------+-------------------------+-----+----+
+|(Constant)|       .04|              .03|                      .00| 1.20|.229|
+|z         |       .60|              .03|                      .52|19.56|.000|
++----------+----------+-----------------+-------------------------+-----+----+</code></pre>
+</div>
 </div>
 </div>
 <div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch29-missing.csv"</span>, DataFrame)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">GLM</span>, <span class="bu">DataFrames</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>slope_full          <span class="op">=</span> <span class="fu">coef</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(y <span class="op">~</span> z), df))[<span class="fl">2</span>]                        <span class="co"># the truth</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>slope_complete_case <span class="op">=</span> <span class="fu">coef</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(y_obs <span class="op">~</span> z), <span class="fu">dropmissing</span>(df, <span class="op">:</span>y_obs)))[<span class="fl">2</span>]  <span class="co"># barely moved</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Segmentation fault (core dumped)</code></pre>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch29-missing.csv"</span>, DataFrame)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">GLM</span>, <span class="bu">DataFrames</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>slope_full          <span class="op">=</span> <span class="fu">coef</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(y <span class="op">~</span> z), df))[<span class="fl">2</span>]                        <span class="co"># the truth</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>slope_complete_case <span class="op">=</span> <span class="fu">coef</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(y_obs <span class="op">~</span> z), <span class="fu">dropmissing</span>(df, <span class="op">:</span>y_obs)))[<span class="fl">2</span>]  <span class="co"># barely moved</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">

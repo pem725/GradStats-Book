@@ -104,9 +104,9 @@ div.csl-indent {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-aced932c6eb97d642153b8e218288f9f.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-691837cabdf7814d00f0b173a74e7339.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-0437c578d6602383c15080ec46670fbd.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-691837cabdf7814d00f0b173a74e7339.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-3913145bdfeb359920d1030d76b14cbb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-bffc7bc0e84feeb56ea314b01b92581f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-3913145bdfeb359920d1030d76b14cbb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -983,19 +983,43 @@ REGRESSION
   /STATISTICS COEFF R ANOVA
   /DEPENDENT y
   /METHOD=ENTER x.</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>                     Model Summary (y)
++---+--------+-----------------+--------------------------+
+| R |R Square|Adjusted R Square|Std. Error of the Estimate|
++---+--------+-----------------+--------------------------+
+|.51|     .26|              .01|                      2.18|
++---+--------+-----------------+--------------------------+
+
+                      ANOVA (y)
++----------+--------------+--+-----------+----+----+
+|          |Sum of Squares|df|Mean Square|  F |Sig.|
++----------+--------------+--+-----------+----+----+
+|Regression|          4.90| 1|       4.90|1.03|.385|
+|Residual  |         14.30| 3|       4.77|    |    |
+|Total     |         19.20| 4|           |    |    |
++----------+--------------+--+-----------+----+----+
+
+                               Coefficients (y)
++----------+----------------------------+-------------------------+----+----+
+|          | Unstandardized Coefficients|Standardized Coefficients|    |    |
+|          +-----------+----------------+-------------------------+    |    |
+|          |     B     |   Std. Error   |           Beta          |  t |Sig.|
++----------+-----------+----------------+-------------------------+----+----+
+|(Constant)|       5.30|            2.29|                      .00|2.31|.082|
+|x         |        .70|             .69|                      .51|1.01|.385|
++----------+-----------+----------------+-------------------------+----+----+</code></pre>
+</div>
 </div>
 </div>
 <div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch14-toy.csv"</span>, DataFrame)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">GLM</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>m1 <span class="op">=</span> <span class="fu">lm</span>(<span class="pp">@formula</span>(y <span class="op">~</span> x), df)</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftable</span>(m1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Segmentation fault (core dumped)</code></pre>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch14-toy.csv"</span>, DataFrame)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">GLM</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>m1 <span class="op">=</span> <span class="fu">lm</span>(<span class="pp">@formula</span>(y <span class="op">~</span> x), df)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftable</span>(m1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
@@ -1395,21 +1419,45 @@ REGRESSION
   /STATISTICS COEFF R ANOVA
   /DEPENDENT y
   /METHOD=ENTER x.</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>                     Model Summary (y)
++---+--------+-----------------+--------------------------+
+| R |R Square|Adjusted R Square|Std. Error of the Estimate|
++---+--------+-----------------+--------------------------+
+|.51|     .26|              .01|                      2.18|
++---+--------+-----------------+--------------------------+
+
+                      ANOVA (y)
++----------+--------------+--+-----------+----+----+
+|          |Sum of Squares|df|Mean Square|  F |Sig.|
++----------+--------------+--+-----------+----+----+
+|Regression|          4.90| 1|       4.90|1.03|.385|
+|Residual  |         14.30| 3|       4.77|    |    |
+|Total     |         19.20| 4|           |    |    |
++----------+--------------+--+-----------+----+----+
+
+                               Coefficients (y)
++----------+----------------------------+-------------------------+----+----+
+|          | Unstandardized Coefficients|Standardized Coefficients|    |    |
+|          +-----------+----------------+-------------------------+    |    |
+|          |     B     |   Std. Error   |           Beta          |  t |Sig.|
++----------+-----------+----------------+-------------------------+----+----+
+|(Constant)|       5.30|            2.29|                      .00|2.31|.082|
+|x         |        .70|             .69|                      .51|1.01|.385|
++----------+-----------+----------------+-------------------------+----+----+</code></pre>
+</div>
 </div>
 </div>
 <div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch14-toy.csv"</span>, DataFrame)</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">GLM</span>, <span class="bu">Statistics</span></span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="fu">z</span>(v) <span class="op">=</span> (v <span class="op">.-</span> <span class="fu">mean</span>(v)) <span class="op">./</span> <span class="fu">std</span>(v)</span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>df2 <span class="op">=</span> <span class="fu">DataFrame</span>(y <span class="op">=</span> <span class="fu">z</span>(df.y), x <span class="op">=</span> <span class="fu">z</span>(df.x))</span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>lm2 <span class="op">=</span> <span class="fu">lm</span>(<span class="pp">@formula</span>(y <span class="op">~</span> x <span class="op">-</span> <span class="fl">1</span>), df2)</span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftable</span>(lm2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Segmentation fault (core dumped)</code></pre>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch14-toy.csv"</span>, DataFrame)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">GLM</span>, <span class="bu">Statistics</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="fu">z</span>(v) <span class="op">=</span> (v <span class="op">.-</span> <span class="fu">mean</span>(v)) <span class="op">./</span> <span class="fu">std</span>(v)</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>df2 <span class="op">=</span> <span class="fu">DataFrame</span>(y <span class="op">=</span> <span class="fu">z</span>(df.y), x <span class="op">=</span> <span class="fu">z</span>(df.x))</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>lm2 <span class="op">=</span> <span class="fu">lm</span>(<span class="pp">@formula</span>(y <span class="op">~</span> x <span class="op">-</span> <span class="fl">1</span>), df2)</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftable</span>(lm2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div id="tabset-2-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-4-tab">
@@ -1564,18 +1612,42 @@ REGRESSION
   /STATISTICS COEFF R ANOVA
   /DEPENDENT CollegeGPA
   /METHOD=ENTER HSGPA.</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>                 Model Summary (CollegeGPA)
++---+--------+-----------------+--------------------------+
+| R |R Square|Adjusted R Square|Std. Error of the Estimate|
++---+--------+-----------------+--------------------------+
+|.55|     .30|              .29|                       .63|
++---+--------+-----------------+--------------------------+
+
+                  ANOVA (CollegeGPA)
++----------+--------------+--+-----------+-----+----+
+|          |Sum of Squares|df|Mean Square|  F  |Sig.|
++----------+--------------+--+-----------+-----+----+
+|Regression|         16.52| 1|      16.52|41.45|.000|
+|Residual  |         39.05|98|        .40|     |    |
+|Total     |         55.57|99|           |     |    |
++----------+--------------+--+-----------+-----+----+
+
+                          Coefficients (CollegeGPA)
++----------+----------------------------+-------------------------+----+----+
+|          | Unstandardized Coefficients|Standardized Coefficients|    |    |
+|          +----------+-----------------+-------------------------+    |    |
+|          |     B    |    Std. Error   |           Beta          |  t |Sig.|
++----------+----------+-----------------+-------------------------+----+----+
+|(Constant)|       .82|              .19|                      .00|4.31|.000|
+|HSGPA     |       .57|              .09|                      .55|6.44|.000|
++----------+----------+-----------------+-------------------------+----+----+</code></pre>
+</div>
 </div>
 </div>
 <div id="tabset-3-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">GLM</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>gpa <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/gpa.csv"</span>, DataFrame)</span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>lm3 <span class="op">=</span> <span class="fu">lm</span>(<span class="pp">@formula</span>(CollegeGPA <span class="op">~</span> HSGPA), gpa)</span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftable</span>(lm3)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Segmentation fault (core dumped)</code></pre>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">GLM</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>gpa <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/gpa.csv"</span>, DataFrame)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>lm3 <span class="op">=</span> <span class="fu">lm</span>(<span class="pp">@formula</span>(CollegeGPA <span class="op">~</span> HSGPA), gpa)</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftable</span>(lm3)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div id="tabset-3-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-4-tab">

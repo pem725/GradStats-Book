@@ -85,9 +85,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-aced932c6eb97d642153b8e218288f9f.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-691837cabdf7814d00f0b173a74e7339.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-0437c578d6602383c15080ec46670fbd.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-691837cabdf7814d00f0b173a74e7339.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-3913145bdfeb359920d1030d76b14cbb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-bffc7bc0e84feeb56ea314b01b92581f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-3913145bdfeb359920d1030d76b14cbb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -860,19 +860,48 @@ EXECUTE.
 
 MEANS TABLES=K_9 BB_9 HR_9 AVG BY decade
   /CELLS=MEAN.</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Case Processing Summary
++-------------+-------------------------------+
+|             |             Cases             |
+|             +----------+---------+----------+
+|             | Included | Excluded|   Total  |
+|             +--+-------+-+-------+--+-------+
+|             | N|Percent|N|Percent| N|Percent|
++-------------+--+-------+-+-------+--+-------+
+|K_9 * decade |42| 100.0%|0|    .0%|42| 100.0%|
+|BB_9 * decade|42| 100.0%|0|    .0%|42| 100.0%|
+|HR_9 * decade|42| 100.0%|0|    .0%|42| 100.0%|
+|AVG * decade |42| 100.0%|0|    .0%|42| 100.0%|
++-------------+--+-------+-+-------+--+-------+
+
+        K_9 * BB_9 * HR_9 * AVG * decade
++-----------+--------+--------+--------+-------+
+|decade     |   K_9  |  BB_9  |  HR_9  |  AVG  |
++-----------+--------+--------+--------+-------+
+|1980   Mean|5.700800|3.296200| .867000|.257220|
++-----------+--------+--------+--------+-------+
+|1990   Mean|6.179900|3.451300| .961200|.264500|
++-----------+--------+--------+--------+-------+
+|2000   Mean|6.623900|3.376600|1.083800|.265410|
++-----------+--------+--------+--------+-------+
+|2010   Mean|7.873100|3.123300|1.076200|.253660|
++-----------+--------+--------+--------+-------+
+|2020   Mean|8.685000|3.306286|1.193571|.244329|
++-----------+--------+--------+--------+-------+
+|Total  Mean|7.049238|3.312786|1.045286|.257907|
++-----------+--------+--------+--------+-------+</code></pre>
+</div>
 </div>
 </div>
 <div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Statistics</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>mlb <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/mlb_league_by_year.csv"</span>, DataFrame)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>mlb.decade <span class="op">=</span> <span class="fu">string</span>.(<span class="fu">fld</span>.(mlb.year, <span class="fl">10</span>) <span class="op">.*</span> <span class="fl">10</span>, <span class="st">"s"</span>)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">combine</span>(<span class="fu">groupby</span>(mlb, <span class="op">:</span>decade),</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        [<span class="op">:</span>K_9, <span class="op">:</span>BB_9, <span class="op">:</span>HR_9, <span class="op">:</span>AVG] <span class="op">.=&gt;</span> mean <span class="op">.=&gt;</span> [<span class="op">:</span>K_9, <span class="op">:</span>BB_9, <span class="op">:</span>HR_9, <span class="op">:</span>AVG])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Segmentation fault (core dumped)</code></pre>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Statistics</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>mlb <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/mlb_league_by_year.csv"</span>, DataFrame)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>mlb.decade <span class="op">=</span> <span class="fu">string</span>.(<span class="fu">fld</span>.(mlb.year, <span class="fl">10</span>) <span class="op">.*</span> <span class="fl">10</span>, <span class="st">"s"</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">combine</span>(<span class="fu">groupby</span>(mlb, <span class="op">:</span>decade),</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        [<span class="op">:</span>K_9, <span class="op">:</span>BB_9, <span class="op">:</span>HR_9, <span class="op">:</span>AVG] <span class="op">.=&gt;</span> mean <span class="op">.=&gt;</span> [<span class="op">:</span>K_9, <span class="op">:</span>BB_9, <span class="op">:</span>HR_9, <span class="op">:</span>AVG])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
@@ -961,19 +990,27 @@ SORT CASES BY rate_bust_a (D).
 * spurious digits appear:
 FORMATS rate_bust_a rate_clean_hit (F8.4).
 LIST VARIABLES=team n_picks rate_bust_a rate_clean_hit /CASES=4.</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>                 Data List
++----+---------+-----------+--------------+
+|team| n_picks |rate_bust_a|rate_clean_hit|
++----+---------+-----------+--------------+
+|LV  |44.000000|      .7273|         .2500|
+|CIN |52.000000|      .7174|         .2609|
+|GB  |49.000000|      .6905|         .2381|
+|NYG |49.000000|      .6829|         .3171|
++----+---------+-----------+--------------+</code></pre>
+</div>
 </div>
 </div>
 <div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Plots</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>nfl <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/nfl_draft_by_team.csv"</span>, DataFrame)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>worst <span class="op">=</span> <span class="fu">sort</span>(<span class="fu">select</span>(nfl, <span class="op">:</span>team, <span class="op">:</span>n_picks, <span class="op">:</span>rate_bust_a, <span class="op">:</span>rate_clean_hit),</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>             <span class="op">:</span>rate_bust_a, rev <span class="op">=</span> <span class="cn">true</span>)</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="fu">first</span>(worst, <span class="fl">4</span>)          <span class="co"># too many digits for what the data can support</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Segmentation fault (core dumped)</code></pre>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Plots</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>nfl <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/nfl_draft_by_team.csv"</span>, DataFrame)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>worst <span class="op">=</span> <span class="fu">sort</span>(<span class="fu">select</span>(nfl, <span class="op">:</span>team, <span class="op">:</span>n_picks, <span class="op">:</span>rate_bust_a, <span class="op">:</span>rate_clean_hit),</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>             <span class="op">:</span>rate_bust_a, rev <span class="op">=</span> <span class="cn">true</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="fu">first</span>(worst, <span class="fl">4</span>)          <span class="co"># too many digits for what the data can support</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div id="tabset-2-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-4-tab">
@@ -1056,22 +1093,30 @@ VARIABLE LABELS rate_bust_a 'Bust rate (%)'
 EXECUTE.
 
 LIST VARIABLES=team n_picks rate_bust_a rate_clean_hit /CASES=4.</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>                 Data List
++----+---------+-----------+--------------+
+|team| n_picks |rate_bust_a|rate_clean_hit|
++----+---------+-----------+--------------+
+|ARI |39.000000|         55|            42|
+|ATL |48.000000|         54|            41|
+|BAL |33.000000|         40|            60|
+|BUF |46.000000|         48|            48|
++----+---------+-----------+--------------+</code></pre>
+</div>
 </div>
 </div>
 <div id="tabset-3-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Plots</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>nfl <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/nfl_draft_by_team.csv"</span>, DataFrame)</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>worst <span class="op">=</span> <span class="fu">sort</span>(<span class="fu">select</span>(nfl, <span class="op">:</span>team, <span class="op">:</span>n_picks, <span class="op">:</span>rate_bust_a, <span class="op">:</span>rate_clean_hit),</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>             <span class="op">:</span>rate_bust_a, rev <span class="op">=</span> <span class="cn">true</span>)</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>worst.rate_bust_a    <span class="op">=</span> <span class="fu">round</span>.(<span class="fl">100</span> <span class="op">.*</span> worst.rate_bust_a)</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>worst.rate_clean_hit <span class="op">=</span> <span class="fu">round</span>.(<span class="fl">100</span> <span class="op">.*</span> worst.rate_clean_hit)</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="fu">first</span>(worst, <span class="fl">4</span>)          <span class="co"># easier to read AND more truthful</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Segmentation fault (core dumped)</code></pre>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Plots</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>nfl <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/nfl_draft_by_team.csv"</span>, DataFrame)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>worst <span class="op">=</span> <span class="fu">sort</span>(<span class="fu">select</span>(nfl, <span class="op">:</span>team, <span class="op">:</span>n_picks, <span class="op">:</span>rate_bust_a, <span class="op">:</span>rate_clean_hit),</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>             <span class="op">:</span>rate_bust_a, rev <span class="op">=</span> <span class="cn">true</span>)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>worst.rate_bust_a    <span class="op">=</span> <span class="fu">round</span>.(<span class="fl">100</span> <span class="op">.*</span> worst.rate_bust_a)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>worst.rate_clean_hit <span class="op">=</span> <span class="fu">round</span>.(<span class="fl">100</span> <span class="op">.*</span> worst.rate_clean_hit)</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="fu">first</span>(worst, <span class="fl">4</span>)          <span class="co"># easier to read AND more truthful</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div id="tabset-3-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-4-tab">
@@ -1204,23 +1249,37 @@ EXECUTE.
 TEMPORARY.
 SELECT IF (ends &gt; 0).
 LIST VARIABLES=ends team n_picks rate_bust_a.</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Data List
++----+----+---------+-----------+
+|ends|team| n_picks |rate_bust_a|
++----+----+---------+-----------+
+|1.00|ARI |39.000000|    .545500|
+|1.00|ATL |48.000000|    .536600|
+|1.00|BAL |33.000000|    .400000|
+|1.00|BUF |46.000000|    .476200|
+|1.00|CAR |31.000000|    .520000|
+|2.00|SEA |43.000000|    .621600|
+|2.00|SF  |50.000000|    .622200|
+|2.00|TB  |42.000000|    .594600|
+|2.00|TEN |43.000000|    .486500|
+|2.00|WAS |35.000000|    .379300|
++----+----+---------+-----------+</code></pre>
+</div>
 </div>
 </div>
 <div id="tabset-4-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Plots</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>nfl <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/nfl_draft_by_team.csv"</span>, DataFrame)</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>worst <span class="op">=</span> <span class="fu">sort</span>(<span class="fu">select</span>(nfl, <span class="op">:</span>team, <span class="op">:</span>n_picks, <span class="op">:</span>rate_bust_a, <span class="op">:</span>rate_clean_hit),</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>             <span class="op">:</span>rate_bust_a, rev <span class="op">=</span> <span class="cn">true</span>)</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>worst.rate_bust_a <span class="op">=</span> <span class="fu">round</span>.(<span class="fl">100</span> <span class="op">.*</span> worst.rate_bust_a)</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>ends <span class="op">=</span> <span class="fu">vcat</span>(<span class="fu">transform</span>(<span class="fu">first</span>(worst, <span class="fl">5</span>), <span class="op">:</span>team <span class="op">=&gt;</span> <span class="fu">ByRow</span>(_ <span class="op">-&gt;</span> <span class="st">"Worst drafters"</span>) <span class="op">=&gt;</span> <span class="op">:</span>group),</span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>            <span class="fu">transform</span>(<span class="fu">last</span>(worst, <span class="fl">5</span>),  <span class="op">:</span>team <span class="op">=&gt;</span> <span class="fu">ByRow</span>(_ <span class="op">-&gt;</span> <span class="st">"Best drafters"</span>)  <span class="op">=&gt;</span> <span class="op">:</span>group))</span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(ends, <span class="op">:</span>group, <span class="op">:</span>team, <span class="op">:</span>n_picks, <span class="op">:</span>rate_bust_a)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Segmentation fault (core dumped)</code></pre>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Plots</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>nfl <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/nfl_draft_by_team.csv"</span>, DataFrame)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>worst <span class="op">=</span> <span class="fu">sort</span>(<span class="fu">select</span>(nfl, <span class="op">:</span>team, <span class="op">:</span>n_picks, <span class="op">:</span>rate_bust_a, <span class="op">:</span>rate_clean_hit),</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>             <span class="op">:</span>rate_bust_a, rev <span class="op">=</span> <span class="cn">true</span>)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>worst.rate_bust_a <span class="op">=</span> <span class="fu">round</span>.(<span class="fl">100</span> <span class="op">.*</span> worst.rate_bust_a)</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>ends <span class="op">=</span> <span class="fu">vcat</span>(<span class="fu">transform</span>(<span class="fu">first</span>(worst, <span class="fl">5</span>), <span class="op">:</span>team <span class="op">=&gt;</span> <span class="fu">ByRow</span>(_ <span class="op">-&gt;</span> <span class="st">"Worst drafters"</span>) <span class="op">=&gt;</span> <span class="op">:</span>group),</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>            <span class="fu">transform</span>(<span class="fu">last</span>(worst, <span class="fl">5</span>),  <span class="op">:</span>team <span class="op">=&gt;</span> <span class="fu">ByRow</span>(_ <span class="op">-&gt;</span> <span class="st">"Best drafters"</span>)  <span class="op">=&gt;</span> <span class="op">:</span>group))</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(ends, <span class="op">:</span>group, <span class="op">:</span>team, <span class="op">:</span>n_picks, <span class="op">:</span>rate_bust_a)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div id="tabset-4-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-4-tab">

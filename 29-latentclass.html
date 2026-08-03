@@ -104,9 +104,9 @@ div.csl-indent {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-aced932c6eb97d642153b8e218288f9f.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-691837cabdf7814d00f0b173a74e7339.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-0437c578d6602383c15080ec46670fbd.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-691837cabdf7814d00f0b173a74e7339.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-3913145bdfeb359920d1030d76b14cbb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-bffc7bc0e84feeb56ea314b01b92581f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-3913145bdfeb359920d1030d76b14cbb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -856,16 +856,30 @@ window.Quarto = {
 INSERT FILE='data/sim/ch22-lca.sps'.
 
 DESCRIPTIVES VARIABLES=x1 TO x8 /STATISTICS=MEAN.</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>     Descriptive Statistics
++--------------------+---+----+
+|                    | N |Mean|
++--------------------+---+----+
+|x1                  |800| .41|
+|x2                  |800| .39|
+|x3                  |800| .42|
+|x4                  |800| .41|
+|x5                  |800| .41|
+|x6                  |800| .43|
+|x7                  |800| .55|
+|x8                  |800| .57|
+|Valid N (listwise)  |800|    |
+|Missing N (listwise)|  0|    |
++--------------------+---+----+</code></pre>
+</div>
 </div>
 </div>
 <div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> <span class="fu">Matrix</span>(CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch22-lca.csv"</span>, DataFrame))</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">size</span>(X)            <span class="co"># 800 people by 8 binary items</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Segmentation fault (core dumped)</code></pre>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> <span class="fu">Matrix</span>(CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch22-lca.csv"</span>, DataFrame))</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">size</span>(X)            <span class="co"># 800 people by 8 binary items</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
@@ -948,39 +962,53 @@ DESCRIPTIVES VARIABLES=x1 TO x8 /STATISTICS=MEAN.</code></pre>
 INSERT FILE='data/sim/ch22-lca.sps'.
 
 DESCRIPTIVES VARIABLES=x1 TO x8 /STATISTICS=MEAN.</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>     Descriptive Statistics
++--------------------+---+----+
+|                    | N |Mean|
++--------------------+---+----+
+|x1                  |800| .41|
+|x2                  |800| .39|
+|x3                  |800| .42|
+|x4                  |800| .41|
+|x5                  |800| .41|
+|x6                  |800| .43|
+|x7                  |800| .55|
+|x8                  |800| .57|
+|Valid N (listwise)  |800|    |
+|Missing N (listwise)|  0|    |
++--------------------+---+----+</code></pre>
+</div>
 </div>
 </div>
 <div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Statistics</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> <span class="fu">Matrix</span>(CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch22-lca.csv"</span>, DataFrame))</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">lca_em</span>(X, K <span class="op">=</span> <span class="fl">2</span>; tol <span class="op">=</span> <span class="fl">1e-6</span>, maxit <span class="op">=</span> <span class="fl">500</span>)</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    N, J <span class="op">=</span> <span class="fu">size</span>(X)</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    pi_ <span class="op">=</span> <span class="fu">fill</span>(<span class="fl">1</span><span class="op">/</span>K, K)</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    p   <span class="op">=</span> <span class="fu">reshape</span>(<span class="fu">range</span>(<span class="fl">0.3</span>, <span class="fl">0.7</span>, length <span class="op">=</span> K<span class="op">*</span>J), K, J)</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    ll_old <span class="op">=</span> <span class="op">-</span><span class="cn">Inf</span>; res <span class="op">=</span> <span class="cn">nothing</span></span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> it <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span>maxit</span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>        loglik <span class="op">=</span> [<span class="fu">log</span>(pi_[k]) <span class="op">+</span> <span class="fu">sum</span>(X[i,j]<span class="fu">*log</span>(p[k,j]) <span class="op">+</span> (<span class="fl">1</span><span class="op">-</span>X[i,j])<span class="fu">*log</span>(<span class="fl">1</span><span class="op">-</span>p[k,j])</span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>                                    for j <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span>J) for i <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span>N, k <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span>K]</span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>        m    <span class="op">=</span> <span class="fu">maximum</span>(loglik, dims <span class="op">=</span> <span class="fl">2</span>)</span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>        post <span class="op">=</span> <span class="fu">exp</span>.(loglik <span class="op">.-</span> m); post <span class="op">./=</span> <span class="fu">sum</span>(post, dims <span class="op">=</span> <span class="fl">2</span>)</span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>        pi_  <span class="op">=</span> <span class="fu">vec</span>(<span class="fu">mean</span>(post, dims <span class="op">=</span> <span class="fl">1</span>))</span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>        p    <span class="op">=</span> (post<span class="op">'</span> <span class="op">*</span> X) <span class="op">./</span> <span class="fu">sum</span>(post, dims <span class="op">=</span> <span class="fl">1</span>)<span class="ch">'</span></span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>        ll   <span class="op">=</span> <span class="fu">sum</span>(m <span class="op">.+</span> <span class="fu">log</span>.(<span class="fu">sum</span>(<span class="fu">exp</span>.(loglik <span class="op">.-</span> m), dims <span class="op">=</span> <span class="fl">2</span>)))</span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>        res  <span class="op">=</span> (prevalence <span class="op">=</span> pi_, item_prob <span class="op">=</span> p, iterations <span class="op">=</span> it)</span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>        <span class="fu">abs</span>(ll <span class="op">-</span> ll_old) <span class="op">&lt;</span> tol <span class="op">&amp;&amp;</span> <span class="cf">break</span></span>
-<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>        ll_old <span class="op">=</span> ll</span>
-<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
-<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>    res</span>
-<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
-<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>fit <span class="op">=</span> <span class="fu">lca_em</span>(X, <span class="fl">2</span>)</span>
-<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>fit.prevalence     <span class="co"># recovered class sizes (true: .35 / .65)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Segmentation fault (core dumped)</code></pre>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Statistics</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> <span class="fu">Matrix</span>(CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch22-lca.csv"</span>, DataFrame))</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">lca_em</span>(X, K <span class="op">=</span> <span class="fl">2</span>; tol <span class="op">=</span> <span class="fl">1e-6</span>, maxit <span class="op">=</span> <span class="fl">500</span>)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    N, J <span class="op">=</span> <span class="fu">size</span>(X)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    pi_ <span class="op">=</span> <span class="fu">fill</span>(<span class="fl">1</span><span class="op">/</span>K, K)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    p   <span class="op">=</span> <span class="fu">reshape</span>(<span class="fu">range</span>(<span class="fl">0.3</span>, <span class="fl">0.7</span>, length <span class="op">=</span> K<span class="op">*</span>J), K, J)</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    ll_old <span class="op">=</span> <span class="op">-</span><span class="cn">Inf</span>; res <span class="op">=</span> <span class="cn">nothing</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> it <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span>maxit</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>        loglik <span class="op">=</span> [<span class="fu">log</span>(pi_[k]) <span class="op">+</span> <span class="fu">sum</span>(X[i,j]<span class="fu">*log</span>(p[k,j]) <span class="op">+</span> (<span class="fl">1</span><span class="op">-</span>X[i,j])<span class="fu">*log</span>(<span class="fl">1</span><span class="op">-</span>p[k,j])</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>                                    for j <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span>J) for i <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span>N, k <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span>K]</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>        m    <span class="op">=</span> <span class="fu">maximum</span>(loglik, dims <span class="op">=</span> <span class="fl">2</span>)</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>        post <span class="op">=</span> <span class="fu">exp</span>.(loglik <span class="op">.-</span> m); post <span class="op">./=</span> <span class="fu">sum</span>(post, dims <span class="op">=</span> <span class="fl">2</span>)</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>        pi_  <span class="op">=</span> <span class="fu">vec</span>(<span class="fu">mean</span>(post, dims <span class="op">=</span> <span class="fl">1</span>))</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>        p    <span class="op">=</span> (post<span class="op">'</span> <span class="op">*</span> X) <span class="op">./</span> <span class="fu">sum</span>(post, dims <span class="op">=</span> <span class="fl">1</span>)<span class="ch">'</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>        ll   <span class="op">=</span> <span class="fu">sum</span>(m <span class="op">.+</span> <span class="fu">log</span>.(<span class="fu">sum</span>(<span class="fu">exp</span>.(loglik <span class="op">.-</span> m), dims <span class="op">=</span> <span class="fl">2</span>)))</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>        res  <span class="op">=</span> (prevalence <span class="op">=</span> pi_, item_prob <span class="op">=</span> p, iterations <span class="op">=</span> it)</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>        <span class="fu">abs</span>(ll <span class="op">-</span> ll_old) <span class="op">&lt;</span> tol <span class="op">&amp;&amp;</span> <span class="cf">break</span></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>        ll_old <span class="op">=</span> ll</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>    res</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>fit <span class="op">=</span> <span class="fu">lca_em</span>(X, <span class="fl">2</span>)</span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>fit.prevalence     <span class="co"># recovered class sizes (true: .35 / .65)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div id="tabset-2-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-4-tab">
@@ -1103,36 +1131,33 @@ DESCRIPTIVES VARIABLES=x1 TO x8 /STATISTICS=MEAN.</code></pre>
 <span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>fit <span class="op">=</span> <span class="fu">lca_em</span>(X, <span class="fl">2</span>)</span>
 <span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>fit.item_prob      <span class="co"># rows = classes, columns = items 1..8</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Segmentation fault (core dumped)</code></pre>
-</div>
 </div>
 </div>
 <div id="tabset-3-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-4-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np, pandas <span class="im">as</span> pd</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> pd.read_csv(<span class="st">"data/sim/ch22-lca.csv"</span>).values</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> lca_em(X, K<span class="op">=</span><span class="dv">2</span>, tol<span class="op">=</span><span class="fl">1e-6</span>, maxit<span class="op">=</span><span class="dv">500</span>):</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    N, J <span class="op">=</span> X.shape</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    pi_ <span class="op">=</span> np.full(K, <span class="dv">1</span> <span class="op">/</span> K)</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    p <span class="op">=</span> np.linspace(<span class="fl">0.3</span>, <span class="fl">0.7</span>, K <span class="op">*</span> J).reshape(K, J)</span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    ll_old <span class="op">=</span> <span class="op">-</span>np.inf</span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> it <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, maxit <span class="op">+</span> <span class="dv">1</span>):</span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>        loglik <span class="op">=</span> np.log(pi_) <span class="op">+</span> X <span class="op">@</span> np.log(p).T <span class="op">+</span> (<span class="dv">1</span> <span class="op">-</span> X) <span class="op">@</span> np.log(<span class="dv">1</span> <span class="op">-</span> p).T</span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>        m <span class="op">=</span> loglik.<span class="bu">max</span>(axis<span class="op">=</span><span class="dv">1</span>, keepdims<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>        post <span class="op">=</span> np.exp(loglik <span class="op">-</span> m)<span class="op">;</span> post <span class="op">/=</span> post.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>, keepdims<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>        pi_ <span class="op">=</span> post.mean(axis<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>        p <span class="op">=</span> (post.T <span class="op">@</span> X) <span class="op">/</span> post.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">0</span>)[:, <span class="va">None</span>]</span>
-<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>        ll <span class="op">=</span> <span class="bu">float</span>((m <span class="op">+</span> np.log(np.exp(loglik <span class="op">-</span> m).<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>, keepdims<span class="op">=</span><span class="va">True</span>))).<span class="bu">sum</span>())</span>
-<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">abs</span>(ll <span class="op">-</span> ll_old) <span class="op">&lt;</span> tol:</span>
-<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span></span>
-<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>        ll_old <span class="op">=</span> ll</span>
-<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">dict</span>(prevalence<span class="op">=</span>pi_, item_prob<span class="op">=</span>p, iterations<span class="op">=</span>it)</span>
-<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>fit <span class="op">=</span> lca_em(X, <span class="dv">2</span>)</span>
-<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>fit[<span class="st">"item_prob"</span>].<span class="bu">round</span>(<span class="dv">2</span>)   <span class="co"># rows = classes, columns = items 1..8</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np, pandas <span class="im">as</span> pd</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> pd.read_csv(<span class="st">"data/sim/ch22-lca.csv"</span>).values</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> lca_em(X, K<span class="op">=</span><span class="dv">2</span>, tol<span class="op">=</span><span class="fl">1e-6</span>, maxit<span class="op">=</span><span class="dv">500</span>):</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    N, J <span class="op">=</span> X.shape</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    pi_ <span class="op">=</span> np.full(K, <span class="dv">1</span> <span class="op">/</span> K)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    p <span class="op">=</span> np.linspace(<span class="fl">0.3</span>, <span class="fl">0.7</span>, K <span class="op">*</span> J).reshape(K, J)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    ll_old <span class="op">=</span> <span class="op">-</span>np.inf</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> it <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, maxit <span class="op">+</span> <span class="dv">1</span>):</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>        loglik <span class="op">=</span> np.log(pi_) <span class="op">+</span> X <span class="op">@</span> np.log(p).T <span class="op">+</span> (<span class="dv">1</span> <span class="op">-</span> X) <span class="op">@</span> np.log(<span class="dv">1</span> <span class="op">-</span> p).T</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>        m <span class="op">=</span> loglik.<span class="bu">max</span>(axis<span class="op">=</span><span class="dv">1</span>, keepdims<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>        post <span class="op">=</span> np.exp(loglik <span class="op">-</span> m)<span class="op">;</span> post <span class="op">/=</span> post.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>, keepdims<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>        pi_ <span class="op">=</span> post.mean(axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>        p <span class="op">=</span> (post.T <span class="op">@</span> X) <span class="op">/</span> post.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">0</span>)[:, <span class="va">None</span>]</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>        ll <span class="op">=</span> <span class="bu">float</span>((m <span class="op">+</span> np.log(np.exp(loglik <span class="op">-</span> m).<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>, keepdims<span class="op">=</span><span class="va">True</span>))).<span class="bu">sum</span>())</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">abs</span>(ll <span class="op">-</span> ll_old) <span class="op">&lt;</span> tol:</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>        ll_old <span class="op">=</span> ll</span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">dict</span>(prevalence<span class="op">=</span>pi_, item_prob<span class="op">=</span>p, iterations<span class="op">=</span>it)</span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>fit <span class="op">=</span> lca_em(X, <span class="dv">2</span>)</span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>fit[<span class="st">"item_prob"</span>].<span class="bu">round</span>(<span class="dv">2</span>)   <span class="co"># rows = classes, columns = items 1..8</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </div>
@@ -1142,12 +1167,12 @@ DESCRIPTIVES VARIABLES=x1 TO x8 /STATISTICS=MEAN.</code></pre>
 <section id="how-many-classes" class="level2" data-number="22.4">
 <h2 data-number="22.4" class="anchored" data-anchor-id="how-many-classes"><span class="header-section-number">22.4</span> How Many Classes?</h2>
 <p>We told the estimator <span class="math inline">\(K = 2\)</span>, but in real life the number of classes is itself unknown - and it is the crux of the analysis. You fit <span class="math inline">\(K = 1, 2, 3, \dots\)</span> and compare, usually with an information criterion (<strong>BIC</strong> or <strong>AIC</strong>) that rewards fit and penalizes complexity, plus interpretability (a class you cannot describe is probably an artifact). In practice you would use a maintained tool that also handles this:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The real tool (needs the poLCA package — shown, not run on the book's server)</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(poLCA)</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>f  <span class="ot">&lt;-</span> <span class="fu">cbind</span>(i1, i2, i3, i4, i5, i6, i7, i8) <span class="sc">~</span> <span class="dv">1</span></span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">poLCA</span>(f, data, <span class="at">nclass =</span> <span class="dv">2</span>)      <span class="co"># fit 2, 3, 4 classes ...</span></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>m3 <span class="ot">&lt;-</span> <span class="fu">poLCA</span>(f, data, <span class="at">nclass =</span> <span class="dv">3</span>)      <span class="co"># ... and compare</span></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(m2<span class="sc">$</span>bic, m3<span class="sc">$</span>bic)                     <span class="co"># lower BIC = better; also judge interpretability</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The real tool (needs the poLCA package — shown, not run on the book's server)</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(poLCA)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>f  <span class="ot">&lt;-</span> <span class="fu">cbind</span>(i1, i2, i3, i4, i5, i6, i7, i8) <span class="sc">~</span> <span class="dv">1</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">poLCA</span>(f, data, <span class="at">nclass =</span> <span class="dv">2</span>)      <span class="co"># fit 2, 3, 4 classes ...</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>m3 <span class="ot">&lt;-</span> <span class="fu">poLCA</span>(f, data, <span class="at">nclass =</span> <span class="dv">3</span>)      <span class="co"># ... and compare</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(m2<span class="sc">$</span>bic, m3<span class="sc">$</span>bic)                     <span class="co"># lower BIC = better; also judge interpretability</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">

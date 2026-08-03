@@ -85,9 +85,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-aced932c6eb97d642153b8e218288f9f.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-691837cabdf7814d00f0b173a74e7339.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-0437c578d6602383c15080ec46670fbd.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-691837cabdf7814d00f0b173a74e7339.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-3913145bdfeb359920d1030d76b14cbb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-bffc7bc0e84feeb56ea314b01b92581f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-3913145bdfeb359920d1030d76b14cbb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -861,19 +861,95 @@ CORRELATIONS /VARIABLES=X Y.
 REGRESSION /DEPENDENT X /METHOD=ENTER Z /SAVE RESID.
 REGRESSION /DEPENDENT Y /METHOD=ENTER Z /SAVE RESID.
 CORRELATIONS /VARIABLES=RES1 RES2.</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Correlations
++---------------------+-----+-----+
+|                     |  X  |  Y  |
++---------------------+-----+-----+
+|X Pearson Correlation|1.000| .492|
+|  Sig. (2-tailed)    |     | .000|
+|  N                  | 2000| 2000|
++---------------------+-----+-----+
+|Y Pearson Correlation| .492|1.000|
+|  Sig. (2-tailed)    | .000|     |
+|  N                  | 2000| 2000|
++---------------------+-----+-----+
+
+                     Model Summary (X)
++---+--------+-----------------+--------------------------+
+| R |R Square|Adjusted R Square|Std. Error of the Estimate|
++---+--------+-----------------+--------------------------+
+|.71|     .51|              .51|                       .97|
++---+--------+-----------------+--------------------------+
+
+                        ANOVA (X)
++----------+--------------+----+-----------+-------+----+
+|          |Sum of Squares| df |Mean Square|   F   |Sig.|
++----------+--------------+----+-----------+-------+----+
+|Regression|       1954.13|   1|    1954.13|2056.34|.000|
+|Residual  |       1898.69|1998|        .95|       |    |
+|Total     |       3852.82|1999|           |       |    |
++----------+--------------+----+-----------+-------+----+
+
+                               Coefficients (X)
++----------+----------------------------+-------------------------+-----+----+
+|          | Unstandardized Coefficients|Standardized Coefficients|     |    |
+|          +-----------+----------------+-------------------------+     |    |
+|          |     B     |   Std. Error   |           Beta          |  t  |Sig.|
++----------+-----------+----------------+-------------------------+-----+----+
+|(Constant)|        .01|             .02|                      .00|  .34|.734|
+|Z         |       1.01|             .02|                      .71|45.35|.000|
++----------+-----------+----------------+-------------------------+-----+----+
+
+                     Model Summary (Y)
++---+--------+-----------------+--------------------------+
+| R |R Square|Adjusted R Square|Std. Error of the Estimate|
++---+--------+-----------------+--------------------------+
+|.70|     .50|              .50|                      1.02|
++---+--------+-----------------+--------------------------+
+
+                        ANOVA (Y)
++----------+--------------+----+-----------+-------+----+
+|          |Sum of Squares| df |Mean Square|   F   |Sig.|
++----------+--------------+----+-----------+-------+----+
+|Regression|       2033.80|   1|    2033.80|1973.71|.000|
+|Residual  |       2058.83|1998|       1.03|       |    |
+|Total     |       4092.64|1999|           |       |    |
++----------+--------------+----+-----------+-------+----+
+
+                               Coefficients (Y)
++----------+----------------------------+-------------------------+-----+----+
+|          | Unstandardized Coefficients|Standardized Coefficients|     |    |
+|          +-----------+----------------+-------------------------+     |    |
+|          |     B     |   Std. Error   |           Beta          |  t  |Sig.|
++----------+-----------+----------------+-------------------------+-----+----+
+|(Constant)|       -.01|             .02|                      .00| -.62|.533|
+|Z         |       1.03|             .02|                      .70|44.43|.000|
++----------+-----------+----------------+-------------------------+-----+----+
+
+             Correlations
++------------------------+-----+-----+
+|                        | RES1| RES2|
++------------------------+-----+-----+
+|RES1 Pearson Correlation|1.000|-.020|
+|     Sig. (2-tailed)    |     | .383|
+|     N                  | 2000| 2000|
++------------------------+-----+-----+
+|RES2 Pearson Correlation|-.020|1.000|
+|     Sig. (2-tailed)    | .383|     |
+|     N                  | 2000| 2000|
++------------------------+-----+-----+</code></pre>
+</div>
 </div>
 </div>
 <div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Statistics</span>, <span class="bu">GLM</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>fork <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch24-fork.csv"</span>, DataFrame)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(fork.X, fork.Y)                       <span class="co"># spurious association</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(<span class="fu">residuals</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(X <span class="op">~</span> Z), fork)),</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">residuals</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(Y <span class="op">~</span> Z), fork)))   <span class="co"># control Z: it vanishes</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Segmentation fault (core dumped)</code></pre>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Statistics</span>, <span class="bu">GLM</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>fork <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch24-fork.csv"</span>, DataFrame)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(fork.X, fork.Y)                       <span class="co"># spurious association</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(<span class="fu">residuals</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(X <span class="op">~</span> Z), fork)),</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">residuals</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(Y <span class="op">~</span> Z), fork)))   <span class="co"># control Z: it vanishes</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
@@ -939,19 +1015,95 @@ CORRELATIONS /VARIABLES=X Y.
 REGRESSION /DEPENDENT X /METHOD=ENTER M /SAVE RESID.
 REGRESSION /DEPENDENT Y /METHOD=ENTER M /SAVE RESID.
 CORRELATIONS /VARIABLES=RES1 RES2.</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Correlations
++---------------------+-----+-----+
+|                     |  X  |  Y  |
++---------------------+-----+-----+
+|X Pearson Correlation|1.000| .576|
+|  Sig. (2-tailed)    |     | .000|
+|  N                  | 2000| 2000|
++---------------------+-----+-----+
+|Y Pearson Correlation| .576|1.000|
+|  Sig. (2-tailed)    | .000|     |
+|  N                  | 2000| 2000|
++---------------------+-----+-----+
+
+                     Model Summary (X)
++---+--------+-----------------+--------------------------+
+| R |R Square|Adjusted R Square|Std. Error of the Estimate|
++---+--------+-----------------+--------------------------+
+|.71|     .50|              .50|                       .71|
++---+--------+-----------------+--------------------------+
+
+                        ANOVA (X)
++----------+--------------+----+-----------+-------+----+
+|          |Sum of Squares| df |Mean Square|   F   |Sig.|
++----------+--------------+----+-----------+-------+----+
+|Regression|       1013.47|   1|    1013.47|2033.87|.000|
+|Residual  |        995.60|1998|        .50|       |    |
+|Total     |       2009.07|1999|           |       |    |
++----------+--------------+----+-----------+-------+----+
+
+                               Coefficients (X)
++----------+----------------------------+-------------------------+-----+----+
+|          | Unstandardized Coefficients|Standardized Coefficients|     |    |
+|          +----------+-----------------+-------------------------+     |    |
+|          |     B    |    Std. Error   |           Beta          |  t  |Sig.|
++----------+----------+-----------------+-------------------------+-----+----+
+|(Constant)|       .03|              .02|                      .00| 1.78|.075|
+|M         |       .50|              .01|                      .71|45.10|.000|
++----------+----------+-----------------+-------------------------+-----+----+
+
+                     Model Summary (Y)
++---+--------+-----------------+--------------------------+
+| R |R Square|Adjusted R Square|Std. Error of the Estimate|
++---+--------+-----------------+--------------------------+
+|.82|     .67|              .67|                      1.02|
++---+--------+-----------------+--------------------------+
+
+                        ANOVA (Y)
++----------+--------------+----+-----------+-------+----+
+|          |Sum of Squares| df |Mean Square|   F   |Sig.|
++----------+--------------+----+-----------+-------+----+
+|Regression|       4215.21|   1|    4215.21|4050.16|.000|
+|Residual  |       2079.42|1998|       1.04|       |    |
+|Total     |       6294.63|1999|           |       |    |
++----------+--------------+----+-----------+-------+----+
+
+                               Coefficients (Y)
++----------+----------------------------+-------------------------+-----+----+
+|          | Unstandardized Coefficients|Standardized Coefficients|     |    |
+|          +-----------+----------------+-------------------------+     |    |
+|          |     B     |   Std. Error   |           Beta          |  t  |Sig.|
++----------+-----------+----------------+-------------------------+-----+----+
+|(Constant)|        .01|             .02|                      .00|  .59|.558|
+|M         |       1.01|             .02|                      .82|63.64|.000|
++----------+-----------+----------------+-------------------------+-----+----+
+
+             Correlations
++------------------------+-----+-----+
+|                        | RES1| RES2|
++------------------------+-----+-----+
+|RES1 Pearson Correlation|1.000|-.014|
+|     Sig. (2-tailed)    |     | .535|
+|     N                  | 2000| 2000|
++------------------------+-----+-----+
+|RES2 Pearson Correlation|-.014|1.000|
+|     Sig. (2-tailed)    | .535|     |
+|     N                  | 2000| 2000|
++------------------------+-----+-----+</code></pre>
+</div>
 </div>
 </div>
 <div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Statistics</span>, <span class="bu">GLM</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>pipe <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch24-pipe.csv"</span>, DataFrame)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(pipe.X, pipe.Y)                       <span class="co"># the real, total effect</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(<span class="fu">residuals</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(X <span class="op">~</span> M), pipe)),</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">residuals</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(Y <span class="op">~</span> M), pipe)))   <span class="co"># control M: effect blocked</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Segmentation fault (core dumped)</code></pre>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Statistics</span>, <span class="bu">GLM</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>pipe <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch24-pipe.csv"</span>, DataFrame)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(pipe.X, pipe.Y)                       <span class="co"># the real, total effect</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(<span class="fu">residuals</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(X <span class="op">~</span> M), pipe)),</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">residuals</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(Y <span class="op">~</span> M), pipe)))   <span class="co"># control M: effect blocked</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div id="tabset-2-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-4-tab">
@@ -1017,19 +1169,95 @@ CORRELATIONS /VARIABLES=X Y.
 REGRESSION /DEPENDENT X /METHOD=ENTER Z /SAVE RESID.
 REGRESSION /DEPENDENT Y /METHOD=ENTER Z /SAVE RESID.
 CORRELATIONS /VARIABLES=RES1 RES2.</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Correlations
++---------------------+-----+-----+
+|                     |  X  |  Y  |
++---------------------+-----+-----+
+|X Pearson Correlation|1.000|-.042|
+|  Sig. (2-tailed)    |     | .061|
+|  N                  | 2000| 2000|
++---------------------+-----+-----+
+|Y Pearson Correlation|-.042|1.000|
+|  Sig. (2-tailed)    | .061|     |
+|  N                  | 2000| 2000|
++---------------------+-----+-----+
+
+                     Model Summary (X)
++---+--------+-----------------+--------------------------+
+| R |R Square|Adjusted R Square|Std. Error of the Estimate|
++---+--------+-----------------+--------------------------+
+|.57|     .32|              .32|                       .82|
++---+--------+-----------------+--------------------------+
+
+                        ANOVA (X)
++----------+--------------+----+-----------+------+----+
+|          |Sum of Squares| df |Mean Square|   F  |Sig.|
++----------+--------------+----+-----------+------+----+
+|Regression|        648.61|   1|     648.61|958.72|.000|
+|Residual  |       1351.73|1998|        .68|      |    |
+|Total     |       2000.34|1999|           |      |    |
++----------+--------------+----+-----------+------+----+
+
+                               Coefficients (X)
++----------+----------------------------+-------------------------+-----+----+
+|          | Unstandardized Coefficients|Standardized Coefficients|     |    |
+|          +-----------+----------------+-------------------------+     |    |
+|          |     B     |   Std. Error   |           Beta          |  t  |Sig.|
++----------+-----------+----------------+-------------------------+-----+----+
+|(Constant)|       -.01|             .02|                      .00| -.64|.525|
+|Z         |        .34|             .01|                      .57|30.96|.000|
++----------+-----------+----------------+-------------------------+-----+----+
+
+                     Model Summary (Y)
++---+--------+-----------------+--------------------------+
+| R |R Square|Adjusted R Square|Std. Error of the Estimate|
++---+--------+-----------------+--------------------------+
+|.54|     .29|              .29|                       .84|
++---+--------+-----------------+--------------------------+
+
+                        ANOVA (Y)
++----------+--------------+----+-----------+------+----+
+|          |Sum of Squares| df |Mean Square|   F  |Sig.|
++----------+--------------+----+-----------+------+----+
+|Regression|        586.43|   1|     586.43|834.48|.000|
+|Residual  |       1404.09|1998|        .70|      |    |
+|Total     |       1990.51|1999|           |      |    |
++----------+--------------+----+-----------+------+----+
+
+                               Coefficients (Y)
++----------+----------------------------+-------------------------+-----+----+
+|          | Unstandardized Coefficients|Standardized Coefficients|     |    |
+|          +----------+-----------------+-------------------------+     |    |
+|          |     B    |    Std. Error   |           Beta          |  t  |Sig.|
++----------+----------+-----------------+-------------------------+-----+----+
+|(Constant)|       .02|              .02|                      .00| 1.23|.221|
+|Z         |       .32|              .01|                      .54|28.89|.000|
++----------+----------+-----------------+-------------------------+-----+----+
+
+             Correlations
++------------------------+-----+-----+
+|                        | RES1| RES2|
++------------------------+-----+-----+
+|RES1 Pearson Correlation|1.000|-.508|
+|     Sig. (2-tailed)    |     | .000|
+|     N                  | 2000| 2000|
++------------------------+-----+-----+
+|RES2 Pearson Correlation|-.508|1.000|
+|     Sig. (2-tailed)    | .000|     |
+|     N                  | 2000| 2000|
++------------------------+-----+-----+</code></pre>
+</div>
 </div>
 </div>
 <div id="tabset-3-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Statistics</span>, <span class="bu">GLM</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>collider <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch24-collider.csv"</span>, DataFrame)</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(collider.X, collider.Y)                       <span class="co"># correctly ~ 0</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(<span class="fu">residuals</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(X <span class="op">~</span> Z), collider)),</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">residuals</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(Y <span class="op">~</span> Z), collider)))   <span class="co"># control Z: spurious!</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Segmentation fault (core dumped)</code></pre>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Statistics</span>, <span class="bu">GLM</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>collider <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch24-collider.csv"</span>, DataFrame)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(collider.X, collider.Y)                       <span class="co"># correctly ~ 0</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(<span class="fu">residuals</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(X <span class="op">~</span> Z), collider)),</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">residuals</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(Y <span class="op">~</span> Z), collider)))   <span class="co"># control Z: spurious!</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div id="tabset-3-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-4-tab">

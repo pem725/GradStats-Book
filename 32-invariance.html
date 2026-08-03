@@ -85,9 +85,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-aced932c6eb97d642153b8e218288f9f.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-691837cabdf7814d00f0b173a74e7339.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-0437c578d6602383c15080ec46670fbd.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-691837cabdf7814d00f0b173a74e7339.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-3913145bdfeb359920d1030d76b14cbb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-bffc7bc0e84feeb56ea314b01b92581f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-3913145bdfeb359920d1030d76b14cbb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -855,22 +855,106 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 MEANS TABLES=trait composite BY grp /CELLS=MEAN STDDEV COUNT.
 * Independent-groups (Welch) t-test comparing the composite across groups.
 T-TEST GROUPS=grp('A' 'B') /VARIABLES=composite.</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>              Case Processing Summary
++---------------+---------------------------------+
+|               |              Cases              |
+|               +-----------+---------+-----------+
+|               |  Included | Excluded|   Total   |
+|               +---+-------+-+-------+---+-------+
+|               | N |Percent|N|Percent| N |Percent|
++---------------+---+-------+-+-------+---+-------+
+|trait * grp    |600| 100.0%|0|    .0%|600| 100.0%|
+|composite * grp|600| 100.0%|0|    .0%|600| 100.0%|
++---------------+---+-------+-+-------+---+-------+
+
+         trait * composite * grp
++--------------------+--------+---------+
+|grp                 |  trait |composite|
++--------------------+--------+---------+
+|A     Mean          | .033584|  .031015|
+|      Std. Deviation| .963696| 1.027679|
+|      N             |     300|      300|
++--------------------+--------+---------+
+|B     Mean          |-.010684|  .487768|
+|      Std. Deviation|1.043839| 1.126961|
+|      N             |     300|      300|
++--------------------+--------+---------+
+|Total Mean          | .011450|  .259392|
+|      Std. Deviation|1.003972| 1.101537|
+|      N             |     600|      600|
++--------------------+--------+---------+
+
+                  Group Statistics
++---------------+---+----+--------------+---------+
+|          Group| N |Mean|Std. Deviation|S.E. Mean|
++---------------+---+----+--------------+---------+
+|composite A    |300| .03|          1.03|      .06|
+|          B    |300| .49|          1.13|      .07|
++---------------+---+----+--------------+---------+
+
+                         Independent Samples Test
++-------------------+---------+-------------------------------------------
+|                   | Levene's|
+|                   | Test for|
+|                   | Equality|
+|                   |    of   |
+|                   |Variances|             T-Test for Equality of Means
+|                   +----+----+-----+------+-------+----------+----------+
+|                   |    |    |     |      |       |          |          |
+|                   |    |    |     |      |       |          |          |
+|                   |    |    |     |      |       |          |          |
+|                   |    |    |     |      |       |          |          |
+|                   |    |    |     |      |  Sig. |          |          |
+|                   |    |    |     |      |  (2-  |   Mean   |Std. Error|
+|                   |  F |Sig.|  t  |  df  |tailed)|Difference|Difference|
++-------------------+----+----+-----+------+-------+----------+----------+
+|composite Equal    |2.76|.097|-5.19|598.00|   .000|      -.46|       .09|
+|          variances|    |    |     |      |       |          |          |
+|          assumed  |    |    |     |      |       |          |          |
+|          Equal    |    |    |-5.19|592.99|   .000|      -.46|       .09|
+|          variances|    |    |     |      |       |          |          |
+|          not      |    |    |     |      |       |          |          |
+|          assumed  |    |    |     |      |       |          |          |
++-------------------+----+----+-----+------+-------+----------+----------+
+
++-------------------+-----------+
+|                   |           |
+|                   |           |
+|                   |           |
+|                   |           |
+|                   |           |
+|                   +-----------+
+|                   |    95%    |
+|                   | Confidence|
+|                   |Interval of|
+|                   |    the    |
+|                   | Difference|
+|                   +-----+-----+
+|                   |Lower|Upper|
++-------------------+-----+-----+
+|composite Equal    | -.63| -.28|
+|          variances|     |     |
+|          assumed  |     |     |
+|          Equal    | -.63| -.28|
+|          variances|     |     |
+|          not      |     |     |
+|          assumed  |     |     |
++-------------------+-----+-----+</code></pre>
+</div>
 </div>
 </div>
 <div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch21-invariance.csv"</span>, DataFrame)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Statistics</span>, <span class="bu">DataFrames</span>, <span class="bu">HypothesisTests</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Assumes df holds :trait, :composite, and the group factor :grp.</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Group means: true trait (equal by construction) and observed composite, by group.</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="fu">combine</span>(<span class="fu">groupby</span>(df, <span class="op">:</span>grp), <span class="op">:</span>trait <span class="op">=&gt;</span> mean, <span class="op">:</span>composite <span class="op">=&gt;</span> mean)</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Independent-groups (Welch) t-test comparing the composite across groups.</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="fu">UnequalVarianceTTest</span>(df.composite[df.grp <span class="op">.==</span> <span class="st">"A"</span>], df.composite[df.grp <span class="op">.==</span> <span class="st">"B"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Segmentation fault (core dumped)</code></pre>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch21-invariance.csv"</span>, DataFrame)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Statistics</span>, <span class="bu">DataFrames</span>, <span class="bu">HypothesisTests</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Assumes df holds :trait, :composite, and the group factor :grp.</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Group means: true trait (equal by construction) and observed composite, by group.</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="fu">combine</span>(<span class="fu">groupby</span>(df, <span class="op">:</span>grp), <span class="op">:</span>trait <span class="op">=&gt;</span> mean, <span class="op">:</span>composite <span class="op">=&gt;</span> mean)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Independent-groups (Welch) t-test comparing the composite across groups.</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="fu">UnequalVarianceTTest</span>(df.composite[df.grp <span class="op">.==</span> <span class="st">"A"</span>], df.composite[df.grp <span class="op">.==</span> <span class="st">"B"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
