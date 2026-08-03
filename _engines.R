@@ -71,13 +71,25 @@
   seen <- list()
   function(key, cmd, args) {
     if (is.null(seen[[key]])) {
-      run <- tryCatch(.book_run(cmd, args), error = function(e) list(out = "", status = 1L))
-      seen[[key]] <<- !.book_crashed(run) &&
-        any(grepl("BOOK_OK", run$out, fixed = TRUE))
+      run <- tryCatch(.book_run(cmd, args),
+                      error = function(e) list(out = conditionMessage(e), status = 1L))
+      ok <- !.book_crashed(run) && any(grepl("BOOK_OK", run$out, fixed = TRUE))
+      seen[[key]] <<- structure(ok, why = .book_first_lines(run$out))
     }
     seen[[key]]
   }
 })
+
+# The first couple of lines of whatever went wrong, flattened onto one line so
+# it survives a build log. Without this a failure reads "the Julia run failed"
+# and says nothing about why, which turns every diagnosis into another
+# twenty-minute round trip through CI.
+.book_first_lines <- function(out, n = 3) {
+  txt <- trimws(as.character(out))
+  txt <- txt[nzchar(txt)]
+  if (!length(txt)) return("(no output)")
+  paste(utils::head(txt, n), collapse = " | ")
+}
 
 .book_fig_dir <- function() {
   d <- file.path("_figs")
@@ -315,10 +327,11 @@ knitr::knit_engines$set(julia = function(options) {
   if (!.book_have("julia")) return(.book_static(options, "Julia not installed"))
   # A Julia binary is not the same thing as a working Julia. GitHub's runners
   # ship one, but without the book's project instantiated every chunk dies.
-  if (!.book_works("julia", "julia",
-                   c("--project=.", "--startup-file=no", "-e",
-                     shQuote('using CSV, DataFrames; print("BOOK_OK")')))) {
-    return(.book_static(options, "the book's Julia project is not instantiated"))
+  jl_ok <- .book_works("julia", "julia",
+                       c("--project=.", "--startup-file=no", "-e",
+                         shQuote('using CSV, DataFrames; print("BOOK_OK")')))
+  if (!jl_ok) {
+    return(.book_static(options, paste("Julia project unusable:", attr(jl_ok, "why"))))
   }
 
   fig <- .book_fig_path(options)
@@ -367,7 +380,10 @@ knitr::knit_engines$set(julia = function(options) {
     'end'), runner)
 
   run <- .book_run("julia", c("--project=.", "--startup-file=no", runner))
-  if (.book_crashed(run)) return(.book_static(options, "the Julia run failed"))
+  if (.book_crashed(run)) {
+    return(.book_static(options, paste0("Julia run failed (exit ", run$status, "): ",
+                                        .book_first_lines(run$out))))
+  }
   .book_output(options, run$out, if (file.exists(fig)) fig else NULL)
 })
 
@@ -387,9 +403,10 @@ knitr::knit_engines$set(python = function(options) {
   if (!file.exists(py)) {
     return(.book_static(options, "the book's .venv is not set up"))
   }
-  if (!.book_works("python", py,
-                   c("-c", shQuote('import pandas, matplotlib; print("BOOK_OK")')))) {
-    return(.book_static(options, "the book's .venv is missing packages"))
+  py_ok <- .book_works("python", py,
+                       c("-c", shQuote('import pandas, matplotlib; print("BOOK_OK")')))
+  if (!py_ok) {
+    return(.book_static(options, paste("venv unusable:", attr(py_ok, "why"))))
   }
 
   fig <- .book_fig_path(options)
@@ -430,6 +447,9 @@ knitr::knit_engines$set(python = function(options) {
   ), runner)
 
   run <- .book_run(py, runner)
-  if (.book_crashed(run)) return(.book_static(options, "the Python run failed"))
+  if (.book_crashed(run)) {
+    return(.book_static(options, paste0("Python run failed (exit ", run$status, "): ",
+                                        .book_first_lines(run$out))))
+  }
   .book_output(options, run$out, if (file.exists(fig)) fig else NULL)
 })

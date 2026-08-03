@@ -91,6 +91,29 @@ jobs:
           .venv/bin/python -m pip install --upgrade pip
           .venv/bin/python -m pip install -r requirements.txt
 
+      # Prove the three toolchains work BEFORE the render, using the very same
+      # probes _engines.R uses. When a language silently falls back to static
+      # text, this step is what says whether the toolchain was broken or the
+      # render environment differed from the one we just built.
+      - name: Verify the toolchains the book needs
+        run: |
+          echo "--- where are we ---"; pwd; ls -d .venv Project.toml Manifest.toml
+          echo "--- pspp ---";   pspp --version | head -1
+          echo "--- pdftoppm ---"; pdftoppm -v 2>&1 | head -1
+          echo "--- python ---"; .venv/bin/python -c 'import pandas, matplotlib; print("BOOK_OK", pandas.__version__)'
+          echo "--- julia ---";  julia --project=. --startup-file=no -e 'using CSV, DataFrames; print("BOOK_OK ")'
+          echo
+          echo "--- exactly what the engines will decide ---"
+          Rscript -e '
+            suppressMessages(library(knitr)); e <- new.env(); sys.source("_engines.R", envir = e)
+            jl <- e$.book_works("julia","julia", c("--project=.","--startup-file=no","-e",
+                    shQuote("using CSV, DataFrames; print(\"BOOK_OK\")")))
+            py <- e$.book_works("python", file.path(getwd(),".venv/bin/python"),
+                    c("-c", shQuote("import pandas, matplotlib; print(\"BOOK_OK\")")))
+            cat("julia usable :", jl, "|", attr(jl,"why"), "\n")
+            cat("python usable:", py, "|", attr(py,"why"), "\n")
+            if (!jl || !py) quit(status = 1)'
+
       - name: Render and publish to GitHub Pages
         uses: quarto-dev/quarto-actions/publish@v2
         with:
