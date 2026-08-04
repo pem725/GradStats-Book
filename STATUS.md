@@ -193,6 +193,22 @@ R, Julia and Python. Verified from the rendered HTML, not from the source.
 - **Four Julia and Python tabs printed sixteen digits** where the house rule is two, and
   one Julia tab echoed a stray five-element vector because `lam = ...; psi = var(fa)`
   takes the value of its last statement. Both fixed; `psi` now gets its own line.
+- **SPSS readers could not load any data** (reported by Jeff). Three faults, all
+  confirmed by running it from outside the book folder:
+  1. Every path is relative to the book folder, and SPSS on Windows never starts there.
+     `setup/load_data.sps` now carries a commented `CD` line as the single edit point,
+     followed by `SHOW DIRECTORY.` so a wrong path is visible immediately instead of
+     surfacing later as "Can't find data/sim/….sps in include file search path".
+  2. **The documented workaround did not work.** `setup.qmd` said to "edit the one path
+     inside `load_data.sps`", but there are two layers: the macro inserts a loader from
+     `data/sim/`, and that loader reads its `.csv` with a relative path of its own.
+     Only fixing the working directory fixes both.
+  3. The page linked the single loader file, which does nothing without the 99 files
+     under `data/`. It now leads with a ZIP download of the whole repository.
+- **`setup.qmd` lost its Julia and Python rows.** A `::: {.callout-note}` sat in the
+  middle of the loader table, and a markdown table cannot be interrupted by a div, so
+  both rows rendered as raw pipe-delimited text glued onto the end of a sentence inside
+  the callout. The callout now follows the complete table. One occurrence book-wide.
 - Seven contrast-coding schemes in Ch. 19 rewritten to run in PSPP; all reproduce the R
   coefficients exactly, and the regression sums of squares come out identical across all
   five pet schemes — which is the chapter's whole argument.
