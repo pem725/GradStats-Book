@@ -74,18 +74,18 @@ DESCRIPTIVES VARIABLES=truth observed /STATISTICS=VARIANCE.
 using CSV, DataFrames, Statistics
 ctt = CSV.read("data/sim/ch09-ctt.csv", DataFrame)
 
-var(ctt.truth) / var(ctt.observed)      # the true-score share of the variance
+round(var(ctt.truth) / var(ctt.observed), digits = 2)   # true-score share
 ```
 ### Python
 ```{python}
 import pandas as pd
 ctt = pd.read_csv("data/sim/ch09-ctt.csv")
 
-ctt.truth.var() / ctt.observed.var()    # the true-score share of the variance
+round(float(ctt.truth.var() / ctt.observed.var()), 2)  # true-score share
 ```
 :::
 
-About 0.78 of the variance in our observed scores is real signal; the rest is sensor noise. In practice we can never see `truth`, so we *estimate* reliability from clever comparisons.
+About 0.80 of the variance in our observed scores is real signal; the rest is sensor noise. We built these data with a true ratio of $225 / 289 = 0.78$, and this sample came out a shade above it - a reminder that reliability is an estimate like any other, and estimates wobble. In practice we can never see `truth`, so we *estimate* reliability from clever comparisons.
 
 ## Four Ways to Estimate Reliability
 
@@ -137,7 +137,7 @@ k = ncol(items)
 var_items = sum(var(col) for col in eachcol(items))
 var_total = var(sum(eachcol(items)))
 
-(k / (k - 1)) * (1 - var_items / var_total)
+round((k / (k - 1)) * (1 - var_items / var_total), digits = 2)
 ```
 ### Python
 ```{python}
@@ -148,7 +148,7 @@ k = items.shape[1]
 var_items = items.var().sum()
 var_total = items.sum(axis=1).var()
 
-(k / (k - 1)) * (1 - var_items / var_total)
+round(float((k / (k - 1)) * (1 - var_items / var_total)), 2)
 ```
 :::
 
@@ -217,11 +217,18 @@ k = ncol(items)
 alpha = (k / (k - 1)) *
         (1 - sum(var(c) for c in eachcol(items)) / var(sum(eachcol(items))))
 
-fa  = fit(FactorAnalysis, Matrix(items)'; maxoutdim = 1)
-lam = vec(loadings(fa)); psi = var(fa)
+# standardise first: R's factanal factors the CORRELATION matrix, so fitting
+# the raw covariances here would disagree with the R tab in the second decimal
+X = Matrix(items)
+Z = (X .- mean(X, dims = 1)) ./ std(X, dims = 1)
+
+fa  = fit(FactorAnalysis, Z'; maxoutdim = 1)
+lam = vec(loadings(fa))
+psi = var(fa)          # keep on its own line: a "lam = ...; psi = ..." line
+                       # takes the value of its last statement and echoes it
 omega = sum(lam)^2 / (sum(lam)^2 + sum(psi))
 
-alpha, omega
+round.((alpha, omega), digits = 2)
 ```
 ### Python
 ```{python}
@@ -232,11 +239,15 @@ items = pd.read_csv("data/sim/ch09-items-congeneric.csv")
 k = items.shape[1]
 alpha = (k / (k - 1)) * (1 - items.var().sum() / items.sum(axis=1).var())
 
-fa = FactorAnalysis(n_components=1).fit(items)
+# standardise first: R's factanal factors the CORRELATION matrix, so fitting
+# the raw covariances here would disagree with the R tab in the second decimal
+z = (items - items.mean()) / items.std()
+
+fa = FactorAnalysis(n_components=1).fit(z)
 lam = fa.components_.ravel(); psi = fa.noise_variance_
 omega = lam.sum()**2 / (lam.sum()**2 + psi.sum())
 
-alpha, omega
+round(float(alpha), 2), round(float(omega), 2)
 ```
 :::
 
@@ -285,14 +296,14 @@ CORRELATIONS /VARIABLES=Ox Oy.
 using CSV, DataFrames, Statistics
 att = CSV.read("data/sim/ch09-attenuation.csv", DataFrame)
 
-cor(att.Tx, att.Ty), cor(att.Ox, att.Oy)   # true, then observed through noise
+round.((cor(att.Tx, att.Ty), cor(att.Ox, att.Oy)), digits = 2)   # true, then observed
 ```
 ### Python
 ```{python}
 import pandas as pd
 att = pd.read_csv("data/sim/ch09-attenuation.csv")
 
-att.Tx.corr(att.Ty), att.Ox.corr(att.Oy)   # true, then observed through noise
+round(float(att.Tx.corr(att.Ty)), 2), round(float(att.Ox.corr(att.Oy)), 2)  # true, observed
 ```
 :::
 

@@ -152,16 +152,9 @@ Giant research libraries (`CRC.bib` 4.9 MB, `delphi.bib` 3.8 MB) are deliberatel
 - [ ] **Ch. 10 `RELIABILITY /MODEL=ALPHA`** — reserved for Jeff Stuewig to write.
 - [ ] **`foreword.qmd`** — awaiting the invited colleague.
 - [ ] **Voice/structure review** of the drafted chapters (PEM).
-- [ ] **`10-reliability.qmd` tabsets 1–4 print full precision in Julia and Python** —
-      `0.8031550441308491` where the R tab prints `0.80`. The house rule is two decimals.
-      Four chunks; they were live before this pass and were not touched by it.
-- [ ] **Tabset 3's Julia tab leaks a stray vector.** The line
-      `lam = vec(loadings(fa)); psi = var(fa)` is echoed by the engine because a
-      semicolon-joined line takes the value of its last statement, so five noise
-      variances print before the answer. The answer itself is correct.
-- [ ] **Prose/output mismatch in `10-reliability.qmd`.** The text says "About 0.78 of the
-      variance … is real signal," which is the population value (225/289 = 0.7785), but
-      every tab prints the realized sample value, `0.80`. Author's call which to change.
+
+All seven tabsets in `10-reliability.qmd` now agree to the printed two decimals across
+R, Julia and Python. Verified from the rendered HTML, not from the source.
 
 ### Known quirks, deliberately left alone
 
@@ -192,6 +185,14 @@ Giant research libraries (`CRC.bib` 4.9 MB, `delphi.bib` 3.8 MB) are deliberatel
 - **The reliability chapter's Python Cohen's *d* had the wrong sign.** `sorted(pd.unique())`
   ordered the groups F, M while R's `as_factor()` orders by appearance, M, F — so Python
   would have printed +2.62 against R's −2.62 the moment the tab went live.
+- **McDonald's omega disagreed in the second decimal**, R 0.82 against Julia and Python
+  0.81. Not a methods gap: R's `factanal` factors the *correlation* matrix while
+  `MultivariateStats` and `sklearn` were handed raw covariances, and the two exact values
+  (0.8153 and 0.8140) happened to straddle the 0.815 rounding boundary. Standardising
+  first brings both to 0.81531 against R's 0.815309 — agreement to five decimals.
+- **Four Julia and Python tabs printed sixteen digits** where the house rule is two, and
+  one Julia tab echoed a stray five-element vector because `lam = ...; psi = var(fa)`
+  takes the value of its last statement. Both fixed; `psi` now gets its own line.
 - Seven contrast-coding schemes in Ch. 19 rewritten to run in PSPP; all reproduce the R
   coefficients exactly, and the regression sums of squares come out identical across all
   five pet schemes — which is the chapter's whole argument.
