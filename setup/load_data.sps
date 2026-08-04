@@ -26,21 +26,22 @@
 * ---------------------------------------------------------------------------.
 * STEP 1 - TELL SPSS WHERE THE BOOK IS. This is the only line you edit.
 *
-* Every path below is relative to the book's folder. Unless you launched SPSS
-* from that folder - on Windows you almost certainly did not - remove the
-* asterisk from the CD line and put your own path in it:
+* Every path below is relative to the folder that holds data/. Unless you
+* launched SPSS from that folder - on Windows you almost certainly did not -
+* delete the asterisk and the space at the start of the CD line below, and
+* put the real location between the quotes:
 *
-*     CD 'C:/Users/jeff/Downloads/GradStats-Book-main'.
+*     CD 'C:/Users/jeff/Desktop/GradStats-data'.
 *
-* Use forward slashes, or double every backslash ('C:\\Users\\jeff\\...').
-* Point it at the folder that CONTAINS data/ and setup/, not at data/ itself.
+* Use forward slashes, even on Windows. Point it at the folder that CONTAINS
+* data, not at data itself.
 *
 * Editing any other path will not be enough. The macro inserts a small loader
 * from data/sim/, and that loader reads its .csv with a relative path of its
 * own, so both only resolve once the working directory is right.
 * ---------------------------------------------------------------------------.
 
-* CD 'C:/path/to/GradStats-Book'.
+* CD 'C:/path/to/GradStats-data'.
 
 * Check it worked. This prints the working directory, which should be the
 * folder holding data/ and setup/. If it is anything else, fix the CD line

@@ -32,6 +32,9 @@ jobs:
       # text (see _engines.R), which is safe but is not the book.
       #
       # pspp   runs the SPSS syntax.
+      # zip    packages _book/gradstats-data.zip, the one-click data download
+      #        the setup page links to. Without it the post-render hook logs
+      #        BOOK-NOZIP and that link 404s on the published site.
       # poppler-utils supplies pdftoppm, which turns PSPP's chart pages into
       #        images - PSPP's own png output is too coarse and its svg output
       #        draws charts on top of tables.
@@ -41,7 +44,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
-            pspp poppler-utils libmagick++-dev libpng-dev
+            pspp poppler-utils libmagick++-dev libpng-dev zip
 
       - name: Set up R
         uses: r-lib/actions/setup-r@v2

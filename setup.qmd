@@ -10,17 +10,25 @@ Most of the book's datasets are simulated. The obvious thing would be to hand yo
 
 So we do the only thing that actually works: **we generated the data once, in R, and we ship it.** All four languages read the same files, so all four print the same numbers.
 
-## First, get the whole folder
+## Download it here
 
-The loaders read the book's `data/` folder, so a single downloaded file will not do anything on its own. Take the lot in one go:
+One file, everything in it, no account and no software needed to get it:
 
-**[Download the book as a ZIP](https://github.com/pem725/GradStats-Book/archive/refs/heads/main.zip)** (or `git clone https://github.com/pem725/GradStats-Book.git` if you use git)
+> ## [⬇ Download `gradstats-data.zip`](gradstats-data.zip)
+>
+> About 700 KB. Contains the `data` folder, a loader for each of the four languages, and a `README.txt`.
 
-Unzip it anywhere. You will get a folder named `GradStats-Book-main` containing `data/`, `setup/`, and the chapters. Everything below assumes you are pointed at that folder.
+Unzip it wherever you like - the Desktop is fine. You get a folder called `GradStats-data` holding the `data` folder and one loader per language, plus a `README.txt` repeating the steps below. That is the whole setup; you never need the rest of the book's source.
+
+::: {.callout-tip collapse="true"}
+## If you would rather work from the source
+
+The book is developed openly, so the same files live in the [GitHub repository](https://github.com/pem725/GradStats-Book) if you use git: `git clone https://github.com/pem725/GradStats-Book.git`. The zip above is built from exactly those files on every render, so the two cannot disagree. You do not need this to follow the book.
+:::
 
 ## Four files, one per language
 
-The loader for your language is already inside what you just downloaded, in `setup/`. Run it once.
+The loader for your language is in the folder you just unzipped. Run it once.
 
 | Language | File | Use it like this |
 |---|---|---|
@@ -34,13 +42,13 @@ Each chapter tells you which dataset it uses, in a note near the top.
 ::: {.callout-note}
 ## SPSS: point it at the book first
 
-SPSS will not find the data until its **working directory** is the book's folder, and on Windows it never is by default. `load_data.sps` has one line near the top for this - remove the asterisk and put your own path in:
+SPSS will not find the data until its **working directory** is the unzipped folder, and on Windows it never is by default. `load_data.sps` has one line near the top for this - delete the asterisk at the start and put your own path between the quotes:
 
 ```
-CD 'C:/Users/jeff/Downloads/GradStats-Book-main'.
+CD 'C:/Users/jeff/Desktop/GradStats-data'.
 ```
 
-Use forward slashes, or double every backslash. Point it at the folder that *contains* `data/`, not at `data/` itself. Running the file then prints the working directory back to you, so you can see straight away whether it took.
+Use forward slashes, even on Windows. Point it at the folder that *contains* `data`, not at `data` itself. Running the file then prints the folder back to you, so you can see straight away whether it took.
 
 That one line is the whole fix, and it has to be that line. Changing a path anywhere else will not work: `!bookdata` inserts a small loader from `data/sim/`, and that loader reads its own `.csv` with its own relative path, so both only resolve once the working directory is right.
 

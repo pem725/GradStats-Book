@@ -204,7 +204,15 @@ R, Julia and Python. Verified from the rendered HTML, not from the source.
      `data/sim/`, and that loader reads its `.csv` with a relative path of its own.
      Only fixing the working directory fixes both.
   3. The page linked the single loader file, which does nothing without the 99 files
-     under `data/`. It now leads with a ZIP download of the whole repository.
+     under `data/`, and the only alternative on offer was cloning a git repository.
+     Jeff does not use GitHub, and neither will most readers. The book now **publishes
+     its own data bundle**: `setup/make_data_zip.R` runs as a `post-render` hook and
+     builds `_book/gradstats-data.zip` (about 700 KB — `data/`, all four loaders, and a
+     plain-language `README.txt`), so the setup page hands out one ordinary link,
+     <https://pem725.github.io/GradStats-Book/gradstats-data.zip>, on the same site the
+     reader is already on. Built every render, never committed, so it cannot drift.
+     Needs the `zip` binary; the workflow now installs it, and a missing one logs
+     `BOOK-NOZIP` rather than failing the build.
 - **`setup.qmd` lost its Julia and Python rows.** A `::: {.callout-note}` sat in the
   middle of the loader table, and a markdown table cannot be interrupted by a div, so
   both rows rendered as raw pipe-delimited text glued onto the end of a sentence inside
