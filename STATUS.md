@@ -39,9 +39,12 @@ stdout, and collects any figure the chunk drew.
 |---|---:|
 | tabsets | 109 |
 | live `{r}` chunks | 191 |
-| live `{pspp}` chunks | 105 |
-| live `{julia}` chunks | 105 |
-| live `{python}` chunks | 105 |
+| live `{pspp}` chunks | 106 |
+| live `{julia}` chunks | 109 |
+| live `{python}` chunks | 109 |
+
+**Every Julia and Python tab in the book now executes.** The only tabs that do not
+are the three SPSS ones below.
 
 **Nothing is shared between chunks except through files.** Every non-R tab therefore
 loads its own data — shared loaders in `setup/load_data.{R,sps,jl,py}`, per-dataset ones
@@ -70,20 +73,19 @@ promised. The workflow's "Verify the toolchains" step runs `_engines.R`'s own pr
   + `REGRESSION`), no `FACTOR /EXTRACTION=ML` (use PAF, note the one-word change),
   `GLM` not `UNIANOVA`. Factor signs are arbitrary and PSPP sometimes flips one.
 
-### The four tabs that stay static, on purpose
+### The three tabs that stay static
 
-| Chapter | Section | Why |
-|---|---|---|
-| `10-reliability.qmd` | keyed alpha | depends on the bespoke `alpha_keyed()` teaching function |
-| `10-reliability.qmd` | alpha-if-deleted | same |
-| `10-reliability.qmd` | reliability → power | depends on McKnight's `EScalc()` |
-| `24-casestudy-depression.qmd` | response-pattern count | bespoke combinatorial function |
+All three are the `RELIABILITY /MODEL=ALPHA` SPSS tabs in `10-reliability.qmd` (lines
+332, 404, 481) — the section **reserved for Jeff Stuewig to write**. PSPP 2.0 does
+implement `RELIABILITY`, so they could be made to run; they are held deliberately, not
+for want of a toolchain. Their tabsets show output under R, Julia and Python and none
+under SPSS until Jeff's section lands.
 
-These follow the house include/exclude rule: no manufactured equivalents for bespoke
-code. Where a language genuinely cannot do a procedure, its tab says so and names the
-tool that can — base SPSS has no power analysis (G\*Power, SamplePower), no latent class
+Where a language genuinely cannot do a procedure, its tab says so and names the tool
+that can — base SPSS has no power analysis (G\*Power, SamplePower), no latent class
 analysis (Latent GOLD, Mplus, `poLCA`), and no Rasch calibration (Winsteps, ConQuest,
-`eRm`/`TAM`).
+`eRm`/`TAM`). That is the house include/exclude rule: name the gap, never manufacture
+syntax that would not run.
 
 ---
 
@@ -150,8 +152,16 @@ Giant research libraries (`CRC.bib` 4.9 MB, `delphi.bib` 3.8 MB) are deliberatel
 - [ ] **Ch. 10 `RELIABILITY /MODEL=ALPHA`** — reserved for Jeff Stuewig to write.
 - [ ] **`foreword.qmd`** — awaiting the invited colleague.
 - [ ] **Voice/structure review** of the drafted chapters (PEM).
-- [ ] Consider whether the reliability chapter's three static tabs can be made live by
-      inlining the helper into each language's tab.
+- [ ] **`10-reliability.qmd` tabsets 1–4 print full precision in Julia and Python** —
+      `0.8031550441308491` where the R tab prints `0.80`. The house rule is two decimals.
+      Four chunks; they were live before this pass and were not touched by it.
+- [ ] **Tabset 3's Julia tab leaks a stray vector.** The line
+      `lam = vec(loadings(fa)); psi = var(fa)` is echoed by the engine because a
+      semicolon-joined line takes the value of its last statement, so five noise
+      variances print before the answer. The answer itself is correct.
+- [ ] **Prose/output mismatch in `10-reliability.qmd`.** The text says "About 0.78 of the
+      variance … is real signal," which is the population value (225/289 = 0.7785), but
+      every tab prints the realized sample value, `0.80`. Author's call which to change.
 
 ### Known quirks, deliberately left alone
 
@@ -174,6 +184,14 @@ Giant research libraries (`CRC.bib` 4.9 MB, `delphi.bib` 3.8 MB) are deliberatel
 - Separated *semipartial* vs *partial* correlation vs *standardized coefficient*.
 - Power: **stricter α lowers power** — the 611 slides had it backwards.
 - Knox Cube SPSS loader read a literal `\t` and silently mis-parsed every item.
+- **The depression chapter's SPSS block returned 0, not 1,653,955,415.** A continuation
+  line beginning with `*` is a comment in SPSS syntax, so the two `* (EXP(...))` lines of
+  the inclusion-exclusion sum were silently dropped and the loop summed $(-1)^i$ to zero.
+  Operators now end their lines. One occurrence book-wide; the trap is written up in the
+  [four-language appendix](three-languages.qmd).
+- **The reliability chapter's Python Cohen's *d* had the wrong sign.** `sorted(pd.unique())`
+  ordered the groups F, M while R's `as_factor()` orders by appearance, M, F — so Python
+  would have printed +2.62 against R's −2.62 the moment the tab went live.
 - Seven contrast-coding schemes in Ch. 19 rewritten to run in PSPP; all reproduce the R
   coefficients exactly, and the regression sums of squares come out identical across all
   five pet schemes — which is the chapter's whole argument.

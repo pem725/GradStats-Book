@@ -260,3 +260,26 @@ PCA().fit(z).explained_variance_    # variance along each component
 - **Python** is free and open source, and probably the language your students already know. Data lives in a `pandas` DataFrame; the models come from `statsmodels`, whose formula interface (`smf.ols("y ~ x", data=d)`) reads almost exactly like R's. `scipy.stats` supplies the classical tests and `scikit-learn` the reduction methods.
 
 The point is not that one is best. It is that a procedure you understand in one language you can carry to any of them, because the statistics were never about the software.
+
+## Two Ways SPSS Fails Quietly
+
+Most mistakes announce themselves. These two do not, and both cost us a wrong number in this book before we caught them, so they are worth knowing before you write much syntax.
+
+**A continuation line that begins with `*` disappears.** In SPSS syntax an asterisk in the command position starts a comment. That is fine on its own line, but it also means a long expression broken across lines like this loses everything after the first line:
+
+```
+COMPUTE total = total + ((-1) ** #i)
+  * EXP(LNGAMMA(k+1) - LNGAMMA(#i+1) - LNGAMMA(k-#i+1)).
+```
+
+No error appears. The multiplication is simply gone, and you get the value of the first line alone. Break the line so each operator **ends** its line instead, and the same expression runs correctly:
+
+```
+COMPUTE total = total +
+  ((-1) ** #i) *
+  EXP(LNGAMMA(k+1) - LNGAMMA(#i+1) - LNGAMMA(k-#i+1)).
+```
+
+**`/DELIMITERS` does not read escape sequences.** Writing `/DELIMITERS=' \t'` to mean "spaces or tabs" gives you spaces, backslashes, and the letter *t* — because SPSS takes those two characters literally rather than as an escape for a tab. A file whose columns are separated by tabs then loads with no complaint and every value in the wrong variable. Put a real tab character between the quotes. The [Rasch chapter](18-rasch.qmd) reads Wright's Knox Cube data this way, and the giveaway that something was wrong was an *N* that varied from item to item when every item had the same 35 responses.
+
+Both share a shape worth carrying with you: the file loaded, the syntax ran, nothing was flagged, and the numbers were wrong. When an SPSS result surprises you, check that the syntax you *think* you ran is the syntax that actually ran.

@@ -30,9 +30,11 @@ n_patterns <- function(k, a, n) {                 # k items, each 0..a, summing 
 format(n_patterns(21, 3, 15), big.mark = ",")     # ways to score 15 on the BDI-II
 ```
 ### SPSS
-```
+```{pspp}
 * How many 21-item profiles (each item 0..3) sum to exactly 15?
-* Inclusion-exclusion, evaluated as a running total.
+* Inclusion-exclusion, evaluated as a running total. SPSS has no
+* binomial-coefficient function, so we build one out of LNGAMMA:
+* choose(m, r) = EXP(LNGAMMA(m+1) - LNGAMMA(r+1) - LNGAMMA(m-r+1)).
 DATA LIST FREE /dummy.
 BEGIN DATA
 1
@@ -43,15 +45,19 @@ COMPUTE a = 3.
 COMPUTE n = 15.
 COMPUTE total = 0.
 LOOP #i = 0 TO TRUNC(n / (a + 1)).
-  COMPUTE total = total + ((-1) ** #i)
-    * (EXP(LNGAMMA(k+1) - LNGAMMA(#i+1) - LNGAMMA(k-#i+1)))
-    * (EXP(LNGAMMA(n - #i*(a+1) + k) - LNGAMMA(k) - LNGAMMA(n - #i*(a+1) + 1))).
+  * Each operator ENDS its line on purpose: a continuation line that BEGINS
+  * with an asterisk is read as a comment and silently dropped.
+  COMPUTE total = total +
+    ((-1) ** #i) *
+    EXP(LNGAMMA(k+1) - LNGAMMA(#i+1) - LNGAMMA(k-#i+1)) *
+    EXP(LNGAMMA(n - #i*(a+1) + k) - LNGAMMA(k) - LNGAMMA(n - #i*(a+1) + 1)).
 END LOOP.
 EXECUTE.
+FORMATS total (COMMA16.0).
 LIST VARIABLES=total.
 ```
 ### Julia
-```julia
+```{julia}
 function n_patterns(k, a, n)          # k items, each 0..a, summing to n
     sum((-1)^i * binomial(k, i) * binomial(n - i*(a+1) + k - 1, k - 1)
         for i in 0:fld(n, a + 1))
@@ -60,7 +66,7 @@ end
 n_patterns(21, 3, 15)                 # ways to score 15 on the BDI-II
 ```
 ### Python
-```python
+```{python}
 from math import comb
 
 def n_patterns(k, a, n):              # k items, each 0..a, summing to n

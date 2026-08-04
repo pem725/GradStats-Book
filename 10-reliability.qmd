@@ -348,7 +348,7 @@ RELIABILITY
 * RECODE x3 (1=5)(2=4)(3=3)(4=2)(5=1) INTO x3r.
 ```
 ### Julia
-```julia
+```{julia}
 using CSV, DataFrames, Statistics
 d = CSV.read("data/moddat2.csv", DataFrame)
 X = select(d, r"^x\d+$")
@@ -365,10 +365,11 @@ function alpha_keyed(items)
 end
 
 a = alpha_keyed(X)
-a.keys, a.alpha
+a.keys                            # -1 marks a reverse-scored item
+round(a.alpha, digits = 2)        # alpha for the keyed scale
 ```
 ### Python
-```python
+```{python}
 import pandas as pd, numpy as np
 
 d = pd.read_csv("data/moddat2.csv")
@@ -384,7 +385,8 @@ def alpha_keyed(items):
     return dict(alpha=a, keys=keys, scored=scored)
 
 a = alpha_keyed(X)
-a["keys"], a["alpha"]
+a["keys"]                         # -1 marks a reverse-scored item
+round(float(a["alpha"]), 2)       # alpha for the keyed scale
 ```
 :::
 
@@ -409,12 +411,49 @@ RELIABILITY
   /SUMMARY=TOTAL.
 ```
 ### Julia
-```julia
-[(name, alpha_keyed(select(X, Not(name))).alpha) for name in names(X)]
+```{julia}
+# Each tab runs in a fresh session, so the data and the helper come back
+# with it - unchanged from the tab above.
+using CSV, DataFrames, Statistics
+d = CSV.read("data/moddat2.csv", DataFrame)
+X = select(d, r"^x\d+$")
+
+function alpha_keyed(items)
+    total = sum(eachcol(items))
+    r = [cor(col, total .- col) for col in eachcol(items)]
+    keys = [x < 0 ? -1 : 1 for x in r]
+    scored = DataFrame([n => c .* k for ((n, c), k) in zip(pairs(eachcol(items)), keys)])
+    k_ = ncol(scored)
+    a = (k_ / (k_ - 1)) *
+        (1 - sum(var(c) for c in eachcol(scored)) / var(sum(eachcol(scored))))
+    (alpha = a, keys = keys, scored = scored)
+end
+
+DataFrame(item = names(X),
+          alpha_if_deleted = [round(alpha_keyed(select(X, Not(n))).alpha, digits = 2)
+                              for n in names(X)])
 ```
 ### Python
-```python
-{j: alpha_keyed(X.drop(columns=j))["alpha"] for j in X.columns}
+```{python}
+# Each tab runs in a fresh session, so the data and the helper come back
+# with it - unchanged from the tab above.
+import pandas as pd, numpy as np
+
+d = pd.read_csv("data/moddat2.csv")
+X = d[[f"x{i}" for i in range(1, 11)]]
+
+def alpha_keyed(items):
+    total = items.sum(axis=1)
+    r = items.apply(lambda col: col.corr(total - col))
+    keys = np.where(r < 0, -1, 1)
+    scored = items * keys
+    k = scored.shape[1]
+    a = (k / (k - 1)) * (1 - scored.var().sum() / scored.sum(axis=1).var())
+    return dict(alpha=a, keys=keys, scored=scored)
+
+pd.DataFrame({"item": X.columns,
+              "alpha_if_deleted": [round(alpha_keyed(X.drop(columns=j))["alpha"], 2)
+                                   for j in X.columns]})
 ```
 :::
 
@@ -450,28 +489,60 @@ T-TEST GROUPS=sex('M' 'F')
   /ES DISPLAY(TRUE).
 ```
 ### Julia
-```julia
-using Statistics
-score = sum(eachcol(a.scored))
+```{julia}
+# Fresh session again: rebuild the keyed scale, then size the difference.
+using CSV, DataFrames, Statistics
+d = CSV.read("data/moddat2.csv", DataFrame)
+X = select(d, r"^x\d+$")
+
+function alpha_keyed(items)
+    total = sum(eachcol(items))
+    r = [cor(col, total .- col) for col in eachcol(items)]
+    keys = [x < 0 ? -1 : 1 for x in r]
+    scored = DataFrame([n => c .* k for ((n, c), k) in zip(pairs(eachcol(items)), keys)])
+    k_ = ncol(scored)
+    a = (k_ / (k_ - 1)) *
+        (1 - sum(var(c) for c in eachcol(scored)) / var(sum(eachcol(scored))))
+    (alpha = a, keys = keys, scored = scored)
+end
+
+a = alpha_keyed(X)
+score = sum(eachcol(a.scored))            # the keyed total score
 
 function EScalc(dv, cond)                 # Cohen's d, pooled SD
-    lv = unique(cond)
+    lv = unique(cond)                     # groups in order of appearance, as R does
     x1 = dv[cond .== lv[1]]; x2 = dv[cond .== lv[2]]
     (mean(x1) - mean(x2)) / sqrt((var(x1) + var(x2)) / 2)
 end
 
-EScalc(score, d.sex)
+round(EScalc(score, d.sex), digits = 2)
 ```
 ### Python
-```python
-score = a["scored"].sum(axis=1)
+```{python}
+# Fresh session again: rebuild the keyed scale, then size the difference.
+import pandas as pd, numpy as np
+
+d = pd.read_csv("data/moddat2.csv")
+X = d[[f"x{i}" for i in range(1, 11)]]
+
+def alpha_keyed(items):
+    total = items.sum(axis=1)
+    r = items.apply(lambda col: col.corr(total - col))
+    keys = np.where(r < 0, -1, 1)
+    scored = items * keys
+    k = scored.shape[1]
+    a = (k / (k - 1)) * (1 - scored.var().sum() / scored.sum(axis=1).var())
+    return dict(alpha=a, keys=keys, scored=scored)
+
+a = alpha_keyed(X)
+score = a["scored"].sum(axis=1)           # the keyed total score
 
 def EScalc(dv, cond):                     # Cohen's d, pooled SD
-    lv = sorted(pd.unique(cond))
+    lv = pd.unique(cond)                  # order of appearance, as R does - NOT sorted
     x1, x2 = dv[cond == lv[0]], dv[cond == lv[1]]
     return (x1.mean() - x2.mean()) / np.sqrt((x1.var() + x2.var()) / 2)
 
-EScalc(score, d.sex)
+round(float(EScalc(score, d.sex)), 2)
 ```
 :::
 
