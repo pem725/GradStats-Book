@@ -720,6 +720,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#one-way-anova" id="toc-one-way-anova" class="nav-link" data-scroll-target="#one-way-anova">One-Way ANOVA</a></li>
   <li><a href="#principal-components" id="toc-principal-components" class="nav-link" data-scroll-target="#principal-components">Principal Components</a></li>
   <li><a href="#a-note-on-the-four-environments" id="toc-a-note-on-the-four-environments" class="nav-link" data-scroll-target="#a-note-on-the-four-environments">A Note on the Four Environments</a></li>
+  <li><a href="#two-ways-spss-fails-quietly" id="toc-two-ways-spss-fails-quietly" class="nav-link" data-scroll-target="#two-ways-spss-fails-quietly">Two Ways SPSS Fails Quietly</a></li>
   </ul>
 </nav>
     </div>
@@ -1230,8 +1231,8 @@ x              0.440361    0.133303   3.30    0.0014    0.174977    0.705746
 Dep. Variable:                      y   R-squared:                       0.123
 Model:                            OLS   Adj. R-squared:                  0.111
 Method:                 Least Squares   F-statistic:                     10.91
-Date:                Mon, 03 Aug 2026   Prob (F-statistic):            0.00144
-Time:                        11:07:47   Log-Likelihood:                -301.92
+Date:                Wed, 05 Aug 2026   Prob (F-statistic):            0.00144
+Time:                        11:07:57   Log-Likelihood:                -301.92
 No. Observations:                  80   AIC:                             607.8
 Df Residuals:                      78   BIC:                             612.6
 Df Model:                           1                                         
@@ -1522,6 +1523,19 @@ Rotated Component Matrix
 <li><strong>Python</strong> is free and open source, and probably the language your students already know. Data lives in a <code>pandas</code> DataFrame; the models come from <code>statsmodels</code>, whose formula interface (<code>smf.ols("y ~ x", data=d)</code>) reads almost exactly like R’s. <code>scipy.stats</code> supplies the classical tests and <code>scikit-learn</code> the reduction methods.</li>
 </ul>
 <p>The point is not that one is best. It is that a procedure you understand in one language you can carry to any of them, because the statistics were never about the software.</p>
+</section>
+<section id="two-ways-spss-fails-quietly" class="level2">
+<h2 class="anchored" data-anchor-id="two-ways-spss-fails-quietly">Two Ways SPSS Fails Quietly</h2>
+<p>Most mistakes announce themselves. These two do not, and both cost us a wrong number in this book before we caught them, so they are worth knowing before you write much syntax.</p>
+<p><strong>A continuation line that begins with <code>*</code> disappears.</strong> In SPSS syntax an asterisk in the command position starts a comment. That is fine on its own line, but it also means a long expression broken across lines like this loses everything after the first line:</p>
+<pre><code>COMPUTE total = total + ((-1) ** #i)
+  * EXP(LNGAMMA(k+1) - LNGAMMA(#i+1) - LNGAMMA(k-#i+1)).</code></pre>
+<p>No error appears. The multiplication is simply gone, and you get the value of the first line alone. Break the line so each operator <strong>ends</strong> its line instead, and the same expression runs correctly:</p>
+<pre><code>COMPUTE total = total +
+  ((-1) ** #i) *
+  EXP(LNGAMMA(k+1) - LNGAMMA(#i+1) - LNGAMMA(k-#i+1)).</code></pre>
+<p><strong><code>/DELIMITERS</code> does not read escape sequences.</strong> Writing <code>/DELIMITERS=' \t'</code> to mean “spaces or tabs” gives you spaces, backslashes, and the letter <em>t</em> — because SPSS takes those two characters literally rather than as an escape for a tab. A file whose columns are separated by tabs then loads with no complaint and every value in the wrong variable. Put a real tab character between the quotes. The <a href="./18-rasch.html">Rasch chapter</a> reads Wright’s Knox Cube data this way, and the giveaway that something was wrong was an <em>N</em> that varied from item to item when every item had the same 35 responses.</p>
+<p>Both share a shape worth carrying with you: the file loaded, the syntax ran, nothing was flagged, and the numbers were wrong. When an SPSS result surprises you, check that the syntax you <em>think</em> you ran is the syntax that actually ran.</p>
 
 
 </section>

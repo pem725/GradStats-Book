@@ -913,9 +913,9 @@ DESCRIPTIVES VARIABLES=truth observed /STATISTICS=VARIANCE.</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Statistics</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>ctt <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch09-ctt.csv"</span>, DataFrame)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">var</span>(ctt.truth) <span class="op">/</span> <span class="fu">var</span>(ctt.observed)      <span class="co"># the true-score share of the variance</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">var</span>(ctt.truth) <span class="op">/</span> <span class="fu">var</span>(ctt.observed), digits <span class="op">=</span> <span class="fl">2</span>)   <span class="co"># true-score share</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>0.8031550441308491</code></pre>
+<pre><code>0.8</code></pre>
 </div>
 </div>
 </div>
@@ -924,15 +924,15 @@ DESCRIPTIVES VARIABLES=truth observed /STATISTICS=VARIANCE.</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>ctt <span class="op">=</span> pd.read_csv(<span class="st">"data/sim/ch09-ctt.csv"</span>)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>ctt.truth.var() <span class="op">/</span> ctt.observed.var()    <span class="co"># the true-score share of the variance</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="bu">round</span>(<span class="bu">float</span>(ctt.truth.var() <span class="op">/</span> ctt.observed.var()), <span class="dv">2</span>)  <span class="co"># true-score share</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>np.float64(0.8031550441308494)</code></pre>
+<pre><code>0.8</code></pre>
 </div>
 </div>
 </div>
 </div>
 </div>
-<p>About 0.78 of the variance in our observed scores is real signal; the rest is sensor noise. In practice we can never see <code>truth</code>, so we <em>estimate</em> reliability from clever comparisons.</p>
+<p>About 0.80 of the variance in our observed scores is real signal; the rest is sensor noise. We built these data with a true ratio of <span class="math inline">\(225 / 289 = 0.78\)</span>, and this sample came out a shade above it - a reminder that reliability is an estimate like any other, and estimates wobble. In practice we can never see <code>truth</code>, so we <em>estimate</em> reliability from clever comparisons.</p>
 </section>
 <section id="four-ways-to-estimate-reliability" class="level2" data-number="9.4">
 <h2 data-number="9.4" class="anchored" data-anchor-id="four-ways-to-estimate-reliability"><span class="header-section-number">9.4</span> Four Ways to Estimate Reliability</h2>
@@ -1035,9 +1035,9 @@ Case Processing Summary
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>var_items <span class="op">=</span> <span class="fu">sum</span>(<span class="fu">var</span>(col) <span class="cf">for</span> col <span class="kw">in</span> <span class="fu">eachcol</span>(items))</span>
 <span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>var_total <span class="op">=</span> <span class="fu">var</span>(<span class="fu">sum</span>(<span class="fu">eachcol</span>(items)))</span>
 <span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>(k <span class="op">/</span> (k <span class="op">-</span> <span class="fl">1</span>)) <span class="op">*</span> (<span class="fl">1</span> <span class="op">-</span> var_items <span class="op">/</span> var_total)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>((k <span class="op">/</span> (k <span class="op">-</span> <span class="fl">1</span>)) <span class="op">*</span> (<span class="fl">1</span> <span class="op">-</span> var_items <span class="op">/</span> var_total), digits <span class="op">=</span> <span class="fl">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>0.8356867882214554</code></pre>
+<pre><code>0.84</code></pre>
 </div>
 </div>
 </div>
@@ -1050,9 +1050,9 @@ Case Processing Summary
 <span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>var_items <span class="op">=</span> items.var().<span class="bu">sum</span>()</span>
 <span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>var_total <span class="op">=</span> items.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>).var()</span>
 <span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>(k <span class="op">/</span> (k <span class="op">-</span> <span class="dv">1</span>)) <span class="op">*</span> (<span class="dv">1</span> <span class="op">-</span> var_items <span class="op">/</span> var_total)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="bu">round</span>(<span class="bu">float</span>((k <span class="op">/</span> (k <span class="op">-</span> <span class="dv">1</span>)) <span class="op">*</span> (<span class="dv">1</span> <span class="op">-</span> var_items <span class="op">/</span> var_total)), <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>np.float64(0.8356867882214553)</code></pre>
+<pre><code>0.84</code></pre>
 </div>
 </div>
 </div>
@@ -1214,19 +1214,20 @@ Rotated Factor Matrix
 <span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> (k <span class="op">/</span> (k <span class="op">-</span> <span class="fl">1</span>)) <span class="op">*</span></span>
 <span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>        (<span class="fl">1</span> <span class="op">-</span> <span class="fu">sum</span>(<span class="fu">var</span>(c) <span class="cf">for</span> c <span class="kw">in</span> <span class="fu">eachcol</span>(items)) <span class="op">/</span> <span class="fu">var</span>(<span class="fu">sum</span>(<span class="fu">eachcol</span>(items))))</span>
 <span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>fa  <span class="op">=</span> <span class="fu">fit</span>(FactorAnalysis, <span class="fu">Matrix</span>(items)<span class="ch">'; maxoutdim = 1)</span></span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>lam <span class="op">=</span> <span class="fu">vec</span>(<span class="fu">loadings</span>(fa)); psi <span class="op">=</span> <span class="fu">var</span>(fa)</span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>omega <span class="op">=</span> <span class="fu">sum</span>(lam)<span class="op">^</span><span class="fl">2</span> <span class="op">/</span> (<span class="fu">sum</span>(lam)<span class="op">^</span><span class="fl">2</span> <span class="op">+</span> <span class="fu">sum</span>(psi))</span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>alpha, omega</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="co"># standardise first: R's factanal factors the CORRELATION matrix, so fitting</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="co"># the raw covariances here would disagree with the R tab in the second decimal</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> <span class="fu">Matrix</span>(items)</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>Z <span class="op">=</span> (X <span class="op">.-</span> <span class="fu">mean</span>(X, dims <span class="op">=</span> <span class="fl">1</span>)) <span class="op">./</span> <span class="fu">std</span>(X, dims <span class="op">=</span> <span class="fl">1</span>)</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>fa  <span class="op">=</span> <span class="fu">fit</span>(FactorAnalysis, Z<span class="op">'</span>; maxoutdim <span class="op">=</span> <span class="fl">1</span>)</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>lam <span class="op">=</span> <span class="fu">vec</span>(<span class="fu">loadings</span>(fa))</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>psi <span class="op">=</span> <span class="fu">var</span>(fa)          <span class="co"># keep on its own line: a "lam = ...; psi = ..." line</span></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>                       <span class="co"># takes the value of its last statement and echoes it</span></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>omega <span class="op">=</span> <span class="fu">sum</span>(lam)<span class="op">^</span><span class="fl">2</span> <span class="op">/</span> (<span class="fu">sum</span>(lam)<span class="op">^</span><span class="fl">2</span> <span class="op">+</span> <span class="fu">sum</span>(psi))</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>.((alpha, omega), digits <span class="op">=</span> <span class="fl">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>5-element Vector{Float64}:
- 0.15763649681723033
- 0.3382042373312
- 0.5428991349242873
- 0.7628892113193748
- 0.8525494023545721
-(0.7978953777081244, 0.8138317308121514)</code></pre>
+<pre><code>(0.8, 0.82)</code></pre>
 </div>
 </div>
 </div>
@@ -1239,13 +1240,17 @@ Rotated Factor Matrix
 <span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>k <span class="op">=</span> items.shape[<span class="dv">1</span>]</span>
 <span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> (k <span class="op">/</span> (k <span class="op">-</span> <span class="dv">1</span>)) <span class="op">*</span> (<span class="dv">1</span> <span class="op">-</span> items.var().<span class="bu">sum</span>() <span class="op">/</span> items.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>).var())</span>
 <span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>fa <span class="op">=</span> FactorAnalysis(n_components<span class="op">=</span><span class="dv">1</span>).fit(items)</span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>lam <span class="op">=</span> fa.components_.ravel()<span class="op">;</span> psi <span class="op">=</span> fa.noise_variance_</span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>omega <span class="op">=</span> lam.<span class="bu">sum</span>()<span class="op">**</span><span class="dv">2</span> <span class="op">/</span> (lam.<span class="bu">sum</span>()<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> psi.<span class="bu">sum</span>())</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="co"># standardise first: R's factanal factors the CORRELATION matrix, so fitting</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="co"># the raw covariances here would disagree with the R tab in the second decimal</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>z <span class="op">=</span> (items <span class="op">-</span> items.mean()) <span class="op">/</span> items.std()</span>
 <span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>alpha, omega</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>fa <span class="op">=</span> FactorAnalysis(n_components<span class="op">=</span><span class="dv">1</span>).fit(z)</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>lam <span class="op">=</span> fa.components_.ravel()<span class="op">;</span> psi <span class="op">=</span> fa.noise_variance_</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>omega <span class="op">=</span> lam.<span class="bu">sum</span>()<span class="op">**</span><span class="dv">2</span> <span class="op">/</span> (lam.<span class="bu">sum</span>()<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> psi.<span class="bu">sum</span>())</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a><span class="bu">round</span>(<span class="bu">float</span>(alpha), <span class="dv">2</span>), <span class="bu">round</span>(<span class="bu">float</span>(omega), <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>(np.float64(0.7978953777081244), np.float64(0.8139654135037669))</code></pre>
+<pre><code>(0.8, 0.82)</code></pre>
 </div>
 </div>
 </div>
@@ -1315,11 +1320,11 @@ CORRELATIONS /VARIABLES=Ox Oy.</code></pre>
 +----------------------+-----+-----+
 |                      |  Tx |  Ty |
 +----------------------+-----+-----+
-|Tx Pearson Correlation|1.000| .621|
+|Tx Pearson Correlation|1.000| .619|
 |   Sig. (2-tailed)    |     | .000|
 |   N                  | 1000| 1000|
 +----------------------+-----+-----+
-|Ty Pearson Correlation| .621|1.000|
+|Ty Pearson Correlation| .619|1.000|
 |   Sig. (2-tailed)    | .000|     |
 |   N                  | 1000| 1000|
 +----------------------+-----+-----+
@@ -1328,11 +1333,11 @@ CORRELATIONS /VARIABLES=Ox Oy.</code></pre>
 +----------------------+-----+-----+
 |                      |  Ox |  Oy |
 +----------------------+-----+-----+
-|Ox Pearson Correlation|1.000| .314|
+|Ox Pearson Correlation|1.000| .344|
 |   Sig. (2-tailed)    |     | .000|
 |   N                  | 1000| 1000|
 +----------------------+-----+-----+
-|Oy Pearson Correlation| .314|1.000|
+|Oy Pearson Correlation| .344|1.000|
 |   Sig. (2-tailed)    | .000|     |
 |   N                  | 1000| 1000|
 +----------------------+-----+-----+</code></pre>
@@ -1344,9 +1349,9 @@ CORRELATIONS /VARIABLES=Ox Oy.</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Statistics</span></span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>att <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/sim/ch09-attenuation.csv"</span>, DataFrame)</span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(att.Tx, att.Ty), <span class="fu">cor</span>(att.Ox, att.Oy)   <span class="co"># true, then observed through noise</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>.((<span class="fu">cor</span>(att.Tx, att.Ty), <span class="fu">cor</span>(att.Ox, att.Oy)), digits <span class="op">=</span> <span class="fl">2</span>)   <span class="co"># true, then observed</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>(0.6038238935192162, 0.3204696935107618)</code></pre>
+<pre><code>(0.6, 0.32)</code></pre>
 </div>
 </div>
 </div>
@@ -1355,9 +1360,9 @@ CORRELATIONS /VARIABLES=Ox Oy.</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>att <span class="op">=</span> pd.read_csv(<span class="st">"data/sim/ch09-attenuation.csv"</span>)</span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>att.Tx.corr(att.Ty), att.Ox.corr(att.Oy)   <span class="co"># true, then observed through noise</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="bu">round</span>(<span class="bu">float</span>(att.Tx.corr(att.Ty)), <span class="dv">2</span>), <span class="bu">round</span>(<span class="bu">float</span>(att.Ox.corr(att.Oy)), <span class="dv">2</span>)  <span class="co"># true, observed</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>(np.float64(0.6038238935192163), np.float64(0.3204696935107618))</code></pre>
+<pre><code>(0.6, 0.32)</code></pre>
 </div>
 </div>
 </div>
@@ -1434,7 +1439,8 @@ RELIABILITY
 * RECODE x3 (1=5)(2=4)(3=3)(4=2)(5=1) INTO x3r.</code></pre>
 </div>
 <div id="tabset-5-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-3-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Statistics</span></span>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Statistics</span></span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/moddat2.csv"</span>, DataFrame)</span>
 <span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> <span class="fu">select</span>(d, <span class="st">r"^x</span><span class="sc">\d+$</span><span class="st">")</span></span>
 <span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a></span>
@@ -1450,25 +1456,48 @@ RELIABILITY
 <span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
 <span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> <span class="fu">alpha_keyed</span>(X)</span>
-<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a>a.keys, a.alpha</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a>a.keys                            <span class="co"># -1 marks a reverse-scored item</span></span>
+<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(a.alpha, digits <span class="op">=</span> <span class="fl">2</span>)        <span class="co"># alpha for the keyed scale</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>10-element Vector{Int64}:
+  1
+ -1
+  1
+  1
+ -1
+  1
+  1
+ -1
+  1
+  1
+0.92</code></pre>
+</div>
+</div>
 </div>
 <div id="tabset-5-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-4-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd, numpy <span class="im">as</span> np</span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> pd.read_csv(<span class="st">"data/moddat2.csv"</span>)</span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> d[[<span class="ss">f"x</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">11</span>)]]</span>
-<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> alpha_keyed(items):</span>
-<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>    total <span class="op">=</span> items.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> items.<span class="bu">apply</span>(<span class="kw">lambda</span> col: col.corr(total <span class="op">-</span> col))   <span class="co"># item-rest correlation</span></span>
-<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>    keys <span class="op">=</span> np.where(r <span class="op">&lt;</span> <span class="dv">0</span>, <span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)                        <span class="co"># flip reverse items</span></span>
-<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>    scored <span class="op">=</span> items <span class="op">*</span> keys</span>
-<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>    k <span class="op">=</span> scored.shape[<span class="dv">1</span>]</span>
-<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> (k <span class="op">/</span> (k <span class="op">-</span> <span class="dv">1</span>)) <span class="op">*</span> (<span class="dv">1</span> <span class="op">-</span> scored.var().<span class="bu">sum</span>() <span class="op">/</span> scored.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>).var())</span>
-<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">dict</span>(alpha<span class="op">=</span>a, keys<span class="op">=</span>keys, scored<span class="op">=</span>scored)</span>
-<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> alpha_keyed(X)</span>
-<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a>a[<span class="st">"keys"</span>], a[<span class="st">"alpha"</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd, numpy <span class="im">as</span> np</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> pd.read_csv(<span class="st">"data/moddat2.csv"</span>)</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> d[[<span class="ss">f"x</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">11</span>)]]</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> alpha_keyed(items):</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>    total <span class="op">=</span> items.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> items.<span class="bu">apply</span>(<span class="kw">lambda</span> col: col.corr(total <span class="op">-</span> col))   <span class="co"># item-rest correlation</span></span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>    keys <span class="op">=</span> np.where(r <span class="op">&lt;</span> <span class="dv">0</span>, <span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)                        <span class="co"># flip reverse items</span></span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>    scored <span class="op">=</span> items <span class="op">*</span> keys</span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>    k <span class="op">=</span> scored.shape[<span class="dv">1</span>]</span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> (k <span class="op">/</span> (k <span class="op">-</span> <span class="dv">1</span>)) <span class="op">*</span> (<span class="dv">1</span> <span class="op">-</span> scored.var().<span class="bu">sum</span>() <span class="op">/</span> scored.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>).var())</span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">dict</span>(alpha<span class="op">=</span>a, keys<span class="op">=</span>keys, scored<span class="op">=</span>scored)</span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> alpha_keyed(X)</span>
+<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a>a[<span class="st">"keys"</span>]                         <span class="co"># -1 marks a reverse-scored item</span></span>
+<span id="cb35-17"><a href="#cb35-17" aria-hidden="true" tabindex="-1"></a><span class="bu">round</span>(<span class="bu">float</span>(a[<span class="st">"alpha"</span>]), <span class="dv">2</span>)       <span class="co"># alpha for the keyed scale</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>array([ 1, -1,  1,  1, -1,  1,  1, -1,  1,  1])
+0.92</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -1478,10 +1507,10 @@ RELIABILITY
 <div class="tab-content">
 <div id="tabset-6-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-6-1-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">item =</span> <span class="fu">names</span>(X)) <span class="sc">|&gt;</span></span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">alpha_if_deleted =</span> <span class="fu">map_dbl</span>(item, \(j)</span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">alpha_keyed</span>(<span class="fu">select</span>(X, <span class="sc">-</span><span class="fu">all_of</span>(j)))<span class="sc">$</span>alpha)) <span class="sc">|&gt;</span></span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">item =</span> <span class="fu">names</span>(X)) <span class="sc">|&gt;</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">alpha_if_deleted =</span> <span class="fu">map_dbl</span>(item, \(j)</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">alpha_keyed</span>(<span class="fu">select</span>(X, <span class="sc">-</span><span class="fu">all_of</span>(j)))<span class="sc">$</span>alpha)) <span class="sc">|&gt;</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
@@ -1548,10 +1577,80 @@ RELIABILITY
   /SUMMARY=TOTAL.</code></pre>
 </div>
 <div id="tabset-6-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-3-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>[(name, <span class="fu">alpha_keyed</span>(<span class="fu">select</span>(X, <span class="fu">Not</span>(name))).alpha) for name <span class="kw">in</span> <span class="fu">names</span>(X)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Each tab runs in a fresh session, so the data and the helper come back</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="co"># with it - unchanged from the tab above.</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Statistics</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/moddat2.csv"</span>, DataFrame)</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> <span class="fu">select</span>(d, <span class="st">r"^x</span><span class="sc">\d+$</span><span class="st">")</span></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>function<span class="st"> alpha_keyed</span><span class="ch">(</span><span class="st">items</span><span class="ch">)</span></span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>    total <span class="op">=</span> <span class="fu">sum</span>(<span class="fu">eachcol</span>(items))</span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> [<span class="fu">cor</span>(col, total <span class="op">.-</span> col) for col <span class="kw">in</span> <span class="fu">eachcol</span>(items)]</span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>    keys <span class="op">=</span> [x <span class="op">&lt;</span> <span class="fl">0</span> ? <span class="op">-</span><span class="fl">1</span> <span class="op">:</span> <span class="fl">1</span> for x <span class="kw">in</span> r]</span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>    scored <span class="op">=</span> <span class="fu">DataFrame</span>([n <span class="op">=&gt;</span> c <span class="op">.*</span> k for ((n, c), k) <span class="kw">in</span> <span class="fu">zip</span>(<span class="fu">pairs</span>(<span class="fu">eachcol</span>(items)), keys)])</span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a>    k_ <span class="op">=</span> <span class="fu">ncol</span>(scored)</span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> (k_ <span class="op">/</span> (k_ <span class="op">-</span> <span class="fl">1</span>)) <span class="op">*</span></span>
+<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a>        (<span class="fl">1</span> <span class="op">-</span> <span class="fu">sum</span>(<span class="fu">var</span>(c) <span class="cf">for</span> c <span class="kw">in</span> <span class="fu">eachcol</span>(scored)) <span class="op">/</span> <span class="fu">var</span>(<span class="fu">sum</span>(<span class="fu">eachcol</span>(scored))))</span>
+<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a>    (alpha <span class="op">=</span> a, keys <span class="op">=</span> keys, scored <span class="op">=</span> scored)</span>
+<span id="cb39-16"><a href="#cb39-16" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
+<span id="cb39-17"><a href="#cb39-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-18"><a href="#cb39-18" aria-hidden="true" tabindex="-1"></a><span class="fu">DataFrame</span>(item <span class="op">=</span> <span class="fu">names</span>(X),</span>
+<span id="cb39-19"><a href="#cb39-19" aria-hidden="true" tabindex="-1"></a>          alpha_if_deleted <span class="op">=</span> [<span class="fu">round</span>(<span class="fu">alpha_keyed</span>(<span class="fu">select</span>(X, <span class="fu">Not</span>(n))).alpha, digits <span class="op">=</span> <span class="fl">2</span>)</span>
+<span id="cb39-20"><a href="#cb39-20" aria-hidden="true" tabindex="-1"></a>                              for n <span class="kw">in</span> <span class="fu">names</span>(X)])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>10×2 DataFrame
+ Row │ item    alpha_if_deleted
+     │ String  Float64
+─────┼──────────────────────────
+   1 │ x1                  0.91
+   2 │ x2                  0.91
+   3 │ x3                  0.91
+   4 │ x4                  0.91
+   5 │ x5                  0.91
+   6 │ x6                  0.91
+   7 │ x7                  0.91
+   8 │ x8                  0.91
+   9 │ x9                  0.91
+  10 │ x10                 0.92</code></pre>
+</div>
+</div>
 </div>
 <div id="tabset-6-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-4-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>{j: alpha_keyed(X.drop(columns<span class="op">=</span>j))[<span class="st">"alpha"</span>] <span class="cf">for</span> j <span class="kw">in</span> X.columns}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Each tab runs in a fresh session, so the data and the helper come back</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="co"># with it - unchanged from the tab above.</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd, numpy <span class="im">as</span> np</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> pd.read_csv(<span class="st">"data/moddat2.csv"</span>)</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> d[[<span class="ss">f"x</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">11</span>)]]</span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> alpha_keyed(items):</span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>    total <span class="op">=</span> items.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> items.<span class="bu">apply</span>(<span class="kw">lambda</span> col: col.corr(total <span class="op">-</span> col))</span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a>    keys <span class="op">=</span> np.where(r <span class="op">&lt;</span> <span class="dv">0</span>, <span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a>    scored <span class="op">=</span> items <span class="op">*</span> keys</span>
+<span id="cb41-13"><a href="#cb41-13" aria-hidden="true" tabindex="-1"></a>    k <span class="op">=</span> scored.shape[<span class="dv">1</span>]</span>
+<span id="cb41-14"><a href="#cb41-14" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> (k <span class="op">/</span> (k <span class="op">-</span> <span class="dv">1</span>)) <span class="op">*</span> (<span class="dv">1</span> <span class="op">-</span> scored.var().<span class="bu">sum</span>() <span class="op">/</span> scored.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>).var())</span>
+<span id="cb41-15"><a href="#cb41-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">dict</span>(alpha<span class="op">=</span>a, keys<span class="op">=</span>keys, scored<span class="op">=</span>scored)</span>
+<span id="cb41-16"><a href="#cb41-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-17"><a href="#cb41-17" aria-hidden="true" tabindex="-1"></a>pd.DataFrame({<span class="st">"item"</span>: X.columns,</span>
+<span id="cb41-18"><a href="#cb41-18" aria-hidden="true" tabindex="-1"></a>              <span class="st">"alpha_if_deleted"</span>: [<span class="bu">round</span>(alpha_keyed(X.drop(columns<span class="op">=</span>j))[<span class="st">"alpha"</span>], <span class="dv">2</span>)</span>
+<span id="cb41-19"><a href="#cb41-19" aria-hidden="true" tabindex="-1"></a>                                   <span class="cf">for</span> j <span class="kw">in</span> X.columns]})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  item  alpha_if_deleted
+0   x1              0.91
+1   x2              0.91
+2   x3              0.91
+3   x4              0.91
+4   x5              0.91
+5   x6              0.91
+6   x7              0.91
+7   x8              0.91
+8   x9              0.91
+9  x10              0.92</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -1565,16 +1664,16 @@ RELIABILITY
 <div class="tab-content">
 <div id="tabset-7-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-7-1-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>score <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(a<span class="sc">$</span>scored)                 <span class="co"># the keyed total score</span></span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>EScalc <span class="ot">&lt;-</span> <span class="cf">function</span>(dv, cond) {             <span class="co"># McKnight's teaching function for Cohen's d</span></span>
-<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>  parts <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">dv =</span> dv, <span class="at">cond =</span> <span class="fu">as_factor</span>(cond)) <span class="sc">|&gt;</span></span>
-<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">m =</span> <span class="fu">mean</span>(dv), <span class="at">v =</span> <span class="fu">var</span>(dv), <span class="at">.by =</span> cond) <span class="sc">|&gt;</span></span>
-<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(cond)</span>
-<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>  (parts<span class="sc">$</span>m[<span class="dv">1</span>] <span class="sc">-</span> parts<span class="sc">$</span>m[<span class="dv">2</span>]) <span class="sc">/</span> <span class="fu">sqrt</span>((parts<span class="sc">$</span>v[<span class="dv">1</span>] <span class="sc">+</span> parts<span class="sc">$</span>v[<span class="dv">2</span>]) <span class="sc">/</span> <span class="dv">2</span>)</span>
-<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">cohens_d =</span> <span class="fu">EScalc</span>(score, d<span class="sc">$</span>sex)) <span class="sc">|&gt;</span> <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>score <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(a<span class="sc">$</span>scored)                 <span class="co"># the keyed total score</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>EScalc <span class="ot">&lt;-</span> <span class="cf">function</span>(dv, cond) {             <span class="co"># McKnight's teaching function for Cohen's d</span></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>  parts <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">dv =</span> dv, <span class="at">cond =</span> <span class="fu">as_factor</span>(cond)) <span class="sc">|&gt;</span></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">m =</span> <span class="fu">mean</span>(dv), <span class="at">v =</span> <span class="fu">var</span>(dv), <span class="at">.by =</span> cond) <span class="sc">|&gt;</span></span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(cond)</span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>  (parts<span class="sc">$</span>m[<span class="dv">1</span>] <span class="sc">-</span> parts<span class="sc">$</span>m[<span class="dv">2</span>]) <span class="sc">/</span> <span class="fu">sqrt</span>((parts<span class="sc">$</span>v[<span class="dv">1</span>] <span class="sc">+</span> parts<span class="sc">$</span>v[<span class="dv">2</span>]) <span class="sc">/</span> <span class="dv">2</span>)</span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">cohens_d =</span> <span class="fu">EScalc</span>(score, d<span class="sc">$</span>sex)) <span class="sc">|&gt;</span> <span class="fu">round2</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
@@ -1604,26 +1703,68 @@ T-TEST GROUPS=sex('M' 'F')
   /ES DISPLAY(TRUE).</code></pre>
 </div>
 <div id="tabset-7-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-7-3-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb41"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Statistics</span></span>
-<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>score <span class="op">=</span> <span class="fu">sum</span>(<span class="fu">eachcol</span>(a.scored))</span>
-<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">EScalc</span>(dv, cond)                 <span class="co"># Cohen's d, pooled SD</span></span>
-<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>    lv <span class="op">=</span> <span class="fu">unique</span>(cond)</span>
-<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>    x1 <span class="op">=</span> dv[cond <span class="op">.==</span> lv[<span class="fl">1</span>]]; x2 <span class="op">=</span> dv[cond <span class="op">.==</span> lv[<span class="fl">2</span>]]</span>
-<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>    (<span class="fu">mean</span>(x1) <span class="op">-</span> <span class="fu">mean</span>(x2)) <span class="op">/</span> <span class="fu">sqrt</span>((<span class="fu">var</span>(x1) <span class="op">+</span> <span class="fu">var</span>(x2)) <span class="op">/</span> <span class="fl">2</span>)</span>
-<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
-<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a><span class="fu">EScalc</span>(score, d.sex)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fresh session again: rebuild the keyed scale, then size the difference.</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Statistics</span></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/moddat2.csv"</span>, DataFrame)</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> <span class="fu">select</span>(d, <span class="st">r"^x</span><span class="sc">\d+$</span><span class="st">")</span></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>function<span class="st"> alpha_keyed</span><span class="ch">(</span><span class="st">items</span><span class="ch">)</span></span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>    total <span class="op">=</span> <span class="fu">sum</span>(<span class="fu">eachcol</span>(items))</span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> [<span class="fu">cor</span>(col, total <span class="op">.-</span> col) for col <span class="kw">in</span> <span class="fu">eachcol</span>(items)]</span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>    keys <span class="op">=</span> [x <span class="op">&lt;</span> <span class="fl">0</span> ? <span class="op">-</span><span class="fl">1</span> <span class="op">:</span> <span class="fl">1</span> for x <span class="kw">in</span> r]</span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a>    scored <span class="op">=</span> <span class="fu">DataFrame</span>([n <span class="op">=&gt;</span> c <span class="op">.*</span> k for ((n, c), k) <span class="kw">in</span> <span class="fu">zip</span>(<span class="fu">pairs</span>(<span class="fu">eachcol</span>(items)), keys)])</span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a>    k_ <span class="op">=</span> <span class="fu">ncol</span>(scored)</span>
+<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> (k_ <span class="op">/</span> (k_ <span class="op">-</span> <span class="fl">1</span>)) <span class="op">*</span></span>
+<span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a>        (<span class="fl">1</span> <span class="op">-</span> <span class="fu">sum</span>(<span class="fu">var</span>(c) <span class="cf">for</span> c <span class="kw">in</span> <span class="fu">eachcol</span>(scored)) <span class="op">/</span> <span class="fu">var</span>(<span class="fu">sum</span>(<span class="fu">eachcol</span>(scored))))</span>
+<span id="cb45-14"><a href="#cb45-14" aria-hidden="true" tabindex="-1"></a>    (alpha <span class="op">=</span> a, keys <span class="op">=</span> keys, scored <span class="op">=</span> scored)</span>
+<span id="cb45-15"><a href="#cb45-15" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
+<span id="cb45-16"><a href="#cb45-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-17"><a href="#cb45-17" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> <span class="fu">alpha_keyed</span>(X)</span>
+<span id="cb45-18"><a href="#cb45-18" aria-hidden="true" tabindex="-1"></a>score <span class="op">=</span> <span class="fu">sum</span>(<span class="fu">eachcol</span>(a.scored))            <span class="co"># the keyed total score</span></span>
+<span id="cb45-19"><a href="#cb45-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-20"><a href="#cb45-20" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">EScalc</span>(dv, cond)                 <span class="co"># Cohen's d, pooled SD</span></span>
+<span id="cb45-21"><a href="#cb45-21" aria-hidden="true" tabindex="-1"></a>    lv <span class="op">=</span> <span class="fu">unique</span>(cond)                     <span class="co"># groups in order of appearance, as R does</span></span>
+<span id="cb45-22"><a href="#cb45-22" aria-hidden="true" tabindex="-1"></a>    x1 <span class="op">=</span> dv[cond <span class="op">.==</span> lv[<span class="fl">1</span>]]; x2 <span class="op">=</span> dv[cond <span class="op">.==</span> lv[<span class="fl">2</span>]]</span>
+<span id="cb45-23"><a href="#cb45-23" aria-hidden="true" tabindex="-1"></a>    (<span class="fu">mean</span>(x1) <span class="op">-</span> <span class="fu">mean</span>(x2)) <span class="op">/</span> <span class="fu">sqrt</span>((<span class="fu">var</span>(x1) <span class="op">+</span> <span class="fu">var</span>(x2)) <span class="op">/</span> <span class="fl">2</span>)</span>
+<span id="cb45-24"><a href="#cb45-24" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
+<span id="cb45-25"><a href="#cb45-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-26"><a href="#cb45-26" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">EScalc</span>(score, d.sex), digits <span class="op">=</span> <span class="fl">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>-2.62</code></pre>
+</div>
+</div>
 </div>
 <div id="tabset-7-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-7-4-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>score <span class="op">=</span> a[<span class="st">"scored"</span>].<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> EScalc(dv, cond):                     <span class="co"># Cohen's d, pooled SD</span></span>
-<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>    lv <span class="op">=</span> <span class="bu">sorted</span>(pd.unique(cond))</span>
-<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>    x1, x2 <span class="op">=</span> dv[cond <span class="op">==</span> lv[<span class="dv">0</span>]], dv[cond <span class="op">==</span> lv[<span class="dv">1</span>]]</span>
-<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (x1.mean() <span class="op">-</span> x2.mean()) <span class="op">/</span> np.sqrt((x1.var() <span class="op">+</span> x2.var()) <span class="op">/</span> <span class="dv">2</span>)</span>
-<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>EScalc(score, d.sex)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fresh session again: rebuild the keyed scale, then size the difference.</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd, numpy <span class="im">as</span> np</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> pd.read_csv(<span class="st">"data/moddat2.csv"</span>)</span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> d[[<span class="ss">f"x</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">11</span>)]]</span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> alpha_keyed(items):</span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>    total <span class="op">=</span> items.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> items.<span class="bu">apply</span>(<span class="kw">lambda</span> col: col.corr(total <span class="op">-</span> col))</span>
+<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a>    keys <span class="op">=</span> np.where(r <span class="op">&lt;</span> <span class="dv">0</span>, <span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb47-11"><a href="#cb47-11" aria-hidden="true" tabindex="-1"></a>    scored <span class="op">=</span> items <span class="op">*</span> keys</span>
+<span id="cb47-12"><a href="#cb47-12" aria-hidden="true" tabindex="-1"></a>    k <span class="op">=</span> scored.shape[<span class="dv">1</span>]</span>
+<span id="cb47-13"><a href="#cb47-13" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> (k <span class="op">/</span> (k <span class="op">-</span> <span class="dv">1</span>)) <span class="op">*</span> (<span class="dv">1</span> <span class="op">-</span> scored.var().<span class="bu">sum</span>() <span class="op">/</span> scored.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>).var())</span>
+<span id="cb47-14"><a href="#cb47-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">dict</span>(alpha<span class="op">=</span>a, keys<span class="op">=</span>keys, scored<span class="op">=</span>scored)</span>
+<span id="cb47-15"><a href="#cb47-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-16"><a href="#cb47-16" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> alpha_keyed(X)</span>
+<span id="cb47-17"><a href="#cb47-17" aria-hidden="true" tabindex="-1"></a>score <span class="op">=</span> a[<span class="st">"scored"</span>].<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>)           <span class="co"># the keyed total score</span></span>
+<span id="cb47-18"><a href="#cb47-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-19"><a href="#cb47-19" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> EScalc(dv, cond):                     <span class="co"># Cohen's d, pooled SD</span></span>
+<span id="cb47-20"><a href="#cb47-20" aria-hidden="true" tabindex="-1"></a>    lv <span class="op">=</span> pd.unique(cond)                  <span class="co"># order of appearance, as R does - NOT sorted</span></span>
+<span id="cb47-21"><a href="#cb47-21" aria-hidden="true" tabindex="-1"></a>    x1, x2 <span class="op">=</span> dv[cond <span class="op">==</span> lv[<span class="dv">0</span>]], dv[cond <span class="op">==</span> lv[<span class="dv">1</span>]]</span>
+<span id="cb47-22"><a href="#cb47-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (x1.mean() <span class="op">-</span> x2.mean()) <span class="op">/</span> np.sqrt((x1.var() <span class="op">+</span> x2.var()) <span class="op">/</span> <span class="dv">2</span>)</span>
+<span id="cb47-23"><a href="#cb47-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-24"><a href="#cb47-24" aria-hidden="true" tabindex="-1"></a><span class="bu">round</span>(<span class="bu">float</span>(EScalc(score, d.sex)), <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>-2.62</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>

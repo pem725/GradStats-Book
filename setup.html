@@ -714,6 +714,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#the-problem-stated-honestly" id="toc-the-problem-stated-honestly" class="nav-link active" data-scroll-target="#the-problem-stated-honestly">The problem, stated honestly</a></li>
+  <li><a href="#download-it-here" id="toc-download-it-here" class="nav-link" data-scroll-target="#download-it-here">Download it here</a></li>
   <li><a href="#four-files-one-per-language" id="toc-four-files-one-per-language" class="nav-link" data-scroll-target="#four-files-one-per-language">Four files, one per language</a></li>
   <li><a href="#the-recipes-are-still-there" id="toc-the-recipes-are-still-there" class="nav-link" data-scroll-target="#the-recipes-are-still-there">The recipes are still there</a></li>
   <li><a href="#one-trap-worth-knowing-about" id="toc-one-trap-worth-knowing-about" class="nav-link" data-scroll-target="#one-trap-worth-knowing-about">One trap worth knowing about</a></li>
@@ -751,9 +752,34 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><strong>Random number generators are not portable.</strong> <code>set.seed(5)</code> followed by <code>rnorm(100)</code> in R, <code>Random.seed!(5)</code> and <code>rand(Normal(), 100)</code> in Julia, and <code>default_rng(5).normal(size=100)</code> in NumPy produce three <em>completely different</em> sets of numbers. Same distribution, different draws. If you regenerated the data in your own language, every correlation, slope, and <em>p</em>-value you computed would be a little off from the ones printed here - and you would reasonably assume you had made a mistake.</p>
 <p>So we do the only thing that actually works: <strong>we generated the data once, in R, and we ship it.</strong> All four languages read the same files, so all four print the same numbers.</p>
 </section>
+<section id="download-it-here" class="level2">
+<h2 class="anchored" data-anchor-id="download-it-here">Download it here</h2>
+<p>One file, everything in it, no account and no software needed to get it:</p>
+<blockquote class="blockquote">
+<h2 id="download-gradstats-data.zip" class="anchored"><a href="gradstats-data.zip">⬇ Download <code>gradstats-data.zip</code></a></h2>
+<p>About 700 KB. Contains the <code>data</code> folder, a loader for each of the four languages, and a <code>README.txt</code>.</p>
+</blockquote>
+<p>Unzip it wherever you like - the Desktop is fine. You get a folder called <code>GradStats-data</code> holding the <code>data</code> folder and one loader per language, plus a <code>README.txt</code> repeating the steps below. That is the whole setup; you never need the rest of the book’s source.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>If you would rather work from the source
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>The book is developed openly, so the same files live in the <a href="https://github.com/pem725/GradStats-Book">GitHub repository</a> if you use git: <code>git clone https://github.com/pem725/GradStats-Book.git</code>. The zip above is built from exactly those files on every render, so the two cannot disagree. You do not need this to follow the book.</p>
+</div>
+</div>
+</div>
+</section>
 <section id="four-files-one-per-language" class="level2">
 <h2 class="anchored" data-anchor-id="four-files-one-per-language">Four files, one per language</h2>
-<p>Download the one for your language, put it beside the book’s <code>data/</code> folder, and run it once.</p>
+<p>The loader for your language is in the folder you just unzipped. Run it once.</p>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -773,32 +799,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><a href="https://github.com/pem725/GradStats-Book/blob/main/setup/load_data.sps"><code>setup/load_data.sps</code></a></td>
 <td>Run the file, then <code>!bookdata name = "ch06-study".</code></td>
 </tr>
+<tr class="odd">
+<td>Julia</td>
+<td><a href="https://github.com/pem725/GradStats-Book/blob/main/setup/load_data.jl"><code>setup/load_data.jl</code></a></td>
+<td><code>include("setup/load_data.jl"); d = book_data("ch06-study")</code></td>
+</tr>
+<tr class="even">
+<td>Python</td>
+<td><a href="https://github.com/pem725/GradStats-Book/blob/main/setup/load_data.py"><code>setup/load_data.py</code></a></td>
+<td><code>from setup.load_data import book_data; d = book_data("ch06-study")</code></td>
+</tr>
 </tbody>
 </table>
+<p>Each chapter tells you which dataset it uses, in a note near the top.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>SPSS: run from the book’s folder
+<span class="screen-reader-only">Note</span>SPSS: point it at the book first
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The SPSS paths are <strong>relative</strong>, so start SPSS with the book’s folder as its working directory (or edit the one path inside <code>load_data.sps</code>). Every dataset also ships with its own small <code>.sps</code> loader beside the <code>.csv</code>, because <code>GET DATA /TYPE=TXT</code> will not infer columns from a header row - it needs an explicit <code>/VARIABLES</code> list naming every column and its format. Those loaders are generated by <code>setup/make_data.R</code>, so they cannot drift from the data they load.</p>
+<p>SPSS will not find the data until its <strong>working directory</strong> is the unzipped folder, and on Windows it never is by default. <code>load_data.sps</code> has one line near the top for this - delete the asterisk at the start and put your own path between the quotes:</p>
+<pre><code>CD 'C:/Users/jeff/Desktop/GradStats-data'.</code></pre>
+<p>Use forward slashes, even on Windows. Point it at the folder that <em>contains</em> <code>data</code>, not at <code>data</code> itself. Running the file then prints the folder back to you, so you can see straight away whether it took.</p>
+<p>That one line is the whole fix, and it has to be that line. Changing a path anywhere else will not work: <code>!bookdata</code> inserts a small loader from <code>data/sim/</code>, and that loader reads its own <code>.csv</code> with its own relative path, so both only resolve once the working directory is right.</p>
+<p>Every dataset ships with that small <code>.sps</code> loader beside the <code>.csv</code> because <code>GET DATA /TYPE=TXT</code> will not infer columns from a header row - it needs an explicit <code>/VARIABLES</code> list naming every column and its format. They are generated by <code>setup/make_data.R</code>, so they cannot drift from the data they load.</p>
 <p>No SPSS licence? <strong><a href="https://www.gnu.org/software/pspp/">PSPP</a></strong> is a free, open-source program that runs SPSS syntax, from a GUI or the command line. Every SPSS block in this book has been executed through it.</p>
 </div>
 </div>
-<div class="line-block">Julia | <a href="https://github.com/pem725/GradStats-Book/blob/main/setup/load_data.jl"><code>setup/load_data.jl</code></a> | <code>include("setup/load_data.jl"); d = book_data("ch06-study")</code> |<br>
-Python | <a href="https://github.com/pem725/GradStats-Book/blob/main/setup/load_data.py"><code>setup/load_data.py</code></a> | <code>from setup.load_data import book_data; d = book_data("ch06-study")</code> |</div>
-<p>Each chapter tells you which dataset it uses, in a note near the top.</p>
 </section>
 <section id="the-recipes-are-still-there" class="level2">
 <h2 class="anchored" data-anchor-id="the-recipes-are-still-there">The recipes are still there</h2>
 <p>Reading the data rather than simulating it does not mean the simulation is hidden. Each loader carries a one-line recipe for every dataset - <code>ch06-study</code>, for instance, is recorded as:</p>
 <pre><code>set.seed(5); study ~ N(5,2); grade = 60 + 4*study + N(0,5)</code></pre>
 <p>and the full generating code, exactly as the chapters run it, lives in <a href="https://github.com/pem725/GradStats-Book/blob/main/setup/make_data.R"><code>setup/make_data.R</code></a>. If you want to rebuild everything from scratch in R, that one file does it:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"setup/make_data.R"</span>)   <span class="co"># rewrites every file in data/sim/</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"setup/make_data.R"</span>)   <span class="co"># rewrites every file in data/sim/</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="one-trap-worth-knowing-about" class="level2">
 <h2 class="anchored" data-anchor-id="one-trap-worth-knowing-about">One trap worth knowing about</h2>
