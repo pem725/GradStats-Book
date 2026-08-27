@@ -4,7 +4,9 @@ project:
   # Builds _book/gradstats-data.zip, the one-click data download the setup page
   # links to. POST-render, not pre-: Quarto empties the output directory when a
   # render begins, so anything written earlier would be discarded.
-  post-render: setup/make_data_zip.R
+  post-render:
+    - setup/make_data_zip.R
+    - setup/make_spss_kit.R
 
 book:
   title: "Statistics by Us for You"
