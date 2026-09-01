@@ -951,8 +951,8 @@ CORRELATIONS /VARIABLES=RES1 RES2.</code></pre>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(<span class="fu">residuals</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(X <span class="op">~</span> Z), fork)),</span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">residuals</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(Y <span class="op">~</span> Z), fork)))   <span class="co"># control Z: it vanishes</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>0.4923185173578743
--0.01952928500856179</code></pre>
+<pre><code>0.49231851735787435
+-0.019529285008561784</code></pre>
 </div>
 </div>
 </div>
@@ -966,8 +966,8 @@ CORRELATIONS /VARIABLES=RES1 RES2.</code></pre>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>np.corrcoef(smf.ols(<span class="st">"X ~ Z"</span>, fork).fit().resid,</span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>            smf.ols(<span class="st">"Y ~ Z"</span>, fork).fit().resid)[<span class="dv">0</span>, <span class="dv">1</span>]   <span class="co"># control Z: it vanishes</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>np.float64(0.49231851735787413)
-np.float64(-0.019529285008561804)</code></pre>
+<pre><code>np.float64(0.4923185173578743)
+np.float64(-0.0195292850085618)</code></pre>
 </div>
 </div>
 </div>
@@ -1113,8 +1113,8 @@ CORRELATIONS /VARIABLES=RES1 RES2.</code></pre>
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(<span class="fu">residuals</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(X <span class="op">~</span> M), pipe)),</span>
 <span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">residuals</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(Y <span class="op">~</span> M), pipe)))   <span class="co"># control M: effect blocked</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>0.575595389611193
--0.013876523768980452</code></pre>
+<pre><code>0.5755953896111928
+-0.013876523768980437</code></pre>
 </div>
 </div>
 </div>
@@ -1128,8 +1128,8 @@ CORRELATIONS /VARIABLES=RES1 RES2.</code></pre>
 <span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>np.corrcoef(smf.ols(<span class="st">"X ~ M"</span>, pipe).fit().resid,</span>
 <span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>            smf.ols(<span class="st">"Y ~ M"</span>, pipe).fit().resid)[<span class="dv">0</span>, <span class="dv">1</span>]   <span class="co"># control M: effect blocked</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>np.float64(0.575595389611193)
-np.float64(-0.013876523768980423)</code></pre>
+<pre><code>np.float64(0.5755953896111929)
+np.float64(-0.013876523768980437)</code></pre>
 </div>
 </div>
 </div>
@@ -1275,8 +1275,8 @@ CORRELATIONS /VARIABLES=RES1 RES2.</code></pre>
 <span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(<span class="fu">residuals</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(X <span class="op">~</span> Z), collider)),</span>
 <span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">residuals</span>(<span class="fu">lm</span>(<span class="pp">@formula</span>(Y <span class="op">~</span> Z), collider)))   <span class="co"># control Z: spurious!</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>-0.04197808521926873
--0.5084718310467718</code></pre>
+<pre><code>-0.041978085219268726
+-0.5084718310467717</code></pre>
 </div>
 </div>
 </div>
@@ -1290,8 +1290,8 @@ CORRELATIONS /VARIABLES=RES1 RES2.</code></pre>
 <span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>np.corrcoef(smf.ols(<span class="st">"X ~ Z"</span>, collider).fit().resid,</span>
 <span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>            smf.ols(<span class="st">"Y ~ Z"</span>, collider).fit().resid)[<span class="dv">0</span>, <span class="dv">1</span>]   <span class="co"># control Z: spurious!</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>np.float64(-0.04197808521926873)
-np.float64(-0.508471831046772)</code></pre>
+<pre><code>np.float64(-0.04197808521926868)
+np.float64(-0.5084718310467717)</code></pre>
 </div>
 </div>
 </div>

@@ -1095,9 +1095,9 @@ GRAPH /HISTOGRAM(NORMAL) = samp.</code></pre>
        74.50063035, 74.96079433, 75.42095831, 75.88112229, 76.34128627,
        76.80145025, 77.26161423, 77.72177821, 78.18194219, 78.64210617,
        79.10227015]), &lt;BarContainer object of 40 artists&gt;)
-&lt;matplotlib.lines.Line2D object at 0x7fce7400eab0&gt;
-&lt;matplotlib.lines.Line2D object at 0x7fce7404b380&gt;
-&lt;matplotlib.lines.Line2D object at 0x7fce740c07d0&gt;
+&lt;matplotlib.lines.Line2D object at 0x7fe9989516a0&gt;
+&lt;matplotlib.lines.Line2D object at 0x7fe997286390&gt;
+&lt;matplotlib.lines.Line2D object at 0x7fe9972c4050&gt;
 Text(0.5, 0, 'resampled mean')
 Text(0, 0.5, 'count')</code></pre>
 </div>
@@ -1704,7 +1704,7 @@ EXECUTE.
 
 GRAPH /LINE(SIMPLE) = VALUE(post) BY theta.</code></pre>
 <div class="cell-output cell-output-stdout">
-<pre><code>/tmp/RtmpKzv5x3/file3b6d3c1f54fb.sps:21.8-21.11: error: GRAPH: LINE is not yet
+<pre><code>/tmp/Rtmp4QLIqX/file3b582d64a305.sps:21.8-21.11: error: GRAPH: LINE is not yet
 implemented.
    21 | GRAPH /LINE(SIMPLE) = VALUE(post) BY theta.
       |        ^~~~</code></pre>
@@ -2742,7 +2742,7 @@ implemented.
 <span id="cb53-11"><a href="#cb53-11" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="vs">r"</span><span class="dv">$</span><span class="ch">\t</span><span class="vs">heta</span><span class="dv">$</span><span class="vs"> </span><span class="kw">(</span><span class="vs">the proportion</span><span class="kw">)</span><span class="vs">"</span>)<span class="op">;</span> plt.ylabel(<span class="st">"posterior density"</span>)</span>
 <span id="cb53-12"><a href="#cb53-12" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[&lt;matplotlib.lines.Line2D object at 0x7f3fd2ecbbc0&gt;]
+<pre><code>[&lt;matplotlib.lines.Line2D object at 0x7fecd0b7f440&gt;]
 Text(0.5, 0, '$\\theta$ (the proportion)')
 Text(0, 0.5, 'posterior density')</code></pre>
 </div>
@@ -2803,27 +2803,27 @@ TEMPORARY.
 SELECT IF (cum_post &gt;= 0.025 AND cum_post &lt;= 0.975).
 DESCRIPTIVES VARIABLES=theta /STATISTICS=MINIMUM MAXIMUM.</code></pre>
 <div class="cell-output cell-output-stdout">
-<pre><code>/tmp/RtmpKzv5x3/file3b6d5a797883.sps:7.1-7.6: error: CREATE: CREATE is not yet
+<pre><code>/tmp/Rtmp4QLIqX/file3b5851610bdd.sps:7.1-7.6: error: CREATE: CREATE is not yet
 implemented.
     7 | CREATE cum_post = CSUM(post).
       | ^~~~~~
 
-/tmp/RtmpKzv5x3/file3b6d5a797883.sps:8.1-8.7: error: EXECUTE: EXECUTE is
+/tmp/Rtmp4QLIqX/file3b5851610bdd.sps:8.1-8.7: error: EXECUTE: EXECUTE is
 allowed only after the active dataset has been defined.
     8 | EXECUTE.
       | ^~~~~~~
 
-/tmp/RtmpKzv5x3/file3b6d5a797883.sps:10.1-10.9: error: TEMPORARY: TEMPORARY is
+/tmp/Rtmp4QLIqX/file3b5851610bdd.sps:10.1-10.9: error: TEMPORARY: TEMPORARY is
 allowed only after the active dataset has been defined.
    10 | TEMPORARY.
       | ^~~~~~~~~
 
-/tmp/RtmpKzv5x3/file3b6d5a797883.sps:11.1-11.9: error: SELECT IF: SELECT IF is
+/tmp/Rtmp4QLIqX/file3b5851610bdd.sps:11.1-11.9: error: SELECT IF: SELECT IF is
 allowed only after the active dataset has been defined.
    11 | SELECT IF (cum_post &gt;= 0.025 AND cum_post &lt;= 0.975).
       | ^~~~~~~~~
 
-/tmp/RtmpKzv5x3/file3b6d5a797883.sps:12.1-12.12: error: DESCRIPTIVES:
+/tmp/Rtmp4QLIqX/file3b5851610bdd.sps:12.1-12.12: error: DESCRIPTIVES:
 DESCRIPTIVES is allowed only after the active dataset has been defined.
    12 | DESCRIPTIVES VARIABLES=theta /STATISTICS=MINIMUM MAXIMUM.
       | ^~~~~~~~~~~~</code></pre>
@@ -3842,7 +3842,7 @@ DESCRIPTIVES is allowed only after the active dataset has been defined.
  6.279071350195432e-11
  3.9520562400829586e-12
  0.0
-(0.6151814814814814, 0.34734734734734735, 0.8478478478478478)</code></pre>
+(0.6157285585585586, 0.35035035035035034, 0.8488488488488488)</code></pre>
 </div>
 </div>
 </div>
@@ -3860,7 +3860,7 @@ DESCRIPTIVES is allowed only after the active dataset has been defined.
 <span id="cb60-10"><a href="#cb60-10" aria-hidden="true" tabindex="-1"></a>draws <span class="op">=</span> rng.choice(theta, <span class="dv">100_000</span>, p<span class="op">=</span>post)</span>
 <span id="cb60-11"><a href="#cb60-11" aria-hidden="true" tabindex="-1"></a>draws.mean(), <span class="op">*</span>np.quantile(draws, [<span class="fl">0.025</span>, <span class="fl">0.975</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>(np.float64(0.6153329429429429), np.float64(0.3493243243243247), np.float64(0.8478478478478478))</code></pre>
+<pre><code>(np.float64(0.6148499499499499), np.float64(0.34934934934934936), np.float64(0.8488488488488488))</code></pre>
 </div>
 </div>
 </div>
@@ -3903,17 +3903,17 @@ TEMPORARY.
 SELECT IF (theta &gt; 0.45 AND theta &lt; 0.55).
 DESCRIPTIVES VARIABLES=post /STATISTICS=SUM.</code></pre>
 <div class="cell-output cell-output-stdout">
-<pre><code>/tmp/RtmpKzv5x3/file3b6d4dd1377b.sps:4.1-4.9: error: TEMPORARY: TEMPORARY is
+<pre><code>/tmp/Rtmp4QLIqX/file3b582a09d17c.sps:4.1-4.9: error: TEMPORARY: TEMPORARY is
 allowed only after the active dataset has been defined.
     4 | TEMPORARY.
       | ^~~~~~~~~
 
-/tmp/RtmpKzv5x3/file3b6d4dd1377b.sps:5.1-5.9: error: SELECT IF: SELECT IF is
+/tmp/Rtmp4QLIqX/file3b582a09d17c.sps:5.1-5.9: error: SELECT IF: SELECT IF is
 allowed only after the active dataset has been defined.
     5 | SELECT IF (theta &gt; 0.45 AND theta &lt; 0.55).
       | ^~~~~~~~~
 
-/tmp/RtmpKzv5x3/file3b6d4dd1377b.sps:6.1-6.12: error: DESCRIPTIVES:
+/tmp/Rtmp4QLIqX/file3b582a09d17c.sps:6.1-6.12: error: DESCRIPTIVES:
 DESCRIPTIVES is allowed only after the active dataset has been defined.
     6 | DESCRIPTIVES VARIABLES=post /STATISTICS=SUM.
       | ^~~~~~~~~~~~</code></pre>
@@ -4932,7 +4932,7 @@ DESCRIPTIVES is allowed only after the active dataset has been defined.
  6.279071350195432e-11
  3.9520562400829586e-12
  0.0
-0.19322</code></pre>
+0.19395</code></pre>
 </div>
 </div>
 </div>
@@ -4949,7 +4949,7 @@ DESCRIPTIVES is allowed only after the active dataset has been defined.
 <span id="cb67-9"><a href="#cb67-9" aria-hidden="true" tabindex="-1"></a>rope_lo, rope_hi <span class="op">=</span> <span class="fl">0.45</span>, <span class="fl">0.55</span>        <span class="co"># "practically a fair coin"</span></span>
 <span id="cb67-10"><a href="#cb67-10" aria-hidden="true" tabindex="-1"></a>((draws <span class="op">&gt;</span> rope_lo) <span class="op">&amp;</span> (draws <span class="op">&lt;</span> rope_hi)).mean()   <span class="co"># probability inside the ROPE</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>np.float64(0.19245)</code></pre>
+<pre><code>np.float64(0.19174)</code></pre>
 </div>
 </div>
 </div>
