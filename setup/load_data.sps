@@ -24,33 +24,46 @@
 * ---------------------------------------------------------------------------.
 
 * ---------------------------------------------------------------------------.
-* STEP 1 - TELL SPSS WHERE THE BOOK IS. This is the only line you edit.
+* STEP 1 - TELL SPSS WHERE THIS FOLDER IS. One line. Nothing else to change.
 *
-* Every path below is relative to the folder that holds data/. Unless you
-* launched SPSS from that folder - on Windows you almost certainly did not -
-* delete the asterisk and the space at the start of the CD line below, and
-* put the real location between the quotes:
+* Put the location of the folder holding this file between the quotes below.
+* That folder also holds data/. Forward slashes, even on Windows:
 *
-*     CD 'C:/Users/jeff/Desktop/GradStats-data'.
+*     DEFINE !bookroot () 'C:/Users/jeff/Dropbox/Stats Book/GradStats-data'
+*     !ENDDEFINE.
 *
-* Use forward slashes, even on Windows. Point it at the folder that CONTAINS
-* data, not at data itself.
+* Point at the folder that CONTAINS data. Do NOT put /data on the end - that
+* is the single most common way to get this wrong, and the error it produces
+* ("SPSS Statistics cannot access a file with the given file specification")
+* does not tell you that is what happened.
 *
-* Editing any other path will not be enough. The macro inserts a small loader
-* from data/sim/, and that loader reads its .csv with a relative path of its
-* own, so both only resolve once the working directory is right.
+* You do NOT need to CD anywhere yourself, and it does not matter which folder
+* your own syntax files live in. !bookdata sets the directory each time it
+* runs, so it works from wherever you happen to be.
 * ---------------------------------------------------------------------------.
 
-* CD 'C:/path/to/GradStats-data'.
-
-* Check it worked. This prints the working directory, which should be the
-* folder holding data/ and setup/. If it is anything else, fix the CD line
-* before going on - the next error you would otherwise see is a puzzling
-* "Can't find data/sim/....sps in include file search path".
-SHOW DIRECTORY.
+DEFINE !bookroot () 'C:/path/to/GradStats-data' !ENDDEFINE.
 
 DEFINE !bookdata (name = !TOKENS(1))
+CD !bookroot.
 INSERT FILE = !QUOTE(!CONCAT("data/sim/", !UNQUOTE(!name), ".sps")).
+!ENDDEFINE.
+
+* ---------------------------------------------------------------------------.
+* STEP 2 - CHECK IT. Run this one line:
+*
+*     !bookcheck.
+*
+* If !bookroot is right you get a mean height of about 67.99. Anything else
+* means the path above is wrong - most likely it has /data on the end, or
+* points at a folder that does not hold data/.
+* ---------------------------------------------------------------------------.
+
+DEFINE !bookcheck ()
+CD !bookroot.
+SHOW DIRECTORY.
+INSERT FILE = 'data/sim/ch01-heights.sps'.
+DESCRIPTIVES VARIABLES=height /STATISTICS=MEAN.
 !ENDDEFINE.
 
 * ---------------------------------------------------------------------------.
