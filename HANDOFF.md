@@ -44,13 +44,26 @@ Open, in rough priority:
 1. **10 raw PSPP errors still published** across `15-MRC`, `21-graphics`, `20-beyond`,
    `30-irt` — temp paths and all. `30-irt` is the free one: Jeff confirmed `VARCOMP`
    runs in real SPSS, even the student version.
-2. **Chapter 9 is factually wrong** — says base SPSS has no power analysis; Jeff's
-   install has it.
+2. **Chapter 9 power correction is written locally, not published** — IBM SPSS
+   Statistics 27+ Base Edition documents `POWER MEANS INDEPENDENT`. The three
+   examples now show IBM syntax as static PSPP tabs; Jeff still needs to run them.
 3. **`.sav` not yet in the published zips.** Generated and delivered to Jeff's folder,
    but unverified against real SPSS, so not shipped to other readers yet.
 4. Jeff's `RELIABILITY /MODEL=ALPHA` section; the foreword; Pat's voice pass.
 
+Codex's review evidence is in `handoffs/`, with repeatable source and PSPP checks in
+`review/`. The 2026-09-23 full render exited 0 but `review/check_pspp.py` found the
+same ten failed SPSS chunks in PSPP's IBM-compatible syntax mode. IBM's documentation
+supports the relevant commands, but IBM SPSS has not executed the exact blocks here.
+
+**Repository cleanup before any push:** commit `2292b31` was made while Codex's full
+Quarto render was running. It accidentally tracked temporary root-level HTML,
+`*_files/`, and `site_libs/` output that Quarto then removed. The working tree shows
+those as tracked deletions; do not stage or push blindly. `_book/` is intact locally.
+
 ## Log
 
 <!-- newest first; sync/handoff.py writes here -->
+- **RELEASE** `2026-09-23 12:20:13` codex — Reviewed all 42 sources for chunk inventory; full render exit 0 but ten PSPP chunks fail; IBM docs review and chapter 9 POWER correction recorded in handoffs; review scripts added. IBM execution and numeric audit remain. Commit 2292b31 accidentally tracked in-progress render files; clean before push. [at 2292b31 (uncommitted changes present)]
+- **CLAIM** `2026-09-23 10:17:50` codex — Reviewing book code and pedagogy; full render in progress; handoffs review notes only [at 2292b31 (uncommitted changes present)]
 - **RELEASE** `2026-09-23 10:05:17` claude — Added HANDOFF.md + sync/handoff.py (baton), sync/daily_scan.py (sweep, verified quiet-when-idle), notes/2026-09-22-jeff.md. Pushed 1102cb7. NOT done: the 10 published PSPP errors, ch09 power claim, .sav into the zips. [at 1102cb7 (uncommitted changes present)]

@@ -1,9 +1,9 @@
 # Book Build Dashboard — *Statistics by Us for You*
 
 Living tracker for the book: what is built, what runs, and what is still open.
-Claude updates this file each working session.
+Codex and Claude update this file as verification changes.
 
-_Last updated: 2026-08-03_
+_Last updated: 2026-09-23_
 
 ---
 
@@ -12,7 +12,7 @@ _Last updated: 2026-08-03_
 | Item | Status | Notes |
 |------|:------:|-------|
 | GitHub Pages publishing | ✅ live | `.github/workflows/publish.yml` renders on push to `main` → `gh-pages`. Site: <https://pem725.github.io/GradStats-Book/> |
-| `_book/` out of version control | ✅ done | `/_book/` and `/docs/` gitignored; a local render never dirties the tree. |
+| `_book/` out of version control | ✅ done | `/_book/` and `/docs/` gitignored. A concurrent 2026-09-23 commit captured temporary root-level render artifacts; those tracked files need a separate cleanup. |
 | Render time in CI | ~35–45 min | Four interpreters now run during the render, so it is no longer a two-minute job. |
 | Bibliography | ✅ wired | Six files in `_quarto.yml`: `statbook.bib`, `packages.bib` (auto-generated), `Methods.bib`, `PSYC643.bib`, `Rasch.bib`, `mcknight-pubs.bib`. |
 | CLAUDE.md | ✅ current | Guidance for future sessions; kept in step with the build. |
@@ -28,8 +28,8 @@ independently, so `main` can diverge. Always `git fetch` and merge before pushin
 
 ## 2. The Four-Language Build
 
-Every code tab in the book **executes**. This is the newest and most fragile part of
-the machinery, so it gets its own section.
+Executable tabs run during render. Eight language tabs are deliberately static.
+This is the newest and most fragile part of the machinery, so it gets its own section.
 
 `_engines.R` (sourced by `_common.R`) defines knitr engines for `pspp`, `julia` and
 `python`. Each writes the chunk to a scratch file, runs the real interpreter, captures
@@ -39,12 +39,21 @@ stdout, and collects any figure the chunk drew.
 |---|---:|
 | tabsets | 109 |
 | live `{r}` chunks | 191 |
-| live `{pspp}` chunks | 106 |
-| live `{julia}` chunks | 109 |
-| live `{python}` chunks | 109 |
+| live `{pspp}` chunks | 100 |
+| live `{julia}` chunks | 108 |
+| live `{python}` chunks | 108 |
+| deliberately static language tabs | 11 (9 SPSS, 1 Julia, 1 Python) |
 
-**Every Julia and Python tab in the book now executes.** The only tabs that do not
-are the three SPSS ones below.
+The interactive helix in `intro.qmd` has deliberately static Julia and Python tabs.
+Three SPSS tabs are reserved for Jeff below; three more are static where PSPP lacks
+the chart command. Three IBM SPSS 27+ power-analysis tabs are static because PSPP
+does not implement `POWER`. Run `python3 review/inventory.py` to reproduce these counts.
+
+**A green render is not yet a clean four-language verification.** The local full
+render on 2026-09-23 exited successfully, but generated HTML still contains raw PSPP
+errors in ten executable SPSS blocks across chapters 15, 20, 21, and 30. The PSPP
+engine in `_engines.R` does not currently reject failed runs. See `HANDOFF.md` and
+`handoffs/2026-09-23-codex-review.md`.
 
 **Nothing is shared between chunks except through files.** Every non-R tab therefore
 loads its own data — shared loaders in `setup/load_data.{R,sps,jl,py}`, per-dataset ones
@@ -73,16 +82,17 @@ promised. The workflow's "Verify the toolchains" step runs `_engines.R`'s own pr
   + `REGRESSION`), no `FACTOR /EXTRACTION=ML` (use PAF, note the one-word change),
   `GLM` not `UNIANOVA`. Factor signs are arbitrary and PSPP sometimes flips one.
 
-### The three tabs that stay static
+### The three reliability tabs that stay static
 
-All three are the `RELIABILITY /MODEL=ALPHA` SPSS tabs in `10-reliability.qmd` (lines
+These three are the `RELIABILITY /MODEL=ALPHA` SPSS tabs in `10-reliability.qmd` (lines
 332, 404, 481) — the section **reserved for Jeff Stuewig to write**. PSPP 2.0 does
 implement `RELIABILITY`, so they could be made to run; they are held deliberately, not
 for want of a toolchain. Their tabsets show output under R, Julia and Python and none
 under SPSS until Jeff's section lands.
 
 Where a language genuinely cannot do a procedure, its tab says so and names the tool
-that can — base SPSS has no power analysis (G\*Power, SamplePower), no latent class
+that can. IBM SPSS Statistics 27+ Base Edition has `POWER MEANS INDEPENDENT`;
+chapter 9 now shows its documented syntax, pending an IBM SPSS run. Base SPSS has no latent class
 analysis (Latent GOLD, Mplus, `poLCA`), and no Rasch calibration (Winsteps, ConQuest,
 `eRm`/`TAM`). That is the house include/exclude rule: name the gap, never manufacture
 syntax that would not run.
@@ -111,7 +121,8 @@ Twelve parts, thirty-two numbered chapters, plus front and back matter. Order li
 | Appendices | `three-languages` · `setup` · `required-packages` · `changelog` |
 | _(back)_ | `references` |
 
-**All chapters are drafted and render clean.** No stubs and no `foo`/`bar`/`baz`
+**All chapters are drafted and the render exits successfully, with PSPP errors still
+published as noted above.** No stubs and no `foo`/`bar`/`baz`
 placeholders remain. The one deliberate blank is `foreword.qmd`, held for an outside
 colleague to write in their own words.
 
@@ -152,6 +163,8 @@ Giant research libraries (`CRC.bib` 4.9 MB, `delphi.bib` 3.8 MB) are deliberatel
 - [ ] **Ch. 10 `RELIABILITY /MODEL=ALPHA`** — reserved for Jeff Stuewig to write.
 - [ ] **`foreword.qmd`** — awaiting the invited colleague.
 - [ ] **Voice/structure review** of the drafted chapters (PEM).
+- [ ] **Remove the ten raw PSPP error blocks** from the published book and make the PSPP engine expose execution failures.
+- [ ] **Review code and statistical claims** using the evidence ledger in `handoffs/`.
 
 All seven tabsets in `10-reliability.qmd` now agree to the printed two decimals across
 R, Julia and Python. Verified from the rendered HTML, not from the source.

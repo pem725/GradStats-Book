@@ -84,12 +84,16 @@ tibble(alpha = c(0.01, 0.05, 0.10)) |>
 ```
 ### SPSS
 ```{pspp}
-* Base SPSS has no power analysis. Power and sample-size planning live in
-* the separate, separately licensed SamplePower module (Analyze > Power
-* Analysis in recent versions), or in an external tool such as G*Power.
-*
-* * The question here - how power moves as alpha goes .01 -> .05 -> .10 -
-* is answered in the R, Julia, and Python tabs.
+#| eval: false
+* IBM SPSS Statistics 27+ Base Edition: power for two independent groups.
+* N is per group; MEAN is the assumed difference and SD the common SD.
+* PSPP cannot run POWER, so these IBM commands are shown for SPSS users.
+POWER MEANS INDEPENDENT
+  /PARAMETERS N=30 30 SD=1 MEAN=0.5 SIGNIFICANCE=0.01.
+POWER MEANS INDEPENDENT
+  /PARAMETERS N=30 30 SD=1 MEAN=0.5 SIGNIFICANCE=0.05.
+POWER MEANS INDEPENDENT
+  /PARAMETERS N=30 30 SD=1 MEAN=0.5 SIGNIFICANCE=0.10.
 ```
 ### Julia
 ```{julia}
@@ -130,12 +134,15 @@ tibble(n_per_group = c(20, 50, 100)) |>
 ```
 ### SPSS
 ```{pspp}
-* Base SPSS has no power analysis. Power and sample-size planning live in
-* the separate, separately licensed SamplePower module (Analyze > Power
-* Analysis in recent versions), or in an external tool such as G*Power.
-*
-* * The question here - how power grows with n = 20, 50, 100 per group -
-* is answered in the R, Julia, and Python tabs.
+#| eval: false
+* IBM SPSS Statistics 27+ Base Edition; PSPP cannot run POWER.
+* Change N while holding the assumed mean difference, SD, and alpha fixed.
+POWER MEANS INDEPENDENT
+  /PARAMETERS N=20 20 SD=1 MEAN=0.5 SIGNIFICANCE=0.05.
+POWER MEANS INDEPENDENT
+  /PARAMETERS N=50 50 SD=1 MEAN=0.5 SIGNIFICANCE=0.05.
+POWER MEANS INDEPENDENT
+  /PARAMETERS N=100 100 SD=1 MEAN=0.5 SIGNIFICANCE=0.05.
 ```
 ### Julia
 ```{julia}
@@ -177,12 +184,11 @@ power.t.test(delta = 0.5, sd = 1, sig.level = 0.05, power = 0.80) |>
 ```
 ### SPSS
 ```{pspp}
-* Base SPSS has no power analysis. Power and sample-size planning live in
-* the separate, separately licensed SamplePower module (Analyze > Power
-* Analysis in recent versions), or in an external tool such as G*Power.
-*
-* * The question here - the n needed for 80% power at d = 0.5 -
-* is answered in the R, Julia, and Python tabs.
+#| eval: false
+* IBM SPSS Statistics 27+ Base Edition; PSPP cannot run POWER.
+* Ask for the group size that reaches 80% power with equal allocation.
+POWER MEANS INDEPENDENT
+  /PARAMETERS POWER=0.80 NRATIO=1 SD=1 MEAN=0.5 SIGNIFICANCE=0.05.
 ```
 ### Julia
 ```{julia}

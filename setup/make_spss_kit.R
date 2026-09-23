@@ -6,11 +6,10 @@
 # SPSS and work. This pulls each chapter's blocks out into one .sps per
 # chapter, bundles them with the data, and zips the lot.
 #
-# Everything in the book has been verified against PSPP, which is a SUBSET of
-# SPSS. So this kit exists to answer a question we cannot answer ourselves:
-# what does real SPSS do with it? That includes the blocks marked
-# `eval: false`, which PSPP cannot run at all and which therefore no one has
-# ever executed.
+# PSPP runs the executable blocks during render, but a successful render does
+# not certify them: known IBM-only commands still print raw PSPP errors in the
+# book. This kit makes those blocks easy to test in IBM SPSS itself. Blocks
+# marked `eval: false` have never been executed by the book's engine.
 #
 # Run as a POST-render hook alongside make_data_zip.R. Built, never committed.
 # ---------------------------------------------------------------------------
@@ -198,8 +197,10 @@ writeLines(c(
   "  3. Open any chapter file and run it, whole or a block at a time.",
   "",
   "WHY WE ARE ASKING",
-  "  Every SPSS block in the book has been checked against PSPP, which is free",
-  "  and which runs a SUBSET of SPSS. Real SPSS is the thing we cannot test.",
+  "  PSPP runs the executable SPSS blocks during the book render, but some",
+  "  IBM-only commands print PSPP errors, so a green build is not validation.",
+  "  Real IBM SPSS is the thing we cannot run here; your output will tell us",
+  "  which commands and results work in the software you actually teach.",
   "  Where the two differ, the book was written to the smaller one - it uses",
   "  PAF where SPSS would offer ML, and spells contrast codes out with COMPUTE",
   "  because PSPP has no UNIANOVA /CONTRAST. Those choices are noted in the",
