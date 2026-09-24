@@ -560,12 +560,34 @@ tibble(
 ### SPSS
 ```{pspp}
 * Sampling from the grid posterior needs a weighted draw, which base SPSS
-* does not offer directly. The posterior mean and quantiles can instead be
-* read off the grid itself, which is exact rather than simulated:
-*   posterior mean = SUM(theta * post)
-*   the 2.5th/97.5th percentiles are where the CUMULATIVE post crosses
-*   0.025 and 0.975.
-CREATE cum_post = CSUM(post).
+* does not offer directly. The quantiles can instead be read off the grid
+* itself, which is exact rather than simulated: the 2.5th and 97.5th
+* percentiles are where the CUMULATIVE posterior crosses 0.025 and 0.975.
+*
+* The grid is rebuilt here rather than carried over. Each tab in this book
+* runs in its own process, so a tab that referred back to the one above
+* would find no data at all.
+INPUT PROGRAM.
+LOOP #i = 0 TO 1000.
+  COMPUTE theta = #i / 1000.
+  COMPUTE prior = PDF.BETA(theta, 2, 2).
+  COMPUTE like  = PDF.BINOM(6, 9, theta).
+  COMPUTE post  = like * prior.
+  END CASE.
+END LOOP.
+END FILE.
+END INPUT PROGRAM.
+
+* Normalise, so the grid is a probability distribution rather than a shape.
+COMPUTE one = 1.
+AGGREGATE OUTFILE=* MODE=ADDVARIABLES /BREAK=one /tot=SUM(post).
+COMPUTE post = post / tot.
+
+* Running total. A scratch variable (the # prefix) keeps its value from one
+* case to the next, which is how SPSS accumulates down a column without
+* IBM's CREATE/CSUM - and it runs everywhere, including PSPP.
+COMPUTE #run = #run + post.
+COMPUTE cum_post = #run.
 EXECUTE.
 
 TEMPORARY.
@@ -614,6 +636,26 @@ tibble(p_inside_rope = mean(draws > rope_lo & draws < rope_hi)) |> round2()
 * The posterior probability inside a region of practical equivalence
 * (here 0.45 to 0.55, "practically a fair coin"). On the grid this is
 * simply the posterior mass between those two values.
+*
+* The grid is rebuilt here for the same reason as the tab above: every tab
+* runs in its own process and inherits nothing.
+INPUT PROGRAM.
+LOOP #i = 0 TO 1000.
+  COMPUTE theta = #i / 1000.
+  COMPUTE prior = PDF.BETA(theta, 2, 2).
+  COMPUTE like  = PDF.BINOM(6, 9, theta).
+  COMPUTE post  = like * prior.
+  END CASE.
+END LOOP.
+END FILE.
+END INPUT PROGRAM.
+
+* Normalise first, or the "probability" below is just an unscaled sum.
+COMPUTE one = 1.
+AGGREGATE OUTFILE=* MODE=ADDVARIABLES /BREAK=one /tot=SUM(post).
+COMPUTE post = post / tot.
+EXECUTE.
+
 TEMPORARY.
 SELECT IF (theta > 0.45 AND theta < 0.55).
 DESCRIPTIVES VARIABLES=post /STATISTICS=SUM.
