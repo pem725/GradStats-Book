@@ -77,8 +77,32 @@ jobs:
         with:
           version: '1.11.5'
 
+      # Keep ~/.julia between runs. This is not only about speed. Precompiling
+      # MixedModels runs a PrecompileTools workload that pulls example data from
+      # osf.io, and on 2026-09-23 and again on 2026-09-24 osf.io answered HTTP
+      # 429 and the whole render died there. A warm depot has the artifact
+      # already and never asks. It also works locally for exactly that reason,
+      # which is why the failure looked environmental rather than real.
+      - name: Cache the Julia depot
+        uses: julia-actions/cache@v2
+
+      # Cold cache still has to fetch once, and 429 is rate limiting rather than
+      # a hard refusal, so back off and try again instead of failing the build.
       - name: Instantiate the book's Julia project
-        run: julia --project=. -e 'using Pkg; Pkg.instantiate(); Pkg.precompile()'
+        run: |
+          for attempt in 1 2 3; do
+            echo "::group::instantiate attempt $attempt"
+            if julia --project=. -e 'using Pkg; Pkg.instantiate(); Pkg.precompile()'; then
+              echo "::endgroup::"; exit 0
+            fi
+            echo "::endgroup::"
+            echo "attempt $attempt failed; sleeping before retry"
+            sleep $((attempt * 60))
+          done
+          echo "Julia instantiate failed three times. If the log shows HTTP 429"
+          echo "from osf.io, that is MixedModelsDatasets being rate limited during"
+          echo "precompile, not a problem with the book."
+          exit 1
 
       - name: Set up Python
         uses: actions/setup-python@v5
