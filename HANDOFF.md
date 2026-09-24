@@ -64,6 +64,8 @@ those as tracked deletions; do not stage or push blindly. `_book/` is intact loc
 ## Log
 
 <!-- newest first; sync/handoff.py writes here -->
+- **RELEASE** `2026-09-24 08:51:07` claude — Fixed 2 of 10 SPSS errors (20-beyond: blocks referenced undefined vars; also normalised the grid). Diagnosed CI: osf.io 429 during MixedModels precompile, not our code; added depot cache + retry. 5 commits ready, NOT pushed. Remaining 8 errors all IBM-only and all available at GMU; real fix is _engines.R falling back on PSPP error. [at ce0623e (uncommitted changes present)]
+- **CLAIM** `2026-09-24 06:35:37` claude — Triaging the 10 published PSPP errors; GMU availability first [at bb25657]
 - **RELEASE** `2026-09-23 12:20:13` codex — Reviewed all 42 sources for chunk inventory; full render exit 0 but ten PSPP chunks fail; IBM docs review and chapter 9 POWER correction recorded in handoffs; review scripts added. IBM execution and numeric audit remain. Commit 2292b31 accidentally tracked in-progress render files; clean before push. [at 2292b31 (uncommitted changes present)]
 - **CLAIM** `2026-09-23 10:17:50` codex — Reviewing book code and pedagogy; full render in progress; handoffs review notes only [at 2292b31 (uncommitted changes present)]
 - **RELEASE** `2026-09-23 10:05:17` claude — Added HANDOFF.md + sync/handoff.py (baton), sync/daily_scan.py (sweep, verified quiet-when-idle), notes/2026-09-22-jeff.md. Pushed 1102cb7. NOT done: the 10 published PSPP errors, ch09 power claim, .sav into the zips. [at 1102cb7 (uncommitted changes present)]
