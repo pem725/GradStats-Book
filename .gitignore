@@ -31,3 +31,23 @@ pspp.png
 
 # Local cache for the Jeff DOCX round trip (baselines + manifest)
 .jeff-sync/
+
+# Quarto artifacts from rendering a chapter at the repo root rather than into
+# _book/. A stray `quarto render <chapter>.qmd --to <fmt>` drops these here, and
+# a `git add -A` then commits them. Named explicitly rather than with a broad
+# *_files/ glob, because _poc_engines.html and _poc_engines_files/ are tracked
+# on purpose and a glob would silently untrack them.
+/[0-9][0-9]-*.html
+/[0-9][0-9]-*_files/
+/index.html
+/intro.html
+/preface.html
+/foreword.html
+/author.html
+/references.html
+/setup.html
+/changelog.html
+/required-packages.html
+/three-languages.html
+/site_libs/
+/*.rmarkdown
