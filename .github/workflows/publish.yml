@@ -61,6 +61,13 @@ jobs:
             any::tidyverse
             any::broom
             any::betareg
+            # statmod and numDeriv are SUGGESTS of betareg, not imports, so
+            # any::betareg does not bring them. betareg reaches for them only
+            # on the boundary path - the Gauss quadrature it uses when the data
+            # contain exact 0s or 1s - which is exactly what the bounded-outcomes
+            # chapter demonstrates. Without them that chapter kills the render.
+            any::statmod
+            any::numDeriv
             any::plotly
             any::png
             any::magick
