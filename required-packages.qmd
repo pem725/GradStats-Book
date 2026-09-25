@@ -7,12 +7,14 @@ To run the live code in this book you need R and a small handful of packages. To
 The executable code throughout the book is written in the **tidyverse**, plus a couple of publishing packages:
 
 ```r
-install.packages(c("tidyverse", "broom", "plotly", "knitr", "rmarkdown"))
+install.packages(c("tidyverse", "broom", "plotly", "betareg", "knitr", "rmarkdown"))
 ```
 
 `tidyverse` pulls in everything the chapters use for handling data: `dplyr` for wrangling, `ggplot2` for every figure, `purrr` for iteration, `tibble`, `tidyr`, `readr`, `stringr`, and `forcats`. `broom` is the companion that turns a fitted model into a tidy data frame, which is how the book prints its results.
 
-The **statistical engines themselves are still base R** - `lm()`, `aov()`, `glm()`, `factanal()`, `prcomp()`, `power.t.test()` - and so is every from-scratch derivation: reliability computed by hand, the Rasch estimator, the EM algorithm for latent classes, the bootstrap and permutation tests. That is deliberate. The tidyverse is how we *handle and display* the data; the statistics are demonstrated with tools that ship with R, so nothing important is hidden inside a package.
+`betareg` is the one modelling package the book actually runs, in the [bounded-outcomes chapter](34-bounded.qmd), and even there it arrives second: the chapter fits the beta regression from scratch first and uses `betareg` to check that the fifteen hand-written lines got the same answer.
+
+Otherwise the **statistical engines are still base R** - `lm()`, `aov()`, `glm()`, `factanal()`, `prcomp()`, `power.t.test()` - and so is every from-scratch derivation: reliability computed by hand, the Rasch estimator, the EM algorithm for latent classes, the bootstrap and permutation tests. That is deliberate. The tidyverse is how we *handle and display* the data; the statistics are demonstrated with tools that ship with R, so nothing important is hidden inside a package.
 
 ## The book's shared helpers
 
@@ -87,7 +89,9 @@ Every procedure chapter shows its analysis in four languages. Only the R tab run
 
 ```julia
 using Pkg
-Pkg.add(["DataFrames", "Statistics", "GLM", "HypothesisTests", "MultivariateStats", "MixedModels"])
+Pkg.add(["CSV", "DataFrames", "CategoricalArrays", "Distributions", "GLM",
+         "HypothesisTests", "MixedModels", "MultivariateStats", "Optim",
+         "Plots", "PlotlyJS", "Roots", "StatsBase", "StatsModels"])
 ```
 
 - **Python** is free and open source (python.org). The book's Python tabs use pandas for data, `statsmodels` for the models, `scipy` for the classical tests, and `scikit-learn` for principal components and factor analysis:
