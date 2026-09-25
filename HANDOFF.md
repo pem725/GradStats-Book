@@ -64,6 +64,7 @@ those as tracked deletions; do not stage or push blindly. `_book/` is intact loc
 ## Log
 
 <!-- newest first; sync/handoff.py writes here -->
+- **RELEASE** `2026-09-25 02:18:25` claude — _engines.R now falls back on PSPP failure (was only on missing binary) + filters matplotlib's non-interactive warning. 0 raw errors, 0 temp paths across the 4 chapters. Pushed. [at 1144797]
 - **CLAIM** `2026-09-25 02:11:48` claude — Making _engines.R fall back on a PSPP error instead of publishing it [at dd932e1]
 - **RELEASE** `2026-09-24 21:06:15` codex — SPSS kit now has Windows/Mac starters that set the extracted folder path in every chapter file; zip builds (748 KB, 34 chapter files), extracted Mac starter and PSPP setup check passed (mean 67.99) from a path with spaces; 03-CTmeasures ran standalone. Windows starter not executed here; IBM SPSS still needs Jeff's run. Kit changes included in 7153e1b and 0d73127; not pushed. [at 0d73127]
 - **RELEASE** `2026-09-24 20:50:58` claude — ch34-bounded written, renders clean (exit 0, 0 fallbacks, 0 PSPP errors), all 4 languages verified against R. POMP section in ch06 points forward. betareg in CI list, Optim in Julia project. NOT pushed. [at 7153e1b]
