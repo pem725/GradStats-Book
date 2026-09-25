@@ -238,11 +238,14 @@ writeLines(c(
         "https://pem725.github.io/GradStats-Book/")
 ), file.path(stage, bundle, "README.txt"))
 
-owd <- setwd(stage); on.exit(setwd(owd), add = TRUE)
 if (file.exists(zip_path)) unlink(zip_path)
-status <- suppressWarnings(system2(unname(Sys.which("zip")),
-                                   c("-qr9X", shQuote(zip_path), shQuote(bundle))))
-setwd(owd)
+zip_bundle <- function() {
+  owd <- setwd(stage)
+  on.exit(setwd(owd), add = TRUE)
+  suppressWarnings(system2(unname(Sys.which("zip")),
+                           c("-qr9X", shQuote(zip_path), shQuote(bundle))))
+}
+status <- zip_bundle()
 
 if (status != 0 || !file.exists(zip_path)) {
   message("  BOOK-NOZIP: SPSS kit packaging failed (status ", status, ").")

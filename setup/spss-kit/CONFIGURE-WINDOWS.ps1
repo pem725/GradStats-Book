@@ -1,7 +1,8 @@
 param([Parameter(Mandatory=$true)][string]$Root)
 
 $ErrorActionPreference = 'Stop'
-$rootPath = (Resolve-Path -LiteralPath $Root).Path.TrimEnd('\', '/')
+$rootPath = (Resolve-Path -LiteralPath $Root).Path
+$rootPath = $rootPath.TrimEnd([char[]]@('\', '/'))
 $spssPath = $rootPath.Replace('\', '/').Replace("'", "''")
 $anchor = "CD '$spssPath'."
 $marker = '* BOOKROOT-AUTO-CONFIGURED.'
