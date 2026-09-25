@@ -51,6 +51,15 @@ jobs:
         with:
           use-public-rspm: true
 
+      # statmod and numDeriv are SUGGESTS of betareg rather than Imports, so
+      # any::betareg does not bring them. betareg reaches for them on exactly one
+      # code path - the Gauss quadrature it uses when the response contains exact
+      # 0s or 1s - which is what the bounded-outcomes chapter demonstrates, so the
+      # chapter's most important chunk is the only one that needs them.
+      #
+      # Keep comments OUT of the packages block below. It is a literal block
+      # scalar: every line in it is read as a package reference, so a "#" line
+      # becomes a package named "#" and pak fails with "Cannot parse packages".
       - name: Install R package dependencies
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
@@ -61,11 +70,6 @@ jobs:
             any::tidyverse
             any::broom
             any::betareg
-            # statmod and numDeriv are SUGGESTS of betareg, not imports, so
-            # any::betareg does not bring them. betareg reaches for them only
-            # on the boundary path - the Gauss quadrature it uses when the data
-            # contain exact 0s or 1s - which is exactly what the bounded-outcomes
-            # chapter demonstrates. Without them that chapter kills the render.
             any::statmod
             any::numDeriv
             any::plotly
