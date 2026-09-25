@@ -97,12 +97,12 @@ for (f in files) {
     "*",
     paste0("* ", length(blocks), " block(s). Run the file top to bottom, or one block at a time."),
     "*",
-    "* RUN 00-START-HERE.sps FIRST, once per SPSS session. It defines !bookroot,",
-    "* which the next line uses to point SPSS at the folder holding data/.",
+    "* Run START-WINDOWS.cmd or START-MAC.command after unzipping the kit.",
+    "* That starter fills in the next line using this folder's actual location.",
     "* ==========================================================================.",
     "",
-    "* Re-anchors the working directory. Harmless to run twice, and it means this",
-    "* file works no matter what folder SPSS thinks it is in when you open it.",
+    "* This absolute path is prepared automatically. Run this chapter on its own.",
+    "* BOOKROOT-AUTO-CONFIGURED.",
     "CD !bookroot.",
     ""
   )
@@ -127,53 +127,31 @@ for (f in files) {
   made <- c(made, basename(outf))
 }
 
-# --- the one file the reader edits ------------------------------------------
+# --- the setup check, also configured by the starter -------------------------
 writeLines(c(
   "* ==========================================================================.",
-  "* START HERE. Run this once, at the beginning of every SPSS session.",
+  "* CHECK THE SETUP. Run All after opening this file in SPSS.",
   "*",
-  "* ONE LINE TO EDIT. Put the location of THIS FOLDER between the quotes.",
-  "* Forward slashes, even on Windows:",
-  "*",
-  "*     Mac      '/Users/yourname/Desktop/GradStats-SPSS'",
-  "*     Windows  'C:/Users/yourname/Dropbox/GradStats-SPSS'",
-  "*",
-  "* Point at the folder that CONTAINS data and spss. Do NOT put /data or",
-  "* /spss on the end. That is the commonest way to get this wrong, and the",
-  "* error it causes does not say so.",
-  "*",
-  "* Your own syntax files can live anywhere. Every chapter file re-anchors",
-  "* itself with CD !bookroot, so it does not matter what folder SPSS thinks",
-  "* it is in.",
+  "* The starter filled in the path below. You do not need to edit it.",
+  "* If you move this folder later, run the starter again.",
   "* ==========================================================================.",
   "",
-  "DEFINE !bookroot () 'C:/path/to/GradStats-SPSS' !ENDDEFINE.",
-  "",
-  "CD !bookroot.",
-  "SHOW DIRECTORY.",
-  "",
-  "* CHECK IT. Run this line:   !bookcheck.",
-  "* A mean height of about 67.99 means everything is wired up. Anything else",
-  "* means !bookroot above is wrong.",
-  "DEFINE !bookcheck ()",
+  "* BOOKROOT-AUTO-CONFIGURED.",
   "CD !bookroot.",
   "SHOW DIRECTORY.",
   "INSERT FILE = 'data/sim/ch01-heights.sps'.",
   "DESCRIPTIVES VARIABLES=height /STATISTICS=MEAN.",
-  "!ENDDEFINE.",
+  "* The mean height should be about 67.99.",
   "",
-  "* OPTIONAL, and UNTESTED BY US - PSPP has no OMS, so we could not try it.",
-  "* Uncomment to have SPSS write everything to a plain text file you can send",
-  "* on, instead of reading it off the screen. Put OMSEND. at the end of the run.",
-  "*",
-  "* OMS /SELECT ALL /DESTINATION FORMAT=TEXT OUTFILE='output/session.txt'.",
-  "*",
-  "* Failing that, File > Export in the output window does the same job by hand."
-), file.path(stage, bundle, "spss", "00-START-HERE.sps"))
+  "* To send us results, use File > Export in the SPSS output window."
+), file.path(stage, bundle, "spss", "00-CHECK-SETUP.sps"))
 
 invisible(file.copy("data", file.path(stage, bundle), recursive = TRUE))
-invisible(file.copy(list.files("setup", pattern = "^load_data[.]", full.names = TRUE),
-                    file.path(stage, bundle)))
+starter_files <- list.files("setup/spss-kit", full.names = TRUE)
+if (!all(file.copy(starter_files, file.path(stage, bundle)))) {
+  stop("Could not copy an SPSS starter into the kit")
+}
+Sys.chmod(file.path(stage, bundle, "START-MAC.command"), mode = "0755")
 
 writeLines(c(
   "The Book's SPSS, Ready to Run - Statistics by Us for You",
@@ -184,17 +162,25 @@ writeLines(c(
   "GitHub account.",
   "",
   "WHAT IS IN HERE",
-  "  spss/00-START-HERE.sps   run this first, once per session",
+  "  START-WINDOWS.cmd        double-click this on Windows after unzipping",
+  "  START-MAC.command        double-click this on a Mac after unzipping",
+  "  spss/00-CHECK-SETUP.sps  the starter opens this check",
   "  spss/<chapter>.sps       one file per chapter, in book order",
   "  data/                    every dataset the blocks read",
   "  output/                  empty, for you to export output into",
-  "  load_data.*              the R, SPSS, Julia and Python loaders",
   "",
   "GETTING GOING",
-  "  1. Unzip somewhere you can find again. The Desktop is fine.",
-  "  2. Open spss/00-START-HERE.sps in SPSS. Put your own path in the CD line,",
-  "     uncomment it, and run the file. It prints the folder back to you.",
-  "  3. Open any chapter file and run it, whole or a block at a time.",
+  "  1. Unzip this one file. It creates a folder named GradStats-SPSS.",
+  "  2. Double-click START-WINDOWS.cmd or START-MAC.command in that folder.",
+  "     The starter reads the folder's location and prepares every chapter.",
+  "     You do not type, copy, or edit any file path.",
+  "  3. In SPSS, choose Run All for 00-CHECK-SETUP.sps. The mean height should",
+  "     be about 67.99. Then open any chapter in spss/ and run it on its own.",
+  "  4. If you move the folder, run the starter again. The chapter files will",
+  "     be updated to the new location.",
+  "",
+  "  If the starter does not open SPSS, open spss/00-CHECK-SETUP.sps from the",
+  "  SPSS File menu. On a Mac, allow the starter to open if macOS asks.",
   "",
   "WHY WE ARE ASKING",
   "  PSPP runs the executable SPSS blocks during the book render, but some",
@@ -230,11 +216,10 @@ writeLines(c(
   "",
   "      15-MRC.sps            UNIANOVA    Type I and Type III sums of squares",
   "      30-irt.sps            VARCOMP     variance components for G-theory",
-  "      20-beyond.sps         CREATE      lagged/generated series",
+  "      20-beyond.sps         GRAPH /LINE the curve drawn over the data",
   "      21-graphics.sps       GGRAPH      the modern SPSS chart engine",
   "      21-graphics.sps       VARSTOCASES reshaping wide to long",
   "      02-distributions.sps  GRAPH /LINE overlaying a curve on a histogram",
-  "      20-beyond.sps         GRAPH /LINE the same",
   "      21-graphics.sps       GRAPH /LINE the same",
   "      intro.sps             GRAPH /XYZ  the 3-D scatterplot",
   "",
@@ -255,7 +240,8 @@ writeLines(c(
 
 owd <- setwd(stage); on.exit(setwd(owd), add = TRUE)
 if (file.exists(zip_path)) unlink(zip_path)
-status <- utils::zip(zip_path, bundle, flags = "-qr9X", zip = unname(Sys.which("zip")))
+status <- suppressWarnings(system2(unname(Sys.which("zip")),
+                                   c("-qr9X", shQuote(zip_path), shQuote(bundle))))
 setwd(owd)
 
 if (status != 0 || !file.exists(zip_path)) {

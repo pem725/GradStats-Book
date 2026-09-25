@@ -289,3 +289,27 @@ put(map(1:4, \(i) rnorm(80) + appx$x / 10) |>
       set_names(paste0("item", 1:4)) |> as_tibble(), "appendix-items")
 
 cat("\nDone. The SPSS, Julia, and Python setup files read these same files.\n")
+
+## Ch 34 - Bounded outcomes --------------------------------------------------
+# A well-being measure on its own POMP scale, 0 to 100. Two things make this
+# the right example for the chapter: the outcome is a proportion of the
+# instrument's possible range, and a real instrument has a genuine floor -
+# people who pick the lowest option on every item score exactly 0, and no
+# amount of modelling makes those values anything other than the boundary.
+set.seed(2026)
+Nb <- 240
+bnd <- tibble(
+  group = factor(rep(c("control", "treated"), each = Nb / 2),
+                 levels = c("control", "treated")),
+  weeks = round(runif(Nb, 0, 12))              # weeks in the programme
+) |>
+  mutate(
+    eta  = -0.85 + 0.70 * (group == "treated") + 0.05 * (weeks - 6),
+    prop = rbeta(Nb, plogis(eta) * 9, (1 - plogis(eta)) * 9),
+    # The floor is real, not a rounding artefact: some people answer at the
+    # bottom of every item. It is commoner in the control arm.
+    at_floor = runif(Nb) < if_else(group == "treated", 0.02, 0.08),
+    wellbeing = round(if_else(at_floor, 0, 100 * prop), 4)
+  ) |>
+  select(group, weeks, wellbeing)
+put(bnd, "ch34-wellbeing")
