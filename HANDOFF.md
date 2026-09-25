@@ -64,6 +64,7 @@ those as tracked deletions; do not stage or push blindly. `_book/` is intact loc
 ## Log
 
 <!-- newest first; sync/handoff.py writes here -->
+- **RELEASE** `2026-09-24 21:06:15` codex — SPSS kit now has Windows/Mac starters that set the extracted folder path in every chapter file; zip builds (748 KB, 34 chapter files), extracted Mac starter and PSPP setup check passed (mean 67.99) from a path with spaces; 03-CTmeasures ran standalone. Windows starter not executed here; IBM SPSS still needs Jeff's run. Kit changes included in 7153e1b and 0d73127; not pushed. [at 0d73127]
 - **RELEASE** `2026-09-24 20:50:58` claude — ch34-bounded written, renders clean (exit 0, 0 fallbacks, 0 PSPP errors), all 4 languages verified against R. POMP section in ch06 points forward. betareg in CI list, Optim in Julia project. NOT pushed. [at 7153e1b]
 - **CLAIM** `2026-09-24 20:43:22` claude — Writing 34-bounded.qmd prose + tabs, POMP rework, CI deps [at 0485410 (uncommitted changes present)]
 - **RELEASE** `2026-09-24 20:41:28` claude — ch34 data built (ch34-wellbeing, 240 rows, 17 exact zeros at the POMP floor). Verified: OLS 95% PI runs to -6.9 POMP; scratch MLE == betareg (-1.0846/0.8215/phi 3.984) after rescale; Python+Julia agreed on the earlier pilot. FINDING: betareg fits data containing exact zeros and reports logLik 42.72, but the beta logLik at its own fitted values over those 240 rows is -Inf, and coefficients differ from interior-only (-0.63/0.52 vs -0.81/0.68). Chapter prose not written yet. [at 0485410 (uncommitted changes present)]
