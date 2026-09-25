@@ -320,6 +320,42 @@ knitr::knit_engines$set(pspp = function(options) {
   out <- suppressWarnings(
     system2("pspp", c("-O", "format=txt", f), stdout = TRUE, stderr = TRUE))
 
+  # A block PSPP cannot run must not be published as though it had run.
+  #
+  # The fallback further up only fires when PSPP is MISSING. When it is present
+  # but the syntax uses a command it has not implemented - UNIANOVA, VARCOMP,
+  # GGRAPH - PSPP prints a diagnostic, exits non-zero, and that diagnostic used
+  # to be captured as the block's output. Readers of four chapters were shown
+  # things like
+  #
+  #     /tmp/RtmpLQBL4S/file2049e0413e8698.sps:3.1-3.8: error:
+  #     UNIANOVA: UNIANOVA is not yet implemented.
+  #
+  # temp path and all, in a book that says every tab runs. This is the same
+  # failure that once published "Segmentation fault (core dumped)" from Julia:
+  # the toolchain was found, so nothing degraded, and the crash became content.
+  #
+  # Match on the diagnostic's file-and-position prefix rather than the bare word
+  # "error". One of the book's own datasets has a variable called `error`, and
+  # `std.error` appears in printed tables.
+  status <- attr(out, "status")
+  # PSPP positions look like "3.1-3.8" or "11" - digits, dots and dashes.
+  diags  <- grep("\\.sps:[0-9][0-9.\\-]*:\\s*error:", out, value = TRUE)
+  if (length(diags) || (!is.null(status) && status != 0)) {
+    why <- if (length(diags)) sub(".*:\\s*error:\\s*", "", diags[[1]]) else
+           paste0("pspp exited ", status)
+    # Show the syntax with a note, so the page says why it has no output rather
+    # than leaving a reader to wonder whether the block is broken or the book is.
+    noted <- c(options$code,
+               "",
+               "* NOTE: PSPP - the free engine this book renders with - cannot run",
+               "* the command above, so no output is shown here. The syntax is IBM",
+               paste0("* SPSS and should run there. PSPP reported: ",
+                      substr(trimws(why), 1, 60)))
+    return(.book_static(utils::modifyList(options, list(code = noted)),
+                        paste0("PSPP cannot run it: ", trimws(why))))
+  }
+
   # Only bother looking for pictures when the syntax actually asks to draw one.
   # `-O` options attach to the PREVIOUS `-o`, and --no-output switches off the
   # default driver, which otherwise drops a stray pspp.png in the working
@@ -440,8 +476,14 @@ knitr::knit_engines$set(python = function(options) {
 
   runner <- tempfile(fileext = ".py")
   writeLines(c(
-    "import ast, matplotlib",
+    "import ast, warnings, matplotlib",
     "matplotlib.use('Agg')",
+    # The tabs end with plt.show(), which is how a reader would write them and
+    # what they should copy. Under the Agg backend show() cannot display
+    # anything, so matplotlib warns - and that warning was being published, temp
+    # path and all, beneath figures the engine had already captured and shown.
+    # The warning is true and useless here: we save the figure ourselves.
+    "warnings.filterwarnings('ignore', message='FigureCanvasAgg is non-interactive')",
     "import matplotlib.pyplot as _plt",
     # Match the R figures exactly: 7 x 4.5 in at 192 dpi and 12-point type, the
     # same numbers set in _quarto.yml. autolayout keeps labels from being
