@@ -846,38 +846,36 @@ GET DATA /TYPE=TXT /FILE='data/mlb_league_by_year.csv'
   /DELIMITERS=',' /QUALIFIER='"' /FIRSTCASE=2
   /VARIABLES=year F16.6 OPS F16.6 K_PA F16.6 BB_PA F16.6 HR_PA F16.6 AVG F16.6 ERA F16.6 K_9 F16.6 BB_9 F16.6 HR_9 F16.6.
 
-GRAPH /LINE(SIMPLE) = VALUE(K_9) BY year.</code></pre>
-<div class="cell-output cell-output-stdout">
-<pre><code>/tmp/RtmpQIZiOM/file2ca61c637dc5.sps:6.8-6.11: error: GRAPH: LINE is not yet
-implemented.
-    6 | GRAPH /LINE(SIMPLE) = VALUE(K_9) BY year.
-      |        ^~~~</code></pre>
-</div>
+GRAPH /LINE(SIMPLE) = VALUE(K_9) BY year.
+
+* NOTE: PSPP - the free engine this book renders with - cannot run
+* the command above, so no output is shown here. The syntax is IBM
+* SPSS and should run there. PSPP reported: GRAPH: LINE is not yet</code></pre>
 </div>
 </div>
 <div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Plots</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>mlb <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/mlb_league_by_year.csv"</span>, DataFrame)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mlb.year, mlb.K_9, linewidth <span class="op">=</span> <span class="fl">2</span>, marker <span class="op">=</span> <span class="op">:</span>circle, legend <span class="op">=</span> <span class="cn">false</span>,</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>     ylabel <span class="op">=</span> <span class="st">"Strikeouts per 9 innings"</span>, title <span class="op">=</span> <span class="st">"The strikeout revolution"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Plots</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>mlb <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/mlb_league_by_year.csv"</span>, DataFrame)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mlb.year, mlb.K_9, linewidth <span class="op">=</span> <span class="fl">2</span>, marker <span class="op">=</span> <span class="op">:</span>circle, legend <span class="op">=</span> <span class="cn">false</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>     ylabel <span class="op">=</span> <span class="st">"Strikeouts per 9 innings"</span>, title <span class="op">=</span> <span class="st">"The strikeout revolution"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><img src="_figs/21-graphics-unnamed-chunk-2-julia.png" class="img-fluid"></p>
 </div>
 </div>
 <div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>mlb <span class="op">=</span> pd.read_csv(<span class="st">"data/mlb_league_by_year.csv"</span>)</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>plt.plot(mlb.year, mlb.K_9, color<span class="op">=</span><span class="st">"steelblue"</span>, linewidth<span class="op">=</span><span class="dv">2</span>, marker<span class="op">=</span><span class="st">"o"</span>, ms<span class="op">=</span><span class="dv">4</span>)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Strikeouts per 9 innings"</span>)</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"The strikeout revolution"</span>)</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>mlb <span class="op">=</span> pd.read_csv(<span class="st">"data/mlb_league_by_year.csv"</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>plt.plot(mlb.year, mlb.K_9, color<span class="op">=</span><span class="st">"steelblue"</span>, linewidth<span class="op">=</span><span class="dv">2</span>, marker<span class="op">=</span><span class="st">"o"</span>, ms<span class="op">=</span><span class="dv">4</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Strikeouts per 9 innings"</span>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"The strikeout revolution"</span>)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[&lt;matplotlib.lines.Line2D object at 0x7f386336deb0&gt;]
+<pre><code>[&lt;matplotlib.lines.Line2D object at 0x7f9d8c4d6a50&gt;]
 Text(0, 0.5, 'Strikeouts per 9 innings')
 Text(0.5, 1.0, 'The strikeout revolution')</code></pre>
 </div>
@@ -896,11 +894,11 @@ Text(0.5, 1.0, 'The strikeout revolution')</code></pre>
 <div class="tab-content">
 <div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(mlb, <span class="fu">aes</span>(year, AVG)) <span class="sc">+</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"firebrick"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">c</span>(<span class="fl">0.242</span>, <span class="fl">0.258</span>)) <span class="sc">+</span>                 <span class="co"># axis zoomed to the data</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"AVG"</span>, <span class="at">title =</span> <span class="st">"“Hitting is DEAD”"</span>) <span class="sc">+</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_book</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(mlb, <span class="fu">aes</span>(year, AVG)) <span class="sc">+</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"firebrick"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">c</span>(<span class="fl">0.242</span>, <span class="fl">0.258</span>)) <span class="sc">+</span>                 <span class="co"># axis zoomed to the data</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"AVG"</span>, <span class="at">title =</span> <span class="st">"“Hitting is DEAD”"</span>) <span class="sc">+</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_book</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div id="fig-axis-dishonest" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -934,43 +932,36 @@ BEGIN GPL
   SCALE: linear(dim(2), min(0.242), max(0.258))
   GUIDE: text.title(label("Hitting is DEAD"))
   ELEMENT: line(position(year*AVG))
-END GPL.</code></pre>
-<div class="cell-output cell-output-stdout">
-<pre><code>/tmp/RtmpQIZiOM/file2ca63932746a.sps:7.1-7.6: error: GGRAPH: GGRAPH is not yet
-implemented.
-    7 | GGRAPH
-      | ^~~~~~
+END GPL.
 
-/tmp/RtmpQIZiOM/file2ca63932746a.sps:11.1-11.9: error: Unknown command `BEGIN
-GPL'.
-   11 | BEGIN GPL
-      | ^~~~~~~~~</code></pre>
-</div>
+* NOTE: PSPP - the free engine this book renders with - cannot run
+* the command above, so no output is shown here. The syntax is IBM
+* SPSS and should run there. PSPP reported: GGRAPH: GGRAPH is not yet</code></pre>
 </div>
 </div>
 <div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Plots</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>mlb <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/mlb_league_by_year.csv"</span>, DataFrame)</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mlb.year, mlb.AVG, linewidth <span class="op">=</span> <span class="fl">2</span>, color <span class="op">=</span> <span class="op">:</span>firebrick, legend <span class="op">=</span> <span class="cn">false</span>,</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>     ylims <span class="op">=</span> (<span class="fl">0.242</span>, <span class="fl">0.258</span>),          <span class="co"># axis zoomed to the data</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>     ylabel <span class="op">=</span> <span class="st">"AVG"</span>, title <span class="op">=</span> <span class="st">"</span><span class="sc">\"</span><span class="st">Hitting is DEAD</span><span class="sc">\"</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Plots</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>mlb <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/mlb_league_by_year.csv"</span>, DataFrame)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mlb.year, mlb.AVG, linewidth <span class="op">=</span> <span class="fl">2</span>, color <span class="op">=</span> <span class="op">:</span>firebrick, legend <span class="op">=</span> <span class="cn">false</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>     ylims <span class="op">=</span> (<span class="fl">0.242</span>, <span class="fl">0.258</span>),          <span class="co"># axis zoomed to the data</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>     ylabel <span class="op">=</span> <span class="st">"AVG"</span>, title <span class="op">=</span> <span class="st">"</span><span class="sc">\"</span><span class="st">Hitting is DEAD</span><span class="sc">\"</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><img src="_figs/21-graphics-unnamed-chunk-5-julia.png" class="img-fluid"></p>
 </div>
 </div>
 <div id="tabset-2-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-4-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>mlb <span class="op">=</span> pd.read_csv(<span class="st">"data/mlb_league_by_year.csv"</span>)</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>plt.plot(mlb.year, mlb.AVG, color<span class="op">=</span><span class="st">"firebrick"</span>, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>plt.ylim(<span class="fl">0.242</span>, <span class="fl">0.258</span>)                <span class="co"># axis zoomed to the data</span></span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"AVG"</span>)<span class="op">;</span> plt.title(<span class="st">'"Hitting is DEAD"'</span>)</span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>mlb <span class="op">=</span> pd.read_csv(<span class="st">"data/mlb_league_by_year.csv"</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>plt.plot(mlb.year, mlb.AVG, color<span class="op">=</span><span class="st">"firebrick"</span>, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>plt.ylim(<span class="fl">0.242</span>, <span class="fl">0.258</span>)                <span class="co"># axis zoomed to the data</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"AVG"</span>)<span class="op">;</span> plt.title(<span class="st">'"Hitting is DEAD"'</span>)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[&lt;matplotlib.lines.Line2D object at 0x7f6d721a7740&gt;]
+<pre><code>[&lt;matplotlib.lines.Line2D object at 0x7f55b3809520&gt;]
 (0.242, 0.258)
 Text(0, 0.5, 'AVG')
 Text(0.5, 1.0, '"Hitting is DEAD"')</code></pre>
@@ -986,11 +977,11 @@ Text(0.5, 1.0, '"Hitting is DEAD"')</code></pre>
 <div class="tab-content">
 <div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(mlb, <span class="fu">aes</span>(year, AVG)) <span class="sc">+</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"firebrick"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.3</span>)) <span class="sc">+</span>                        <span class="co"># axis from a meaningful zero</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"AVG"</span>, <span class="at">title =</span> <span class="st">"“Hitting drifted down a bit”"</span>) <span class="sc">+</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_book</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(mlb, <span class="fu">aes</span>(year, AVG)) <span class="sc">+</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"firebrick"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.3</span>)) <span class="sc">+</span>                        <span class="co"># axis from a meaningful zero</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"AVG"</span>, <span class="at">title =</span> <span class="st">"“Hitting drifted down a bit”"</span>) <span class="sc">+</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_book</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div id="fig-axis-honest" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -1022,43 +1013,36 @@ BEGIN GPL
   SCALE: linear(dim(2), min(0), max(0.3))
   GUIDE: text.title(label("Hitting drifted down a bit"))
   ELEMENT: line(position(year*AVG))
-END GPL.</code></pre>
-<div class="cell-output cell-output-stdout">
-<pre><code>/tmp/RtmpQIZiOM/file2ca678b7c482.sps:5.1-5.6: error: GGRAPH: GGRAPH is not yet
-implemented.
-    5 | GGRAPH
-      | ^~~~~~
+END GPL.
 
-/tmp/RtmpQIZiOM/file2ca678b7c482.sps:9.1-9.9: error: Unknown command `BEGIN
-GPL'.
-    9 | BEGIN GPL
-      | ^~~~~~~~~</code></pre>
-</div>
+* NOTE: PSPP - the free engine this book renders with - cannot run
+* the command above, so no output is shown here. The syntax is IBM
+* SPSS and should run there. PSPP reported: GGRAPH: GGRAPH is not yet</code></pre>
 </div>
 </div>
 <div id="tabset-3-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Plots</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>mlb <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/mlb_league_by_year.csv"</span>, DataFrame)</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mlb.year, mlb.AVG, linewidth <span class="op">=</span> <span class="fl">2</span>, color <span class="op">=</span> <span class="op">:</span>firebrick, legend <span class="op">=</span> <span class="cn">false</span>,</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>     ylims <span class="op">=</span> (<span class="fl">0</span>, <span class="fl">0.3</span>),                <span class="co"># axis from a meaningful zero</span></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>     ylabel <span class="op">=</span> <span class="st">"AVG"</span>, title <span class="op">=</span> <span class="st">"</span><span class="sc">\"</span><span class="st">Hitting drifted down a bit</span><span class="sc">\"</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Plots</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>mlb <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/mlb_league_by_year.csv"</span>, DataFrame)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mlb.year, mlb.AVG, linewidth <span class="op">=</span> <span class="fl">2</span>, color <span class="op">=</span> <span class="op">:</span>firebrick, legend <span class="op">=</span> <span class="cn">false</span>,</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>     ylims <span class="op">=</span> (<span class="fl">0</span>, <span class="fl">0.3</span>),                <span class="co"># axis from a meaningful zero</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>     ylabel <span class="op">=</span> <span class="st">"AVG"</span>, title <span class="op">=</span> <span class="st">"</span><span class="sc">\"</span><span class="st">Hitting drifted down a bit</span><span class="sc">\"</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><img src="_figs/21-graphics-unnamed-chunk-8-julia.png" class="img-fluid"></p>
 </div>
 </div>
 <div id="tabset-3-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-4-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>mlb <span class="op">=</span> pd.read_csv(<span class="st">"data/mlb_league_by_year.csv"</span>)</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>plt.plot(mlb.year, mlb.AVG, color<span class="op">=</span><span class="st">"firebrick"</span>, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>plt.ylim(<span class="dv">0</span>, <span class="fl">0.3</span>)                      <span class="co"># axis from a meaningful zero</span></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"AVG"</span>)<span class="op">;</span> plt.title(<span class="st">'"Hitting drifted down a bit"'</span>)</span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>mlb <span class="op">=</span> pd.read_csv(<span class="st">"data/mlb_league_by_year.csv"</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>plt.plot(mlb.year, mlb.AVG, color<span class="op">=</span><span class="st">"firebrick"</span>, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>plt.ylim(<span class="dv">0</span>, <span class="fl">0.3</span>)                      <span class="co"># axis from a meaningful zero</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"AVG"</span>)<span class="op">;</span> plt.title(<span class="st">'"Hitting drifted down a bit"'</span>)</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[&lt;matplotlib.lines.Line2D object at 0x7fa09f406150&gt;]
+<pre><code>[&lt;matplotlib.lines.Line2D object at 0x7f046fca6150&gt;]
 (0.0, 0.3)
 Text(0, 0.5, 'AVG')
 Text(0.5, 1.0, '"Hitting drifted down a bit"')</code></pre>
@@ -1091,15 +1075,15 @@ Text(0.5, 1.0, '"Hitting drifted down a bit"')</code></pre>
 <div class="tab-content">
 <div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>long <span class="ot">&lt;-</span> mlb <span class="sc">|&gt;</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(year, <span class="at">Strikeouts =</span> K_PA, <span class="at">Walks =</span> BB_PA, <span class="st">`</span><span class="at">Home runs</span><span class="st">`</span> <span class="ot">=</span> HR_PA) <span class="sc">|&gt;</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>year, <span class="at">names_to =</span> <span class="st">"kind"</span>, <span class="at">values_to =</span> <span class="st">"rate"</span>)</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(long, <span class="fu">aes</span>(year, rate)) <span class="sc">+</span></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"steelblue"</span>, <span class="at">linewidth =</span> <span class="fl">0.9</span>) <span class="sc">+</span></span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> kind, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span>               <span class="co"># one panel per series</span></span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"per plate appearance"</span>) <span class="sc">+</span></span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_book</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>long <span class="ot">&lt;-</span> mlb <span class="sc">|&gt;</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(year, <span class="at">Strikeouts =</span> K_PA, <span class="at">Walks =</span> BB_PA, <span class="st">`</span><span class="at">Home runs</span><span class="st">`</span> <span class="ot">=</span> HR_PA) <span class="sc">|&gt;</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>year, <span class="at">names_to =</span> <span class="st">"kind"</span>, <span class="at">values_to =</span> <span class="st">"rate"</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(long, <span class="fu">aes</span>(year, rate)) <span class="sc">+</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"steelblue"</span>, <span class="at">linewidth =</span> <span class="fl">0.9</span>) <span class="sc">+</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> kind, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span>               <span class="co"># one panel per series</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"per plate appearance"</span>) <span class="sc">+</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_book</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div id="fig-small-multiples" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -1138,36 +1122,36 @@ END GPL.</code></pre>
 </div>
 <div id="tabset-4-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Plots</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>mlb <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/mlb_league_by_year.csv"</span>, DataFrame)</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="co"># one panel per series</span></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>([<span class="fu">plot</span>(mlb.year, mlb[!, c], title <span class="op">=</span> <span class="fu">String</span>(c), legend <span class="op">=</span> <span class="cn">false</span>)</span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>      for c <span class="kw">in</span> [<span class="op">:</span>K_PA, <span class="op">:</span>BB_PA, <span class="op">:</span>HR_PA]]<span class="op">...</span>, layout <span class="op">=</span> (<span class="fl">1</span>, <span class="fl">3</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Plots</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>mlb <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/mlb_league_by_year.csv"</span>, DataFrame)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co"># one panel per series</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>([<span class="fu">plot</span>(mlb.year, mlb[!, c], title <span class="op">=</span> <span class="fu">String</span>(c), legend <span class="op">=</span> <span class="cn">false</span>)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>      for c <span class="kw">in</span> [<span class="op">:</span>K_PA, <span class="op">:</span>BB_PA, <span class="op">:</span>HR_PA]]<span class="op">...</span>, layout <span class="op">=</span> (<span class="fl">1</span>, <span class="fl">3</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><img src="_figs/21-graphics-unnamed-chunk-11-julia.png" class="img-fluid"></p>
 </div>
 </div>
 <div id="tabset-4-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-4-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>mlb <span class="op">=</span> pd.read_csv(<span class="st">"data/mlb_league_by_year.csv"</span>)</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="bu">long</span> <span class="op">=</span> mlb.melt(id_vars<span class="op">=</span><span class="st">"year"</span>, value_vars<span class="op">=</span>[<span class="st">"K_PA"</span>, <span class="st">"BB_PA"</span>, <span class="st">"HR_PA"</span>],</span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>                var_name<span class="op">=</span><span class="st">"kind"</span>, value_name<span class="op">=</span><span class="st">"rate"</span>)</span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">3</span>))   <span class="co"># one panel per series</span></span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax, (kind, g) <span class="kw">in</span> <span class="bu">zip</span>(axes, <span class="bu">long</span>.groupby(<span class="st">"kind"</span>)):</span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>    ax.plot(g.year, g.rate, color<span class="op">=</span><span class="st">"steelblue"</span>)</span>
-<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>    ax.set_title(kind)</span>
-<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_ylabel(<span class="st">"per plate appearance"</span>)</span>
-<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()<span class="op">;</span> plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>mlb <span class="op">=</span> pd.read_csv(<span class="st">"data/mlb_league_by_year.csv"</span>)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="bu">long</span> <span class="op">=</span> mlb.melt(id_vars<span class="op">=</span><span class="st">"year"</span>, value_vars<span class="op">=</span>[<span class="st">"K_PA"</span>, <span class="st">"BB_PA"</span>, <span class="st">"HR_PA"</span>],</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>                var_name<span class="op">=</span><span class="st">"kind"</span>, value_name<span class="op">=</span><span class="st">"rate"</span>)</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">3</span>))   <span class="co"># one panel per series</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax, (kind, g) <span class="kw">in</span> <span class="bu">zip</span>(axes, <span class="bu">long</span>.groupby(<span class="st">"kind"</span>)):</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    ax.plot(g.year, g.rate, color<span class="op">=</span><span class="st">"steelblue"</span>)</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    ax.set_title(kind)</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_ylabel(<span class="st">"per plate appearance"</span>)</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()<span class="op">;</span> plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[&lt;matplotlib.lines.Line2D object at 0x7f8ed0997fb0&gt;]
+<pre><code>[&lt;matplotlib.lines.Line2D object at 0x7f5e0f953a70&gt;]
 Text(0.5, 1.0, 'BB_PA')
-[&lt;matplotlib.lines.Line2D object at 0x7f8ed09bc2c0&gt;]
+[&lt;matplotlib.lines.Line2D object at 0x7f5e0f953d10&gt;]
 Text(0.5, 1.0, 'HR_PA')
-[&lt;matplotlib.lines.Line2D object at 0x7f8ed09bc530&gt;]
+[&lt;matplotlib.lines.Line2D object at 0x7f5e0f953fb0&gt;]
 Text(0.5, 1.0, 'K_PA')
 Text(0, 0.5, 'per plate appearance')</code></pre>
 </div>
@@ -1186,13 +1170,13 @@ Text(0, 0.5, 'per plate appearance')</code></pre>
 <div class="tab-content">
 <div id="tabset-5-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-5-1-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>nfl <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/nfl_draft_by_team.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(nfl, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">fct_reorder</span>(team, rate_bust_a), <span class="at">y =</span> rate_bust_a)) <span class="sc">+</span></span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">"grey35"</span>) <span class="sc">+</span></span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span>                                        <span class="co"># horizontal: labels stay readable</span></span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Bust rate (no Pro Bowl)"</span>, <span class="at">title =</span> <span class="st">"Draft busts by team"</span>) <span class="sc">+</span></span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_book</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>nfl <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/nfl_draft_by_team.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(nfl, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">fct_reorder</span>(team, rate_bust_a), <span class="at">y =</span> rate_bust_a)) <span class="sc">+</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">"grey35"</span>) <span class="sc">+</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span>                                        <span class="co"># horizontal: labels stay readable</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Bust rate (no Pro Bowl)"</span>, <span class="at">title =</span> <span class="st">"Draft busts by team"</span>) <span class="sc">+</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_book</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div id="fig-ranked-bars" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -1226,12 +1210,12 @@ GRAPH /BAR(SIMPLE) = MEAN(rate_bust_a) BY team.
 </div>
 <div id="tabset-5-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Plots</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>nfl <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/nfl_draft_by_team.csv"</span>, DataFrame)</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sort!</span>(nfl, <span class="op">:</span>rate_bust_a)          <span class="co"># sorted: the ranking IS the message</span></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="fu">bar</span>(nfl.team, nfl.rate_bust_a, orientation <span class="op">=</span> <span class="op">:</span>horizontal, legend <span class="op">=</span> <span class="cn">false</span>,</span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>    xlabel <span class="op">=</span> <span class="st">"Bust rate (no Pro Bowl)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Plots</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>nfl <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/nfl_draft_by_team.csv"</span>, DataFrame)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sort!</span>(nfl, <span class="op">:</span>rate_bust_a)          <span class="co"># sorted: the ranking IS the message</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="fu">bar</span>(nfl.team, nfl.rate_bust_a, orientation <span class="op">=</span> <span class="op">:</span>horizontal, legend <span class="op">=</span> <span class="cn">false</span>,</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    xlabel <span class="op">=</span> <span class="st">"Bust rate (no Pro Bowl)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>32×15 DataFrame
  Row │ team     n_picks  n_judged  n_hof  n_bust_a  n_bust_b  n_bust_c  n_triple_bust  n_clean_hit  rate_bust_a  rate_bust_b  rate_bust_c  rate_triple_bust  rate_clean_hit  hof_per_pick
@@ -1275,15 +1259,15 @@ GRAPH /BAR(SIMPLE) = MEAN(rate_bust_a) BY team.
 </div>
 <div id="tabset-5-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-4-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>nfl <span class="op">=</span> pd.read_csv(<span class="st">"data/nfl_draft_by_team.csv"</span>)</span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>nfl <span class="op">=</span> nfl.sort_values(<span class="st">"rate_bust_a"</span>)   <span class="co"># sorted: the ranking IS the message</span></span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">8</span>))</span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>plt.barh(nfl.team, nfl.rate_bust_a, color<span class="op">=</span><span class="st">"0.35"</span>)</span>
-<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Bust rate (no Pro Bowl)"</span>)</span>
-<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()<span class="op">;</span> plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>nfl <span class="op">=</span> pd.read_csv(<span class="st">"data/nfl_draft_by_team.csv"</span>)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>nfl <span class="op">=</span> nfl.sort_values(<span class="st">"rate_bust_a"</span>)   <span class="co"># sorted: the ranking IS the message</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">8</span>))</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>plt.barh(nfl.team, nfl.rate_bust_a, color<span class="op">=</span><span class="st">"0.35"</span>)</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Bust rate (no Pro Bowl)"</span>)</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()<span class="op">;</span> plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;Figure size 1152x1536 with 0 Axes&gt;
 &lt;BarContainer object of 32 artists&gt;
@@ -1304,19 +1288,19 @@ Text(0.5, 0, 'Bust rate (no Pro Bowl)')</code></pre>
 <div class="tab-content">
 <div id="tabset-6-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-6-1-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>h <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/mlb_hitters_2026.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(PA <span class="sc">&gt;=</span> <span class="dv">50</span>)</span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(h, <span class="fu">aes</span>(OPS)) <span class="sc">+</span></span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">bins =</span> <span class="dv">30</span>,</span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>                 <span class="at">fill =</span> <span class="st">"steelblue"</span>, <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># a normal with this data's own mean and SD - here the curve is a REFERENCE,</span></span>
-<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># not a claim: the gap between bars and curve is the interesting part</span></span>
-<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> dnorm, <span class="at">args =</span> <span class="fu">list</span>(<span class="at">mean =</span> <span class="fu">mean</span>(h<span class="sc">$</span>OPS), <span class="at">sd =</span> <span class="fu">sd</span>(h<span class="sc">$</span>OPS)),</span>
-<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>                <span class="at">colour =</span> <span class="st">"grey30"</span>, <span class="at">linewidth =</span> <span class="fl">0.9</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
-<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">median</span>(h<span class="sc">$</span>OPS), <span class="at">color =</span> <span class="st">"firebrick"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"OPS"</span>, <span class="at">y =</span> <span class="st">"density"</span>, <span class="at">title =</span> <span class="st">"Most hitters are ordinary; a few are stars"</span>) <span class="sc">+</span></span>
-<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_book</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>h <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/mlb_hitters_2026.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(PA <span class="sc">&gt;=</span> <span class="dv">50</span>)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(h, <span class="fu">aes</span>(OPS)) <span class="sc">+</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">bins =</span> <span class="dv">30</span>,</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>                 <span class="at">fill =</span> <span class="st">"steelblue"</span>, <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># a normal with this data's own mean and SD - here the curve is a REFERENCE,</span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># not a claim: the gap between bars and curve is the interesting part</span></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> dnorm, <span class="at">args =</span> <span class="fu">list</span>(<span class="at">mean =</span> <span class="fu">mean</span>(h<span class="sc">$</span>OPS), <span class="at">sd =</span> <span class="fu">sd</span>(h<span class="sc">$</span>OPS)),</span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>                <span class="at">colour =</span> <span class="st">"grey30"</span>, <span class="at">linewidth =</span> <span class="fl">0.9</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">median</span>(h<span class="sc">$</span>OPS), <span class="at">color =</span> <span class="st">"firebrick"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"OPS"</span>, <span class="at">y =</span> <span class="st">"density"</span>, <span class="at">title =</span> <span class="st">"Most hitters are ordinary; a few are stars"</span>) <span class="sc">+</span></span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_book</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div id="fig-ops-distribution" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -1648,27 +1632,27 @@ FREQUENCIES VARIABLES=OPS /STATISTICS=MEDIAN /HISTOGRAM.</code></pre>
 </div>
 <div id="tabset-6-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Statistics</span>, <span class="bu">Plots</span></span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>h <span class="op">=</span> <span class="fu">filter</span>(<span class="op">:</span>PA <span class="op">=&gt;</span> <span class="op">&gt;=</span>(<span class="fl">50</span>), CSV.<span class="fu">read</span>(<span class="st">"data/mlb_hitters_2026.csv"</span>, DataFrame))</span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="fu">histogram</span>(h.OPS, bins <span class="op">=</span> <span class="fl">30</span>, legend <span class="op">=</span> <span class="cn">false</span>, xlabel <span class="op">=</span> <span class="st">"OPS"</span>, ylabel <span class="op">=</span> <span class="st">"hitters"</span>,</span>
-<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>          title <span class="op">=</span> <span class="st">"Most hitters are ordinary; a few are stars"</span>)</span>
-<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="fu">vline!</span>([<span class="fu">median</span>(h.OPS)], color <span class="op">=</span> <span class="op">:</span>firebrick, linewidth <span class="op">=</span> <span class="fl">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Statistics</span>, <span class="bu">Plots</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>h <span class="op">=</span> <span class="fu">filter</span>(<span class="op">:</span>PA <span class="op">=&gt;</span> <span class="op">&gt;=</span>(<span class="fl">50</span>), CSV.<span class="fu">read</span>(<span class="st">"data/mlb_hitters_2026.csv"</span>, DataFrame))</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="fu">histogram</span>(h.OPS, bins <span class="op">=</span> <span class="fl">30</span>, legend <span class="op">=</span> <span class="cn">false</span>, xlabel <span class="op">=</span> <span class="st">"OPS"</span>, ylabel <span class="op">=</span> <span class="st">"hitters"</span>,</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>          title <span class="op">=</span> <span class="st">"Most hitters are ordinary; a few are stars"</span>)</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="fu">vline!</span>([<span class="fu">median</span>(h.OPS)], color <span class="op">=</span> <span class="op">:</span>firebrick, linewidth <span class="op">=</span> <span class="fl">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><img src="_figs/21-graphics-unnamed-chunk-17-julia.png" class="img-fluid"></p>
 </div>
 </div>
 <div id="tabset-6-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-4-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>h <span class="op">=</span> pd.read_csv(<span class="st">"data/mlb_hitters_2026.csv"</span>).query(<span class="st">"PA &gt;= 50"</span>)</span>
-<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>plt.hist(h.OPS, bins<span class="op">=</span><span class="dv">30</span>, color<span class="op">=</span><span class="st">"steelblue"</span>, edgecolor<span class="op">=</span><span class="st">"white"</span>)</span>
-<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>plt.axvline(h.OPS.median(), color<span class="op">=</span><span class="st">"firebrick"</span>, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
-<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"OPS"</span>)<span class="op">;</span> plt.ylabel(<span class="st">"hitters"</span>)</span>
-<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Most hitters are ordinary; a few are stars"</span>)</span>
-<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>h <span class="op">=</span> pd.read_csv(<span class="st">"data/mlb_hitters_2026.csv"</span>).query(<span class="st">"PA &gt;= 50"</span>)</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>plt.hist(h.OPS, bins<span class="op">=</span><span class="dv">30</span>, color<span class="op">=</span><span class="st">"steelblue"</span>, edgecolor<span class="op">=</span><span class="st">"white"</span>)</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>plt.axvline(h.OPS.median(), color<span class="op">=</span><span class="st">"firebrick"</span>, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"OPS"</span>)<span class="op">;</span> plt.ylabel(<span class="st">"hitters"</span>)</span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Most hitters are ordinary; a few are stars"</span>)</span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>(array([ 1.,  0.,  1.,  0.,  1.,  1.,  0.,  5.,  3.,  8., 11., 20., 20.,
        33., 34., 49., 35., 37., 30., 35., 26., 24., 11., 10., 10.,  5.,
@@ -1679,7 +1663,7 @@ FREQUENCIES VARIABLES=OPS /STATISTICS=MEDIAN /HISTOGRAM.</code></pre>
        0.79466667, 0.8244    , 0.85413333, 0.88386667, 0.9136    ,
        0.94333333, 0.97306667, 1.0028    , 1.03253333, 1.06226667,
        1.092     ]), &lt;BarContainer object of 30 artists&gt;)
-&lt;matplotlib.lines.Line2D object at 0x7feba5396e40&gt;
+&lt;matplotlib.lines.Line2D object at 0x7fed925840b0&gt;
 Text(0.5, 0, 'OPS')
 Text(0, 0.5, 'hitters')
 Text(0.5, 1.0, 'Most hitters are ordinary; a few are stars')</code></pre>
@@ -1695,10 +1679,10 @@ Text(0.5, 1.0, 'Most hitters are ordinary; a few are stars')</code></pre>
 <div class="tab-content">
 <div id="tabset-7-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-7-1-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(h, <span class="fu">aes</span>(OBP, SLG)) <span class="sc">+</span></span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.35</span>, <span class="at">color =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span>         <span class="co"># alpha tames overplotting</span></span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"On-base percentage"</span>, <span class="at">y =</span> <span class="st">"Slugging percentage"</span>) <span class="sc">+</span></span>
-<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_book</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(h, <span class="fu">aes</span>(OBP, SLG)) <span class="sc">+</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.35</span>, <span class="at">color =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span>         <span class="co"># alpha tames overplotting</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"On-base percentage"</span>, <span class="at">y =</span> <span class="st">"Slugging percentage"</span>) <span class="sc">+</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_book</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div id="fig-obp-slg" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -1730,41 +1714,34 @@ BEGIN GPL
   GUIDE: axis(dim(1), label("On-base percentage"))
   GUIDE: axis(dim(2), label("Slugging percentage"))
   ELEMENT: point(position(OBP*SLG), transparency.exterior(transparency."0.65"))
-END GPL.</code></pre>
-<div class="cell-output cell-output-stdout">
-<pre><code>/tmp/RtmpQIZiOM/file2ca6177dae49.sps:6.1-6.6: error: GGRAPH: GGRAPH is not yet
-implemented.
-    6 | GGRAPH
-      | ^~~~~~
+END GPL.
 
-/tmp/RtmpQIZiOM/file2ca6177dae49.sps:9.1-9.9: error: Unknown command `BEGIN
-GPL'.
-    9 | BEGIN GPL
-      | ^~~~~~~~~</code></pre>
-</div>
+* NOTE: PSPP - the free engine this book renders with - cannot run
+* the command above, so no output is shown here. The syntax is IBM
+* SPSS and should run there. PSPP reported: GGRAPH: GGRAPH is not yet</code></pre>
 </div>
 </div>
 <div id="tabset-7-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-7-3-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Statistics</span>, <span class="bu">Plots</span></span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>h <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/mlb_hitters_2026.csv"</span>, DataFrame)</span>
-<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a><span class="fu">scatter</span>(h.OBP, h.SLG, alpha <span class="op">=</span> <span class="fl">0.35</span>, legend <span class="op">=</span> <span class="cn">false</span>,   <span class="co"># alpha tames overplotting</span></span>
-<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>        xlabel <span class="op">=</span> <span class="st">"On-base percentage"</span>, ylabel <span class="op">=</span> <span class="st">"Slugging percentage"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">Statistics</span>, <span class="bu">Plots</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>h <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">"data/mlb_hitters_2026.csv"</span>, DataFrame)</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="fu">scatter</span>(h.OBP, h.SLG, alpha <span class="op">=</span> <span class="fl">0.35</span>, legend <span class="op">=</span> <span class="cn">false</span>,   <span class="co"># alpha tames overplotting</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>        xlabel <span class="op">=</span> <span class="st">"On-base percentage"</span>, ylabel <span class="op">=</span> <span class="st">"Slugging percentage"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><img src="_figs/21-graphics-unnamed-chunk-20-julia.png" class="img-fluid"></p>
 </div>
 </div>
 <div id="tabset-7-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-7-4-tab">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>h <span class="op">=</span> pd.read_csv(<span class="st">"data/mlb_hitters_2026.csv"</span>)</span>
-<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>plt.scatter(h.OBP, h.SLG, alpha<span class="op">=</span><span class="fl">0.35</span>, color<span class="op">=</span><span class="st">"steelblue"</span>)  <span class="co"># tames overplotting</span></span>
-<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"On-base percentage"</span>)<span class="op">;</span> plt.ylabel(<span class="st">"Slugging percentage"</span>)</span>
-<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>h <span class="op">=</span> pd.read_csv(<span class="st">"data/mlb_hitters_2026.csv"</span>)</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>plt.scatter(h.OBP, h.SLG, alpha<span class="op">=</span><span class="fl">0.35</span>, color<span class="op">=</span><span class="st">"steelblue"</span>)  <span class="co"># tames overplotting</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"On-base percentage"</span>)<span class="op">;</span> plt.ylabel(<span class="st">"Slugging percentage"</span>)</span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>&lt;matplotlib.collections.PathCollection object at 0x7fe3bd5ffdd0&gt;
+<pre><code>&lt;matplotlib.collections.PathCollection object at 0x7f5de5bc2fc0&gt;
 Text(0.5, 0, 'On-base percentage')
 Text(0, 0.5, 'Slugging percentage')</code></pre>
 </div>
