@@ -35,31 +35,61 @@ A claim older than 4 hours is stale — take it, and say so in your entry.
 
 ## State
 
+_Current as of 2026-09-25, HEAD `04a3655`, published and verified live._
+
 Jeff is **teaching from the published book right now** — he told Pat on 2026-09-22 that
 he sends students to the online chapters and that they were "spot on" for his notes.
 Published defects are therefore live classroom material, not cosmetic.
 
-Open, in rough priority:
+### Closed since the last entry
 
-1. **10 raw PSPP errors still published** across `15-MRC`, `21-graphics`, `20-beyond`,
-   `30-irt` — temp paths and all. `30-irt` is the free one: Jeff confirmed `VARCOMP`
-   runs in real SPSS, even the student version.
-2. **Chapter 9 power correction is written locally, not published** — IBM SPSS
-   Statistics 27+ Base Edition documents `POWER MEANS INDEPENDENT`. The three
-   examples now show IBM syntax as static PSPP tabs; Jeff still needs to run them.
-3. **`.sav` not yet in the published zips.** Generated and delivered to Jeff's folder,
-   but unverified against real SPSS, so not shipped to other readers yet.
-4. Jeff's `RELIABILITY /MODEL=ALPHA` section; the foreword; Pat's voice pass.
+- **The ten published PSPP errors are gone.** `_engines.R` now falls back when a run
+  *fails*, not only when the interpreter is *missing* — the gap that let PSPP's
+  diagnostics become page content. Each of the eight affected blocks shows IBM syntax
+  plus a note saying PSPP cannot run it. Verified live: 0 raw errors, 0 temp paths,
+  8 notes.
+- **Nine more temp paths** came from matplotlib warning that `FigureCanvasAgg` cannot
+  display under the Agg backend. Filtered in the Python engine.
+- **Two blocks in `20-beyond` were simply broken** — the credible-interval and ROPE
+  tabs used `theta` and `post` without creating them, so they would have failed in IBM
+  SPSS too. They rebuild the grid now, and the grid is normalised, which it never was.
+- **Chapter 9's power claim** is corrected and live (Codex).
+- **New chapter: `34-bounded.qmd`**, bounded outcomes. Beta regression fitted from
+  scratch and with `betareg`, agreeing to four decimals. Its centrepiece: `betareg`
+  fits data containing exact zeros and reports a finite log-likelihood when the honest
+  beta log-likelihood is `-Inf`, and the estimate moves 0.82 → 0.52 depending on how
+  the boundary is handled. `06-zdistribution` now points forward to it.
+- **CI is green and faster** — 27 min, down from 45. The Julia depot is cached, which
+  is what fixed the osf.io 429 that had blocked publishing for 16 days.
 
-Codex's review evidence is in `handoffs/`, with repeatable source and PSPP checks in
-`review/`. The 2026-09-23 full render exited 0 but `review/check_pspp.py` found the
-same ten failed SPSS chunks in PSPP's IBM-compatible syntax mode. IBM's documentation
-supports the relevant commands, but IBM SPSS has not executed the exact blocks here.
+### Open
 
-**Repository cleanup before any push:** commit `2292b31` was made while Codex's full
-Quarto render was running. It accidentally tracked temporary root-level HTML,
-`*_files/`, and `site_libs/` output that Quarto then removed. The working tree shows
-those as tracked deletions; do not stage or push blindly. `_book/` is intact locally.
+1. **Jeff's `RELIABILITY /MODEL=ALPHA` section** — the last content gap. He now has a
+   working SPSS kit, `.sav` data, and the one-folder starters.
+2. **The foreword** — awaiting the invited colleague.
+3. **Pat's voice and structure review.**
+4. `.sav` files are in Jeff's Drive folder but **not** in the published zips, because
+   no one has confirmed IBM SPSS opens a PSPP-written system file.
+5. `09-statisticalpower.html` is **4.5 MB**, roughly 30× a comparable page. Students
+   read these on phones.
+
+### The habit worth keeping
+
+Nearly every defect this project has hit has the same shape: something ran, nothing was
+flagged, and the output was wrong or was not an answer. The `\t` delimiter. The `*`
+continuation line read as a comment. `betareg` fitting an impossible model. PSPP's
+complaint published as a result. Three of Claude's own: `statmod` verified on the one
+machine that had it, a comment parsed as a package name, a regex that matched nothing
+and silently degraded its own error message.
+
+The fix is never more care in the moment. It is checking the thing that *consumes* the
+output rather than the thing that produces it — unauthenticated `curl` rather than `gh`,
+what `pak` reads rather than whether the YAML parses, the rendered page rather than the
+source.
+
+Codex's review evidence is in `handoffs/`; repeatable checks in `review/`.
+`python3 review/check_pspp.py` is the regression test — it should report 8 failures,
+all IBM-only commands, all now falling back cleanly rather than publishing.
 
 ## Log
 
